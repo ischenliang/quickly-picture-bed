@@ -1,0 +1,17 @@
+{
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "strict": false,
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "types": ["node"],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+  }
+}
