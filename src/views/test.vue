@@ -1,62 +1,40 @@
 <template>
   <div>
-    <span>测试路由</span>
-    <div>
-      <button @click="handleClick">点击</button>
-    </div>
+    <div id="monaco" style="width: 600px;height: 400px;"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
-import { Image } from '@/types/Image'
-import { Bucket } from '@/types/Bucket'
-import AV from 'leancloud-storage'
+import { computed, onMounted, reactive, ref } from 'vue';
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker'
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker'
+import * as monaco from 'monaco-editor'
 
-/**
- * 实例
- */
-const route = useRoute()
-const image = new Image()
-const bucket = new Bucket()
-
-
-const handleClick = async () => {
-  // const bucketQuery = new AV.Query('Bucket')
-  // bucketQuery.equalTo('objectId', '6339464631a5a915d5217029')
-  // image.create({
-  //   img_name: '01.png',
-  //   img_width: 60,
-  //   img_height: 30,
-  //   mine_type: 'png',
-  //   img_url: '/01.png',
-  //   img_size: 20,
-  //   bucket_id: await bucketQuery.first(),
-  //   bucket_type: 'qiniu'
-  // }).then(res => {
-  //   console.log(res)
+onMounted(() => {
+  // const editor = monaco.editor.create(document.getElementById('monaco'), {
+  //   // value: `console.log("hello,world")`,
+  //   // language: "javascript"
   // })
-
-  // bucket.create({
-  //   type: 'qiniu',
-  //   tag: '七牛云 KODO',
-  //   name: '七牛图床',
-  //   config: '121212',
-  //   visible: true,
-  // })
-
-  // bucket.delete('6339464631a5a915d5217029').then(res => {
-  //   console.log(res)
-  // })
-
-  // log.find({
-  //   uid: '633934a4cd84e144d58d87c5'
-  // }).then(res => {
-  //   console.log(res)
-  // })
-
-
-}
+  monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
+    value: 'const a = 1', // 编辑器初始显示文字
+    language: 'go', // 语言支持自行查阅demo
+    automaticLayout: true, // 自适应布局  
+    theme: 'vs-dark', // 官方自带三种主题vs, hc-black, or vs-dark
+    foldingStrategy: 'indentation',
+    renderLineHighlight: 'all', // 行亮
+    selectOnLineNumbers: true, // 显示行号
+    minimap:{
+        enabled: false,
+    },
+    readOnly: false, // 只读
+    fontSize: 16, // 字体大小
+    scrollBeyondLastLine: false, // 取消代码后面一大段空白 
+    overviewRulerBorder: false, // 不要滚动条的边框  
+  })
+})
 </script>
 
 <style lang="scss">

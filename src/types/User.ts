@@ -1,30 +1,21 @@
 import { useCurrentUser } from '@/hooks/global';
-import { JsonResponse } from '../typings/res';
+import { JsonResponse } from '../typings/req-res';
 import { UserInter } from './../typings/interface';
-import { useFetch, usePromise } from '@/utils/Promise'
+import { useFetch, usePromise } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
+import { useFormat } from '@/hooks/date-time';
 
-export class Users implements UserInter {
-  id?: string
-  username?: string
-  password?: string
-  email?: string
-  emailVerified?: boolean
-  mobilePhoneNumber?: string
-  mobilePhoneVerified?: boolean
-  avatar?: string
-  major?: string
-  gender?: string
-  desc?: string
-  address?: string
-  role?: number
-  join_type?: number
-  createdAt?: string
-  updatedAt?: string
+/**
+ * ================= 用户管理 =================
+ * 用于管理员对本系统上的所有用户进行管理
+ * ===========================================
+ */
+export default class Users {
   user = null
   constructor () {
     this.user = new AV.User()
   }
+  // 创建用户
   create (params: UserInter) {
     for(let [key, value] of Object.entries(params)) {
       this.user.set(key, value);
@@ -35,12 +26,15 @@ export class Users implements UserInter {
   delete () {
 
   }
+  // 更新用户
   update () {
 
   }
+  // 查找用户
   find () {
-
+    console.log(useCurrentUser())
   }
+  // 登录
   login (params: UserInter, type: string = 'username') {
     let tmp
     switch (type) {
@@ -62,16 +56,31 @@ export class Users implements UserInter {
       })
     })
   }
+  // 获取token
   private getSessionToken () {
     return useCurrentUser().getSessionToken()
   }
   // 检查 session token 是否有效
   isAuthenticated () {
-    return useFetch(useCurrentUser().isAuthenticated())
+    const obj = useCurrentUser()
+    if (obj) {
+      return obj.isAuthenticated()
+    }
+    return false
   }
   // 重置密码
   resetPwd () {
     const query = new AV.Query('_User');
     return useFetch(query.find(), false)
+  }
+  // 当前用户
+  current () {
+    const obj = useCurrentUser()
+    return {
+      id: obj.id,
+      ...obj.attributes,
+      createdAt: useFormat(obj.createdAt),
+      updatedAt: useFormat(obj.updatedAt)
+    }
   }
 }

@@ -1,22 +1,20 @@
 import { BucketSourceInter, BucketSourceConfig } from '@/typings/interface';
 import { BucketSourceEnum } from '@/typings/enum';
-import { PageReq } from '../typings/req';
-import { useFetch } from '@/utils/Promise'
+import { PageReq } from '@/typings/req-res';
+import { useFetch } from '@/hooks/fetch'
 import AV, { Query, User, File, Role } from 'leancloud-storage'
-import Basic from './Basic'
+import Basic from '../typings/Basic'
 
 // 筛选条件
 interface Filter extends PageReq {
 
 }
-
-export class BucketSource extends Basic implements BucketSourceInter {
-  id?: string
-  name?: string
-  type?: BucketSourceEnum
-  config?: Array<BucketSourceConfig>
-  createdAt?: string
-  updatedAt?: string
+/**
+ * =========== 存储桶源 ===========
+ * 用于管理员对系统所支持的存储桶类型管理
+ * ==============================
+ */
+export default class BucketSource extends Basic {
   constructor () {
     super('BucketSource')
   }
@@ -32,8 +30,8 @@ export class BucketSource extends Basic implements BucketSourceInter {
 
   }
   // 更新数据
-  update (bucketSource: BucketSourceInter) {
-    const image = AV.Object.createWithoutData(this.modelName, bucketSource.id)
+  update (params: BucketSourceInter) {
+    const obj = AV.Object.createWithoutData(this.modelName, params.id)
   }
   // 查询列表
   find (params: Filter) {

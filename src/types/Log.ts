@@ -1,23 +1,22 @@
 import { useCurrentUser } from '@/hooks/global';
-import { PageReq } from '../typings/req';
+import { PageReq } from '@/typings/req-res';
 import { LogInter } from '@/typings/interface';
-import { useFetch } from '@/utils/Promise'
+import { useFetch } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
-import Basic from './Basic'
+import Basic from '../typings/Basic'
 
 // 筛选条件
 interface Filter extends PageReq {
   uid?: string
 }
 
-export class Log extends Basic implements LogInter {
-  id?: string
-  type?: number
-  operate_id?: string
-  operate_cont?: string
-  content?: string
-  createdAt?: string
-  uid?: string
+
+/**
+ * =========== 日志管理 || 动态管理 ===========
+ * 用于对用户在本系统上的所有操作日志记录，主要记录系统操作和图片操作
+ * ===========================================
+ */
+export default class Log extends Basic {
   constructor () {
     super('Log')
   }

@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+    使用习惯管理
+  </div>
 </template>
 
 <script lang="ts" setup>

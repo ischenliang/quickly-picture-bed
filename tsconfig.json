@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "module": "ESNext",
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": ["node", "element-plus/global"],
     "paths": {
       "@/*": ["src/*"]
     },

@@ -1,0 +1,15 @@
+/**
+*  文本相关的配置
+*/
+@mixin line-text-ellipsis($line: 1, $box: 'nobox', $break: keep-all, $direction: vertical) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @if $line == 1 and $box == 'nobox' {
+    white-space: nowrap;
+    word-break: $break;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $line;
+    -webkit-box-orient: $direction;
+  }
+}

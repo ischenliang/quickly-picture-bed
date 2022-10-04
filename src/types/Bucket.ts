@@ -1,8 +1,9 @@
-import { PageReq } from '../typings/req';
+
+import { PageReq } from '@/typings/req-res';
 import { BucketInter } from '@/typings/interface';
-import { useFetch } from '@/utils/Promise'
+import { useFetch } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
-import Basic from './Basic'
+import Basic from '../typings/Basic'
 import { useCurrentUser } from '@/hooks/global';
 
 // 筛选条件
@@ -10,16 +11,12 @@ interface Filter extends PageReq {
   uid?: string
 }
 
-export class Bucket extends Basic implements BucketInter {
-  id?: string
-  type?: string
-  tag?: string
-  name?: string
-  config?: string
-  visible?: boolean
-  createdAt?: string
-  updatedAt?: string
-  uid?: string
+/**
+ * =========== 存储桶 ===========
+ * 用于自己创建图床服务，支持leancloud本地桶、七牛云、gitee、github
+ * ==============================
+ */
+export default class Bucket extends Basic {
   constructor () {
     super('Bucket')
   }

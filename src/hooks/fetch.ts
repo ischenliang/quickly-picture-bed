@@ -41,10 +41,14 @@ export function useFetch (fn, enablePage = true) {
 }
 
 
-export function usePromise(res) {
+export function usePromise(res, error = null) {
   return new Promise((resolve) => {
-    resolve({
-      ...res
-    })
+    if (error) {
+      console.log(error)
+    } else {
+      resolve({
+        ...res
+      })
+    }
   })
 }

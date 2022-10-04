@@ -5,7 +5,7 @@ export interface TableColumnConfig {
   label: string // 列的标题
   width: string // 列的宽度
   prop: string // 列的字段名
-  slot?: boolean // 是否开启插槽
+  slot?: string // 是否开启插槽
 }
 
 // 通用表格列表list数据
@@ -165,4 +165,137 @@ export interface BucketInter {
   updatedAt?: string
   // 操作人，用户id
   uid?: string
+}
+
+
+/**
+ * 字典管理
+ */
+export interface DictInter {
+  // 字典id
+  id?: string
+  // 字典名称
+  name?: string
+  // 字典编码：唯一
+  code?: string
+  // 字典内容
+  values?: Array<{
+    label: string
+    value: string | number | boolean
+  }>
+  // 字典内容字符串
+  values_str?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+}
+
+
+/**
+ * 设置管理
+ */
+export interface SettingInter {
+  // 设置id
+  id?: string
+  // 设置-网站信息
+  website?: {
+    logo?: string // logo
+    ico?: string // ico
+    name?: string // 名称
+    title?: string // 标题
+    subtitle?: string // 副标题
+    domain?: string // 域名
+    desc?: string // 描述
+    keys?: Array<string> // 关键词
+    author?: string // 作者
+  }
+  // 上传配置
+  upload?: {
+    // 所有资源文件的前缀，主要是用于本地存储桶的前缀
+    baseurl?: string
+    // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
+    accept?: Array<string>
+    // 单个文件最大容量
+    maxsize?: number
+    // 单次最多勾选多少文件
+    maxcount?: number
+  }
+  // 备案信息
+  copyright?: {
+    // 版权归属公司名称
+    company?: string
+    // 工信部备案号
+    miitbeian?: string
+    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
+    miiturl?: string
+  }
+  // 联系我们
+  contact?: {
+    // 微信
+    weixin?: string
+    qq?: string
+    github?: string
+    gitee?: string
+    email?: string
+    qq_grounp?: string
+  }
+  // 打赏
+  reward: {
+    weixin?: string
+    alipay?: string
+  }
+  // 默认密码
+  default_pwd?: string
+  // 存储桶最大容量限制
+  storage_size?: number
+  // 最多能创建多少个存储桶
+  bucket_size?: number
+  // 关于我们内容, markdown内容
+  about?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+}
+
+
+/**
+ * 使用习惯管理
+ */
+export interface Habits {
+  // 习惯id
+  id?: string
+  // 习惯用户id
+  uid?: string
+  // 快捷键配置: 类似于vscode
+  shortKey?: Array<{
+    label: string, // 快捷键描述
+    key: string // 快捷键code
+    value: string // 快捷键内容：Command + Shift + P 
+  }>
+  // 上传提示
+  showUpdateTip?: boolean
+  // 复制提示
+  showCopyTip?: boolean
+  // 删除提示
+  showDeleteTip?: boolean
+  // 上传前重命名
+  rename?: boolean
+  // 时间戳重命名
+  autoRename?: boolean
+  // 上传后自动复制图片地址类型，支持：url、markdown
+  pasteStyle?: string
+  // 上传后自动复制图片地址
+  autoPaste?: true
+  // 当前使用图床id
+  current?: string
+  // 链接格式，默认是 ![]($url)
+  // 占位符$url表示图片url位置
+  // 占位符$fileName表示文件名
+  link_format?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
 }

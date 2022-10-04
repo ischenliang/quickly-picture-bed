@@ -1,0 +1,32 @@
+/**
+* ====================flex布局===============
+* 日常写样式中经常使用flex布局，每次都需要写display: flex;....等更多重复的代码
+* 为了简化代码，所以封装了该flex-layout.scss文件
+*/
+
+/**
+* flex布局
+*  参数：
+*     $direction：主轴方向，可选值：row、column
+*     $wrap：是否允许换行，可选值：nowrap、wrap、wrap-reverse
+*/
+@mixin flex-layout ($direction: row, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+}
+
+
+/**
+* flex布局对齐：可以使用该mixin实现水平垂直居中对齐
+*  参数：
+*     $direction: 主轴方向，可选值: row、column
+*     $justify: 主轴上的对齐方式，可选值: flex-start、flex-end、center、space-between、space-around
+*     $align: 主轴上的对齐方式，可选值: flex-start、flex-end、center、space-between、space-around
+*     $wrap：是否允许换行，可选值：nowrap、wrap、wrap-reverse
+*/
+@mixin flex-layout-align ($direction: row, $justify: flex-start, $align: flex-start, $wrap: nowrap) {
+  @include flex-layout($direction, $wrap);
+  justify-content: $justify;
+  align-items: $align;
+}
