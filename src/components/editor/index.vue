@@ -50,6 +50,7 @@ onMounted(() => {
     minimap:{
       enabled: true,
     },
+    wordWrap: 'on',
     readOnly: false, // 只读
     fontSize: 16, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白 

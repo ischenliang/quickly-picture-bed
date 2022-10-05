@@ -1,4 +1,4 @@
-import { usePromise } from '@/hooks/fetch';
+import { useFormatRes, usePromise } from '@/hooks/fetch';
 import { PageReq } from './../typings/req-res';
 import { DictInter } from '@/typings/interface';
 import { useCurrentUser } from '@/hooks/global';
@@ -26,8 +26,8 @@ export default class Dict extends Basic {
     // 判断是否已经存在
     const query = new AV.Query(this.modelName);
     query.equalTo('code', params.code);
-    const res: any = await useFetch(query.first())
-    if (res.data) {
+    const res: any = await useFetch(query.find())
+    if (res.data && res.data.id) {
       return usePromise(null, {
         msg: '字典代码已存在'
       })
@@ -87,5 +87,30 @@ export default class Dict extends Basic {
   detail (id: string) {
     const obj = new AV.Query(this.modelName)
     return useFetch(obj.get(id))
+  }
+  // 查询是否有满足条件的数据
+  // 使用场景：当某个字段是唯一时使用
+  async findByOnly (property: string, value: string) {
+    const obj = new AV.Query(this.modelName)
+    const res = await obj.first()
+    if (res && res.id) {
+      return usePromise(null, '数据已经存在了')
+    } else {
+      return usePromise(res)
+    }
+  }
+  // 查询是否有满足条件的数据
+  // 使用场景：当某个字段是唯一时使用
+  async detailByPro (property: string, value: string) {
+    const obj = new AV.Query(this.modelName)
+    obj.equalTo(property, value)
+    const res = await obj.first()
+    // 数据存在：将数据格式化返回
+    // 数据不存在：考虑抛出异常还是返回空数据
+    if (res && res.id) {
+      return usePromise(useFormatRes(res))
+    } else {
+      return usePromise(null)
+    }
   }
 }

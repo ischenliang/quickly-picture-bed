@@ -1,18 +1,24 @@
 <template>
   <com-dialog
     :visible.sync="dialogVisible"
-    :title="detail && detail.id ? '编辑字典' : '新建字典'"
+    :title="detail && detail.id ? '编辑存储源' : '新建存储源'"
     :width="'600px'"
     :before-close="handleClose">
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" :label-position="'left'" class="dict-form">
-      <el-form-item label="字典名称" prop="name">
-       <el-input v-model="form.name" size="large" />
+    <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" :label-position="'left'" class="dict-form">
+      <el-form-item label="存储源名称" prop="name">
+        <el-input v-model="form.name" size="large" />
       </el-form-item>
-      <el-form-item label="字典编码" prop="code">
-       <el-input v-model="form.code" size="large" />
+      <el-form-item label="存储源类别" prop="code">
+        <el-select v-model="form.type" size="large" style="width: 100%">
+          <el-option
+            v-for="(item, index) in bucketTypes"
+            :key="'item-' + index"
+            :label="item.label"
+            :value="item.value"/>
+        </el-select>
       </el-form-item>
-      <el-form-item prop="values_str" label="字典内容" class="inline-item">
-        <monaco-editor v-model="form.values_str"></monaco-editor>
+      <el-form-item prop="config_str" label="存储源配置" class="inline-item">
+        <monaco-editor v-model="form.config_str"></monaco-editor>
       </el-form-item>
     </el-form>
     <template #action>
@@ -23,29 +29,31 @@
 </template>
 
 <script lang="ts" setup>
-import { DictInter } from '@/typings/interface';
+import { BucketSourceInter, DictInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import monacoEditor from '@/components/editor/index.vue'
 import Dict from '@/types/Dict';
+import { JsonResponse } from '@/typings/req-res';
+import BucketSource from '@/types/BucketSource';
 
 /**
  * 实例
  */
 interface Props {
   modelValue: boolean
-  detail: DictInter
+  detail: BucketSourceInter
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   detail: () => ({
     name :'',
     code: '',
-    values: [],
-    values_str: JSON.stringify([], null, '\t')
-  } as DictInter)
+    config: [],
+    config_str: JSON.stringify([], null, '\t')
+  } as BucketSourceInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
-const dict = new Dict()
+const bucketSource = new BucketSource()
 
 
 /**
@@ -59,25 +67,42 @@ const dialogVisible = computed({
     emit('update:modelValue', val)
   }
 })
-const form: DictInter = reactive({
+const form: BucketSourceInter = reactive({
   id: '',
   name: '',
-  code: '',
-  values: [],
-  values_str: JSON.stringify([], null, '\t')
+  type: '',
+  config: [],
+  config_str: JSON.stringify([], null, '\t')
 })
 const rules = reactive({
   name: [
-    { required: true, message: '请输入字典名称', trigger: ['blur'] }
+    { required: true, message: '请输入存储源名称', trigger: ['blur'] }
   ],
-  code: [
-    { required: true, message: '请输入字典名称', trigger: ['blur'] }
+  type: [
+    { required: true, message: '请选择存储源类型', trigger: ['blur', 'change'] }
   ],
-  values_str: [
-    { required: true, message: '请输入字典名称', trigger: ['blur'] }
+  config_str: [
+    { required: true, message: '请输入存储源配置', trigger: ['blur'] }
   ]
 })
 const formRef = ref(null)
+// 存储源类别
+const bucketTypes = ref([])
+
+
+/**
+ * 数据获取
+ */
+const getDict = () => {
+  const dict = new Dict()
+  dict.detailByPro('code', 'bucket_source').then((res: JsonResponse<DictInter>) => {
+    if (res) {
+      bucketTypes.value = res.data.values
+    }
+  })
+}
+getDict()
+
 
 /**
  * 回调函数
@@ -90,11 +115,11 @@ const submit = () => {
     if (valid) {
       const tmp = {
         name: form.name,
-        code: form.code,
-        values: JSON.parse(form.values_str)
+        type: form.type,
+        config: JSON.parse(form.config_str)
       }
       if (form.id) {
-        dict.update({
+        bucketSource.update({
           id: form.id,
           ...tmp
         }).then(res => {
@@ -102,7 +127,7 @@ const submit = () => {
           emit('submit')
         })
       } else {
-        dict.create(tmp).then(res => {
+        bucketSource.create(tmp).then(res => {
           handleClose()
           emit('submit')
         })
@@ -111,7 +136,7 @@ const submit = () => {
   })
 }
 
-watch(() => form.values_str, (val) => {
+watch(() => form.config_str, (val) => {
   // TODO: 做校验
   // console.log(JSON.parse(val) as Array<{ label: string, value: string }>)
   // console.log(JSON.parse(val) instanceof Array<{ label: string, value: string }>)

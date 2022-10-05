@@ -18,6 +18,10 @@ import filterItem from '@/components/filter/item.vue' // 筛选栏某一项
 // 弹框
 import ComDialog from '@/components/dialog/index.vue'
 
+// element-plus封装
+import cCard from '@/components/el-component/cCard.vue'
+import cTabs from '@/components/el-component/cTabs.vue'
+
 // 方式二
 export default {
   install (app, option) {
@@ -29,5 +33,7 @@ export default {
     app.component('filterItem', filterItem)
     app.component('pagination', pagination)
     app.component('ComDialog', ComDialog)
+    app.component('cCard', cCard)
+    app.component('cTabs', cTabs)
   }
 }

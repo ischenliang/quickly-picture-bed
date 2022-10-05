@@ -38,6 +38,17 @@ export interface BucketSourceConfig {
   // 配置对应的选择，只有当type为options时才有该属性
   // 对应Dict中的code字段
   listOptions?: string
+  // 字典的列表表示
+  listOptions_arr?: Array<{
+    label: string
+    value: any
+  }>
+  // 用户输入时的说明
+  placeholder?: string
+  // 默认值
+  default?: any
+  // 排序值
+  sort?: number
 }
 // 存储桶的存储源：即管理员对存储桶进行配置
 export interface BucketSourceInter {
@@ -46,9 +57,11 @@ export interface BucketSourceInter {
   // 存储源名称
   name?: string
   // 存储源类型: 存储源对应的类别,例如：qiniu、oss
-  type?: BucketSourceEnum
+  type?: string
   // 存储源配置，界面上需要提供可以拖拽调整顺序
   config?: Array<BucketSourceConfig>
+  // 存储源配置字符串
+  config_str?: string
   // 创建时间
   createdAt?: string
   // 更新时间
@@ -209,6 +222,19 @@ export interface SettingInter {
     desc?: string // 描述
     keys?: Array<string> // 关键词
     author?: string // 作者
+    // 版权归属公司名称
+    copyright_company?: string
+    // 网站运行时间
+    copyright_time?: string
+    // 工信部备案号
+    copyright_miitbeian?: string
+    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
+    copyright_miiturl?: string
+    // 打赏
+    // 支付宝打赏二维码
+    reward_alipay?: string
+    // 微信打赏二维码
+    reward_weixin?: string
   }
   // 上传配置
   upload?: {
@@ -221,15 +247,6 @@ export interface SettingInter {
     // 单次最多勾选多少文件
     maxcount?: number
   }
-  // 备案信息
-  copyright?: {
-    // 版权归属公司名称
-    company?: string
-    // 工信部备案号
-    miitbeian?: string
-    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
-    miiturl?: string
-  }
   // 联系我们
   contact?: {
     // 微信
@@ -238,15 +255,12 @@ export interface SettingInter {
     github?: string
     gitee?: string
     email?: string
-    qq_grounp?: string
-  }
-  // 打赏
-  reward: {
-    weixin?: string
-    alipay?: string
+    qq_group?: string
   }
   // 默认密码
   default_pwd?: string
+  // 默认头像
+  default_avatar?: string
   // 存储桶最大容量限制
   storage_size?: number
   // 最多能创建多少个存储桶

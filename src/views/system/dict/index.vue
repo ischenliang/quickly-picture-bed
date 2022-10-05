@@ -14,24 +14,27 @@
           <el-input v-model="list.filters.name" placeholder="请输入字典名称" />
         </filter-item>
       </template>
+      <template #action>
+        <el-button type="primary" size="large" @click="itemOperate(null, 'add')">新增</el-button>
+      </template>
       <template #tableAction="{ row }">
-        <el-button type="primary" size="small" @click="itemOperate(row, 'pass')">编辑</el-button>
-        <el-button type="danger" size="small" @click="itemOperate(row, 'disable')">删除</el-button>
+        <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">编辑</el-button>
+        <el-button type="danger" size="small" @click="itemOperate(row, 'delete')">删除</el-button>
       </template>
     </table-page>
   </div>
   <edit-dialog
     v-if="visible.edit"
-    :visible="visible.edit"
-    :detail="item.data"></edit-dialog>
+    v-model="visible.edit"
+    :detail="item.data"
+    @submit="listGet"/>
 </template>
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { config } from './config'
 import { DictInter, ListInter, UserInter } from '@/typings/interface'
-import { useFilterData, useCtxInstance, useConfirmBox } from '@/hooks/global'
-import useUserStore from '@/store/user'
+import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
 import { BasicResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
@@ -39,7 +42,6 @@ import EditDialog from './EditDialog.vue'
  * 实例
  */
 const ctx = useCtxInstance()
-const userStore = useUserStore()
 const dict = new Dict()
 
 /**
@@ -81,10 +83,23 @@ const listGet = () => {
   })
 }
 listGet()
-// 审核 && 拒绝
+// 操作
 const itemOperate = (data: any, type) => {
   item.data = data
-  visible.edit = true
+  if (type !== 'delete') {
+    visible.edit = true
+  } else {
+    useDeleteConfirm().then(() => {
+      dict.delete(data.id).then(res => {
+        ctx.$message({
+          type: 'success',
+          duration: 1000,
+          message: '删除成功'
+        })
+        listGet()
+      })
+    })
+  }
 }
 
 /**

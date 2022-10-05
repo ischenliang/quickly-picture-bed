@@ -10,7 +10,6 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createPinia } from 'pinia'
 
-
 // 注意：这里的serverURL必须是非国际版的才支持使用，所以在创建应用时选择非国际版
 AV.init({
   appId: "DZNcsGI3WVFNYIVdNCUUHeRy-gzGzoHsz",

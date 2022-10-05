@@ -46,9 +46,31 @@ export function usePromise(res, error = null) {
     if (error) {
       console.log(error)
     } else {
-      resolve({
-        ...res
-      })
+      if (res) {
+        resolve({
+          ...res
+        })
+      }
+      resolve(res)
     }
   })
+}
+
+// 解决异步导致数组顺序错乱问题
+export async function usePromiseToOrder (fn, item) {
+  const res = await fn
+  item.listOptions_arr = res.data.values
+  return item
+}
+
+
+export function useFormatRes (res) {
+  return {
+    data: {
+      id: res.id,
+      ...res.attributes,
+      createdAt: useFormat(res.createdAt),
+      updatedAt: useFormat(res.updatedAt)
+    }
+  }
 }
