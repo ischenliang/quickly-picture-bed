@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { config } from './config'
-import { DictInter, ListInter, UserInter } from '@/typings/interface'
+import { DictInter, ListInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
 import { BasicResponse } from '@/typings/req-res'
@@ -47,7 +47,7 @@ const dict = new Dict()
 /**
  * 变量
  */
-const list: ListInter<UserInter> = reactive({
+const list: ListInter<DictInter> = reactive({
   page: 1,
   size: 10,
   total: 0,

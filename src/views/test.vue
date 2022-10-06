@@ -1,40 +1,40 @@
 <template>
-  <div>
-    <div id="monaco" style="width: 600px;height: 400px;"></div>
-  </div>
+  <!-- <Editor :value="value" :plugins="plugin" /> -->
+  <component
+    :is="Editor"
+    :value="value"
+    @change="handleChange"></component>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker'
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker'
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker'
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker'
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker'
-import * as monaco from 'monaco-editor'
+import 'bytemd/dist/index.css'
+import { ref, toRaw } from 'vue';
+// import { Editor } from '@bytemd/vue-next'
+import * as bytemd from '@bytemd/vue-next'
+import gfm from '@bytemd/plugin-gfm'
+import zhHans from 'bytemd/lib/locales/zh_Hans.json';
+import breaks from '@bytemd/plugin-breaks';
+import highlight from '@bytemd/plugin-highlight';
+import footnotes from '@bytemd/plugin-footnotes';
+import frontmatter from '@bytemd/plugin-frontmatter';
+import mediumZoom from '@bytemd/plugin-medium-zoom';
+import gemoji from '@bytemd/plugin-gemoji';
+const plugins = [
+  gfm(),
+  breaks(),
+  highlight(),
+  footnotes(),
+  frontmatter(),
+  mediumZoom(),
+  gemoji()
+]
+const value = ref('# 赫赫')
 
-onMounted(() => {
-  // const editor = monaco.editor.create(document.getElementById('monaco'), {
-  //   // value: `console.log("hello,world")`,
-  //   // language: "javascript"
-  // })
-  monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
-    value: 'const a = 1', // 编辑器初始显示文字
-    language: 'go', // 语言支持自行查阅demo
-    automaticLayout: true, // 自适应布局  
-    theme: 'vs-dark', // 官方自带三种主题vs, hc-black, or vs-dark
-    foldingStrategy: 'indentation',
-    renderLineHighlight: 'all', // 行亮
-    selectOnLineNumbers: true, // 显示行号
-    minimap:{
-        enabled: false,
-    },
-    readOnly: false, // 只读
-    fontSize: 16, // 字体大小
-    scrollBeyondLastLine: false, // 取消代码后面一大段空白 
-    overviewRulerBorder: false, // 不要滚动条的边框  
-  })
-})
+const Editor = toRaw(bytemd.Editor)
+
+const handleChange = (v) => {
+  console.log(v)
+}
 </script>
 
 <style lang="scss">

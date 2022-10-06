@@ -36,6 +36,7 @@ export function useFetch (fn, enablePage = true) {
       }
     }).catch(error => {
       // 错误全局处理
+      console.log(error)
     })
   })
 }

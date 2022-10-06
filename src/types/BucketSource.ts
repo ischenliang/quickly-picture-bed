@@ -7,7 +7,8 @@ import Basic from '../typings/Basic'
 
 // 筛选条件
 interface Filter extends PageReq {
-
+  name?: string,
+  type?: string
 }
 /**
  * =========== 存储桶源 ===========

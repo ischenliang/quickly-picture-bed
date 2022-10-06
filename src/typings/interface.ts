@@ -87,7 +87,7 @@ export interface ImageInter {
   // 图片大小
   img_size?: number
   // 存储桶id
-  bucket_id?: any
+  bucket_id?: string
   // 存储桶类型
   bucket_type?: string
   // 用户id
@@ -126,9 +126,13 @@ export interface UserInter {
   // 联系地址
   address?: string
   // 角色
-  role?: number
+  role?: number | string
+  // 角色名称
+  role_name?: string
+  // 状态: 根据用户来判断是否启用或者禁用
+  status?: boolean
   // 加入方式
-  join_type?: number
+  // join_type?: number
   // 注册时间
   createdAt?: string
   // 更新时间

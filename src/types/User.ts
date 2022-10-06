@@ -1,9 +1,19 @@
+import { PageReq } from '@/typings/req-res';
 import { useCurrentUser } from '@/hooks/global';
 import { JsonResponse } from '../typings/req-res';
 import { UserInter } from './../typings/interface';
 import { useFetch, usePromise } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
 import { useFormat } from '@/hooks/date-time';
+
+// 筛选条件
+interface Filter extends PageReq {
+  username?: string,
+  desc?: string,
+  mobilePhoneNumber?: string
+  role?: number
+}
+
 
 /**
  * ================= 用户管理 =================
@@ -12,6 +22,7 @@ import { useFormat } from '@/hooks/date-time';
  */
 export default class Users {
   user = null
+  modelName = '_User'
   constructor () {
     this.user = new AV.User()
   }
@@ -23,16 +34,58 @@ export default class Users {
     return useFetch(this.user.signUp())
   }
   // 删除用户
-  delete () {
-
+  delete (id: string) {
+    const obj = AV.Object.createWithoutData(this.modelName, id)
+    return useFetch(obj.destroy())
   }
   // 更新用户
-  update () {
-
+  update (params: UserInter) {
+    const obj = AV.Object.createWithoutData(this.modelName, params.id)
+    for(let [key, value] of Object.entries(params)) {
+      obj.set(key, value)
+    }
+    return useFetch(obj.save())
+  }
+  // 更新用户属性
+  updateByPro (id: string, property: string, value: any) {
+    const obj = AV.Object.createWithoutData(this.modelName, id)
+    obj.set(property, value)
+    return useFetch(obj.save())
   }
   // 查找用户
-  find () {
-    console.log(useCurrentUser())
+  // 查询列表
+  find (params: Filter = {}) {
+    const query = new AV.Query(this.modelName)
+    // 排序
+    if (params.sort) {
+      if (params.order === 'asc') {
+        query.addAscending(params.sort);
+      }
+      if (params.order === 'desc') {
+        query.addDescending(params.sort);
+      }
+    }
+
+    // 模糊查询
+    ['username', 'desc', 'mobilePhoneNumber'].forEach(item => {
+      if (params[item]) {
+        query.contains(item, params[item])
+      }
+    })
+
+    // 角色
+    if (params.role) {
+      query.equalTo('role', params.role)
+    }
+
+    // 分页
+    if (params.page) {
+      const { page = 1, size = 10 } = params
+      query.skip((page - 1) * size)
+      query.limit(params.size)
+      return useFetch(query.findAndCount())
+    }
+    return useFetch(query.find(), false)
   }
   // 登录
   login (params: UserInter, type: string = 'username') {
@@ -82,5 +135,9 @@ export default class Users {
       createdAt: useFormat(obj.createdAt),
       updatedAt: useFormat(obj.updatedAt)
     }
+  }
+  // 注册用户
+  register () {
+
   }
 }

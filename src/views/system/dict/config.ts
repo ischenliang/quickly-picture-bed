@@ -8,7 +8,7 @@ export const config: Array<TableColumnConfig> = [
   },
   {
     align: 'center',
-    label: '编码',
+    label: '编码(唯一)',
     width: '',
     prop: 'code'
   },
