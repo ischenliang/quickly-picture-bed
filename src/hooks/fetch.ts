@@ -41,7 +41,12 @@ export function useFetch (fn, enablePage = true) {
   })
 }
 
-
+/**
+ * 返回promise
+ * @param res 响应结果
+ * @param error 错误数据
+ * @returns 返回promise
+ */
 export function usePromise(res, error = null) {
   return new Promise((resolve) => {
     if (error) {
@@ -65,6 +70,11 @@ export async function usePromiseToOrder (fn, item) {
 }
 
 
+/**
+ * 格式化返回数据
+ * @param res 响应数据
+ * @returns 格式化{ data: 数据 }
+ */
 export function useFormatRes (res) {
   return {
     data: {

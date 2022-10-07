@@ -52,7 +52,6 @@ export function useConfirmBox (option = {
     ElMessageBox.confirm(option.text, option.title, {
       confirmButtonText: option.confirmButtonText,
       cancelButtonText: option.cancelButtonText,
-      // type: option.type,
       dangerouslyUseHTMLString: true
     }).then((res) => {
       resolve(res)
@@ -62,7 +61,12 @@ export function useConfirmBox (option = {
   })
 }
 
-// 删除弹窗
+/**
+ * 删除弹窗：删除数据时的弹窗确认
+ * @param text 描述文字
+ * @param title 删除标题
+ * @returns 
+ */
 export function useDeleteConfirm (text = '确定删除吗?', title = '提示') {
   return new Promise((resolve, reject) => {
     ElMessageBox.confirm(text, title, {
@@ -74,5 +78,71 @@ export function useDeleteConfirm (text = '确定删除吗?', title = '提示') {
     }).catch((err) => {
       reject(err)
     })
+  })
+}
+
+/**
+ * File类型文件转Base64类型
+ * @param file file文件
+ * @returns base64格式的内容(不带base64前缀)
+ */
+export function useFileToBase64 (file: File, prefix: boolean = false) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result: any = reader.result
+      if (prefix) {
+        resolve(result)
+      } else {
+        resolve(result.split(",").pop())
+      }
+    };
+    reader.onerror = (error) => {
+      reject(error)
+    };
+  });
+}
+
+
+/**
+ * 获取后缀
+ * @param filePath 文件路径|文件名称
+ * @param identify 截取标识符
+ * @returns 后缀
+ */
+export function useGetSuffix (filePath, identify) {
+  // 获取以identify为标识符的位置
+  var index = filePath.lastIndexOf(identify);
+  // 获取后缀
+  var value = filePath.substr(index + 1);
+  return value;
+}
+
+/**
+ * 获取文件尺寸
+ * @param file 文件
+ * @returns 文件宽高 { width: number, height: number } 
+ */
+export function useGetImageSize (file: File) {
+  return new Promise(async (resolve, reject) => {
+    const image = new Image()
+    image.src = (await useFileToBase64(file, true)) as string
+    if (image.complete) {
+      resolve({
+        width: image.width,
+        height: image.height
+      })
+    }
+    image.onload = () => {
+      resolve({
+        width: image.width,
+        height: image.height
+      })
+      image.onload = null // 避免重复加载
+    }
+    image.onerror = function () {
+      reject('图片加载失败')
+    }
   })
 }
