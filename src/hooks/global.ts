@@ -111,7 +111,7 @@ export function useFileToBase64 (file: File, prefix: boolean = false) {
  * @param identify 截取标识符
  * @returns 后缀
  */
-export function useGetSuffix (filePath, identify) {
+export function useGetSuffix (filePath, identify = '.') {
   // 获取以identify为标识符的位置
   var index = filePath.lastIndexOf(identify);
   // 获取后缀
@@ -121,13 +121,17 @@ export function useGetSuffix (filePath, identify) {
 
 /**
  * 获取文件尺寸
- * @param file 文件
+ * @param file 文件或者图片在线地址
  * @returns 文件宽高 { width: number, height: number } 
  */
-export function useGetImageSize (file: File) {
+export function useGetImageSize (file: File | string) {
   return new Promise(async (resolve, reject) => {
     const image = new Image()
-    image.src = (await useFileToBase64(file, true)) as string
+    if (typeof file === 'string') {
+      image.src = file
+    } else {
+      image.src = (await useFileToBase64(file, true)) as string
+    }
     if (image.complete) {
       resolve({
         width: image.width,

@@ -112,7 +112,9 @@ const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
 const getBucketSource = () => {
   bucketSource.find({}).then((res: BasicResponse<BucketSourceInter>) => {
     handleBucketData(res.data)
-    handleData(form.type)
+    if (form.type) {
+      handleData(form.type)
+    }
   })
 }
 getBucketSource()

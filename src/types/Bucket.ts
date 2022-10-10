@@ -4,6 +4,7 @@ import { BucketInter } from '@/typings/interface';
 import { useFetch, usePromise } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
 import { useCurrentUser } from '@/hooks/global';
+import Basic from '@/typings/Basic';
 
 // 筛选条件
 interface Filter extends PageReq {
@@ -15,9 +16,9 @@ interface Filter extends PageReq {
  * 用于自己创建图床服务，支持leancloud本地桶、七牛云、gitee、github
  * ==============================
  */
-export default class Bucket {
-  modelName = 'Bucket';
+export default class Bucket extends Basic {
   constructor () {
+    super('Bucket')
   }
   // 新建
   create (params: BucketInter) {
@@ -95,6 +96,8 @@ export default class Bucket {
     return useFetch(query.find(), false)
   }
   // 详情
-  detail () {
+  detail (id: string) {
+    const obj = new AV.Query(this.modelName)
+    return useFetch(obj.get(id))
   }
 }

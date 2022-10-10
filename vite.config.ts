@@ -4,6 +4,9 @@ import path from 'node:path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
 export default defineConfig({
+  server: {
+    port: 5174
+  },
   build: {
     outDir: 'dist',
     rollupOptions: {

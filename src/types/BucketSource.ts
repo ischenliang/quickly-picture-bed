@@ -21,6 +21,7 @@ export default class BucketSource extends Basic {
   }
   // 新建数据
   async create (params: BucketSourceInter) {
+    const instance = new AV.Object(this.modelName);
     // 判断是否已经存在
     const query = new AV.Query(this.modelName);
     query.equalTo('type', params.type);
@@ -33,9 +34,9 @@ export default class BucketSource extends Basic {
 
     // 不存在：直接创建
     for(let [key, value] of Object.entries(params)) {
-      this.instance.set(key, value);
+      instance.set(key, value);
     }
-    return useFetch(this.instance.save())
+    return useFetch(instance.save())
   }
   // 删除数据
   delete (id: string) {

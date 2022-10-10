@@ -23,6 +23,7 @@ export default class Dict extends Basic {
   }
   // 创建
   async create (params: DictInter) {
+    const instance = new AV.Object(this.modelName);
     // 判断是否已经存在
     const query = new AV.Query(this.modelName);
     query.equalTo('code', params.code);
@@ -35,9 +36,9 @@ export default class Dict extends Basic {
 
     // 不存在：直接创建
     for(let [key, value] of Object.entries(params)) {
-      this.instance.set(key, value);
+      instance.set(key, value);
     }
-    return useFetch(this.instance.save())
+    return useFetch(instance.save())
   }
   // 删除
   delete (id: string) {

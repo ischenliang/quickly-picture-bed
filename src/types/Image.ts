@@ -9,10 +9,9 @@ import Basic from '../typings/Basic'
  * 用于对用户在本系统上传的图片管理
  * ==============================
  */
-export default class Image {
-  modelName = 'Image'
+export default class Image extends Basic {
   constructor () {
-
+    super('Image')
   }
   // 新建
   async create (params: ImageInter) {

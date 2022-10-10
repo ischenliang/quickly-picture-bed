@@ -5,6 +5,7 @@ import { UserInter } from './../typings/interface';
 import { useFetch, usePromise } from '@/hooks/fetch'
 import AV from 'leancloud-storage'
 import { useFormat } from '@/hooks/date-time';
+import Basic from '@/typings/Basic';
 
 // 筛选条件
 interface Filter extends PageReq {
@@ -20,10 +21,10 @@ interface Filter extends PageReq {
  * 用于管理员对本系统上的所有用户进行管理
  * ===========================================
  */
-export default class Users {
+export default class Users extends Basic {
   user = null
-  modelName = '_User'
   constructor () {
+    super('_User')
     this.user = new AV.User()
   }
   // 创建用户

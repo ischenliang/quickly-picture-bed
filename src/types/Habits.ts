@@ -14,11 +14,12 @@ export default class Habits extends Basic {
     super('Habits')
   }
   async create (params: ImageInter) {
+    const instance = new AV.Object(this.modelName);
     for(let [key, value] of Object.entries(params)) {
-      this.instance.set(key, value);
+      instance.set(key, value);
     }
-    this.instance.set('uid', useCurrentUser().id)
-    return useFetch(this.instance.save())
+    instance.set('uid', useCurrentUser().id)
+    return useFetch(instance.save())
   }
   delete () {
 
