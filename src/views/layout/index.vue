@@ -7,7 +7,7 @@
         <div class="page-container">
           <router-view></router-view>
         </div>
-        <layout-footer></layout-footer>
+        <!-- <layout-footer></layout-footer> -->
       </div>
     </div>
   </div>

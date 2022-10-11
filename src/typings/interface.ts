@@ -149,9 +149,9 @@ export interface LogInter {
   type?: number
   // 操作id，系统操作：“四川省成都市”(ip定位)，图片操作：“ID:2366”(文件id)
   operate_id?: string
-  // 操作id，系统操作：“四川省成都市”(ip定位)，图片操作：“ID:2366”(文件id)
-  operate_cont?: string
   // 操作记录，系统操作：“218.88.53.138”(ip)，图片操作：“ab346d65ff689e44.jpg”(文件名称)
+  operate_cont?: string
+  // 操作内容，系统操作：登录了系统，图片操作：上传了图片
   content?: string
   // 操作时间，如：2022-09-19 17:51:33
   createdAt?: string

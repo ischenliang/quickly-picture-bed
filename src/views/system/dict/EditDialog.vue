@@ -2,7 +2,7 @@
   <com-dialog
     :visible.sync="dialogVisible"
     :title="detail && detail.id ? '编辑字典' : '新建字典'"
-    :width="'600px'"
+    :width="'700px'"
     :before-close="handleClose">
     <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" :label-position="'left'" class="dict-form">
       <el-form-item label="字典名称" prop="name">
