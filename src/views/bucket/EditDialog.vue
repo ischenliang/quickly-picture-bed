@@ -29,21 +29,22 @@
         ]">
        <el-input v-model="form.name" size="large" />
       </el-form-item>
-      <el-form-item
-        v-for="(item, index) in bucketConfigs"
-        :key="'form-item' + form.type + index"
-        :label="item.label"
-        :prop="item.value"
-        :rules="[generateRules(item)]">
-        <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
-          <el-option
-            v-for="(option, index) in item.listOptions_arr"
-            :key="'item-' + index"
-            :label="option.label"
-            :value="option.value"/>
-        </el-select>
-        <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
-      </el-form-item>
+      <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.type + index">
+        <el-form-item
+          v-if="!item.hidden"
+          :label="item.label"
+          :prop="item.value"
+          :rules="[generateRules(item)]">
+          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
+            <el-option
+              v-for="(option, index) in item.listOptions_arr"
+              :key="'item-' + index"
+              :label="option.label"
+              :value="option.value"/>
+          </el-select>
+          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
+        </el-form-item>
+      </template>
     </el-form>
     <template #action>
       <el-button size="large" @click="handleClose">取 消</el-button>
@@ -207,7 +208,10 @@ const handleBucketData = (data) => {
   bucketSources.value = data.map(item => {
     if (form.type === item.type) {
       bucketConfigs.value = item.config.map(el => {
-        el.default = JSON.parse(form.config)[el.value]
+        // 解决新增属性出现undefined问题
+        if (JSON.parse(form.config)[el.value] && !el.hidden) {
+          el.default = JSON.parse(form.config)[el.value]
+        }
         return el
       })
     }

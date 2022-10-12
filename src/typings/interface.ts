@@ -49,6 +49,10 @@ export interface BucketSourceConfig {
   default?: any
   // 排序值
   sort?: number
+  // 用户输入提示说明
+  tips?: string
+  // 是否隐藏不可见
+  hidden?: boolean
 }
 // 存储桶的存储源：即管理员对存储桶进行配置
 export interface BucketSourceInter {
@@ -174,6 +178,8 @@ export interface BucketInter {
   name?: string
   // 存储桶配置
   config?: string
+  // 存储桶基地址：方便渲染时使用
+  config_baseUrl?: string
   // 是否在上传区域显示
   visible?: boolean
   // 创建时间

@@ -146,6 +146,7 @@ $text-color-active: #32cfaa;
   height: 100%;
   .el-card__body {
     padding-top: 50px;
+    overflow: auto;
   }
   .bucket-item {
     height: 182px;

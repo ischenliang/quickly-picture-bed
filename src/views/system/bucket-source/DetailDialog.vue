@@ -5,21 +5,22 @@
     :width="'600px'"
     :before-close="handleClose">
     <el-form ref="formRef" :model="form" label-width="130px" :label-position="'left'" class="dict-form">
-      <el-form-item
-        v-for="(item, index) in form"
-        :key="'form-item' + index"
-        :label="item.label"
-        :prop="form[index].value"
-        :rules="[generateRules(item)]">
-        <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
-          <el-option
-            v-for="(option, index) in item.listOptions_arr"
-            :key="'item-' + index"
-            :label="option.label"
-            :value="option.value"/>
-        </el-select>
-        <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
-      </el-form-item>
+      <template v-for="(item, index) in form" :key="'form-item' + index">
+        <el-form-item
+          v-if="!item.hidden"
+          :label="item.label"
+          :prop="form[index].value"
+          :rules="[generateRules(item)]">
+          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
+            <el-option
+              v-for="(option, index) in item.listOptions_arr"
+              :key="'item-' + index"
+              :label="option.label"
+              :value="option.value"/>
+          </el-select>
+          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
+        </el-form-item>
+      </template>
     </el-form>
     <template #action>
       <el-button size="large" @click="handleClose">取 消</el-button>

@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
   }
   .c-card__header {
     @include flex-layout-align(row, space-between, center);
-    :first-child {
+    > :first-child {
       font-weight: bold;
     }
   }
