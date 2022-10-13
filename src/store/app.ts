@@ -1,19 +1,26 @@
 import { SettingInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
-import { Ref, ref } from 'vue'
+import { reactive, Ref, ref } from 'vue'
 
 const useAppStore = defineStore('app', () => {
   /**
    * 变量
    */
-  const systemConfig: Ref<SettingInter> = ref(null)
+  const systemConfig: { config: SettingInter } = reactive({
+    config: {
+      upload: {
+        accept: ['jpg', 'png', 'gif', 'webp', 'jpeg'],
+        maxcount: 10
+      }
+    }
+  })
 
   /**
    * 函数
    */
   // 更新用户信息
   const updateSystemConfig = (payload: SettingInter) => {
-    systemConfig.value = payload
+    systemConfig.config = payload
   }
 
 

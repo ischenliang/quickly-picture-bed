@@ -1,38 +1,52 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
     <div class="gallery-item-cover">
-      <el-image :src="data.url" :fit="'scale-down'" />
+      <!-- <viewer :images="images">
+        <img :src="data.img_preview_url" :alt="data.img_name">
+      </viewer> -->
+      <el-image :src="data.img_preview_url" :fit="'scale-down'" />
     </div>
-    <div class="gallery-item-name">{{ data.name }}</div>
+    <div class="gallery-item-name" :title="data.img_name">{{ data.img_name }}</div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
         <el-button
           :type="item.type"
           :icon="item.icon"
           :size="'small'"
-          @click="actions[item.action]" />
+          @click.stop="actions[item.action]" />
       </el-tooltip>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ImageInter } from '@/typings/interface';
 import { computed, ref } from 'vue';
+import { useCopyText, useCtxInstance } from '@/hooks/global';
 
 interface Props {
-  data: {
-    url: string
-    name: string,
-    checked: boolean
-  },
-  fit?: string
+  data: ImageInter,
+  fit?: string,
+  images?: Array<string>
 }
+/**
+ * 实例
+ */
 const props = withDefaults(defineProps<Props>(), {
-  fit: 'scale-down'
+  fit: 'scale-down',
+  data: () => ({
+    img_name: '',
+    img_preview_url: '',
+    checked: false
+  } as ImageInter)
 })
-
 const emit = defineEmits(['update:data'])
+const ctx = useCtxInstance()
 
+
+/**
+ * 变量
+ */
 const myData = computed({
   get () {
     return props.data
@@ -41,8 +55,7 @@ const myData = computed({
     emit('update:data', val)
   }
 })
-
-
+// 按钮组
 const btns = ref([
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
@@ -51,9 +64,16 @@ const btns = ref([
   { icon: 'Delete', type: 'danger', title: '删除图片', action: '' }
 ])
 
+
+/**
+ * 回调函数：按钮点击行为
+ */
 const actions = {
-  // 复制
-  copy () {},
+  // 复制链接地址
+  copy () {
+    const text = myData.value.img_preview_url
+    useCopyText(ctx, text)
+  },
   // 选择
   select () {
     myData.value.checked = !myData.value.checked
@@ -68,6 +88,7 @@ const actions = {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/text.scss';
 .gallery-item {
   padding: 10px;
   // width: 270px;
@@ -92,6 +113,11 @@ const actions = {
       width: 100%;
       height: 100%;
     }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+    }
   }
 
   .gallery-item-name {
@@ -102,6 +128,7 @@ const actions = {
     text-align: center;
     margin: 3px 0;
     line-height: 26px;
+    @include line-text-ellipsis(1);
   }
 
   .gallery-item-action {

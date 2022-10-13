@@ -3,7 +3,7 @@
     <c-card :title="'存储桶'">
       <el-row>
         <!-- 新建 -->
-        <el-col :xl="6" :lg="8">
+        <el-col :xl="6" :lg="8" :md="12">
           <div class="bucket-item" @click="itemOperate(null, 'edit')">
             <div class="bucket-item-square">
               <span class="trialfont trial-bianji"></span>
@@ -15,7 +15,7 @@
         </el-col>
 
         <!-- 循环 -->
-        <el-col :xl="6" :lg="8" v-for="(item, index) in list.data" :key="index">
+        <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
           <div class="bucket-item">
             <div class="bucket-item-square">
               <span class="trialfont trial-liucheng"></span>

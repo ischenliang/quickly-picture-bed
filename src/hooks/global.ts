@@ -2,6 +2,8 @@ import { ListInter } from './../typings/interface';
 import { getCurrentInstance } from "vue";
 import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
+import Clipboard from 'clipboard'
+import { useClipboard } from '@vueuse/core';
 
 
 interface Ctx {
@@ -10,6 +12,13 @@ interface Ctx {
     message: string
     duration: number
   }) => {}
+  $viewerApi: (config: {
+    options: {
+      url?: string,
+      initialViewIndex?: number
+    }
+    images: string[]
+  }) => void
   [prop: string]: any
 }
 
@@ -149,4 +158,17 @@ export function useGetImageSize (file: File | string) {
       reject('图片加载失败')
     }
   })
+}
+
+
+/**
+ * 使用复制文本
+ * @param text 文本
+ */
+export function useCopyText (ctx: Ctx, text: string) {
+  const { copy, isSupported, copied } = useClipboard({
+    source: text
+  })
+  isSupported && copy(text)
+  copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
 }

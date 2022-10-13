@@ -1,6 +1,7 @@
-import { UserInter } from '@/typings/interface'
+import { UserInter, HabitsInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
-import { Ref, ref } from 'vue'
+import { reactive, Ref, ref, toRaw } from 'vue'
+import { user_habits as defaultHabits } from '@/global.config'
 
 // const useUserStore = defineStore('user', {
 //   state: () => ({
@@ -19,6 +20,10 @@ const useUserStore = defineStore('user', () => {
    * 变量
    */
   const userInfo: Ref<UserInter> = ref(null)
+  const user_habits: HabitsInter = reactive(toRaw(defaultHabits))
+  // 测试时默认使用第个项存储桶
+  user_habits.current = '633e8a1331a5a915d528eab5'
+  user_habits.link_format = 'URL'
 
   /**
    * 函数
@@ -31,6 +36,7 @@ const useUserStore = defineStore('user', () => {
 
   return {
     userInfo,
+    user_habits,
     updateUserInfo
   }
 })

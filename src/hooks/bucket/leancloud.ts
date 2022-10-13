@@ -21,7 +21,7 @@ export default {
    * @param files 文件列表
    * @returns 
    */
-  uploadFile (bucket_id: string, files: File[]) {
+  uploadFile (bucket_id: string, files: File[], progress: Function) {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
@@ -32,7 +32,7 @@ export default {
         appId: appId,
         appKey: appKey,
         masterKey: masterKey
-      })
+      })  
 
       // 3、上传文件
       const maps = []

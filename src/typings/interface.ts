@@ -53,6 +53,8 @@ export interface BucketSourceConfig {
   tips?: string
   // 是否隐藏不可见
   hidden?: boolean
+  // 是否可用
+  disabled?: boolean
 }
 // 存储桶的存储源：即管理员对存储桶进行配置
 export interface BucketSourceInter {
@@ -88,6 +90,8 @@ export interface ImageInter {
   mine_type?: string
   // 图片url
   img_url?: string
+  // 图片预览地址
+  img_preview_url?: string
   // 图片大小
   img_size?: number
   // 存储桶id
@@ -97,7 +101,9 @@ export interface ImageInter {
   // 用户id
   uid?: string
   // 排序值
-  sort?: number
+  // sort?: number
+  // 是否选中
+  checked?: boolean
 }
 
 
@@ -252,6 +258,8 @@ export interface SettingInter {
     baseurl?: string
     // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
     accept?: Array<string>
+    // 可以上传的文件类型的字符串即 accept.join(',.')
+    accept_str?: string
     // 单个文件最大容量
     maxsize?: number
     // 单次最多勾选多少文件
@@ -287,7 +295,7 @@ export interface SettingInter {
 /**
  * 使用习惯管理
  */
-export interface Habits {
+export interface HabitsInter {
   // 习惯id
   id?: string
   // 习惯用户id

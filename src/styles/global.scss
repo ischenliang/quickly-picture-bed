@@ -1,11 +1,10 @@
-@media screen and (min-width: 1400px) {
-  .el-col-xl-4-8 {
-    width: 20% !important;
-  }
+@media screen and (min-width: 1920px) {
 }
 
-@media screen and (min-width: 1200px) and (max-width: 1400px){
-
+@media screen and (min-width: 1200px) and (max-width: 1920px){
+  .el-col-lg-4-8 {
+    width: 20% !important;
+  }
 }
 .el-col-24 {
   flex: 0 1 auto;

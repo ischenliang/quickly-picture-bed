@@ -4,14 +4,20 @@
     :title="detail && detail.id ? '编辑字典' : '新建字典'"
     :width="'600px'"
     :before-close="handleClose">
+    <div class="bucket-warning">
+      <p>请不要随意更改存储桶配置的必填属性(除存储桶名称外)，修改后会自动同步到所有关联的图片，进而可能会导致图片加载失败。</p>
+      <div class="bucket-warning-tips">
+        存储桶说明1<br/>
+      </div>
+    </div>
     <el-form ref="formRef" :model="form" label-width="130px" :label-position="'left'" class="dict-form">
-      <p style="font-size: 12px; color: red;line-height: 32px;margin-left: 130px;">* 添加成功后存储源不可修改</p>
       <el-form-item
         label="存储源"
         prop="type"
         :rules="[
           { required: true, message: '请选择存储源', trigger: ['blur', 'change'] }
         ]">
+        <p class="bucket-tips" style="color: red;">* 添加成功后存储源不可修改</p>
         <el-select v-model="form.type" style="width: 100%" filterable size="large" :disabled="form.id ? true : false">
           <el-option
             v-for="(item, index) in bucketSources"
@@ -35,14 +41,15 @@
           :label="item.label"
           :prop="item.value"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
+          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
               v-for="(option, index) in item.listOptions_arr"
               :key="'item-' + index"
               :label="option.label"
               :value="option.value"/>
           </el-select>
-          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
+          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
+          <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
         </el-form-item>
       </template>
     </el-form>
@@ -248,5 +255,22 @@ watch(() => props.detail, (val) => {
 }
 .dict-form {
   overflow: hidden;
+  .bucket-tips {
+    font-size: 12px;
+    color: #898989;
+    line-height: 18px;
+  }
+}
+.bucket-warning {
+  margin-bottom: 15px;
+  font-size: 14px;
+  p {
+    line-height: 22px;
+  }
+  .bucket-warning-tips {
+    // padding-left: 28px;
+    // color: #898989;
+    line-height: 20px;
+  }
 }
 </style>

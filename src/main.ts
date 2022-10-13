@@ -8,6 +8,8 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import 'viewerjs/dist/viewer.css'
+import VueViewer, { api } from 'v-viewer'
 import { createPinia } from 'pinia'
 
 // 不能放在这里初始化，因为在leancloud存储桶时还会调用AV.init导致重载
@@ -31,5 +33,13 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 app.use(pinia)
 app.config.warnHandler = () => null
+app.use(VueViewer, {
+  // 参考：https://blog.csdn.net/ymzhaobth/article/details/122127852
+  // 自定义默认配置
+  defaultOptions: {
+    toolbar: true,
+    url: 'src', // Default: 'src'. Define where to get the original image URL for viewing.
+  }
+})
 
 app.mount('#app')

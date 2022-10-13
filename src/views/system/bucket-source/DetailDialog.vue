@@ -11,14 +11,14 @@
           :label="item.label"
           :prop="form[index].value"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder">
+          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
               v-for="(option, index) in item.listOptions_arr"
               :key="'item-' + index"
               :label="option.label"
               :value="option.value"/>
           </el-select>
-          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" />
+          <el-input v-else v-model="item.default" :disabled="item.disabled" size="large" :placeholder="item.placeholder" />
         </el-form-item>
       </template>
     </el-form>
