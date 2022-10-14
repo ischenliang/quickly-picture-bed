@@ -2,6 +2,7 @@ import Bucket from "@/types/Bucket"
 import { useGetImageSize, useGetSuffix } from "../global"
 import AV from 'leancloud-storage'
 import { useFileName } from "../date-time"
+import { mimeTypes } from "@/global.config"
 
 /**
  * Leancloud存储桶图床配置
@@ -21,7 +22,7 @@ export default {
    * @param files 文件列表
    * @returns 
    */
-  uploadFile (bucket_id: string, files: File[], progress: Function) {
+  uploadFile (bucket_id: string, files: File[], progressFn: Function) {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
@@ -37,22 +38,43 @@ export default {
       // 3、上传文件
       const maps = []
       for(let i = 0; i < files.length; i++) {
-        maps.push({ filename: useFileName() + '.' + useGetSuffix(files[i].name), content: files[i] })
+        const imageWH: any = await useGetImageSize(files[i])
+        const suffix = useGetSuffix(files[i].name)
+        maps.push({
+          filename: useFileName() + '.' + suffix,
+          content: files[i],
+          size: files[i].size,
+          width: imageWH.width,
+          height: imageWH.height,
+          mine_type: mimeTypes[suffix]
+        })
       }
-      const promise = maps.map(async item => {
+      const promise = maps.map(async (item, index) => {
         return await new AV.File(item.filename, item.content).save({
           key: path + item.filename,
-          useMasterKey: true
+          useMasterKey: true,
+          onprogress: (progress) => {
+            progressFn({
+              loaded: progress.loaded,
+              total: progress.total,
+              percent: progress.percent,
+              index: index // 文件对应的索引
+            })
+          }
         })
       })
 
       // 4、返回结果
       Promise.all(promise).then(res => {
-        resolve(res.map((item: any) => {
+        resolve(res.map((item: any, index) => {
+          const tmp = item.attributes
           return {
-            id: item.id,
-            ...item.attributes,
-            img_url: path + item.attributes.name
+            img_name: tmp.name,
+            img_url: path + tmp.name,
+            img_width: maps[index].width,
+            img_height: maps[index].height,
+            img_size: maps[index].size,
+            mine_type: maps[index].mine_type
           }
         }))
       })

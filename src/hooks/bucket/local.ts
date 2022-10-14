@@ -1,42 +1,83 @@
-import { useCurrentUser, useGetImageSize } from "../global"
+import Bucket from "@/types/Bucket"
+import { useGetImageSize, useGetSuffix } from "../global"
 import AV from 'leancloud-storage'
-import { useFormatRes } from "../fetch"
-import Image from "@/types/Image"
+import { useFileName } from "../date-time"
+import { mimeTypes } from "@/global.config"
 
 /**
  * 本地存储桶图床配置
+ *  本地存储桶其实也就是leancloud存储桶，只不过是使用当前项目的存储配置
+ *  参考：https://leancloud.cn/docs/leanstorage_guide-js.html#hash813653189
  */
-const baseUrl = 'http://lc-DZNcsGI3.cn-n1.lcfile.com'
-const image = new Image()
+const bucket = new Bucket()
 export default {
-  uploadFile (files: File[]) {
-    return new Promise((resolve, reject) => {
+  /**
+   * 文件上传
+   * 原理：
+   *    1、根据bucket_id获取存储桶配置
+   *        还需要获取用户的习惯
+   *    2、拿到存储桶配置后构建出AV.init
+   *    3、最后使用AV.file和file.save上传文件
+   *    4、将结果数据返回
+   * @param bucket_id 存储桶id
+   * @param files 文件列表
+   * @returns 
+   */
+  uploadFile (bucket_id: string, files: File[], progressFn: Function) {
+    return new Promise(async (resolve, reject) => {
+      // 1、获取存储桶配置
+      const res: any = await bucket.detail(bucket_id)
+      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.data.config)
+
+      // 2、构建出AV.init
+      AV.init({
+        appId: appId,
+        appKey: appKey,
+        masterKey: masterKey
+      })  
+
+      // 3、上传文件
       const maps = []
-      for(var i = 0; i < files.length; i++) {
-        maps.push(files[i])
+      for(let i = 0; i < files.length; i++) {
+        const imageWH: any = await useGetImageSize(files[i])
+        const suffix = useGetSuffix(files[i].name)
+        maps.push({
+          filename: useFileName() + '.' + suffix,
+          content: files[i],
+          size: files[i].size,
+          width: imageWH.width,
+          height: imageWH.height,
+          mine_type: mimeTypes[suffix]
+        })
       }
-      const promise = maps.map(item => {
-        const file = new AV.File(item.name, item)
-        return file.save()
+      const promise = maps.map(async (item, index) => {
+        return await new AV.File(item.filename, item.content).save({
+          key: path + item.filename,
+          useMasterKey: true,
+          onprogress: (progress) => {
+            progressFn({
+              loaded: progress.loaded,
+              total: progress.total,
+              percent: progress.percent,
+              index: index // 文件对应的索引
+            })
+          }
+        })
       })
+
+      // 4、返回结果
       Promise.all(promise).then(res => {
-        const resPromise = res.map(async item => {
-          let { data: { url, name, mime_type, metaData: { size } } } = useFormatRes(item)
-          return await image.create({
-            img_name: name,
-            img_width: 1920,
-            img_height: 1080,
-            mine_type: mime_type,
-            img_size: size,
-            img_url: url.replace(new RegExp(baseUrl, 'g'), ''),
-            bucket_id: '633e967b31a5a915d52901be',
-            bucket_type: 'local',
-            uid: useCurrentUser().id
-          })
-        })
-        Promise.all(resPromise).then(subRes => {
-          resolve(subRes)
-        })
+        resolve(res.map((item: any, index) => {
+          const tmp = item.attributes
+          return {
+            img_name: tmp.name,
+            img_url: path + tmp.name,
+            img_width: maps[index].width,
+            img_height: maps[index].height,
+            img_size: maps[index].size,
+            mine_type: maps[index].mine_type
+          }
+        }))
       })
     })
   },

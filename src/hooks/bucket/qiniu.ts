@@ -4,6 +4,7 @@ import Bucket from "@/types/Bucket"
 import axios from "axios"
 import * as qiniu from 'qiniu-js'
 import { useFileName } from "../date-time"
+import { mimeTypes } from "@/global.config"
 
 const http = (url, method = 'POST', data = null) => {
   return new Promise((resolve, reject) => {
@@ -28,13 +29,20 @@ const regions = {
  * @param token 上传凭证
  * @param config 其中的每一项都为可选
  */
-const upload = (file: File, fileName, token, region: string) => {
+const upload = (file: File, fileName, token, region: string, index, progressFn: Function) => {
   return new Promise((resolve, reject) => {
     const observable = qiniu.upload(file, fileName, token, {}, {
       region: regions[region]
     })
     observable.subscribe({
-      next () {},
+      next (e) {
+        progressFn({
+          index,
+          loaded: e.total.loaded,
+          total: e.total.size,
+          percent: e.total.percent
+        })
+      },
       error (err) {
         // 错处处理
       },
@@ -50,6 +58,7 @@ const upload = (file: File, fileName, token, region: string) => {
  */
 const service_url = 'http://demo.itchenliang.club'
 const bucket = new Bucket()
+
 export default {
   /**
    * 上传文件
@@ -60,7 +69,7 @@ export default {
    * @param bucket_id 存储桶id
    * @param files 文件列表
    */
-  uploadFile (bucket_id: string, files: File[]) {
+  uploadFile (bucket_id: string, files: File[], progressFn: Function) {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
@@ -78,36 +87,34 @@ export default {
       // 3、上传文件
       const maps = []
       for (let i = 0; i < files.length; i++) {
-        const size: any = await useGetImageSize(files[i])
-        const tmp = {
-          filename: path + useFileName() + '.' + useGetSuffix(files[i].name),
+        const imageWH: any = await useGetImageSize(files[i])
+        const suffix = useGetSuffix(files[i].name)
+        maps.push({
+          filename: path + useFileName() + '.' + suffix,
           file: files[i],
-          width: size.width,
-          height: size.height,
-          size: files[i].size
-        }
-        maps.push(tmp)
+          size: files[i].size,
+          width: imageWH.width,
+          height: imageWH.height,
+          mine_type: mimeTypes[suffix]
+        })
       }
-      const promise = maps.map(async item => {
-        return await upload(item.file, item.filename, uploadToken, area)
+      const promise = maps.map(async (item, index) => {
+        return await upload(item.file, item.filename, uploadToken, area, index, progressFn)
       })
 
       // 4、返回结果
       Promise.all(promise).then(res => {
         resolve(res.map((item: any, index) => {
-          const { filename, width, height, size } = maps[index]
-          const tmp = {
-            key: item.key,
-            hash: item.hash,
-            filename: filename,
-            width: width,
-            height: height,
-            size: size
+          const name = item.key.replace(new RegExp(path), '')
+          return {
+            img_name: suffix ? name + '?' + suffix : name,
+            img_url: item.key,
+            img_width: maps[index].width,
+            img_height: maps[index].height,
+            img_size: maps[index].size,
+            mine_type: maps[index].mine_type,
+            hash: item.hash
           }
-          if (suffix) {
-            tmp.filename += '?' + suffix
-          }
-          return tmp
         }))
       })
     })

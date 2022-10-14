@@ -16,8 +16,6 @@ export const user_habits: HabitsInter = {
 }
 
 
-
-
 export interface Link {
   label: string
   value: string
@@ -35,3 +33,29 @@ export const linkTypes: Ref<Link[]> = ref([
   { label: 'UBB', value: '[IMG]${url}[/IMG]' },
   { label: 'custom', value: '[${filename}](${url})' }
 ])
+
+
+// 常见文件的mine-type类型
+export const mimeTypes = {
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  jpg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+  ico: 'image/x-icon',
+  tif: 'image/tiff',
+  tiff: 'image/tiff',
+  wbmp: 'image/vnd.wap.wbmp',
+  jng: 'image/x-jng',
+  bmp: 'image/x-ms-bmp',
+  svg: 'image/svg+xml',
+  svgz: 'image/svg+xml',
+  cgm: 'image/cgm',
+  djv: 'image/vnd.djvu',
+  djvu: 'image/vnd.djvu',
+  ief: 'image/ief',
+  jp2: 'image/jp2',
+  jpe: 'image/jpeg',
+  mac: 'image/x-macpaint',
+  pct: 'image/pict',
+}

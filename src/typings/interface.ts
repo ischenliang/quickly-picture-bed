@@ -98,6 +98,8 @@ export interface ImageInter {
   bucket_id?: string
   // 存储桶类型
   bucket_type?: string
+  // hash值：用于后续更新时使用
+  hash?: string
   // 用户id
   uid?: string
   // 排序值
