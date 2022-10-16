@@ -58,7 +58,7 @@ const props = defineProps({
     default: [10, 20, 30, 40, 50, 100]
   }
 })
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change', 'update:page', 'update:size', 'page-change'])
 
 /**
  * 变量
@@ -71,14 +71,24 @@ const layout = computed(() => {
     return 'total, prev, pager, next, jumper'
   }
 })
-const pageSize = ref(toRaw(props.size))
+
+const pageNum = computed({
+  get: () => props.page,
+  set: (val) => emit('update:page', val)
+})
+const pageSize = computed({
+  get: () => props.size,
+  set: (val) => emit('update:size', val)
+})
 
 /**
  * 回调函数
  */
 // 当前页发生变化时触发
 const listPageChange = (page) => {
-  emit('change', { type: 'page', page: page })
+  pageNum.value = page
+  emit('change')
+  emit('page-change', { type: 'page', page: page })
 }
 // pageSize 改变时会触发
 const listPageSizeChange = (size) => {
@@ -87,9 +97,13 @@ const listPageSizeChange = (size) => {
     maxPage++
   }
   if (props.page > maxPage) {
-    emit('change', { type: 'page', page: maxPage })
+    pageSize.value = maxPage
+    emit('page-change', { type: 'page', page: maxPage })
+  } else {
+    pageSize.value = size
+    emit('page-change', { type: 'size', size: size })
   }
-  emit('change', { type: 'size', size: size })
+  emit('change')
 }
 
 // 根据判断是否传入size，如果有传入则使用传入的值

@@ -6,7 +6,9 @@
           v-model="list.filters.img_name"
           placeholder="请输入名称搜索"
           style="width: 180px;"
-          :suffix-icon="'Search'"/>
+          :suffix-icon="'Search'"
+          clearable
+          @input="handleInput"/>
       </template>
       <div class="gallery-filter">
         <div>
@@ -26,8 +28,8 @@
             :disabled="disabled">删除所选</el-button>
         </div>
       </div>
-      <div class="gallery-list">
-        <el-row>
+      <div class="gallery-list" v-loading="list.loading">
+        <el-row v-if="list.data.length">
           <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
             <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
               <gallery-item
@@ -37,10 +39,13 @@
             </el-col>
           </template>
         </el-row>
+        <div class="empty-data" v-else>
+          <el-empty description="暂无数据"></el-empty>
+        </div>
       </div>
       <pagination
-        :page="list.page"
-        :size="list.size"
+        v-model:page="list.page"
+        v-model:size="list.size"
         :total="list.total"
         :page-sizes="[18, 36, 72, 100]"
         @change="listGet"/>
@@ -72,10 +77,11 @@ const list: ListInter<ImageInter> = reactive({
   page: 1,
   size: 18,
   total: 0,
+  loading: false,
   filters: {
     img_name: '',
     bucket_id: '', // 图床
-    user_id: 0 // 全部
+    user_id: 0, // 全部
   },
   data: []
 })
@@ -139,6 +145,7 @@ const getBuckets = () => {
 getBuckets()
 // 获取图片列表
 const listGet = () => {
+  list.loading = true
   image.find({
     page: list.page,
     size: list.size,
@@ -151,16 +158,13 @@ const listGet = () => {
       item.img_preview_url = bk ? bk.config_baseUrl + item.img_url : item.img_url
       return item
     })
+    list.loading = false
   })
 }
 
 /**
  * 逻辑处理
  */
-// 切换筛选条件
-const toggleUser = (item) => {
-  list.filters.user_id = item.value
-}
 // 全选
 const handleToggleSelectAll = () => {
   selectAll.value = !selectAll.value
@@ -177,6 +181,12 @@ const handleClick = (index: number) => {
     },
     images: list.data.map(item => item.img_preview_url)
   })
+}
+// 搜索
+const handleInput = (val) => {
+  setTimeout(() => {
+    listGet()
+  }, 1000)
 }
 
 /**
@@ -228,6 +238,13 @@ watch(() => list.data, (val, old) => {
   .gallery-list {
     margin-top: 5px;
     flex: 1;
+  }
+  .empty-data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

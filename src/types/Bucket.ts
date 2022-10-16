@@ -8,7 +8,8 @@ import Basic from '@/typings/Basic';
 
 // 筛选条件
 interface Filter extends PageReq {
-  uid?: string
+  uid?: string,
+  visible?: boolean
 }
 
 /**
@@ -73,6 +74,13 @@ export default class Bucket extends Basic {
     } else {
       query.equalTo('uid', useCurrentUser().id)
     }
+
+
+    ['visible'].forEach(item => {
+      if (params[item]) {
+        query.equalTo(item, params[item])
+      }
+    })
 
     // 排序
     if (params.sort) {

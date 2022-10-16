@@ -41,10 +41,10 @@
     <!-- 分页栏 -->
     <pagination
       v-if="enablePage"
+      v-model:page="tableData.page"
+      v-model:size="tableData.size"
       :total="tableData.total"
-      :page="tableData.page"
-      :size="tableData.size"
-      @change="$emit('pageChange', $event)" />
+      @page-change="$emit('pageChange', $event)" />
   </div>
 </template>
 

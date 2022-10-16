@@ -172,3 +172,26 @@ export function useCopyText (ctx: Ctx, text: string) {
   isSupported && copy(text)
   copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
 }
+
+
+/**
+ * 格式化文件大小
+ *  参考：http://t.zoukankan.com/cherylgi-p-15464726.html
+ * @param fileSize 文件大小
+ * @returns 
+ */
+export function useFormatImageSize (fileSize: number) {
+  let temp = 0;
+  if (fileSize < 1024) {
+    return fileSize + 'B';
+  } else if (fileSize < (1024*1024)) {
+    temp = fileSize / 1024
+    return temp.toFixed(2) + 'KB';
+  } else if (fileSize < (1024*1024*1024)) {
+    temp = fileSize / (1024*1024);
+    return temp.toFixed(2) + 'MB';
+  } else {
+    temp = fileSize / (1024*1024*1024);
+    return temp.toFixed(2) + 'GB';
+  }
+}

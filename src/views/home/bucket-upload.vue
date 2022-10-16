@@ -31,12 +31,10 @@ import { computed, reactive, ref, Ref, watch } from 'vue';
 import { linkTypes, Link } from '@/global.config'
 import useAppStore from '@/store/app'
 import cUpload from '@/components/web/upload/index.vue'
-import leancloud from '@/hooks/bucket/leancloud'
-import gitee from '@/hooks/bucket/gitee';
-import github from '@/hooks/bucket/github';
-import local from '@/hooks/bucket/local';
-import qiniu from '@/hooks/bucket/qiniu';
+import bucketUpload from '@/hooks/bucket/index';
 import Image from '@/types/Image';
+import { JsonResponse } from '@/typings/req-res';
+import useUserStore from '@/store/user';
 interface Props {
   userHabits: HabitsInter
 }
@@ -57,6 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:userHabits'])
 const appStore = useAppStore()
+const userStore = useUserStore()
 const image = new Image()
 
 /**
@@ -67,13 +66,9 @@ const habits = computed({
   set: (val) =>  emit('update:userHabits', val)
 })
 // 当前上传图片
-const current: Ref<ImageInter> = ref({
-  id: 'abcd',
-  img_url: 'http://img.itchenliang.club/img/509036ffc9a69659.png',
-  img_size: 200,
-  img_height: 600,
-  img_width: 400,
-  img_name: '509036ffc9a69659.png'
+const current = computed({
+  get: () => userStore.currentImage,
+  set: (val) => userStore.currentImage = val
 })
 // 系统配置
 const systemConfig = computed(() => {
@@ -136,50 +131,29 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 }
 // 上传
 const upload = (fileList: File[]) => {
-  // leancloud.uploadFile('6343d452cd84e144d59c9150', fileList, ({ loaded, index, total }) => {
-  //   totalProgress.progress[index].loaded = loaded
-  //   totalProgress.progress[index].total = total
-  // }).then(res => {
-  //   console.log(res)
-  // })
-
-  // gitee.uploadFile('633e94a9cd84e144d595292b', fileList, ({ loaded, index, total }) => {
-  //   totalProgress.progress[index].loaded = loaded
-  //   totalProgress.progress[index].total = total
-  // }).then(res => {
-  //   console.log(res)
-  // })
-
-  github.uploadFile('6343a539cd84e144d59c44af', fileList, ({ loaded, index, total }) => {
+  const { type, id } = habits.value.current
+  if (type === '' || id === '') {
+    return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
+  }
+  bucketUpload[type].uploadFile(id, fileList, ({ loaded, index, total }) => {
     totalProgress.progress[index].loaded = loaded
     totalProgress.progress[index].total = total
-  }).then((res: ImageInter[]) => {
+  }).then((res: Array<ImageInter>) => {
     totalProgress.percent = 0
-    res.forEach(item => {
+    res.forEach((item, index) => {
       image.create({
         ...item,
-        bucket_id: '6343a539cd84e144d59c44af',
-        bucket_type: 'github'
-      }).then(res => {
-        ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+        bucket_id: id,
+        bucket_type: type
+      }).then((result: JsonResponse<ImageInter>) => {
+        if (index === res.length - 1) {
+          ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+          result.data.img_preview_url = habits.value.current.config_baseUrl + result.data.img_url
+          current.value = result.data
+        }
       })
     })
   })
-
-  // local.uploadFile('634785eccd84e144d5a1d702', fileList, ({ loaded, index, total }) => {
-  //   totalProgress.progress[index].loaded = loaded
-  //   totalProgress.progress[index].total = total
-  // }).then(res => {
-  //   console.log(res)
-  // })
-
-
-  // qiniu.uploadFile('633e8a1331a5a915d528eab5', fileList, ({ loaded, index, total }) => {
-  //   totalProgress.progress[index].loaded = loaded
-  //   totalProgress.progress[index].total = total
-  // }).then(res => {
-  //   console.log(res)
-  // })
 }
 
 /**

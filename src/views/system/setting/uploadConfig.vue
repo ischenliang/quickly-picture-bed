@@ -4,11 +4,6 @@
     <c-card :title="'本地存储桶配置'">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="资源前缀">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
-          </el-form-item>
-        </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="title" label="可选文件类型">
             <el-input v-model="form.title" placeholder="请输入网站标题" size="large" />
           </el-form-item>

@@ -4,6 +4,7 @@ import { useFetch, usePromise } from '@/hooks/fetch'
 import AV, { Query, User, File, Role } from 'leancloud-storage'
 import Basic from '../typings/Basic'
 import { PageReq } from '@/typings/req-res';
+import { initAv } from './av';
 
 // 筛选条件
 interface Filter extends PageReq {
@@ -23,6 +24,7 @@ export default class Image extends Basic {
   }
   // 新建
   async create (params: ImageInter) {
+    initAv()
     const instance = new AV.Object(this.modelName)
     for(let [key, value] of Object.entries(params)) {
       instance.set(key, value);

@@ -9,14 +9,16 @@
 
     <!-- 上传区域 -->
     <el-card class="custom-card">
-      <bucket-upload v-model:user-habits="userHabits"></bucket-upload>
+      <bucket-upload
+        v-model:user-habits="userHabits"></bucket-upload>
     </el-card>
 
     <!-- 复制和历史记录 -->
     <div class="copy-history">
       <!-- 复制链接 -->
       <el-card>
-        <bucket-copy v-model:user-habits="userHabits"></bucket-copy>
+        <bucket-copy
+          v-model:user-habits="userHabits"></bucket-copy>
       </el-card>
 
       <!-- 上传历史记录 -->
@@ -33,7 +35,8 @@ import BucketCopy from './bucket-copy.vue'
 import BucketHistory from './bucket-history.vue'
 import BucketUpload from './bucket-upload.vue'
 import useUserStore from '@/store/user';
-import { computed } from 'vue';
+import { computed, ref, Ref } from 'vue';
+import { ImageInter } from '@/typings/interface';
 /**
  * 实例
  */

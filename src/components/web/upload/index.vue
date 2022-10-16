@@ -56,7 +56,7 @@ const accept_str = computed(() => {
 // 是否在拖拽中
 const dragging = ref(false)
 // input[type="file"]元素
-const file: Ref<HTMLElement | null> = ref()
+const file: Ref<HTMLInputElement | null> = ref()
 
 
 
@@ -70,21 +70,23 @@ const handleClick = () => {
 // input[type="file"]的change事件
 const handleChange = (e) => {
   if (e.target.files.length <= props.limit) {
-    emit('upload', {
-      files: e.target.files
-    })
+    emit('upload', { files: e.target.files })
   } else {
-    emit('upload', {
-      error: '选择文件长度超出数量限制'
-    })
+    emit('upload', { error: '选择文件长度超出数量限制' })
   }
+  file.value.value = ''
 }
 // 拖拽后放：将文件拖拽进拖拽区域后放开鼠标时会触发
 const handleDrop = (e: DragEvent) => {
   e.preventDefault()
   e.stopPropagation()
   dragging.value = false
-  console.log(e.dataTransfer.files)
+  const files = e.dataTransfer.files
+  if (files.length <= props.limit) {
+    emit('upload', { files: files })
+  } else {
+    emit('upload', { error: '选择文件长度超出数量限制' })
+  }
 }
 // 拖来拖去：将文件拖拽移入拖拽区时会触发
 const handleDragover = (e: DragEvent) => {

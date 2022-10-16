@@ -1,7 +1,7 @@
 <template>
   <com-dialog
     :visible.sync="dialogVisible"
-    :title="detail && detail.id ? '编辑字典' : '新建字典'"
+    :title="detail && detail.id ? '编辑存储桶' : '新建存储桶'"
     :width="'600px'"
     :before-close="handleClose">
     <div class="bucket-warning">

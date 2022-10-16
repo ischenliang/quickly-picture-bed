@@ -19,6 +19,7 @@ import { useCopyText, useCtxInstance } from '@/hooks/global';
 import { HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, ref, Ref } from 'vue';
 import { linkTypes, Link } from '@/global.config'
+import useUserStore from '@/store/user';
 interface Props {
   userHabits: HabitsInter
 }
@@ -33,6 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
   } as HabitsInter)
 })
 const emit = defineEmits(['update:userHabits'])
+const userStore = useUserStore()
 
 /**
  * 变量
@@ -43,13 +45,8 @@ const habits = computed({
 })
 
 // 当前上传图片
-const current: Ref<ImageInter> = ref({
-  id: 'abcd',
-  img_url: 'http://img.itchenliang.club/img/509036ffc9a69659.png',
-  img_size: 200,
-  img_height: 600,
-  img_width: 400,
-  img_name: '509036ffc9a69659.png'
+const current = computed(() => {
+  return userStore.currentImage
 })
 
 
@@ -58,8 +55,9 @@ const current: Ref<ImageInter> = ref({
  */
 // 获取指定类型的链接地址
 const getLinkValue = (item: Link) => {
+  const url =  current.value.img_preview_url
   const obj = {
-    url: current.value.img_url,
+    url: url ? url : '',
     filename: current.value.img_name
   }
   const tmp = item.value.replace(/\$\{/g, '${obj.')

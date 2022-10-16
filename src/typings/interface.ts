@@ -13,6 +13,7 @@ export interface ListInter<T> {
   page?: number // 页码
   size?: number // 每页显示数量
   total?: number // 总计条数
+  loading?: boolean // 加载中
   filters?: { // 筛选条件
     [prop: string]: any
   }
@@ -106,6 +107,10 @@ export interface ImageInter {
   // sort?: number
   // 是否选中
   checked?: boolean
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
 }
 
 
@@ -256,8 +261,6 @@ export interface SettingInter {
   }
   // 上传配置
   upload?: {
-    // 所有资源文件的前缀，主要是用于本地存储桶的前缀
-    baseurl?: string
     // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
     accept?: Array<string>
     // 可以上传的文件类型的字符串即 accept.join(',.')
@@ -271,10 +274,15 @@ export interface SettingInter {
   contact?: {
     // 微信
     weixin?: string
+    // QQ
     qq?: string
+    // github
     github?: string
+    // gitee
     gitee?: string
+    // 邮箱
     email?: string
+    // qq群
     qq_group?: string
   }
   // 默认密码
@@ -285,7 +293,7 @@ export interface SettingInter {
   storage_size?: number
   // 最多能创建多少个存储桶
   bucket_size?: number
-  // 关于我们内容, markdown内容
+  // 关于我们内容, markdown内容，存储到markdown文件中
   about?: string
   // 创建时间
   createdAt?: string
@@ -323,7 +331,7 @@ export interface HabitsInter {
   // 上传后自动复制图片地址
   autoPaste?: true
   // 当前使用图床id
-  current?: string
+  current?: BucketInter
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名

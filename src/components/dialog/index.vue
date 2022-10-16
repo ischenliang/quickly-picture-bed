@@ -16,6 +16,7 @@
       padding: 15px 20px !important;
       margin-right: 0px !important;
       border-bottom: 1px solid #e8eaec;
+      margin-bottom: 0px;
     }
   }
 

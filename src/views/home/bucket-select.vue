@@ -6,7 +6,7 @@
       :key="'bucket-' + index"
       size="large"
       type="info"
-      :effect="item.id === habits.current ? 'dark' : ''"
+      :effect="item.id === habits.current.id ? 'dark' : ''"
       @click="toggleCurrentBucket(item)">
       {{ item.name }}
     </el-tag>
@@ -47,7 +47,9 @@ const habits = computed({
  * 数据获取
  */
 const listGet = () => {
-  bucket.find({}).then((res: BasicResponse<BucketInter>) => {
+  bucket.find({
+    visible: true
+  }).then((res: BasicResponse<BucketInter>) => {
     buckets.value = res.data.map(item => {
       const obj = JSON.parse(item.config)
       const { baseUrl } = obj
@@ -72,7 +74,7 @@ listGet()
 // 切换当前图床
 const toggleCurrentBucket = (item: BucketInter) => {
   // console.log('切换当前图床')
-  habits.value.current = item.id
+  habits.value.current = item
 }
 </script>
 

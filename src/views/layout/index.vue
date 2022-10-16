@@ -11,10 +11,10 @@
       </div>
     </div>
 
-    <div class="task-center-entry" @click="openTaskCenter">
+    <!-- <div class="task-center-entry" @click="openTaskCenter">
       <span>任务中心</span>
       <div class="task-center-entry-badge">15</div>
-    </div>
+    </div> -->
     
     <task-center
       v-model:visible="visible"></task-center>

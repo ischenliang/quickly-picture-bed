@@ -16,13 +16,18 @@
           @click.stop="actions[item.action]" />
       </el-tooltip>
     </div>
+    <detail-dialog
+      v-if="item.detail"
+      v-model="item.detail"
+      :detail="data"/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ImageInter } from '@/typings/interface';
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
+import DetailDialog from './DetailDialog.vue'
 
 interface Props {
   data: ImageInter,
@@ -59,10 +64,14 @@ const myData = computed({
 const btns = ref([
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
-  { icon: 'Crop', type: 'warning', title: '裁剪图片', action: '' },
-  { icon: 'InfoFilled', type: 'info', title: '图片详情', action: '' },
-  { icon: 'Delete', type: 'danger', title: '删除图片', action: '' }
+  { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop' },
+  { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
+  { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
 ])
+// 弹窗状态
+const item = reactive({
+  detail: false
+})
 
 
 /**
@@ -81,7 +90,9 @@ const actions = {
   // 裁剪
   crop () {},
   // 详情
-  detail () {},
+  detail () {
+    item.detail = true
+  },
   // 删除
   delete () {}
 }
@@ -93,7 +104,9 @@ const actions = {
   padding: 10px;
   // width: 270px;
   height: 250px;
-  border: 1px solid #dcdee2;
+  // border: 1px solid #dcdee2;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
