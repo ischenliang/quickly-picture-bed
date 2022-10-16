@@ -16,6 +16,7 @@
           @click.stop="actions[item.action]" />
       </el-tooltip>
     </div>
+    <!-- 需放进来：放在和gallery-item同级会导致点击时无效果 -->
     <detail-dialog
       v-if="item.detail"
       v-model="item.detail"
