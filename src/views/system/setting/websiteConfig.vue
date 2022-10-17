@@ -68,26 +68,6 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="label_position" label="label位置">
-            <el-select v-model="form.label_position" size="large" placeholder="请选择网站lable所在位置">
-              <el-option 
-                v-for="(item, index) in [{
-                  label: '上',
-                  value: 'top'
-                }, {
-                  label: '左',
-                  value: 'left'
-                }, {
-                  label: '右',
-                  value: 'right'
-                }]" 
-                :key="'label-' + index"
-                :label="item.label"
-                :value="item.value"/>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="domain" label="版本号">
             <el-input v-model="form.domain" placeholder="请输入版本号" size="large" />
           </el-form-item>
@@ -146,7 +126,6 @@ const form = reactive({
   domain: '',
   desc: '',
   keys: [],
-  label_position: 'top', // form表单的label位置
   copyright_company: '', // 版权归属公司名称
   copyright_time: '', // 网站运营时间
   copyright_miitbeian: '', // 工信部备案号

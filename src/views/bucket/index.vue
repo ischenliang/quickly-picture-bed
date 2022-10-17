@@ -18,7 +18,7 @@
         <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
           <div class="bucket-item">
             <div class="bucket-item-square">
-              <span class="trialfont trial-liucheng"></span>
+            <span :class="['trialfont', bucketIcons[item.type]]"></span>
             </div>
             <div class="bucket-item-tags">
               <el-tag size="small" type="success">{{ item.tag }}</el-tag>
@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { BucketInter, DictInter, ListInter, UserInter } from '@/typings/interface'
 import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
-import { BasicResponse } from '@/typings/req-res'
+import { BasicResponse, JsonResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import Bucket from '@/types/Bucket'
 /**
@@ -63,6 +63,7 @@ import Bucket from '@/types/Bucket'
  */
 const ctx = useCtxInstance()
 const bucket = new Bucket()
+const dict = new Dict()
 /**
  * 变量
  */
@@ -84,6 +85,8 @@ let item = reactive({
 const visible = reactive({
   edit: false
 })
+// 存储桶图标
+const bucketIcons = ref({})
 
 /**
  * 逻辑处理
@@ -101,7 +104,16 @@ const listGet = () => {
     })
   })
 }
-listGet()
+// 获取字典中的图标
+const getBucketIcon = () => {
+  dict.detailByPro('code', 'bucket_source_icon').then((res: JsonResponse<DictInter>) => {
+    res.data.values.forEach(item => {
+      bucketIcons.value[item.label] = item.value
+    })
+    listGet()
+  })
+}
+getBucketIcon()
 
 // 操作
 const itemOperate = (data: BucketInter, type) => {

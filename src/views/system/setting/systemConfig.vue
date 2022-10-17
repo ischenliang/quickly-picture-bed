@@ -19,18 +19,13 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="默认角色">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
-          </el-form-item>
-        </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="name" label="密码加密">
             <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
+        <el-col :xl="24" :lg="24" :md="24">
           <el-form-item prop="name" label="默认自我简介">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
+            <el-input v-model="form.name" type="textarea" :rows="6" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -39,8 +34,18 @@
     <c-card :title="'上传配置'">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="新建本地桶">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
+          <el-form-item prop="title" label="可选文件类型">
+            <el-input v-model="form.title" placeholder="请输入网站标题" size="large" />
+          </el-form-item>
+        </el-col>
+        <el-col :xl="6" :lg="8" :md="12">
+          <el-form-item prop="subtitle" label="单文件最大容量(kb)">
+            <el-input v-model="form.subtitle" placeholder="请输入网站副标题" size="large" />
+          </el-form-item>
+        </el-col>
+        <el-col :xl="6" :lg="8" :md="12">
+          <el-form-item prop="desc" label="单次最多上传文件数量">
+            <el-input v-model="form.desc" placeholder="请输入网站作者" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
@@ -80,17 +85,10 @@
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="name" label="默认界面语言">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
-          </el-form-item>
-        </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶容量限制">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
-          </el-form-item>
-        </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶限制">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
+            <el-select v-model="form.name" placeholder="请选择网站语言" size="large">
+              <el-option label="中文" value="cn"></el-option>
+              <el-option label="英文" value="en"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
@@ -108,9 +106,9 @@
             <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
+        <el-col :xl="24" :lg="24" :md="24">
           <el-form-item prop="name" label="水印url">
-            <el-input v-model="form.name" placeholder="请输入网站名称" size="large" />
+            <el-input v-model="form.name" type="textarea" :rows="4" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -137,7 +135,6 @@ const form = reactive({
   domain: '',
   desc: '',
   keys: [],
-  label_position: 'top', // form表单的label位置
   copyright_company: '', // 版权归属公司名称
   copyright_time: '', // 网站运营时间
   copyright_miitbeian: '', // 工信部备案号

@@ -5,9 +5,6 @@
         <el-tab-pane label="网站配置">
           <website-config></website-config>
         </el-tab-pane>
-        <el-tab-pane label="上传配置">
-          <upload-config></upload-config>
-        </el-tab-pane>
         <el-tab-pane label="关于我们">
           <about-config></about-config>
         </el-tab-pane>
@@ -15,7 +12,7 @@
           <system-config></system-config>
         </el-tab-pane>
         <el-tab-pane label="更新日志">
-          <system-config></system-config>
+          <uplog-config></uplog-config>
         </el-tab-pane>
       </c-tabs>
     </c-card>
@@ -25,8 +22,8 @@
 <script lang="ts" setup>
 import WebsiteConfig from './websiteConfig.vue'
 import AboutConfig from './aboutConfig.vue'
-import UploadConfig from './uploadConfig.vue'
 import SystemConfig from './systemConfig.vue'
+import UplogConfig from './uplogConfig.vue'
 </script>
 
 <style lang="scss">
