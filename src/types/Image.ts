@@ -44,6 +44,7 @@ export default class Image extends Basic {
    * @returns 
    */
   delete (id: string) {
+    initAv()
     const obj = AV.Object.createWithoutData(this.modelName, id)
     return useFetch(obj.destroy())
   }

@@ -13,6 +13,7 @@
           :type="item.type"
           :icon="item.icon"
           :size="'small'"
+          :disabled="item.disabled"
           @click.stop="actions[item.action]" />
       </el-tooltip>
     </div>
@@ -29,9 +30,6 @@ import { ImageInter } from '@/typings/interface';
 import { computed, reactive, ref } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import DetailDialog from './DetailDialog.vue'
-import bucketUpload from '@/hooks/bucket/index'
-import leancloud from '@/hooks/bucket/leancloud'
-import Image from '@/types/Image';
 
 interface Props {
   data: ImageInter,
@@ -49,9 +47,8 @@ const props = withDefaults(defineProps<Props>(), {
     checked: false
   } as ImageInter)
 })
-const emit = defineEmits(['update:data', 'reload'])
+const emit = defineEmits(['update:data', 'reload', 'submit'])
 const ctx = useCtxInstance()
-const image = new Image()
 
 
 /**
@@ -69,7 +66,7 @@ const myData = computed({
 const btns = ref([
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
-  { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop' },
+  { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
   { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
 ])
@@ -102,16 +99,7 @@ const actions = {
    * 先删除文件，后删除数据
    */
   delete () {
-    const { bucket_id, bucket_type, id } = myData.value
-    // 1、删除文件
-    leancloud.deleteFile(bucket_id, id).then(res => {
-      console.log(res)
-      // 2、删除数据
-      // image.delete(id).then(result => {
-      //   ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
-      //   emit('reload')
-      // })
-    })
+    emit('submit', { type: 'delete', data: myData.value })
   }
 }
 </script>

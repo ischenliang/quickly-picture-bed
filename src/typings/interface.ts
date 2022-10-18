@@ -245,30 +245,12 @@ export interface SettingInter {
     desc?: string // 描述
     keys?: Array<string> // 关键词
     author?: string // 作者
-    // 版权归属公司名称
-    copyright_company?: string
-    // 网站运行时间
-    copyright_time?: string
-    // 工信部备案号
-    copyright_miitbeian?: string
-    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
-    copyright_miiturl?: string
+    version?: string // 版本号
     // 打赏
     // 支付宝打赏二维码
     reward_alipay?: string
     // 微信打赏二维码
     reward_weixin?: string
-  }
-  // 上传配置
-  upload?: {
-    // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
-    accept?: Array<string>
-    // 可以上传的文件类型的字符串即 accept.join(',.')
-    accept_str?: string
-    // 单个文件最大容量
-    maxsize?: number
-    // 单次最多勾选多少文件
-    maxcount?: number
   }
   // 联系我们
   contact?: {
@@ -284,17 +266,39 @@ export interface SettingInter {
     email?: string
     // qq群
     qq_group?: string
+    // 关于我们内容, markdown内容，存储到markdown文件中
+    about?: string
   }
-  // 默认密码
-  default_pwd?: string
-  // 默认头像
-  default_avatar?: string
-  // 存储桶最大容量限制
-  storage_size?: number
-  // 最多能创建多少个存储桶
-  bucket_size?: number
-  // 关于我们内容, markdown内容，存储到markdown文件中
-  about?: string
+  // 系统配置
+  system?: {
+    // 上传配置
+    // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
+    accept?: Array<string>
+    // 可以上传的文件类型的字符串即 accept.join(',.')
+    accept_str?: string
+    // 单个文件最大容量
+    maxsize?: number
+    // 单次最多勾选多少文件
+    maxcount?: number
+    // 存储桶容量限制
+    storage_size?: number
+    // 存储桶数量限制
+    storage_count?: number
+
+    // 图标配置
+    icon_url?: string // 图标url
+    icon_prefix?: string // 图标前缀
+    icon_font?: string // 图标字体
+
+    // 版权配置
+    copyright_company?: string // 版权归属公司名称
+    copyright_time?: string // 网站运行时间
+    copyright_miitbeian?: string // 工信部备案号
+    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
+    copyright_miiturl?: string
+  }
+  // 更新日志
+  uplog?: string // 更新日志url
   // 创建时间
   createdAt?: string
   // 更新时间

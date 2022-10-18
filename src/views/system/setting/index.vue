@@ -8,7 +8,7 @@
           :label="item.label"
           :name="item.name">
           <template v-if="activeName === item.name">
-            <component :is="item.component"></component>
+            <component :is="item.component" v-model:data="form"></component>
           </template>
         </el-tab-pane>
       </c-tabs>
@@ -21,11 +21,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRaw } from 'vue'
+import { reactive, Ref, ref, toRaw } from 'vue'
 import WebsiteConfig from './websiteConfig.vue'
 import AboutConfig from './aboutConfig.vue'
 import SystemConfig from './systemConfig.vue'
 import UplogConfig from './uplogConfig.vue'
+import { SettingInter } from '@/typings/interface'
+import config from './config'
 
 const activeName = ref('website')
 
@@ -35,11 +37,38 @@ const tabs = ref([
   { label: '系统配置', name: 'system', component: toRaw(SystemConfig) },
   { label: '更新日志', name: 'uplog', component: toRaw(UplogConfig) }
 ])
+
+const form: Ref<SettingInter> = ref({
+  ...config
+})
 </script>
 
 <style lang="scss">
 .system-setting {
   width: 100%;
+  .el-input-number {
+    width: 100%;
+  }
+  .website-form {
+    padding: 0 30px;
+    .submit-form-item {
+      .el-form-item__content {
+        justify-content: center;
+      }
+    }
+  }
+  .el-row {
+    margin-bottom: 20px;
+    .el-col {
+      padding: 0 30px;
+      .el-select {
+        width: 100%;
+      }
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 .page-action {
   width: calc(100% - 240px);

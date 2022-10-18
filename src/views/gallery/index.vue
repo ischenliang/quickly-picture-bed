@@ -25,7 +25,8 @@
           <el-button
             :type="disabled ? 'default' : 'danger'"
             :icon="'Delete'"
-            :disabled="disabled">删除所选</el-button>
+            :disabled="disabled"
+            @click="deleteAll">删除所选</el-button>
         </div>
       </div>
       <div class="gallery-list" v-loading="list.loading">
@@ -36,6 +37,7 @@
                 :data="item"
                 :images="list.data.map(item => item.img_preview_url)"
                 @reload="listGet"
+                @submit="handleItemSubmit"
                 @click.native="handleClick(index)"></gallery-item>
             </el-col>
           </template>
@@ -55,13 +57,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance } from '@/hooks/global';
+import { useConfirmBox, useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
 import { BasicResponse } from '@/typings/req-res';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import GalleryItem from './gallery-item.vue'
+import bucketUpload from '@/hooks/bucket/index'
 
 /**
  * 实例
@@ -91,11 +94,6 @@ const selectAll = ref(false)
 // 存储桶列表
 const buckets: Ref<BucketInter[]> = ref([
   { name: '全部', id: '' }
-])
-// 用户组
-const users = ref([
-  { label: '全部', value: 0 }, // 管理员允许查看全部
-  { label: '只看我的', value: 1 }
 ])
 // 删除按钮是否启用
 const disabled = computed(() => {
@@ -181,6 +179,44 @@ const handleClick = (index: number) => {
       initialViewIndex: index
     },
     images: list.data.map(item => item.img_preview_url)
+  })
+}
+// 回调
+const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
+  switch (e.type) {
+    case 'delete':
+      // useDeleteConfirm().then(() => {
+      //   const { bucket_id, bucket_type, id, hash } = e.data
+      //   // 1、删除文件
+      //   bucketUpload[bucket_type].deleteFile(bucket_id, [hash]).then(res => {
+      //     // 2、删除数据
+      //     image.delete(id).then(result => {
+      //       ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
+      //       listGet()
+      //     })
+      //   })
+      // })
+      useDeleteConfirm().then(() => {
+        image.delete(e.data.id).then(res => {
+          ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
+          listGet()
+        })
+      })
+      break
+  }
+}
+// 删除所有
+const deleteAll = () => {
+  const ids = list.data.filter(item => item.checked).map(item => item.id)
+  useDeleteConfirm().then(() => {
+    ids.map((id, index) => {
+      image.delete(id).then(res => {
+        if (index === ids.length - 1) {
+          ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
+          listGet()
+        }
+      })
+    })
   })
 }
 // 搜索

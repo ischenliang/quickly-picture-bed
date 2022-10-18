@@ -34,7 +34,8 @@
       <el-row>
         <el-col :xl="24">
           <el-form-item prop="desc" label="关于系统内容">
-            <el-input v-model="form.desc" placeholder="请输入网站描述" size="large" type="textarea" :rows="7" />
+            <!-- <el-input v-model="form.desc" placeholder="请输入网站描述" size="large" type="textarea" :rows="7" /> -->
+            <bytemd-editor v-model:value="form.desc" style="height: 500px;"></bytemd-editor>
           </el-form-item>
         </el-col>
       </el-row>
@@ -49,6 +50,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
+import BytemdEditor from '@/components/editor/bytemd.vue'
 
 /**
  * 变量

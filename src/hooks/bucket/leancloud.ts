@@ -75,7 +75,8 @@ export default {
             img_width: maps[index].width,
             img_height: maps[index].height,
             img_size: maps[index].size,
-            mine_type: maps[index].mine_type
+            mine_type: maps[index].mine_type,
+            hash: item.id
           }
         }))
       })
@@ -88,7 +89,7 @@ export default {
    *    3、最后使用AV.File.createWithoutData和file.destroy()删除文件
    *    4、返回删除成功
    */
-  deleteFile (bucket_id: string, id: string) {
+  deleteFile (bucket_id: string, ids: string[]) {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
@@ -101,27 +102,24 @@ export default {
         masterKey: masterKey
       })
 
-      const file = AV.File.createWithoutData(id)
-      file.destroy().then(res => {
+      // const file = AV.File.createWithoutData(ids)
+      // file.destroy().then(res => {
+      //   resolve({ code: 200, msg: '删除成功' })
+      // })
+
+      // 3、删除文件
+      const promise = ids.map(async (item, index) => {
+        const file = AV.File.createWithoutData(item)
+        return await file.destroy()
+      })
+
+      // 4、返回结果
+      Promise.all(promise).then(res => {
         resolve({
           code: 200,
           msg: '删除成功'
         })
       })
-
-      // // 3、删除文件
-      // const promise = ids.map(async (item, index) => {
-      //   const file = AV.File.createWithoutData(item)
-      //   return await file.destroy()
-      // })
-
-      // // 4、返回结果
-      // Promise.all(promise).then(res => {
-      //   resolve({
-      //     code: 200,
-      //     msg: '删除成功'
-      //   })
-      // })
     })
   },
   updateFile () {

@@ -49,24 +49,4 @@ const rules = reactive({
 </script>
 
 <style lang="scss" scoped>
-.website-form {
-  padding: 0 30px;
-  .submit-form-item {
-    .el-form-item__content {
-      justify-content: center;
-    }
-  }
-}
-.el-row {
-  margin-bottom: 20px;
-  .el-col {
-    padding: 0 20px;
-    .el-select {
-      width: 100%;
-    }
-  }
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
 </style>
