@@ -35,6 +35,7 @@
               <gallery-item
                 :data="item"
                 :images="list.data.map(item => item.img_preview_url)"
+                @reload="listGet"
                 @click.native="handleClick(index)"></gallery-item>
             </el-col>
           </template>

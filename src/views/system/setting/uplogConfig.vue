@@ -4,21 +4,18 @@
       <el-row>
         <el-col :xl="24" :lg="24" :md="24">
           <el-form-item prop="name" label="日志内容">
-            <el-input v-model="form.name" type="textarea" :rows="16" placeholder="请输入网站名称" size="large" />
+            <!-- <el-input v-model="form.name" type="textarea" :rows="16" placeholder="请输入网站名称" size="large" /> -->
+            <bytemd-editor v-model:value="form.name" style="height: 500px;"></bytemd-editor>
           </el-form-item>
         </el-col>
       </el-row>
     </c-card>
-
-    <el-form-item class="submit-form-item">
-      <el-button size="large" type="default">取消</el-button>
-      <el-button size="large" type="primary">提交</el-button>
-    </el-form-item>
   </el-form>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
+import BytemdEditor from '@/components/editor/bytemd.vue'
 
 /**
  * 变量
@@ -51,12 +48,9 @@ const rules = reactive({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .website-form {
   padding: 0 30px;
-  .el-form-item__label {
-    font-weight: 700;
-  }
   .submit-form-item {
     .el-form-item__content {
       justify-content: center;

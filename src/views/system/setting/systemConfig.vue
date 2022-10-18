@@ -1,6 +1,5 @@
 <template>
   <el-form class="website-form" :model="form" ref="formRef" :rules="rules" label-position="top" label-width="97px">
-    
     <c-card :title="'用户配置'">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
@@ -114,10 +113,10 @@
       </el-row>
     </c-card>
 
-    <el-form-item class="submit-form-item">
+    <!-- <el-form-item class="submit-form-item">
       <el-button size="large" type="default">取消</el-button>
       <el-button size="large" type="primary">提交</el-button>
-    </el-form-item>
+    </el-form-item> -->
   </el-form>
 </template>
 
@@ -155,12 +154,9 @@ const rules = reactive({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .website-form {
   padding: 0 30px;
-  .el-form-item__label {
-    font-weight: 700;
-  }
   .submit-form-item {
     .el-form-item__content {
       justify-content: center;

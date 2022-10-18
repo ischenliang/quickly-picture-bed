@@ -1,34 +1,58 @@
 <template>
   <div class="system-setting">
     <c-card :title="'系统设置'">
-      <c-tabs>
-        <el-tab-pane label="网站配置">
-          <website-config></website-config>
-        </el-tab-pane>
-        <el-tab-pane label="关于我们">
-          <about-config></about-config>
-        </el-tab-pane>
-        <el-tab-pane label="系统配置">
-          <system-config></system-config>
-        </el-tab-pane>
-        <el-tab-pane label="更新日志">
-          <uplog-config></uplog-config>
+      <c-tabs v-model="activeName">
+        <el-tab-pane
+          v-for="(item, index) in tabs"
+          :key="index"
+          :label="item.label"
+          :name="item.name">
+          <template v-if="activeName === item.name">
+            <component :is="item.component"></component>
+          </template>
         </el-tab-pane>
       </c-tabs>
     </c-card>
   </div>
+  <div class="page-action">
+    <el-button size="medium" type="default">取消</el-button>
+    <el-button size="medium" type="primary">保存</el-button>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import { ref, toRaw } from 'vue'
 import WebsiteConfig from './websiteConfig.vue'
 import AboutConfig from './aboutConfig.vue'
 import SystemConfig from './systemConfig.vue'
 import UplogConfig from './uplogConfig.vue'
+
+const activeName = ref('website')
+
+const tabs = ref([
+  { label: '网站配置', name: 'website', component: toRaw(WebsiteConfig) },
+  { label: '关于我们', name: 'about', component: toRaw(AboutConfig) },
+  { label: '系统配置', name: 'system', component: toRaw(SystemConfig) },
+  { label: '更新日志', name: 'uplog', component: toRaw(UplogConfig) }
+])
 </script>
 
 <style lang="scss">
 .system-setting {
   width: 100%;
-  // height: 100%;
+}
+.page-action {
+  width: calc(100% - 240px);
+  height: 50px;
+  position: fixed;
+  padding: 0 24px;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 -6px 16px -8px rgb(0 0 0 / 8%), 0 -9px 28px 0 rgb(0 0 0 / 5%), 0 -12px 48px 16px rgb(0 0 0 / 3%);
 }
 </style>

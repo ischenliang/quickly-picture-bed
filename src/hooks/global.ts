@@ -4,9 +4,11 @@ import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
 import Clipboard from 'clipboard'
 import { useClipboard } from '@vueuse/core';
+import { useFileName } from './date-time';
 
 
 interface Ctx {
+  $route?: any
   $message?: (options: {
     type: string
     message: string
@@ -27,6 +29,7 @@ interface Ctx {
  */
 export function useCtxInstance () {
   const instance = getCurrentInstance()
+  // @ts-ignore
   const ctx: Ctx = instance.proxy
   return ctx
 }
@@ -194,4 +197,59 @@ export function useFormatImageSize (fileSize: number) {
     temp = fileSize / (1024*1024*1024);
     return temp.toFixed(2) + 'GB';
   }
+}
+
+/**
+ * 使用原生的ctrl + v的方式读取剪切板中的文件
+ * @param event ClipboardEvent事件
+ * @returns () => Promise<File[]>
+ */
+export function useDocumentClipboard (event: ClipboardEvent) {
+  return new Promise((resolve, reject) => {
+    const files: File[] = []
+    // @ts-ignore
+    const clipboardData: DataTransfer = event.clipboardData || window.clipboardData
+    const items: DataTransferItemList = clipboardData.items
+
+    // 搜索剪切板items
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      // 文件格式
+      if (item.kind === 'file') {
+        // 匹配图片类型
+        if (item.type.indexOf('image') !== -1) {
+          const file: File = item.getAsFile()
+          if (file.size === 0) {
+            return
+          }
+          files.push(file)
+        }
+      }
+    }
+    resolve(files)
+  })
+}
+
+/**
+ * 使用window.navigator.clipboard的方式读取剪切板中的文件
+ * 
+ *  缺点：兼容性不足，火狐浏览器上window.navigator.clipboard.read不存在
+ * @returns () => Promise<File[]>
+ */
+export function useWindowClipboard () {
+  const files: File[] = []
+  return new Promise((resolve, reject) => {
+    window.navigator.clipboard.read().then(async res => {
+      for (let clipboardItem of res) {
+        for (const type of clipboardItem.types) {
+          const blob = await clipboardItem.getType(type)
+          if (type.indexOf('image') !== -1) {
+            const file = new File([blob], useFileName() + '.' + type.split('/').pop())
+            files.push(file)
+          }
+        }
+      }
+      resolve(files)
+    })
+  })
 }

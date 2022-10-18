@@ -56,7 +56,7 @@ const upload = (file: File, fileName, token, region: string, index, progressFn: 
 /**
  * 七牛存储桶图床配置
  */
-const service_url = 'http://demo.itchenliang.club'
+const service_url = 'http://demo.itchenliang.club' // 后台接口地址
 const bucket = new Bucket()
 
 export default {

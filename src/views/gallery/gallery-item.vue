@@ -29,6 +29,9 @@ import { ImageInter } from '@/typings/interface';
 import { computed, reactive, ref } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import DetailDialog from './DetailDialog.vue'
+import bucketUpload from '@/hooks/bucket/index'
+import leancloud from '@/hooks/bucket/leancloud'
+import Image from '@/types/Image';
 
 interface Props {
   data: ImageInter,
@@ -46,8 +49,9 @@ const props = withDefaults(defineProps<Props>(), {
     checked: false
   } as ImageInter)
 })
-const emit = defineEmits(['update:data'])
+const emit = defineEmits(['update:data', 'reload'])
 const ctx = useCtxInstance()
+const image = new Image()
 
 
 /**
@@ -94,8 +98,21 @@ const actions = {
   detail () {
     item.detail = true
   },
-  // 删除
-  delete () {}
+  /**
+   * 先删除文件，后删除数据
+   */
+  delete () {
+    const { bucket_id, bucket_type, id } = myData.value
+    // 1、删除文件
+    leancloud.deleteFile(bucket_id, id).then(res => {
+      console.log(res)
+      // 2、删除数据
+      // image.delete(id).then(result => {
+      //   ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
+      //   emit('reload')
+      // })
+    })
+  }
 }
 </script>
 

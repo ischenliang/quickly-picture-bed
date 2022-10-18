@@ -62,5 +62,22 @@ watch(props, (newValue) => {
 </script>
   
 <template>
-  <div />
+  <div class="bytemd-container" />
 </template>
+
+<style lang="scss" scoped>
+.bytemd-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+</style>
+<style lang="scss">
+.bytemd {
+  width: 100%;
+  height: 100% !important;
+  min-height: 300px !important;
+  display: flex;
+  flex-direction: column;
+}
+</style>

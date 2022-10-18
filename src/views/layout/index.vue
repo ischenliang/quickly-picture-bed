@@ -4,7 +4,7 @@
     <div class="app-container">
       <layout-sidebar></layout-sidebar>
       <div class="content-container">
-        <div class="page-container">
+        <div class="page-container" :style="style">
           <router-view></router-view>
         </div>
         <!-- <layout-footer></layout-footer> -->
@@ -26,12 +26,22 @@ import LayoutHeader from './LayoutHeader.vue'
 import LayoutFooter from './LayoutFooter.vue'
 import LayoutSidebar from './LayoutSidebar.vue'
 import TaskCenter from './task-center.vue'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useCtxInstance } from '@/hooks/global';
+import { useRoute } from 'vue-router';
+
+/**
+ * 实例
+ */
+const ctx = useCtxInstance()
 
 /**
  * 变量
  */
 const visible = ref(false)
+const style = ref({
+  flex: '1'
+})
 
 /**
  * 逻辑处理
@@ -40,6 +50,17 @@ const visible = ref(false)
 const openTaskCenter = () => {
   visible.value = true
 }
+
+
+watch(() => ctx.$route, (val, old) => {
+  if (['SystemSetting'].includes(val.name)) {
+    style.value.flex = '0 0 calc(100% - 50px)'
+  } else {
+    style.value.flex = '1'
+  }
+}, {
+  immediate: true
+})
 </script>
 
 <style lang="scss">

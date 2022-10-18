@@ -18,16 +18,16 @@
   <div class="quick-entry">
     <div class="entry-title">快捷上传</div>
     <div class="entry-list">
-      <el-button type="primary">剪切板图片</el-button>
-      <el-button type="primary" @click="handleClick">网络图URL</el-button>
+      <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
+      <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useCopyText, useCtxInstance } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDocumentClipboard, useWindowClipboard } from '@/hooks/global';
 import { HabitsInter, ImageInter } from '@/typings/interface';
-import { computed, reactive, ref, Ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { linkTypes, Link } from '@/global.config'
 import useAppStore from '@/store/app'
 import cUpload from '@/components/web/upload/index.vue'
@@ -92,13 +92,6 @@ const totalProgress: {
 /**
  * 逻辑处理
 */
-// 复制链接地址
-const handleClick = () => {
-  const tmp = linkTypes.value.find(item => {
-    return item.label === habits.value.link_format
-  })
-  useCopyText(ctx, getLinkValue(tmp))
-}
 // 获取指定类型的链接地址
 const getLinkValue = (item: Link) => {
   // 方式二：eval替换
@@ -155,6 +148,45 @@ const upload = (fileList: File[]) => {
     })
   })
 }
+
+// 粘贴板上传文件：ctrl + v
+const clipboard = (event) => {
+  useDocumentClipboard(event).then((files: File[]) => {
+    files.forEach((file, index) => {
+      totalProgress.progress[index] = { loaded: 0, total: file.size }
+    })
+    files.length && upload(files)
+  })
+}
+// 快捷上传
+const entryUpload = (type: string) => {
+  // 点击读取粘贴板的文件并上传
+  if (type === 'clipboard') {
+    useWindowClipboard().then((files: File[]) => {
+      files.forEach((file, index) => {
+        totalProgress.progress[index] = { loaded: 0, total: file.size }
+      })
+      files.length && upload(files)
+    })
+  }
+  if (type === 'url') {
+    // 复制链接地址
+    const tmp = linkTypes.value.find(item => {
+      return item.label === habits.value.link_format
+    })
+    useCopyText(ctx, getLinkValue(tmp))
+  }
+}
+
+/**
+ * 生命周期
+ */
+onMounted(() => {
+  document.addEventListener('paste', clipboard)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('paste', clipboard)
+})
 
 /**
  * 监听器

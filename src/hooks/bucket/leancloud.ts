@@ -3,6 +3,7 @@ import { useGetImageSize, useGetSuffix } from "../global"
 import AV from 'leancloud-storage'
 import { useFileName } from "../date-time"
 import { mimeTypes } from "@/global.config"
+import { id } from "element-plus/es/locale"
 
 /**
  * Leancloud存储桶图床配置
@@ -80,8 +81,48 @@ export default {
       })
     })
   },
-  deleteFile () {
+  /**
+   * 删除文件
+   *    1、根据bucket_id获取存储桶配置
+   *    2、拿到存储桶配置后构建AV.init
+   *    3、最后使用AV.File.createWithoutData和file.destroy()删除文件
+   *    4、返回删除成功
+   */
+  deleteFile (bucket_id: string, id: string) {
+    return new Promise(async (resolve, reject) => {
+      // 1、获取存储桶配置
+      const res: any = await bucket.detail(bucket_id)
+      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.data.config)
 
+      // 2、构建出AV.init
+      AV.init({
+        appId: appId,
+        appKey: appKey,
+        masterKey: masterKey
+      })
+
+      const file = AV.File.createWithoutData(id)
+      file.destroy().then(res => {
+        resolve({
+          code: 200,
+          msg: '删除成功'
+        })
+      })
+
+      // // 3、删除文件
+      // const promise = ids.map(async (item, index) => {
+      //   const file = AV.File.createWithoutData(item)
+      //   return await file.destroy()
+      // })
+
+      // // 4、返回结果
+      // Promise.all(promise).then(res => {
+      //   resolve({
+      //     code: 200,
+      //     msg: '删除成功'
+      //   })
+      // })
+    })
   },
   updateFile () {
 
