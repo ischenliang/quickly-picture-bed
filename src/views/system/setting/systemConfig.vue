@@ -17,17 +17,17 @@
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="subtitle" label="单文件最大容量(kb)">
-            <el-input-number v-model="myForm.system.maxsize" :min="1" :max="10" size="large" />
+            <el-input-number v-model="myForm.system.maxsize" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="desc" label="单次最多上传文件数量">
-            <el-input-number v-model="myForm.system.maxcount" :min="1" :max="10" size="large" />
+            <el-input-number v-model="myForm.system.maxcount" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶容量限制">
-            <el-input-number v-model="myForm.system.storage_size" :min="1" :max="10" size="large" />
+          <el-form-item prop="name" label="存储桶容量限制(kb)">
+            <el-input-number v-model="myForm.system.storage_size" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
@@ -92,14 +92,13 @@ import { SettingInter } from '@/typings/interface';
 import { computed, reactive, ref } from 'vue';
 import config from './config'
 import { mimeTypes } from '@/global.config'
-interface Props {
-  data: SettingInter
-}
 
 /**
  * 实例
  */
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<{
+  data: SettingInter
+}>(), {
   data: () => ({
     ...config
   })
@@ -125,7 +124,6 @@ const options = computed(() => {
 const myForm = computed({
   get: () => props.data,
   set: (val) => {
-    console.log(val)
     emit('update:data', val)
   }
 })

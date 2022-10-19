@@ -40,6 +40,8 @@ export const mimeTypes = {
   gif: 'image/gif',
   jpeg: 'image/jpeg',
   jpg: 'image/jpeg',
+  jp2: 'image/jp2',
+  jpe: 'image/jpeg',
   png: 'image/png',
   webp: 'image/webp',
   ico: 'image/x-icon',
@@ -54,8 +56,6 @@ export const mimeTypes = {
   djv: 'image/vnd.djvu',
   djvu: 'image/vnd.djvu',
   ief: 'image/ief',
-  jp2: 'image/jp2',
-  jpe: 'image/jpeg',
   mac: 'image/x-macpaint',
   pct: 'image/pict',
 }

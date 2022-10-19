@@ -15,13 +15,15 @@
 </script>
 
 <style lang="scss">
-@import 'reset.css';
+// @import 'reset.css';
 @import '@/styles/font.scss';
 html {
   box-sizing: border-box;
 }
 *, *:before, *:after {
   box-sizing: inherit;
+  padding: 0;
+  margin: 0;
 }
 
 html, body, #app {

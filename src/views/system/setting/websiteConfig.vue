@@ -1,25 +1,41 @@
 <template>
   <el-form class="website-form" :model="myForm" ref="formRef" :rules="rules" label-position="top" label-width="97px">
     <c-card :title="'网站logo&打赏'" :header-padding="'18px 15px'">
-      <el-row>
-        <el-col :xl="6" :lg="6">
+      <el-row class="center-row">
+        <el-col :xl="6" :lg="12">
           <el-form-item prop="logo" label="网站logo">
-            <div style="width: 200px;height: 130px;border: 1px solid #ddd;"></div>
+            <img-upload
+              :base-url="myForm.website.baseUrl"
+              :name="'logo'"
+              :url="myForm.website.logo"
+              @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="6">
+        <el-col :xl="6" :lg="12">
           <el-form-item prop="ico" label="网站ico">
-            <div style="width: 200px;height: 130px;border: 1px solid #ddd;"></div>
+            <img-upload
+              :base-url="myForm.website.baseUrl"
+              :name="'ico'"
+              :url="myForm.website.ico"
+              @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="6">
-          <el-form-item prop="ico" label="阿里支付">
-            <div style="width: 200px;height: 130px;border: 1px solid #ddd;"></div>
+        <el-col :xl="6" :lg="12">
+          <el-form-item prop="reward_alipay" label="阿里支付">
+            <img-upload
+              :base-url="myForm.website.baseUrl"
+              :name="'reward_alipay'"
+              :url="myForm.website.reward_alipay"
+              @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="6">
-          <el-form-item prop="ico" label="微信支付">
-            <div style="width: 200px;height: 130px;border: 1px solid #ddd;"></div>
+        <el-col :xl="6" :lg="12">
+          <el-form-item prop="reward_weixin" label="微信支付">
+            <img-upload
+              :base-url="myForm.website.baseUrl"
+              :name="'reward_weixin'"
+              :url="myForm.website.reward_weixin"
+              @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
       </el-row>
@@ -44,7 +60,7 @@
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="desc" label="网站作者">
-            <el-input v-model="myForm.website.desc" placeholder="请输入网站作者" size="large" />
+            <el-input v-model="myForm.website.author" placeholder="请输入网站作者" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
@@ -61,6 +77,7 @@
               allow-create
               default-first-option
               size="large"
+              collapse-tags
               :reserve-keyword="false"
               placeholder="网站关键字">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"/>
@@ -69,7 +86,12 @@
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="domain" label="版本号">
-            <el-input v-model="myForm.website.domain" placeholder="请输入版本号" size="large" />
+            <el-input v-model="myForm.website.version" placeholder="请输入版本号" size="large" />
+          </el-form-item>
+        </el-col>
+        <el-col :xl="6" :lg="8" :md="12">
+          <el-form-item prop="domain" label="静态文件前缀">
+            <el-input v-model="myForm.website.baseUrl" placeholder="请输入系统静态文件存放服务器的域名" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="24">
@@ -85,6 +107,7 @@
 <script lang="ts" setup>
 import { SettingInter } from '@/typings/interface';
 import { computed, reactive, ref } from 'vue';
+import imgUpload from './img-upload.vue'
 import config from './config'
 interface Props {
   data: SettingInter
@@ -119,10 +142,17 @@ const rules = reactive({
 const myForm = computed({
   get: () => props.data,
   set: (val) => {
-    console.log(val)
     emit('update:data', val)
   }
 })
+
+/**
+ * 回调函数
+ */
+const handleSubmit = (e) => {
+  myForm.value.website[e.name] = e.url
+  myForm.value.website[e.name + '_preview'] = myForm.value.website.baseUrl + e.url
+}
 </script>
 
 <style lang="scss" scoped>

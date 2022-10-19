@@ -12,7 +12,8 @@ export default {
     author: '',
     version: '',
     reward_alipay: '',
-    reward_weixin: ''
+    reward_weixin: '',
+    baseUrl: 'http://lc-DZNcsGI3.cn-n1.lcfile.com'
   },
   contact: {
     weixin: '',

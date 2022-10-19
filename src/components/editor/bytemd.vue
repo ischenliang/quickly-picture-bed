@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, getCurrentInstance, watch } from 'vue';
+// 参考：https://www.proyy.com/7073351674869317645.html
+import { ref, onMounted, getCurrentInstance, watch, nextTick } from 'vue';
 import * as bytemd from 'bytemd';
 import 'bytemd/dist/index.min.css';
 import zhHans from 'bytemd/lib/locales/zh_Hans.json';
@@ -10,17 +11,19 @@ import frontmatter from '@bytemd/plugin-frontmatter';
 import gfm from '@bytemd/plugin-gfm';
 import mediumZoom from '@bytemd/plugin-medium-zoom';
 import gemoji from '@bytemd/plugin-gemoji';
+import './markdown.css'
 
 interface ImageAttr { title: string, url: string, alt: string }
 
 interface Props {
-  value?: string,
-  placeholder?: string,
-  plugins?: any,
-  previewDebounce?: number,
-  locale?: any,
-  uploadImages?: (files: [File]) => [ImageAttr],
+  value?: string
+  placeholder?: string
+  plugins?: any
+  previewDebounce?: number
+  locale?: any
+  uploadImages?: (files: [File]) => [ImageAttr]
   maxLength?: number
+  mode?: 'auto' | 'split' | 'tab'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,6 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
     mediumZoom(),
     gemoji(),
   ],
+  mode: 'auto'
 });
 
 const emit = defineEmits<{ (e: 'change', id: string): void, (e: 'update:value', id: string): void }>();
@@ -57,7 +61,13 @@ onMounted(() => {
 });
 
 watch(props, (newValue) => {
-  editor.value.$set(Object.fromEntries(Object.entries(newValue).filter((v) => v)));
+  editor.value && editor.value.$set(Object.fromEntries(Object.entries(newValue).filter((v) => v)));
+  // 为了解决初次进入页面编辑区不显示
+  nextTick(() => {
+    window.dispatchEvent(new Event('resize'))
+  })
+}, {
+  immediate: true
 });
 </script>
   

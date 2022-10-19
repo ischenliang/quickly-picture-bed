@@ -18,7 +18,7 @@
         <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
           <div class="bucket-item">
             <div class="bucket-item-square">
-            <span :class="['trialfont', bucketIcons[item.type]]"></span>
+            <span :class="[configStore.systemConfig.system.icon_font, bucketIcons[item.type]]"></span>
             </div>
             <div class="bucket-item-tags">
               <el-tag size="small" type="success">{{ item.tag }}</el-tag>
@@ -58,12 +58,14 @@ import Dict from '@/types/Dict'
 import { BasicResponse, JsonResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import Bucket from '@/types/Bucket'
+import useConfigStore from '@/store/config'
 /**
  * 实例
  */
 const ctx = useCtxInstance()
 const bucket = new Bucket()
 const dict = new Dict()
+const configStore = useConfigStore()
 /**
  * 变量
  */

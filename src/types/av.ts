@@ -6,3 +6,7 @@ export function initAv() {
     serverURL: "https://dzncsgi3.lc-cn-n1-shared.com"
   })
 }
+
+export function uploadImg (filename: string, file: File) {
+  return new AV.File(filename, file).save()
+}
