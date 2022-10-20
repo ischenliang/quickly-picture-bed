@@ -2,13 +2,18 @@ import { ListInter } from './../typings/interface';
 import { getCurrentInstance } from "vue";
 import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
-import Clipboard from 'clipboard'
 import { useClipboard } from '@vueuse/core';
 import { useFileName } from './date-time';
 
 
 interface Ctx {
   $route?: any
+  $notify?: (options: {
+    title?: string
+    type?: string
+    message?: string
+    duration?: number
+  }) => {}
   $message?: (options: {
     type: string
     message: string

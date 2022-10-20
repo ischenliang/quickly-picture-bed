@@ -40,6 +40,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '首页', icon: 'UploadFilled' }
       },
       {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('@/views/userinfo/index.vue'),
+        meta: { title: '首页', icon: 'UploadFilled', hidden: true, active: '/' }
+      },
+      {
         path: 'gallery',
         name: 'Gallery',
         component: () => import('@/views/gallery/index.vue'),

@@ -16,7 +16,7 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="subtitle" label="单文件最大容量(kb)">
+          <el-form-item prop="subtitle" label="单文件最大容量(MB)">
             <el-input-number v-model="myForm.system.maxsize" :min="1" size="large" />
           </el-form-item>
         </el-col>
@@ -26,7 +26,7 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶容量限制(kb)">
+          <el-form-item prop="name" label="存储桶容量限制(MB)">
             <el-input-number v-model="myForm.system.storage_size" :min="1" size="large" />
           </el-form-item>
         </el-col>

@@ -32,7 +32,10 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 app.use(pinia)
+// 屏蔽警告信息
 app.config.warnHandler = () => null
+// 屏蔽错误信息
+app.config.errorHandler = () => null
 app.use(VueViewer, {
   // 参考：https://blog.csdn.net/ymzhaobth/article/details/122127852
   // 自定义默认配置

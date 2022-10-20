@@ -1,6 +1,6 @@
 <template>
   <c-upload
-    :accept="['png', 'jpg', 'gif', 'jpeg', 'webp']"
+    :accept="systemConfig.system.accept"
     @upload="beforeUpload">
     <template #progress v-if="totalProgress.percent">
       <el-progress :percentage="totalProgress.percent" />
@@ -12,7 +12,7 @@
       点击上传图片，支持拖拽上传
     </div>
     <template #tip>
-      <div class="el-upload__tip">大小不超过10MB的png, jpg, gif文件</div>
+      <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件</div>
     </template>
   </c-upload>
   <div class="quick-entry">
@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useCopyText, useCtxInstance, useDocumentClipboard, useWindowClipboard } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard } from '@/hooks/global';
 import { HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { linkTypes, Link } from '@/global.config'
-import useAppStore from '@/store/app'
+import useConfigStore from '@/store/config'
 import cUpload from '@/components/web/upload/index.vue'
 import bucketUpload from '@/hooks/bucket/index';
 import Image from '@/types/Image';
@@ -54,7 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   } as HabitsInter)
 })
 const emit = defineEmits(['update:userHabits'])
-const appStore = useAppStore()
+const configStore = useConfigStore()
 const userStore = useUserStore()
 const image = new Image()
 
@@ -72,8 +72,8 @@ const current = computed({
 })
 // 系统配置
 const systemConfig = computed(() => {
-  const config = appStore.systemConfig.config
-  config.upload.accept_str = '.' + config.upload.accept.join(',.')
+  const config = configStore.systemConfig
+  config.system.accept_str = '.' + config.system.accept.join(',.')
   return config
 })
 // 进度统计
@@ -112,22 +112,26 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
   const errorList = [] // 不满足条件的文件
   for (let i = 0; i < e.files.length; i++) {
     const file: File = e.files[i]
-    const fsize = file.size / 1024 / 1024
-    if (fsize < systemConfig.value.upload.maxsize) {
+    const fsize = file.size / 1024 / 1024 // 单位换算成MB
+    const suffix = useGetSuffix(file.name)
+    const system = systemConfig.value.system
+    // 尺寸符合规范于此同时类型也需要符合规范
+    if (fsize < system.maxsize && system.accept.includes(suffix)) {
       fileList.push(file)
     } else {
       errorList.push(file)
     }
     totalProgress.progress[i] = { loaded: 0, total: file.size }
-    upload(fileList)
   }
+  upload(fileList, errorList)
 }
 // 上传
-const upload = (fileList: File[]) => {
+const upload = (fileList: File[], errorList: File[] = []) => {
   const { type, id } = habits.value.current
   if (type === '' || id === '') {
     return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
   }
+  showError(errorList)
   bucketUpload[type].uploadFile(id, fileList, ({ loaded, index, total }) => {
     totalProgress.progress[index].loaded = loaded
     totalProgress.progress[index].total = total
@@ -176,6 +180,30 @@ const entryUpload = (type: string) => {
     })
     useCopyText(ctx, getLinkValue(tmp))
   }
+}
+// 提示错误信息
+const showError = (errList: File[]) => {
+  errList.forEach(item => {
+    // 解决重叠问题：https://blog.csdn.net/csdn_yudong/article/details/101271214
+    const system = configStore.systemConfig.system
+    setTimeout(() => {
+      let msg = ''
+      const fsize = item.size / 1024 / 1024 // 单位换算成MB
+      const suffix = useGetSuffix(item.name)
+      if (fsize > system.maxsize) {
+        msg += `${item.name}大小${fsize.toFixed(2)}MB不符合要求`
+      }
+      if (!system.accept.includes(suffix)) {
+        msg += `${item.name}格式${suffix}不符合要求`
+      }
+      ctx.$notify({
+        title: '错误提示',
+        message: msg,
+        type: 'error',
+        duration: 1000
+      })
+    }, 0)
+  })
 }
 
 /**

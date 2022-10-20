@@ -7,13 +7,7 @@ const useAppStore = defineStore('app', () => {
    * 变量
    */
   const systemConfig: { config: SettingInter } = reactive({
-    config: {
-      upload: {
-        accept: ['jpg', 'png', 'gif', 'webp', 'jpeg'],
-        maxcount: 10, // 一次性最多上传多少个文件
-        maxsize: 2 // 单文件最大限制(M)
-      }
-    }
+    config: {}
   })
 
   /**
