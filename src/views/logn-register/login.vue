@@ -64,11 +64,11 @@ const rules = reactive({
  */
 const login = () => {
   user.login({
-    username: form.username,
+    email: form.username,
     password: form.password
-  }).then((res: { token: string, data: UserInter }) => {
-    userStore.updateUserInfo(user.current())
+  }).then((res: any) => {
     localStorage.setItem('token', res.token)
+    userStore.updateUserInfo(res)
     ctx.$message({
       message: '登录成功',
       type: 'success',

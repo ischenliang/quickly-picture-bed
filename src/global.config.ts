@@ -59,3 +59,6 @@ export const mimeTypes = {
   mac: 'image/x-macpaint',
   pct: 'image/pict',
 }
+
+
+export const baseURL = 'http://127.0.0.1:3002/api/v1'

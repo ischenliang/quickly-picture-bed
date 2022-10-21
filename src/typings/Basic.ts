@@ -1,16 +1,23 @@
-import { initAv } from '@/types/av'
-import AV from 'leancloud-storage'
+import { baseURL } from '@/global.config';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 export default class Basic {
-  // 名称
-  modelName: string
-  // // 实例
-  // instance = null
-  constructor (model: string) {
-    this.modelName = model
+  http: AxiosInstance = null
+  prefix = ''
+  constructor (prefix: string) {
+    this.prefix = prefix
+    this.http = axios.create({
+      baseURL: baseURL
+    })
+    this.http.interceptors.request.use((config: AxiosRequestConfig) => {
+      config.headers['authorization'] = localStorage.getItem('token')
+      return config
+    }, (error) => {
 
-    // 不能直接这样全局构造实例，否则会导致批量操作数据时只有一条数据被保存
-    // this.instance = new AV.Object(model)
-    // 注意：这里的serverURL必须是非国际版的才支持使用，所以在创建应用时选择非国际版
-    initAv()
+    })
+    this.http.interceptors.response.use((response: any) => {
+      return Promise.resolve(response.data.data)
+    }, (error) => {
+
+    })
   }
 }
