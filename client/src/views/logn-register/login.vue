@@ -48,8 +48,8 @@ const ctx = useCtxInstance()
  */
 const loading = ref(false)
 const form = reactive({
-  username: '',
-  password: '',
+  username: localStorage.getItem('email') || '',
+  password: localStorage.getItem('password') || '',
   remember: false
 })
 const rules = reactive({
@@ -67,6 +67,8 @@ const login = () => {
     email: form.username,
     password: form.password
   }).then((res: any) => {
+    localStorage.setItem('email', form.username)
+    localStorage.setItem('password', form.password)
     localStorage.setItem('token', res.token)
     userStore.updateUserInfo(res)
     ctx.$message({

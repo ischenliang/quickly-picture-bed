@@ -1,0 +1,38 @@
+{
+  "name": "koa-ts-controllers-base",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --watch src/**/* -e ts,tsx --exec ts-node ./src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "^9.1.3",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
+    "colors.ts": "^1.0.20",
+    "glob": "^7.1.7",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-router": "^8.0.8",
+    "koa-ts-controllers": "^3.2.2",
+    "koa2-cors": "^2.0.6",
+    "moment": "^2.29.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.5",
+    "ts-loader": "^9.4.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/koa": "^2.13.4",
+    "@types/koa-router": "^7.4.4",
+    "@types/koa2-cors": "^2.0.2",
+    "@types/node": "^16.4.12",
+    "@types/sequelize": "^4.28.10"
+  }
+}
