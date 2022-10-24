@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import Bucket from '@/types/Bucket';
 import { BucketInter, HabitsInter } from '@/typings/interface';
-import { BasicResponse } from '@/typings/req-res';
+import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
 interface Props {
   userHabits: HabitsInter
@@ -49,8 +49,8 @@ const habits = computed({
 const listGet = () => {
   bucket.find({
     visible: true
-  }).then((res: BasicResponse<BucketInter>) => {
-    buckets.value = res.data.map(item => {
+  }).then((res: PageResponse<BucketInter>) => {
+    buckets.value = res.items.map(item => {
       const obj = JSON.parse(item.config)
       const { baseUrl } = obj
       const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')

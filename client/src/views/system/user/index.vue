@@ -14,7 +14,7 @@
           <el-input v-model="list.filters.username" placeholder="请输入用户名称" />
         </filter-item>
         <filter-item :text="'手机号码:'">
-          <el-input v-model="list.filters.mobilePhoneNumber" placeholder="请输入手机号码" />
+          <el-input v-model="list.filters.phone" placeholder="请输入手机号码" />
         </filter-item>
         <filter-item :text="'角色:'">
           <el-select v-model="list.filters.role">
@@ -53,11 +53,12 @@ import { reactive } from 'vue'
 import { config } from './config'
 import { DictInter, ListInter, UserInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
-import { BasicResponse, JsonResponse } from '@/typings/req-res'
+import { BasicResponse, JsonResponse, PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import DetailDialog from './detailDialog.vue'
 import Users from '@/types/User'
 import Dict from '@/types/Dict'
+import { useFormat } from '@/hooks/date-time'
 /**
  * 实例
  */
@@ -75,7 +76,7 @@ const list: ListInter<UserInter> = reactive({
   config,
   filters: {
     username: '',
-    mobilePhoneNumber: '',
+    phone: '',
     role: ''
   },
   data: []
@@ -95,10 +96,11 @@ const roles = reactive({})
  * 逻辑处理
  */
 const getRoleDict = () => {
-  dict.detailByPro('code', 'user_role').then((res: JsonResponse<DictInter>) => {
-    res.data.values.forEach(item => {
+  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
+    res.values.forEach(item => {
       roles[item.value as string] = item.label
     })
+    listGet()
   })
 }
 getRoleDict()
@@ -108,15 +110,16 @@ const listGet = () => {
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: BasicResponse<UserInter>) => {
+  }).then((res: PageResponse<UserInter>) => {
     list.total = res.total
-    list.data = res.data.map(item => {
+    list.data = res.items.map(item => {
       item.role_name = roles[item.role]
+      item.createdAt = useFormat(item.createdAt)
+      item.updatedAt = useFormat(item.updatedAt)
       return item
     })
   })
 }
-listGet()
 // 操作
 const itemOperate = (data: UserInter, type) => {
   item.data = data

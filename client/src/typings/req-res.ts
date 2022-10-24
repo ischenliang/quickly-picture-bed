@@ -24,3 +24,10 @@ export interface BasicResponse<T> {
   total: number
   data: Array<T>
 }
+
+
+export interface PageResponse<T, D = any> {
+  total: number
+  items: Array<T>
+  stats?: Array<D>
+}

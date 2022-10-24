@@ -125,6 +125,9 @@ const getIndex = (index) => {
     thead {
       color: black;
       font-weight: bold;
+      th.el-table__cell {
+        background-color: rgb(244, 246, 249);
+      }
     }
     .cell {
       word-break: normal;

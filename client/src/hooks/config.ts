@@ -5,7 +5,7 @@
 import useConfigStore from "@/store/config"
 import Setting from "@/types/Setting"
 import { SettingInter } from "@/typings/interface"
-import { BasicResponse } from "@/typings/req-res"
+import { BasicResponse, PageResponse } from "@/typings/req-res"
 
 /**
  * 获取全局的url配置
@@ -24,8 +24,8 @@ export function useGetSystemConfig () {
   return new Promise((resolve) => {
     const configStore = useConfigStore()
     if (!configStore.systemConfig.id) {
-      setting.find().then((res: BasicResponse<SettingInter>) => {
-        configStore.updateSystemConfig(res.data.map(item => {
+      setting.find().then((res: PageResponse<SettingInter>) => {
+        configStore.updateSystemConfig(res.items.map(item => {
           const { ico, baseUrl, logo } = item.website
           item.website.ico_preview = baseUrl + ico
           item.website.logo_preview = baseUrl + logo

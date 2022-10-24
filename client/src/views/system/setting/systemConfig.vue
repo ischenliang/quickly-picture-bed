@@ -53,11 +53,16 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="Font Family">
+          <el-form-item prop="name" label="图标字体Font Family">
             <el-input v-model="myForm.system.icon_font" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
       </el-row>
+    </c-card>
+
+    <c-card :title="'服务配置'">
+      <p style="line-height: 22px;color: #666;margin-bottom: 5px;">对几种存储桶的后台服务地址配置</p>
+      <monaco-editor v-model="myForm.bucket_service"></monaco-editor>
     </c-card>
 
     <c-card :title="'版权信息'">
@@ -92,6 +97,7 @@ import { SettingInter } from '@/typings/interface';
 import { computed, reactive, ref } from 'vue';
 import config from './config'
 import { mimeTypes } from '@/global.config'
+import monacoEditor from '@/components/editor/index.vue'
 
 /**
  * 实例

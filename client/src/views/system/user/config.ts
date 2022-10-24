@@ -22,7 +22,7 @@ export const config: Array<TableColumnConfig> = [
     align: 'center',
     label: '手机号',
     width: '',
-    prop: 'mobilePhoneNumber'
+    prop: 'phone'
   },
   {
     align: 'center',

@@ -91,7 +91,7 @@ const login = () => {
   width: 100%;
   height: 100%;
   position: relative;
-  background-image: url('http://info.itchenliang.club/img/bg.56c65241.jpg');
+  background-image: url('http://info.itchenliang.club/static/jpg/bg-a1fb1e03.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   text-align: center;

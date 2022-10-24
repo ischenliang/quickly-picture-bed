@@ -1,39 +1,14 @@
 <template>
   <div style="padding: 30px;">
+    图片数量、存储桶数量、占用总存储量、动态数量(图片操作、系统操作)、用户数量
     <div style="width: 100%;">
-      <div style="margin: 0 auto;text-align: center;margin-bottom: 20px;">此处的动态记录可以使用koa-ts-tools自行编写并存储在数据库中</div>
-      <!-- 
-        :range-color="['#ebedf0', '#dae2ef', '#c0ddf9', '#73b3f3', '#3886e1', '#17459e']"
-        :range-color="['rgb(255, 194, 255)','rgb(255, 153, 255)','rgb(255, 77, 255)','rgb(255, 0, 255)','rgb(179, 0, 179)']"
-        :range-color="['#eeeeee', '#d6e685', '#8cc665', '#44a340', '#1e6823']" -->
-
-      <!-- 
-      :tooltip-formatter="(v: any) => v.count" -->
-
-      <!-- 
-        :locale="{
-          less: '少',
-          more: '多',
-          on: '',
-          days: ['周一', '', '', '周三', '', '', '周日'],
-          months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
-        }" -->
-
-      <!-- '0个贡献' -->
-
-      <!-- 通过设置font-size来调整里面的字体大小 -->
-      <!-- 查看https://razorness.github.io/vue3-calendar-heatmap/ -->
+      <div style="margin: 0 auto;text-align: center;margin-bottom: 10px;font-weight: bold;">贡献度</div>
       <div class="calender-heatmap">
         <calendar-heatmap
           :no-data-text="false"
-          :values="[
-            { date: '2022-7-12', count: 10 },
-            { date: '2022-9-16', count: 10 },
-            { date: '2022-9-21', count: 6 },
-            { date: '2022-9-23', count: 6 }
-          ]"
-          :end-date="'2022-9-22'"
+          :values="logs"
           :round="0"
+          :end-date="endDate"
           :tooltip-unit="'贡献'"
           :locale="{
             less: '少',
@@ -55,12 +30,44 @@
         <div class="vch__tips">贡献度的统计数据包括代码提交、创建任务 / Pull Request、合并 Pull Request，其中代码提交的次数需本地配置的 git 邮箱是 Gitee 帐号已确认绑定的才会被统计。</div>
       </div>
     </div>
+    近期动态、存储桶概况、动态分布图
   </div>
 </template>
 
 <script lang="ts" setup>
+import Log from '@/types/Log';
 import { useFormatTime } from '@/typings/date-time';
+import moment from 'moment';
+import { Ref, ref } from 'vue';
 import { CalendarHeatmap } from 'vue3-calendar-heatmap'
+interface LogCount {
+  date: string
+  count: number
+}
+
+/**
+ * 实例
+ */
+const log = new Log()
+
+/**
+ * 变量
+ */
+// 贡献列表
+const logs: Ref<LogCount[]> = ref([])
+// 结束日期
+const endDate = ref(moment().format('YYYY-MM-DD'))
+
+
+/**
+ * 数据获取 
+ */
+const getLogs = () => {
+  log.contributes({}).then((res: LogCount[]) => {
+    logs.value = res
+  })
+}
+getLogs()
 
 
 const handlClick = (day) => {

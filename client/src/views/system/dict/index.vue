@@ -36,8 +36,9 @@ import { config } from './config'
 import { DictInter, ListInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
-import { BasicResponse } from '@/typings/req-res'
+import { BasicResponse, PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
+import { useFormat } from '@/hooks/date-time'
 /**
  * 实例
  */
@@ -74,10 +75,11 @@ const listGet = () => {
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: BasicResponse<DictInter>) => {
-    list.total = res.total
-    list.data = res.data.map(item => {
+  }).then((res: PageResponse<DictInter>) => {
+    list.data = res.items.map(item => {
       item.values_str = JSON.stringify(item.values, null, '\t')
+      item.createdAt = useFormat(item.createdAt)
+      item.updatedAt = useFormat(item.updatedAt)
       return item
     })
   })

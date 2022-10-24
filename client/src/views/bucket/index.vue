@@ -27,8 +27,8 @@
             <div class="bucket-item-content">
               <div class="bucket-content-title">{{ item.name }}</div>
               <div class="bucket-content-count">
-                <el-tag type="info" size="small">图片数量: 10</el-tag>
-                <el-tag type="info" size="small">占用存储: 935.12MB</el-tag>
+                <el-tag type="info" size="small">图片数量: {{ getStats(item).bucket_count }}</el-tag>
+                <el-tag type="info" size="small">占用存储: {{ getStats(item).bucket_storage }}MB</el-tag>
               </div>
               <div class="bucket-content-time">创建时间: {{ item.createdAt }}</div>
             </div>
@@ -55,10 +55,16 @@ import { reactive, ref } from 'vue'
 import { BucketInter, DictInter, ListInter, UserInter } from '@/typings/interface'
 import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
-import { BasicResponse, JsonResponse } from '@/typings/req-res'
+import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import Bucket from '@/types/Bucket'
 import useConfigStore from '@/store/config'
+import { useFormat } from '@/hooks/date-time'
+interface Stats {
+  id: string
+  bucket_storage: string
+  bucket_count: number
+}
 /**
  * 实例
  */
@@ -69,7 +75,7 @@ const configStore = useConfigStore()
 /**
  * 变量
  */
-const list: ListInter<BucketInter> = reactive({
+const list: ListInter<BucketInter, Stats> = reactive({
   page: 1,
   size: 10,
   total: 0,
@@ -78,7 +84,8 @@ const list: ListInter<BucketInter> = reactive({
     sort: 'updatedAt',
     order: 'desc'
   },
-  data: []
+  data: [],
+  stats: []
 })
 // 当前被操作项
 let item = reactive({
@@ -99,23 +106,33 @@ const listGet = () => {
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: BasicResponse<BucketInter>) => {
+  }).then((res: PageResponse<BucketInter, Stats>) => {
     list.total = res.total
-    list.data = res.data.map(item => {
+    list.stats = res.stats.map(item => {
+      item.bucket_storage = (parseInt(item.bucket_storage) / 1021 / 1024).toFixed(2)
+      return item
+    })
+    list.data = res.items.map(item => {
+      item.createdAt = useFormat(item.createdAt)
+      item.updatedAt = useFormat(item.updatedAt)
       return item
     })
   })
 }
 // 获取字典中的图标
 const getBucketIcon = () => {
-  dict.detailByPro('code', 'bucket_source_icon').then((res: JsonResponse<DictInter>) => {
-    res.data.values.forEach(item => {
+  dict.detailByPro('code', 'bucket_source_icon').then((res: DictInter) => {
+    res.values.forEach(item => {
       bucketIcons.value[item.label] = item.value
     })
     listGet()
   })
 }
 getBucketIcon()
+// 获取统计数据
+const getStats = (item: BucketInter) => {
+  return list.stats.find(el => el.id === item.id)
+}
 
 // 操作
 const itemOperate = (data: BucketInter, type) => {

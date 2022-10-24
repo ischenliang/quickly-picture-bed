@@ -131,7 +131,7 @@ watch(() => props.detail, (val) => {
   let promise = config.map(async item => {
     if (item.listOptions) {
       const res: any = await dict.detailByPro('code', item.listOptions)
-      item.listOptions_arr = res.data.values
+      item.listOptions_arr = res.values
       return item
     }
     return item

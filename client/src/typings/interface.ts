@@ -9,7 +9,7 @@ export interface TableColumnConfig {
 }
 
 // 通用表格列表list数据
-export interface ListInter<T> {
+export interface ListInter<T, D = any> {
   page?: number // 页码
   size?: number // 每页显示数量
   total?: number // 总计条数
@@ -19,6 +19,7 @@ export interface ListInter<T> {
   }
   data: Array<T>
   config?: Array<TableColumnConfig>
+  stats?: Array<D>
 }
 
 
@@ -129,7 +130,7 @@ export interface UserInter {
   // 邮箱是否已验证
   emailVerified?: boolean
   // 用户的手机号
-  mobilePhoneNumber?: string
+  phone?: string
   // 手机号是否已验证
   mobilePhoneVerified?: boolean
   // 头像: 从给定的一组图片中选择
@@ -305,6 +306,8 @@ export interface SettingInter {
   }
   // 更新日志
   uplog?: string // 更新日志url
+  // 存储桶后台服务配置
+  bucket_service?: string
   // 创建时间
   createdAt?: string
   // 更新时间

@@ -26,8 +26,8 @@
       <el-form-item label="用户名" prop="username" class="inline">
         <el-input v-model="detail.username" size="large" placeholder="请输入姓名" readonly />
       </el-form-item>
-      <el-form-item label="联系电话" prop="mobilePhoneNumber" class="inline">
-        <el-input v-model="detail.mobilePhoneNumber" size="large" placeholder="请输入联系电话" readonly />
+      <el-form-item label="联系电话" prop="phone" class="inline">
+        <el-input v-model="detail.phone" size="large" placeholder="请输入联系电话" readonly />
       </el-form-item>
       <el-form-item label="职业" prop="major" class="inline">
         <el-input v-model="detail.major" size="large" placeholder="请输入职业" readonly />
@@ -97,7 +97,7 @@ const props = withDefaults(defineProps<Props>(), {
     email :'',
     role: 2,
     username: '',
-    mobilePhoneNumber: '',
+    phone: '',
     status: true
   } as UserInter)
 })
@@ -126,15 +126,15 @@ const genders = ref([])
  */
 const getRoleDict = () => {
   const dict = new Dict()
-  dict.detailByPro('code', 'user_role').then((res: JsonResponse<DictInter>) => {
-    roles.value = res.data.values
+  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
+    roles.value = res.values
   })
 }
 getRoleDict()
 const getGenderDict = () => {
   const dict = new Dict()
-  dict.detailByPro('code', 'user_gender').then((res: JsonResponse<DictInter>) => {
-    genders.value = res.data.values
+  dict.detailByPro('code', 'user_gender').then((res: DictInter) => {
+    genders.value = res.values
   })
 }
 getGenderDict()

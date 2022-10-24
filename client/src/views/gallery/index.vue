@@ -61,10 +61,11 @@ import { useConfirmBox, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
-import { BasicResponse } from '@/typings/req-res';
+import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import GalleryItem from './gallery-item.vue'
 import bucketUpload from '@/hooks/bucket/index'
+import { useFormat } from '@/hooks/date-time';
 
 /**
  * 实例
@@ -109,11 +110,11 @@ const getBuckets = () => {
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: BasicResponse<BucketInter>) => {
+  }).then((res: PageResponse<BucketInter>) => {
     list.total = res.total
     buckets.value = [
       { id: '', name: '全部' },
-      ...res.data.map(item => {
+      ...res.items.map(item => {
         const obj = JSON.parse(item.config)
         /**
          * 将baseUrl中的占位符全局替换
@@ -149,12 +150,14 @@ const listGet = () => {
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: BasicResponse<ImageInter>) => {
+  }).then((res: PageResponse<ImageInter>) => {
     list.total = res.total
-    list.data = res.data.map(item => {
+    list.data = res.items.map(item => {
       item.checked = false
       const bk = buckets.value.find(bu => bu.id === item.bucket_id)
       item.img_preview_url = bk ? bk.config_baseUrl + item.img_url : item.img_url
+      item.createdAt = useFormat(item.createdAt)
+      item.updatedAt = useFormat(item.updatedAt)
       return item
     })
     list.loading = false

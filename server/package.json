@@ -24,7 +24,9 @@
     "koa2-cors": "^2.0.6",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
+    "qiniu": "^7.7.0",
     "sequelize": "^6.6.5",
+    "svg-captcha": "^1.4.0",
     "ts-loader": "^9.4.1"
   },
   "devDependencies": {

@@ -21,7 +21,7 @@ class PublicController {
     })
     if (user) {
       if (user.password === params.password) {
-        const token = webtoken.sign({ data: user.id }, 'a1b2c3', { expiresIn: 60 * 60 * 24 })
+        const token = webtoken.sign({ data: user.id, role: user.role }, 'a1b2c3', { expiresIn: 60 * 60 * 24 })
         await UserModel.update({
           token: token
         }, {

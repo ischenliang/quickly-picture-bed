@@ -5,16 +5,17 @@ import axios from "axios"
 import * as qiniu from 'qiniu-js'
 import { useFileName } from "../date-time"
 import { mimeTypes } from "@/global.config"
+import http from '@/api'
 
-const http = (url, method = 'POST', data = null) => {
-  return new Promise((resolve, reject) => {
-    axios({ url, method, data }).then(res => {
-      resolve(res.data)
-    }).catch(error => {
-      // 抛出错误异常
-    })
-  })
-}
+// const http = (url, method = 'POST', data = null) => {
+//   return new Promise((resolve, reject) => {
+//     axios({ url, method, data }).then(res => {
+//       resolve(res.data)
+//     }).catch(error => {
+//       // 抛出错误异常
+//     })
+//   })
+// }
 
 const regions = {
   'qiniu.region.z0': qiniu.region.z0,
@@ -56,7 +57,7 @@ const upload = (file: File, fileName, token, region: string, index, progressFn: 
 /**
  * 七牛存储桶图床配置
  */
-const service_url = 'http://demo.itchenliang.club' // 后台接口地址
+// const service_url = 'http://demo.itchenliang.club' // 后台接口地址
 const bucket = new Bucket()
 
 export default {
@@ -73,16 +74,16 @@ export default {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
-      const { accessKey, secretKey, bucket_name, area, domain, suffix, path } = JSON.parse(res.data.config)
+      const { accessKey, secretKey, bucket_name, area, domain, suffix, path } = JSON.parse(res.config)
 
       // 2、获取上传凭证
-      const httpRes: any = await http(service_url + '/api/v1/qiniu/sign', 'POST', {
+      const httpRes: any = await http('/tool/qiniuSign', {
         accessKey,
         secretKey,
         bucket: bucket_name,
         expires: 7200
       })
-      const uploadToken = httpRes.data.token
+      const uploadToken = httpRes.token
 
       // 3、上传文件
       const maps = []

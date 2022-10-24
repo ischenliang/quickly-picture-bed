@@ -4,7 +4,7 @@
       <!-- <viewer :images="images">
         <img :src="data.img_preview_url" :alt="data.img_name">
       </viewer> -->
-      <el-image :src="data.img_preview_url" :fit="'scale-down'" />
+      <el-image :src="data.img_preview_url" :fit="'scale-down'" :lazy="true" />
     </div>
     <div class="gallery-item-name" :title="data.img_name">{{ data.img_name }}</div>
     <div class="gallery-item-action">

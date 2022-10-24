@@ -1,3 +1,4 @@
+import ImageModel from '../models/Image'
 import { Bucket, Dict, Page, User } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
@@ -36,10 +37,26 @@ class BucketController {
     } else {
       data.items = await BucketModel.findAll(tmp)
     }
+    // 计算占用存储和总数量
+    const promise = data.items.map(async (item: any) => {
+      let filter = {
+        where: {
+          bucket_id: item.id
+        }
+      }
+      return {
+        id: item.id,
+        bucket_storage: await ImageModel.sum('img_size', filter),
+        bucket_count: await ImageModel.count(filter)
+      }
+    })
     return {
       code: 200,
       message: '成功',
-      data: data
+      data: {
+        ...data,
+        stats: await Promise.all(promise)
+      }
     }
   }
 
@@ -92,6 +109,26 @@ class BucketController {
       code: 200,
       message: '成功',
       data: await BucketModel.destroy({
+        where: {
+          id: params.id,
+          uid: user.id
+        }
+      })
+    }
+  }
+
+
+  /**
+   * 详情
+   * @param params Bucket存储桶
+   * @returns 
+   */
+  @Post('/detail')
+  async detail (@Body() params: { id: string }, @CurrentUser() user: User) {
+    return {
+      code: 200,
+      message: '成功',
+      data: await BucketModel.findOne({
         where: {
           id: params.id,
           uid: user.id

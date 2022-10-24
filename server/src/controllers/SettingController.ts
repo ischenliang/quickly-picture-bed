@@ -1,14 +1,14 @@
-import { Dict, Page, User } from '@/types'
+import { Dict, Page, Setting } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
-import UserModel from '../models/User'
+import SettingModel from '../models/Setting'
 
 interface Filter extends Page {
-  username?: string
+  name?: string
 }
 
-@Controller('/user')
-class UserController {
+@Controller('/setting')
+class SettingController {
   /**
    * 列表
    * @returns 
@@ -18,22 +18,17 @@ class UserController {
     const tmp: any = {
       order: [
         ['updatedAt', 'desc']
-      ],
-      where: {
-        username: {
-          [Op.like]: params.username ? `%${params.username}%` : '%%'
-        }
-      }
+      ]
     }
     const data: any = {}
     if (params.page) {
       tmp.limit = params.size
       tmp.offset = params.page ? (params.page - 1) * params.size : 0
-      const { rows, count } = await UserModel.findAndCountAll(tmp)
+      const { rows, count } = await SettingModel.findAndCountAll(tmp)
       data.total = count
       data.items = rows
     } else {
-      data.items = await UserModel.findAll(tmp)
+      data.items = await SettingModel.findAll(tmp)
     }
     return {
       code: 200,
@@ -45,30 +40,30 @@ class UserController {
 
   /**
    * 新建
-   * @param params User用户
+   * @param params Setting系统配置
    * @returns 
    */
   @Post('/create')
-  async create (@Body() params: User) {
+  async create (@Body() params: Setting) {
     return {
       code: 200,
       message: '成功',
-      data: await UserModel.create(params)
+      data: await SettingModel.create(params)
     }
   }
 
 
   /**
    * 更新
-   * @param params User用户
+   * @param params Setting系统配置
    * @returns 
    */
   @Post('/update')
-  async update (@Body() params: User) {
+  async update (@Body() params: Setting) {
     return {
       code: 200,
       message: '成功',
-      data: await UserModel.update({
+      data: await SettingModel.update({
       ...params
       }, {
         where: {
@@ -81,7 +76,7 @@ class UserController {
 
   /**
    * 删除
-   * @param params User用户
+   * @param params Setting系统配置
    * @returns 
    */
   @Post('/delete')
@@ -89,11 +84,31 @@ class UserController {
     return {
       code: 200,
       message: '成功',
-      data: await UserModel.destroy({
+      data: await SettingModel.destroy({
         where: {
           id: params.id
         }
       })
+    }
+  }
+
+
+  /**
+   * 查询是否有满足条件的数据
+   * 使用场景：当某个字段是唯一时使用
+   * @returns 
+   */
+  @Post('/findByPro')
+  async findByPro(@Body() params: { property: string, value: string }) {
+    const data = await SettingModel.findOne({
+      where: {
+        [params.property]: params.value
+      }
+    })
+    return {
+      code: 200,
+      message: '成功',
+      data: data
     }
   }
 }

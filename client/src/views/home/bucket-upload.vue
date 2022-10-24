@@ -142,11 +142,11 @@ const upload = (fileList: File[], errorList: File[] = []) => {
         ...item,
         bucket_id: id,
         bucket_type: type
-      }).then((result: JsonResponse<ImageInter>) => {
+      }).then((result: ImageInter) => {
         if (index === res.length - 1) {
           ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-          result.data.img_preview_url = habits.value.current.config_baseUrl + result.data.img_url
-          current.value = result.data
+          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+          current.value = result
         }
       })
     })

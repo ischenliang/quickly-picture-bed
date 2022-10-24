@@ -10,6 +10,7 @@ const LogModel = seq.define('log', {
     comment: 'uuid'
   },
   type: {
+    // 1: 登录系统 2：上传图片 3：删除图片 4：更新图片
     type: DataTypes.INTEGER,
     allowNull: false,
     comment: '操作类别'

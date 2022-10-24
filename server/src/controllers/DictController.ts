@@ -103,7 +103,7 @@ class DictController {
    * 使用场景：当某个字段是唯一时使用
    * @returns 
    */
-  @Post('/findByOnly')
+  @Post('/findByPro')
   async findByPro(@Body() params: { property: string, value: string }) {
     const data = await DictModel.findOne({
       where: {

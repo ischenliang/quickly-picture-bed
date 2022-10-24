@@ -2,6 +2,8 @@ import { Dict, Image, Page, User } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
 import ImageModel from '../models/Image'
+import LogModel from '../models/Log'
+
 
 interface Filter extends Page {
   img_name?: string
@@ -52,10 +54,18 @@ class ImageController {
   @Post('/create')
   async create (@Body() params: Image, @CurrentUser() user: User) {
     params.uid = user.id
+    const data = (await ImageModel.create(params) as Image)
+    await LogModel.create({
+      type: 2,
+      operate_id: `ID:${data.id}`,
+      operate_cont: data.img_name,
+      content: '上传了图片',
+      uid: user.id
+    })
     return {
       code: 200,
       message: '成功',
-      data: await ImageModel.create(params)
+      data: data
     }
   }
 
@@ -66,7 +76,14 @@ class ImageController {
    * @returns 
    */
   @Post('/update')
-  async update (@Body() params: Image) {
+  async update (@Body() params: Image, @CurrentUser() user: User) {
+    await LogModel.create({
+      type: 4,
+      operate_id: `ID:${params.id}`,
+      operate_cont: params.img_name,
+      content: '上传了图片',
+      uid: user.id
+    })
     return {
       code: 200,
       message: '成功',
@@ -88,6 +105,14 @@ class ImageController {
    */
   @Post('/delete')
   async delete (@Body() params: { id: string }, @CurrentUser() user: User) {
+    const tmp = (await ImageModel.findOne({ where: { id: params.id, uid: user.id } }) as Image)
+    await LogModel.create({
+      type: 3,
+      operate_id: `ID:${params.id}`,
+      operate_cont: tmp.img_name,
+      content: '删除了图片',
+      uid: user.id
+    })
     return {
       code: 200,
       message: '成功',

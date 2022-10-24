@@ -27,7 +27,7 @@ export default {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
-      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.data.config)
+      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.config)
 
       // 2、构建出AV.init
       AV.init({
@@ -93,7 +93,7 @@ export default {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
-      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.data.config)
+      const { appId, appKey, domain, masterKey, path } = JSON.parse(res.config)
 
       // 2、构建出AV.init
       AV.init({

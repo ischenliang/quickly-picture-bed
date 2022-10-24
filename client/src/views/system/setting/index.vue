@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, Ref, ref, toRaw, watch } from 'vue'
+import { Ref, ref, toRaw, watch } from 'vue'
 import WebsiteConfig from './websiteConfig.vue'
 import AboutConfig from './aboutConfig.vue'
 import SystemConfig from './systemConfig.vue'
@@ -29,7 +29,7 @@ import UplogConfig from './uplogConfig.vue'
 import { SettingInter } from '@/typings/interface'
 import config from './config'
 import Setting from '@/types/Setting'
-import { BasicResponse, JsonResponse } from '@/typings/req-res'
+import { JsonResponse, PageResponse } from '@/typings/req-res'
 import { useCtxInstance } from '@/hooks/global'
 import { useRoute, useRouter } from 'vue-router'
 import useConfigStore from '@/store/config'
@@ -61,9 +61,9 @@ const form: Ref<SettingInter> = ref({
  * 获取数据
  */
 const getData = () => {
-  setting.find().then((res: BasicResponse<SettingInter>) => {
-    if (res.data && res.data.length) {
-      form.value = res.data[0]
+  setting.find().then((res: PageResponse<SettingInter>) => {
+    if (res.items && res.items.length) {
+      form.value = res.items[0]
     }
   })
 }

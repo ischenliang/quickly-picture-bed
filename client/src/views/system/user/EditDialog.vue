@@ -20,8 +20,8 @@
       <el-form-item label="用户名" prop="username">
        <el-input v-model="form.username" size="large" placeholder="请输入姓名" />
       </el-form-item>
-      <el-form-item label="联系电话" prop="mobilePhoneNumber">
-       <el-input v-model="form.mobilePhoneNumber" size="large" placeholder="请输入联系电话" disabled />
+      <el-form-item label="联系电话" prop="phone">
+       <el-input v-model="form.phone" size="large" placeholder="请输入联系电话" disabled />
       </el-form-item>
       <el-form-item label="状态" prop="status">
        <el-switch v-model="form.status" size="large" active-text="启用" inactive-text="禁用"/>
@@ -54,7 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
     email :'',
     role: 2,
     username: '',
-    mobilePhoneNumber: '',
+    phone: '',
     status: true
   } as UserInter)
 })
@@ -78,7 +78,7 @@ const form: UserInter = reactive({
   username: '',
   email: '',
   role: 2,
-  mobilePhoneNumber: '',
+  phone: '',
   status: true
 })
 const rules = reactive({
@@ -98,8 +98,8 @@ const roles = ref([])
  */
 const getRoleDict = () => {
   const dict = new Dict()
-  dict.detailByPro('code', 'user_role').then((res: JsonResponse<DictInter>) => {
-    roles.value = res.data.values
+  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
+    roles.value = res.values
   })
 }
 getRoleDict()
@@ -118,7 +118,7 @@ const submit = () => {
       if (form.id) {
         // 不允许修改电话和邮箱
         delete tmp.email
-        delete tmp.mobilePhoneNumber
+        delete tmp.phone
         user.update({
           id: form.id,
           ...tmp
@@ -127,7 +127,6 @@ const submit = () => {
           emit('submit')
         })
       } else {
-        console.log(tmp)
         user.create({
           ...tmp,
           password: '000000'

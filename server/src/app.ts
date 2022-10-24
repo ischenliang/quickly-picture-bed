@@ -31,12 +31,14 @@ function getClientIP(req: any) {
 
 // 处理404不存在的
 app.use(async (ctx: Koa.DefaultContext, next: Next) => {
-  console.log(getClientIP(ctx.req))
+  // console.log(getClientIP(ctx.req))
+  // 这里还需要区分是哪些接口需要单独处理：例如登录、注册不需要传入token
   if (ctx.headers['authorization']) {
     const res: any = webtoken.verify(ctx.headers['authorization'], 'a1b2c3')
     ctx.state = {
       user: {
-        id: res.data
+        id: res.data,
+        role: res.role
       },
       code: 200,
     }
@@ -62,8 +64,9 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
     versions: [1], // 版本
     controllers: [__dirname + '/controllers/**/*.ts'], // 存放所有控制器类，是数组
     errorHandler (error: any, ctx: Context) {
+      console.log(error)
       ctx.body = {
-        code: error.status,
+        code: error.status || 500,
         message: '报错了',
         data: error.message
       }

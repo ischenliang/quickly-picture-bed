@@ -7,7 +7,7 @@ import http from '@/api'
 interface Filter extends PageReq {
   username?: string,
   desc?: string,
-  mobilePhoneNumber?: string
+  phone?: string
   role?: number
 }
 
@@ -20,27 +20,32 @@ interface Filter extends PageReq {
 export default class Users {
   // 创建用户
   create (params: UserInter) {
+    return http('/user/login', params)
   }
   // 删除用户
   delete (id: string) {
+    return http('/user/delete', { id })
   }
   // 更新用户
   update (params: UserInter) {
+    return http('/user/update', params)
   }
   // 更新用户属性
   updateByPro (id: string, property: string, value: any) {
+    return http('/user/update', {
+      id,
+      property,
+      value
+    })
   }
   // 查找用户
   // 查询列表
-  find (params: Filter = {}) {
+  find (params: Filter) {
+    return http('/user/list', params)
   }
   // 登录
   login (params: UserInter) {
-    return http({
-      url: '/login',
-      method: 'post',
-      data: params
-    })
+    return http('/login', params)
   }
   // 重置密码
   resetPwd () {

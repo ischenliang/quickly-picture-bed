@@ -93,11 +93,12 @@ const bucketTypes = ref([])
 /**
  * 数据获取
  */
+// 获取存储源类别列表
 const getDict = () => {
   const dict = new Dict()
-  dict.detailByPro('code', 'bucket_source').then((res: JsonResponse<DictInter>) => {
+  dict.detailByPro('code', 'bucket_source').then((res: DictInter) => {
     if (res) {
-      bucketTypes.value = res.data.values
+      bucketTypes.value = res.values
     }
   })
 }

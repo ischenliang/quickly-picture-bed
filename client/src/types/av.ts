@@ -8,5 +8,6 @@ export function initAv() {
 }
 
 export function uploadImg (filename: string, file: File) {
+  initAv()
   return new AV.File(filename, file).save()
 }

@@ -33,7 +33,7 @@
         :rules="[
           { required: true, message: '请输入存储桶名称', trigger: ['blur', 'change'] }
         ]">
-       <el-input v-model="form.name" size="large" />
+       <el-input v-model="form.name" size="large" placeholder="请输入存储桶名称" />
       </el-form-item>
       <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.type + index">
         <el-form-item
@@ -65,7 +65,7 @@ import { BucketInter, BucketSourceConfig, BucketSourceInter, DictInter } from '@
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import Dict from '@/types/Dict';
 import BucketSource from '@/types/BucketSource';
-import { BasicResponse } from '@/typings/req-res';
+import { BasicResponse, PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
 
 /**
@@ -118,8 +118,8 @@ const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
  * 数据获取
  */
 const getBucketSource = () => {
-  bucketSource.find({}).then((res: BasicResponse<BucketSourceInter>) => {
-    handleBucketData(res.data)
+  bucketSource.find({}).then((res: PageResponse<BucketSourceInter>) => {
+    handleBucketData(res.items)
     if (form.type) {
       handleData(form.type)
     }
@@ -201,7 +201,7 @@ const handleData = (type: string) => {
   let promise = config.map(async item => {
     if (item.listOptions) {
       const res: any = await dict.detailByPro('code', item.listOptions)
-      item.listOptions_arr = res.data.values
+      item.listOptions_arr = res.values
       return item
     }
     return item

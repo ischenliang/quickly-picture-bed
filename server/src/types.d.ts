@@ -135,6 +135,10 @@ export interface Bucket {
   config?: string
   // 是否在上传区域显示
   visible?: boolean
+  // 存储桶容量占用
+  bucket_storage?: number
+  // 存储桶数量占用
+  bucket_count?: number
   // 创建时间
   createdAt?: string
   // 更新时间
@@ -188,4 +192,120 @@ export interface Log {
   createdAt?: string
   // 操作人，用户id
   uid?: string
+}
+
+
+export interface Setting {
+  // 设置id
+  id?: string
+  // 设置-网站信息
+  website?: {
+    logo?: string // logo
+    logo_preview?: string
+    ico?: string // ico
+    ico_preview?: string
+    name?: string // 名称
+    title?: string // 标题
+    subtitle?: string // 副标题
+    domain?: string // 域名
+    desc?: string // 描述
+    keys?: Array<string> // 关键词
+    author?: string // 作者
+    version?: string // 版本号
+    // 打赏
+    // 支付宝打赏二维码
+    reward_alipay?: string
+    reward_alipay_preview?: string
+    // 微信打赏二维码
+    reward_weixin?: string
+    reward_weixin_preview?: string
+    // 静态文件前缀
+    baseUrl?: string
+  }
+  // 联系我们
+  contact?: {
+    // 微信
+    weixin?: string
+    // QQ
+    qq?: string
+    // github
+    github?: string
+    // gitee
+    gitee?: string
+    // 邮箱
+    email?: string
+    // qq群
+    qq_group?: string
+    // 关于我们内容, markdown内容，存储到markdown文件中
+    about?: string
+  }
+  // 系统配置
+  system?: {
+    // 上传配置
+    // 可以上传的文件类型，例如['png', 'jpeg', 'mp4', 'flv', 'webp']
+    accept?: Array<string>
+    // 可以上传的文件类型的字符串即 accept.join(',.')
+    accept_str?: string
+    // 单个文件最大容量
+    maxsize?: number
+    // 单次最多勾选多少文件
+    maxcount?: number
+    // 存储桶容量限制
+    storage_size?: number
+    // 存储桶数量限制
+    storage_count?: number
+
+    // 图标配置
+    icon_url?: string // 图标url
+    icon_prefix?: string // 图标前缀
+    icon_font?: string // 图标字体
+
+    // 版权配置
+    copyright_company?: string // 版权归属公司名称
+    copyright_time?: string // 网站运行时间
+    copyright_miitbeian?: string // 工信部备案号
+    // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
+    copyright_miiturl?: string
+  }
+  // 更新日志
+  uplog?: string // 更新日志url
+  // 存储桶后台服务配置
+  bucket_service?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+}
+
+
+// 七牛上传配置
+export interface QiniuUploadConfig {
+  // 	AccessKey
+  accessKey: string
+  // SecretKey
+  secretKey: string
+  // 空间名称
+  bucket: string
+  // 有效期
+  expires?: number
+}
+
+
+// 七牛云文件管理
+export interface QiniuFileManager extends QiniuUploadConfig {
+  // 文件路径
+  fileName: string
+}
+
+
+/**
+ * 图形验证码
+ */
+export interface VerifyCode {
+  id?: string // 验证码id
+  last_id?: string // 上一次生成的验证码id
+  code?: string // 验证码内容
+  anser?: string // 验证码结果
+  expire_at?: string // 有效期至
+  createdAt?: string // 创建时间
 }

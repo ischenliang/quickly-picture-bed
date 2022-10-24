@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import * as monaco from 'monaco-editor'
 
 /**
@@ -37,9 +37,10 @@ const editorValue = computed({
 /**
  * 生命周期
  */
+let editor = null
 onMounted(() => {
   // editor.value = 
-  const editor = monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
+  editor = monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
     value: '', // 编辑器初始显示文字
     language: props.language, // 语言支持自行查阅demo
     automaticLayout: true, // 自适应布局  
@@ -62,6 +63,16 @@ onMounted(() => {
   editor.onDidChangeModelContent((event) => {
     editorValue.value = editor.getValue()
   });
+})
+
+watch(() => props.modelValue, (val, old) => {
+  nextTick(() => {
+    if (!old && val) {
+      editor && editor.setValue(val)
+    }
+  })  
+}, {
+  immediate: true
 })
 </script>
 

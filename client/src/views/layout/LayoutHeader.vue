@@ -2,7 +2,7 @@
   <div class="app-header">
     <div class="app-logo">
       <!-- http://pic.xyaxw.cn/static/img/logo.cf036a4d.jpg -->
-      <img :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
+      <img v-if="website.logo" :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
       <span class="app-name">{{ website.name || '默认名称' }}</span>
     </div>
     <div class="app-rightmenu">
@@ -39,7 +39,7 @@ const website = computed(() => {
   .app-logo {
     flex-shrink: 0;
     height: 100%;
-    padding: 0 20px;
+    padding: 5px 20px;
     display: flex;
     align-items: center;
     img {

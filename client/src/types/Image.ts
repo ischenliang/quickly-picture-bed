@@ -5,6 +5,7 @@ import AV, { Query, User, File, Role } from 'leancloud-storage'
 import Basic from '../typings/Basic'
 import { PageReq } from '@/typings/req-res';
 import { initAv } from './av';
+import http from '@/api'
 
 // 筛选条件
 interface Filter extends PageReq {
@@ -18,20 +19,10 @@ interface Filter extends PageReq {
  * 用于对用户在本系统上传的图片管理
  * ==============================
  */
-export default class Image extends Basic {
-  constructor () {
-    super('Image')
-  }
+export default class Image {
   // 新建
   async create (params: ImageInter) {
-    initAv()
-    const instance = new AV.Object(this.modelName)
-    for(let [key, value] of Object.entries(params)) {
-      instance.set(key, value);
-    }
-    instance.set('uid', useCurrentUser().id)
-    const data = await useFetch(instance.save())
-    return usePromise(data)
+    return http('/image/create', params)
   }
   /**
    * 删除图片
@@ -44,9 +35,7 @@ export default class Image extends Basic {
    * @returns 
    */
   delete (id: string) {
-    initAv()
-    const obj = AV.Object.createWithoutData(this.modelName, id)
-    return useFetch(obj.destroy())
+    return http('/image/delete', { id })
   }
   // 更新
   update () {
@@ -54,50 +43,10 @@ export default class Image extends Basic {
   }
   // 查询
   async find (params: Filter) {
-    const query = new AV.Query(this.modelName)
-    if (params.uid) {
-      query.equalTo('uid', params.uid)
-    } else {
-      query.equalTo('uid', useCurrentUser().id)
-    }
-
-    // 精准查询
-    ['bucket_id'].forEach(item => {
-      if (params[item]) {
-        query.equalTo(item, params[item])
-      }
-    });
-
-    // 模糊查询
-    ['img_name'].forEach(item => {
-      if (params[item]) {
-        query.contains(item, params[item])
-      }
-    });
-
-    const { order = 'desc', sort = 'createdAt' } = params
-    // 排序
-    if (sort) {
-      if (order === 'asc') {
-        query.addAscending(sort);
-      }
-      if (order === 'desc') {
-        query.addDescending(sort);
-      }
-    }
-
-    // 通过判断是否传入page属性来确定是否分页
-    if (params.page) {
-      const { page = 1, size = 10 } = params
-      query.skip((page - 1) * size)
-      query.limit(params.size)
-      return useFetch(query.findAndCount())
-    }
-
-    return useFetch(query.find(), false)
+    return http('/image/list', params)
   }
   // 详情
-  detail () {
-
+  detail (id: string) {
+    return http('/image/detail', { id })
   }
 }

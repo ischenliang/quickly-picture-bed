@@ -29,7 +29,7 @@ const UserModel = seq.define('user', {
     comment: '邮箱',
     unique: 'email'
   },
-  nickname: {
+  username: {
     type: DataTypes.STRING,
     allowNull: true,
     comment: '用户昵称'

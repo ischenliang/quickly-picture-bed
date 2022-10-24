@@ -27,7 +27,7 @@ export default {
     return new Promise(async (resolve, reject) => {
       // 1、获取存储桶配置
       const res: any = await bucket.detail(bucket_id)
-      const { username, repo, branch, token, path, domain, commit_messages } = JSON.parse(res.data.config)
+      const { username, repo, branch, token, path, domain, commit_messages } = JSON.parse(res.config)
 
       // 2、构建接口地址和formData
       const maps = []
