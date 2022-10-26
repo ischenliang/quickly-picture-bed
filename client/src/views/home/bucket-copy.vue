@@ -101,7 +101,9 @@ const copyLink = (item: Link) => {
         overflow: auto;
         .links-copy {
           width: 100%;
-          min-height: 100%;
+          // min-height: 100%;
+          min-height: 80px;
+          height: 100%;
           background: rgba(204,232,255,.5);
           border: 1px solid rgba(153,209,255,.57);
           border-radius: 4px;

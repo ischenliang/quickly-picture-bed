@@ -7,6 +7,8 @@ import LogModel from '../models/Log'
 
 interface Filter extends Page {
   img_name?: string
+  bucket_id?: string
+  [prop: string]: any
 }
 
 @Controller('/image')
@@ -27,7 +29,12 @@ class ImageController {
         },
         uid: user.id
       }
-    }
+    };
+    ['bucket_id'].forEach(item => {
+      if (params[item] !== '') {
+        tmp.where[item] = params[item]
+      }
+    })
     const data: any = {}
     if (params.page) {
       tmp.limit = params.size

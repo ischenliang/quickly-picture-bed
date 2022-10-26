@@ -55,6 +55,17 @@ const userHabits = computed(() => {
 </script>
 
 <style lang="scss">
+@media screen and (max-width: 1200px) {
+  .copy-history {
+    flex-direction: column !important;
+    .el-card {
+      width: 100%;
+      + .el-card {
+        margin: 15px 0 0 0 !important;
+      }
+    }
+  }
+}
 @import '@/styles/flex-layout.scss';
 .home-container {
   width: 100%;
