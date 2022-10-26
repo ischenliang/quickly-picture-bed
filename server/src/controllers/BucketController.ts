@@ -6,6 +6,7 @@ import BucketModel from '../models/Bucket'
 
 interface Filter extends Page {
   name?: string
+  visible?: boolean
 }
 
 @Controller('/bucket')
@@ -26,6 +27,10 @@ class BucketController {
         },
         uid: user.id
       }
+    }
+
+    if (params.visible) {
+      tmp.where.visible = params.visible
     }
     const data: any = {}
     if (params.page) {

@@ -20,12 +20,9 @@ const useUserStore = defineStore('user', () => {
    * 变量
    */
   const userInfo: Ref<UserInter> = ref(null)
-  const user_habits: HabitsInter = reactive(toRaw(defaultHabits))
-  // 测试时默认使用第个项存储桶
-  user_habits.current = {
-    id: ''
-  }
-  user_habits.link_format = 'URL'
+  const user_habits: { data: HabitsInter } = reactive({
+    data: toRaw(defaultHabits)
+  })
 
   // 当前图片
   const currentImage: Ref<ImageInter> = ref({
@@ -44,13 +41,17 @@ const useUserStore = defineStore('user', () => {
   const updateUserInfo = (payload: UserInter) => {
     userInfo.value = payload
   }
-
+  // 更新habits
+  const updateUserHabits = (payload: HabitsInter) => {
+    user_habits.data = payload
+  }
 
   return {
     userInfo,
     user_habits,
     currentImage,
-    updateUserInfo
+    updateUserInfo,
+    updateUserHabits
   }
 })
 

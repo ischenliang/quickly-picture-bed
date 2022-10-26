@@ -2,7 +2,7 @@ import { ref, Ref } from 'vue';
 import { HabitsInter } from './typings/interface';
 export const user_habits: HabitsInter = {
   shortKey: [
-    { label: '快捷上传', key: 'upload', value: 'Command + Shift + P' }
+    { label: '快捷上传', key: 'upload', value: 'Command + Shift + P', id: 1 }
   ],
   showUpdateTip: true,
   showCopyTip: true,
@@ -19,19 +19,20 @@ export const user_habits: HabitsInter = {
 export interface Link {
   label: string
   value: string
+  id: string
 }
 
 // 链接类型列表
 // 占位符$url：表示图片的url地址
 // 占位符$filename：表示文件名
 export const linkTypes: Ref<Link[]> = ref([
-  { label: 'URL', value: '${url}' },
-  { label: 'HTML', value: '<img src="${url}" alt="${filename}">' },
-  { label: 'CSS', value: 'background: url("${url}") no-repeat;background-size: 100% 100%;' },
-  { label: 'Markdown', value: '![${filename}](${url})' },
-  { label: 'BBCode', value: '[img]${url}[/img]' },
-  { label: 'UBB', value: '[IMG]${url}[/IMG]' },
-  { label: 'custom', value: '[${filename}](${url})' }
+  { label: 'URL', value: '${url}', id: 'url' },
+  { label: 'HTML', value: '<img src="${url}" alt="${filename}">', id: 'html' },
+  { label: 'CSS', value: 'background: url("${url}") no-repeat;background-size: 100% 100%;', id: 'css' },
+  { label: 'Markdown', value: '![${filename}](${url})', id: 'markdown' },
+  { label: 'BBCode', value: '[img]${url}[/img]', id: 'bbcode' },
+  { label: 'UBB', value: '[IMG]${url}[/IMG]', id: 'ubb' },
+  { label: 'Custom', value: '[${filename}](${url})', id: 'custom' }
 ])
 
 

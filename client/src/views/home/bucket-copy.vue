@@ -1,7 +1,7 @@
 <template>
   <div class="bucket-title">链接格式</div>
-  <el-tabs v-model="habits.link_format" type="border-card" class="bucket-copy-tabs">
-    <el-tab-pane v-for="(item, index) in linkTypes" :key="'linkType-' + index" :label="item.label" :name="item.label">
+  <el-tabs v-model="habits.pasteStyle" type="border-card" class="bucket-copy-tabs" @tab-change="handleTabChange">
+    <el-tab-pane v-for="(item, index) in linkTypes" :key="'linkType-' + index" :label="item.label" :name="item.id">
       <div class="links-copy" @click="copyLink(item)">
         {{ getLinkValue(item) }}
         <span class="link-copy-btn">
@@ -20,6 +20,7 @@ import { HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, ref, Ref } from 'vue';
 import { linkTypes, Link } from '@/global.config'
 import useUserStore from '@/store/user';
+import Habits from '@/types/Habits';
 interface Props {
   userHabits: HabitsInter
 }
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:userHabits'])
 const userStore = useUserStore()
+const habit = new Habits()
 
 /**
  * 变量
@@ -66,6 +68,13 @@ const getLinkValue = (item: Link) => {
 // 复制链接
 const copyLink = (item: Link) => {
   useCopyText(ctx, getLinkValue(item))
+}
+
+const handleTabChange = async (name) => {
+  await habit.save({
+    id: habits.value.id,
+    pasteStyle: name
+  })
 }
 </script>
 

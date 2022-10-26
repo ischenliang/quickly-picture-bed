@@ -32,8 +32,7 @@ export default class Bucket {
   updateByPro (id: string, uid: string, property: string, value: any) {
     return http('/bucket/update', {
       id,
-      property,
-      value
+      [property]: value
     })
   }
   // 查询

@@ -1,33 +1,27 @@
-import { useCurrentUser } from '@/hooks/global';
-import { ImageInter } from '@/typings/interface';
-import { useFetch } from '@/hooks/fetch'
-import AV from 'leancloud-storage'
-import Basic from '../typings/Basic'
+import { HabitsInter } from '@/typings/interface';
+import http from '@/api';
 
 /**
  * =========== 使用习惯管理 ===========
  * 针对每个用户使用改图床的习惯配置
  * ==============================
  */
-export default class Habits extends Basic {
-  constructor () {
-    super('Habits')
+export default class Habits {
+  async create (params: HabitsInter) {
+    return http('/habits/create', params)
   }
-  async create (params: ImageInter) {
-    const instance = new AV.Object(this.modelName);
-    for(let [key, value] of Object.entries(params)) {
-      instance.set(key, value);
+  update (params: HabitsInter) {
+    return http('/habits/update', params)
+  }
+  detail () {
+    return http('/habits/detail', {})
+  }
+  save (params: HabitsInter) {
+    delete params.createdAt
+    delete params.updatedAt
+    if (params.id) {
+      return this.update(params)
     }
-    instance.set('uid', useCurrentUser().id)
-    return useFetch(instance.save())
-  }
-  delete () {
-
-  }
-  update () {
-
-  }
-  find () {
-
+    return this.create(params)
   }
 }

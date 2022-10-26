@@ -3,8 +3,10 @@
  */
 
 import useConfigStore from "@/store/config"
+import useUserStore from "@/store/user"
+import Habits from "@/types/Habits"
 import Setting from "@/types/Setting"
-import { SettingInter } from "@/typings/interface"
+import { SettingInter, HabitsInter } from "@/typings/interface"
 import { BasicResponse, PageResponse } from "@/typings/req-res"
 
 /**
@@ -48,6 +50,22 @@ export function useGetSystemConfig () {
         style.rel = 'stylesheet'
         style.href = icon_url
         headEl.appendChild(style)
+        resolve(true)
+      })
+    } else {
+      resolve(true)
+    }
+  })
+}
+
+
+const habits = new Habits()
+export function useGetHabits () {
+  return new Promise((resolve, reject) => {
+    const userStore = useUserStore()
+    if (!userStore.user_habits.data.id) {
+      habits.detail().then((res: HabitsInter) => {
+        userStore.updateUserHabits(res)
         resolve(true)
       })
     } else {

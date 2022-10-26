@@ -328,6 +328,7 @@ export interface HabitsInter {
     label: string, // 快捷键描述
     key: string // 快捷键code
     value: string // 快捷键内容：Command + Shift + P 
+    id: number // 快捷键id
   }>
   // 上传提示
   showUpdateTip?: boolean
@@ -342,9 +343,9 @@ export interface HabitsInter {
   // 上传后自动复制图片地址类型，支持：url、markdown
   pasteStyle?: string
   // 上传后自动复制图片地址
-  autoPaste?: true
+  autoPaste?: boolean
   // 当前使用图床id
-  current?: BucketInter
+  current?: string
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名

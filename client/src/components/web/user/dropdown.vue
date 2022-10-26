@@ -44,7 +44,7 @@
           <!-- 账号绑定：binding  新消息通知：notification -->
         </div>
         <div class="entry-list">
-          <div class="entry-item" v-for="(item, index) in entries" :key="index">
+          <div class="entry-item" v-for="(item, index) in entries" :key="index" @click="goView(item)">
             <el-icon><component :is="item.icon"></component></el-icon>
             <span>{{ item.label }}</span>
           </div>
@@ -62,7 +62,7 @@ const router = useRouter()
 
 const entries = ref([
   { label: '使用分析', icon: 'DataAnalysis', route: '' },
-  { label: '使用习惯', icon: 'Setting', route: '' },
+  { label: '使用习惯', icon: 'Setting', route: 'Habits' },
   { label: '更新日志', icon: 'ScaleToOriginal', route: '' },
   { label: '关于系统', icon: 'InfoFilled', route: '' }
 ])
@@ -73,6 +73,12 @@ const goProfile = (type) => {
     query: {
       type
     }
+  })
+}
+
+const goView = (item) => {
+  router.push({
+    name: item.route
   })
 }
 

@@ -34,13 +34,20 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   // console.log(getClientIP(ctx.req))
   // 这里还需要区分是哪些接口需要单独处理：例如登录、注册不需要传入token
   if (ctx.headers['authorization']) {
-    const res: any = webtoken.verify(ctx.headers['authorization'], 'a1b2c3')
-    ctx.state = {
-      user: {
-        id: res.data,
-        role: res.role
-      },
-      code: 200,
+    try {
+      const res: any = webtoken.verify(ctx.headers['authorization'], 'a1b2c3')
+      ctx.state = {
+        user: {
+          id: res.data,
+          role: res.role
+        },
+        code: 200,
+      }
+    } catch (error) {
+      ctx.body = {
+        code: 500,
+        message: error.message
+      }
     }
   }
   ctx.set('Content-Type', 'application/json; charset=utf-8')

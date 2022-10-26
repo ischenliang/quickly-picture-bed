@@ -35,8 +35,7 @@ import BucketCopy from './bucket-copy.vue'
 import BucketHistory from './bucket-history.vue'
 import BucketUpload from './bucket-upload.vue'
 import useUserStore from '@/store/user';
-import { computed, ref, Ref } from 'vue';
-import { ImageInter } from '@/typings/interface';
+import { computed } from 'vue';
 /**
  * 实例
  */
@@ -46,7 +45,7 @@ const userStore = useUserStore()
  * 变量
  */
 const userHabits = computed(() => {
-  return userStore.user_habits
+  return userStore.user_habits.data
 })
 
 /**

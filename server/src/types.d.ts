@@ -278,6 +278,39 @@ export interface Setting {
 }
 
 
+export interface Habits {
+  // 习惯id
+  id?: string
+  // 用户id
+  uid?: string
+  // 快捷键
+  shortKey?: Array<{
+    label: string, // 快捷键描述
+    key: string // 快捷键code
+    value: string // 快捷键内容：Command + Shift + P 
+  }>
+  // 上传成功提示
+  showUpdateTip?: boolean
+  // 复制成功提示
+  showCopyTip?: boolean
+  // 删除成功提示
+  showDeleteTip?: boolean
+  // 上传后自动复制图片地址类型，支持：url、markdown
+  pasteStyle?: string
+  // 上传后自动复制图片地址
+  autoPaste?: boolean
+  // 当前使用图床id
+  current?: string
+  // 链接格式，默认是 ![]($url)
+  // 占位符$url表示图片url位置
+  // 占位符$fileName表示文件名
+  link_format?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+}
+
 // 七牛上传配置
 export interface QiniuUploadConfig {
   // 	AccessKey

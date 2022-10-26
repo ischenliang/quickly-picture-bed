@@ -6,7 +6,7 @@
       :key="'bucket-' + index"
       size="large"
       type="info"
-      :effect="item.id === habits.current.id ? 'dark' : ''"
+      :effect="item.id === habits.current ? 'dark' : ''"
       @click="toggleCurrentBucket(item)">
       {{ item.name }}
     </el-tag>
@@ -15,6 +15,7 @@
 
 <script lang="ts" setup>
 import Bucket from '@/types/Bucket';
+import Habits from '@/types/Habits';
 import { BucketInter, HabitsInter } from '@/typings/interface';
 import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
@@ -26,6 +27,7 @@ interface Props {
  * 实例
  */
 const bucket = new Bucket()
+const habit = new Habits()
 const props = withDefaults(defineProps<Props>(), {
   userHabits: () => ({
     link_format: 'URL'
@@ -72,9 +74,13 @@ listGet()
  * 逻辑处理
  */
 // 切换当前图床
-const toggleCurrentBucket = (item: BucketInter) => {
+const toggleCurrentBucket = async (item: BucketInter) => {
   // console.log('切换当前图床')
-  habits.value.current = item
+  habits.value.current = item.id
+  await habit.save({
+    id: habits.value.id,
+    current: habits.value.current
+  })
 }
 </script>
 
