@@ -4,7 +4,8 @@
       <img src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80" alt="">
     </div>
     <div class="log-item-meta">
-      <div class="log-item-title">{{ log.content }} - {{ log.operate_cont }} （{{ log.operate_id }}）</div>
+      <!--  （{{ log.operate_id }}） -->
+      <div class="log-item-title">{{ log.content }} - {{ log.operate_cont }}</div>
       <div class="log-item-desc">{{ log.createdAt }}</div>
     </div>
   </div>

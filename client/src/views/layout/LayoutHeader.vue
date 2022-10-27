@@ -14,24 +14,47 @@
         <div class="link-item">文档</div>
         <div class="link-item">Github</div>
       </div>
-      <user-dropdown></user-dropdown>
+      <user-dropdown
+        :user-info="userInfo"
+        :roles="roles"></user-dropdown>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import useConfigStore from '@/store/config';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import UserDropdown from '@/components/web/user/dropdown.vue'
+import useUserStore from '@/store/user';
+import Dict from '@/types/Dict';
+import { DictInter } from '@/typings/interface';
 
 /**
  * 实例
  */
 const configStore = useConfigStore()
+const userStore = useUserStore()
+const dict = new Dict()
 
 const website = computed(() => {
   return configStore.systemConfig.website
 })
+const userInfo = computed(() => {
+  return userStore.userInfo
+})
+const roles = ref({})
+
+
+const getRoles = () => {
+  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
+    const tmp: any = {}
+    res.values.forEach(el => {
+      tmp[el.value as string] = el.label
+    })
+    roles.value = tmp
+  })
+}
+getRoles()
 </script>
 
 <style lang="scss">

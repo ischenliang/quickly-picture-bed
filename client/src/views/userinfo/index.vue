@@ -13,11 +13,13 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, ref } from 'vue'
+import { markRaw, ref, watch } from 'vue'
 import base from './base.vue'
 import security from './security.vue'
 import binding from './binding.vue'
 import notification from './notification.vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { useCtxInstance } from '@/hooks/global'
 
 const activeTab = ref('base')
 const tabs = ref([
@@ -26,15 +28,55 @@ const tabs = ref([
   // { label: '账号绑定', name: 'binding', component: markRaw(binding) },
   { label: '新消息通知', name: 'notification', component: markRaw(notification) }
 ])
+const ctx = useCtxInstance()
+
+const route = useRoute()
+const router = useRouter()
+
+
+// 方式一：参考https://blog.csdn.net/hfhwfw161226/article/details/125770613
+watch(() => route, (val: any) => {
+  activeTab.value = val.query.type as string
+}, {
+  deep: true,
+  immediate: true
+})
+
+
+// 方式二
+// watch(() => router.currentRoute.value.query, (val: any) => {
+//   // activeTab.value = val.query.type as string
+//   console.log(val)
+// }, {
+//   deep: true,
+//   immediate: true
+// })
+
+
+
+// 方式三
+// onBeforeRouteUpdate((to) => {
+//   activeTab.value = to.query.type as string
+// })
+
+
+// 方式四
+// watch(() => ctx.$route, (val: any) => {
+//   // activeTab.value = val.query.type as string
+//   console.log(val)
+// }, {
+//   deep: true,
+//   immediate: true
+// })
 </script>
 
 <style lang="scss">
 .profile-container {
-  // height: 100%;
+  height: 100%;
   padding: 16px 0;
   background: #fff;
   .profile-tabs {
-    // height: 100%;
+    height: 100%;
     border: none !important;
     .el-tabs__header {
       width: 200px;

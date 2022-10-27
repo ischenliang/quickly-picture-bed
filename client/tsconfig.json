@@ -11,7 +11,9 @@
     "moduleResolution": "node",
     "types": ["node", "element-plus/global"],
     "paths": {
+      "@": ["./src"],
       "@/*": ["src/*"]
     },
+    "resolveJsonModule": true,
   }
 }

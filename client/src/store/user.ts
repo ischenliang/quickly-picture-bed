@@ -1,4 +1,4 @@
-import { UserInter, HabitsInter, ImageInter } from '@/typings/interface'
+import { UserInter, HabitsInter, ImageInter, LogInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
 import { reactive, Ref, ref, toRaw } from 'vue'
 import { user_habits as defaultHabits } from '@/global.config'
@@ -34,24 +34,33 @@ const useUserStore = defineStore('user', () => {
     img_name: ''
   })
 
+  // 今日操作记录
+  const user_logs: Ref<LogInter[]> = ref([])
+
   /**
    * 函数
    */
   // 更新用户信息
   const updateUserInfo = (payload: UserInter) => {
-    userInfo.value = payload
+    userInfo.value = toRaw(payload)
   }
   // 更新habits
   const updateUserHabits = (payload: HabitsInter) => {
-    user_habits.data = payload
+    user_habits.data = toRaw(payload)
   }
+  // 更新日志
+  const updateUserLogs = (payload: LogInter[]) => {
+    user_logs.value = payload
+  } 
 
   return {
     userInfo,
     user_habits,
     currentImage,
+    user_logs,
     updateUserInfo,
-    updateUserHabits
+    updateUserHabits,
+    updateUserLogs
   }
 })
 

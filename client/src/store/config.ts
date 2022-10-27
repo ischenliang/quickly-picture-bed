@@ -1,6 +1,6 @@
 import { SettingInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
-import { reactive, Ref, ref } from 'vue'
+import { reactive, Ref, ref, toRaw } from 'vue'
 
 /**
  * 系统配置定义
@@ -20,7 +20,7 @@ const useConfigStore = defineStore('config', () => {
 
   // 更新数据
   const updateSystemConfig = (payload) => {
-    systemConfig.value = payload
+    systemConfig.value = toRaw(payload)
   }
 
   return {

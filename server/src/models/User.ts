@@ -67,10 +67,10 @@ const UserModel = seq.define('user', {
     comment: '用户性别'
   },
   address: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false,
     comment: '用户地址:省、市、区、街道地址',
-    defaultValue: "['', '', '', '']"
+    defaultValue: '["", "", ""]'
   },
   token: {
     type: DataTypes.STRING,

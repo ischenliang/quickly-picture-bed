@@ -12,6 +12,11 @@ const app: Koa = new Koa({
   proxy: true,
   proxyIpHeader: 'x-forwarded-for'
 })
+app.use(cors({
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept']
+}))
 const router: KoaRouter = new KoaRouter()
 Colors.enable()
 
@@ -31,6 +36,7 @@ function getClientIP(req: any) {
 
 // 处理404不存在的
 app.use(async (ctx: Koa.DefaultContext, next: Next) => {
+  ctx.set('Content-Type', 'application/json; charset=utf-8')
   // console.log(getClientIP(ctx.req))
   // 这里还需要区分是哪些接口需要单独处理：例如登录、注册不需要传入token
   if (ctx.headers['authorization']) {
@@ -43,21 +49,29 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
         },
         code: 200,
       }
+      await next()
     } catch (error) {
-      ctx.body = {
-        code: 500,
-        message: error.message
+      if (error.message === 'jwt expired') {
+        ctx.body = {
+          code: 401,
+          message: '登录状态已失效，请重新登录'
+        }
+      } else {
+        ctx.body = {
+          code: 500,
+          message: error.message
+        }
       }
     }
+  } else {
+    await next()
   }
-  ctx.set('Content-Type', 'application/json; charset=utf-8')
   if(parseInt(ctx.status) === 404 && ctx.request.url !== '/favicon.ico'){
     ctx.body = {
       code: 404,
       message: '404 NotFound'
     }
   }
-  await next()
 })
 
 
@@ -86,12 +100,6 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
     formidable: {
       maxFileSize: 200 * 1024 * 1024 // 文件最大支持的大小
     }
-  }))
-
-  app.use(cors({
-    credentials: true,
-    allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept']
   }))
 
   // 注册路由

@@ -51,7 +51,7 @@ class PublicController {
   }
 
   
-  // 注册
+  // 注册:还需要判断当前账号是否已经存在
   @Post('/register')
   async register(@Body({ required: true }) params: User) {
     return {

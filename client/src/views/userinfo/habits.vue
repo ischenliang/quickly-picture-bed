@@ -130,7 +130,7 @@ const detail: { data: HabitsInter } = reactive({
     showDeleteTip: true,
     showCopyTip: true,
     autoPaste: true,
-    current: '',
+    current: {},
     link_format: '![]($url)',
     pasteStyle: 'url',
   }

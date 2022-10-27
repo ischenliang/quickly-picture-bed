@@ -2,10 +2,9 @@
   <el-popover placement="bottom-end" trigger="hover" :width="300" popper-class="user-info-popover">
     <template #reference>
       <div class="user-info">
-        <img class="user-info-avatar"
-          src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80" alt="">
-        <span class="user-info-name">陈亮</span>
-        <span class="user-info-role">管理员</span>
+        <img class="user-info-avatar" :src="userAvatar" alt="">
+        <span class="user-info-name">{{ userInfo.username }}</span>
+        <span class="user-info-role">{{ roles[userInfo.role] }}</span>
         <span class="user-info-caret">
           <el-icon>
             <CaretBottom />
@@ -16,15 +15,14 @@
     <div class="user-info__content">
       <div class="popover__header">
         <div class="header-left">
-          <img class="user-avatar"
-            src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80" alt="">
+          <img class="user-avatar" :src="userAvatar" alt="">
           <div>
-            <span class="user-name">陈亮</span>
-            <span class="user-role">管理员</span>
+            <span class="user-name">{{ userInfo.username }}</span>
+            <span class="user-role">{{ roles[userInfo.role] }}</span>
           </div>
         </div>
         <div class="header-right">
-          <el-button type="primary" size="medium" @click="logout">退出登录</el-button>
+          <el-button type="primary" @click="logout">退出登录</el-button>
         </div>
       </div>
       <div class="popover__content">
@@ -55,8 +53,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { UserInter } from '@/typings/interface';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+const props = withDefaults(defineProps<{ userInfo: UserInter, roles: any }>(), {
+  userInfo: () => ({} as UserInter),
+  roles: () => ({
+    1: '',
+    2: '',
+    10: '管理员'
+  })
+})
+
+const userAvatar = computed(() => {
+  return new URL('../../../views/userinfo/images/' + props.userInfo.avatar + '.png', import.meta.url).href
+})
 
 const router = useRouter()
 
@@ -99,6 +111,7 @@ const logout = () => {
   .user-info-avatar {
     height: 100%;
     border-radius: 50%;
+    background: #c0c4cc;
   }
   .user-info-name {
     margin-left: 8px;

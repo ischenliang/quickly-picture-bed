@@ -10,7 +10,8 @@
     <!-- 上传区域 -->
     <el-card class="custom-card">
       <bucket-upload
-        v-model:user-habits="userHabits"></bucket-upload>
+        v-model:user-habits="userHabits"
+        @success="getTodayLog"></bucket-upload>
     </el-card>
 
     <!-- 复制和历史记录 -->
@@ -23,7 +24,7 @@
 
       <!-- 上传历史记录 -->
       <el-card>
-        <bucket-history></bucket-history>
+        <bucket-history :logs="userStore.user_logs"></bucket-history>
       </el-card>
     </div>
   </div>
@@ -36,10 +37,16 @@ import BucketHistory from './bucket-history.vue'
 import BucketUpload from './bucket-upload.vue'
 import useUserStore from '@/store/user';
 import { computed } from 'vue';
+import Log from '@/types/Log';
+import { PageResponse } from '@/typings/req-res';
+import { LogInter } from '@/typings/interface';
+import { useFormat } from '@/hooks/date-time';
 /**
  * 实例
  */
 const userStore = useUserStore()
+const log = new Log()
+
 
 /**
  * 变量
@@ -51,6 +58,15 @@ const userHabits = computed(() => {
 /**
  * 逻辑处理
  */
+const getTodayLog = () => {
+  log.today().then((res: PageResponse<LogInter>) => {
+    userStore.updateUserLogs(res.items.map(item => {
+      item.createdAt = useFormat(item.createdAt)
+      return item
+    }))
+  })
+}
+getTodayLog()
 </script>
 
 <style lang="scss">

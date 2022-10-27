@@ -1,6 +1,6 @@
 import { SettingInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
-import { reactive, Ref, ref } from 'vue'
+import { reactive, Ref, ref, toRaw } from 'vue'
 
 const useAppStore = defineStore('app', () => {
   /**
@@ -15,7 +15,7 @@ const useAppStore = defineStore('app', () => {
    */
   // 更新用户信息
   const updateSystemConfig = (payload: SettingInter) => {
-    systemConfig.config = payload
+    systemConfig.config = toRaw(payload)
   }
 
 

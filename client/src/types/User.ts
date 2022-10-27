@@ -54,4 +54,12 @@ export default class Users {
   register () {
 
   }
+  // 当前登录用户
+  current () {
+    return http('/user/current', {})
+  }
+  // 保存
+  save (params: UserInter) {
+    return http('/user/save', params)
+  }
 }

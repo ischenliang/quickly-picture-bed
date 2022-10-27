@@ -89,7 +89,7 @@ export interface User {
   // 性别
   gender?: string
   // 联系地址
-  address?: string
+  address?: string[]
   // 个人简介
   desc?: string
   // 创建时间

@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
     link_format: 'URL'
   } as HabitsInter)
 })
-const emit = defineEmits(['update:userHabits'])
+const emit = defineEmits(['update:userHabits', 'success'])
 const configStore = useConfigStore()
 const userStore = useUserStore()
 const image = new Image()
@@ -148,6 +148,7 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           current.value = result
+          emit('success')
         }
       })
     })

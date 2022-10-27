@@ -70,7 +70,7 @@ const login = () => {
     localStorage.setItem('email', form.username)
     localStorage.setItem('password', form.password)
     localStorage.setItem('token', res.token)
-    userStore.updateUserInfo(res)
+    // userStore.updateUserInfo(res)
     ctx.$message({
       message: '登录成功',
       type: 'success',

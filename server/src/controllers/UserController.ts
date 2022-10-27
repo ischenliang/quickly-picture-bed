@@ -96,4 +96,42 @@ class UserController {
       })
     }
   }
+
+
+  /**
+   * 当前登录状态的用户
+   * @param params User用户
+   * @returns 
+   */
+  @Post('/current')
+  async current (@CurrentUser() user: User) {
+    return {
+      code: 200,
+      message: '成功',
+      data: await UserModel.findOne({
+        where: {
+          id: user.id
+        }
+      })
+    }
+  }
+
+
+  /**
+   * 保存
+   * @param params User用户
+   * @returns 
+   */
+  @Post('/save')
+  async save (@Body() params: User, @CurrentUser() current: User) {
+    return {
+      code: 200,
+      message: '成功',
+      data: await UserModel.update(params, {
+        where: {
+          id: current.id
+        }
+      })
+    }
+  }
 }

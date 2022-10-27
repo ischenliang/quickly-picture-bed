@@ -142,7 +142,7 @@ export interface UserInter {
   // 自我介绍
   desc?: string
   // 联系地址
-  address?: string
+  address?: string[]
   // 角色
   role?: number | string
   // 角色名称

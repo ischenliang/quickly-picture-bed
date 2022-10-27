@@ -35,4 +35,7 @@ export default class Log {
   detail (id: string) {
     return http('/log/detail', { id })
   }
+  today () {
+    return http('/log/listByDay', null)
+  }
 }
