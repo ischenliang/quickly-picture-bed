@@ -20,8 +20,7 @@ const userStore = useUserStore()
 /**
  * 监听器
  */
-watch(() => userStore.user_habits, (val) => {
-  const shortKey = val.data.shortKey
+watch(() => userStore.user_habits.data.shortKey, (val) => {
   nextTick(() => {
     // // 回调函数返回 false 以阻止浏览器默认事件行为
     // key('control + a', () => {
@@ -29,7 +28,7 @@ watch(() => userStore.user_habits, (val) => {
     //   return false
     // })
     
-    shortKey.forEach(item => {
+    val.forEach(item => {
       console.log(item.value.toLowerCase())
       key(item.value.toLowerCase(), () => {
         console.log('绑定成功额')

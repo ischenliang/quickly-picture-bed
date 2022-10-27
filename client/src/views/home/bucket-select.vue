@@ -6,7 +6,7 @@
       :key="'bucket-' + index"
       size="large"
       type="info"
-      :effect="item.id === habits.current ? 'dark' : ''"
+      :effect="item.id === habits.current.id ? 'dark' : ''"
       @click="toggleCurrentBucket(item)">
       {{ item.name }}
     </el-tag>
@@ -76,7 +76,7 @@ listGet()
 // 切换当前图床
 const toggleCurrentBucket = async (item: BucketInter) => {
   // console.log('切换当前图床')
-  habits.value.current = item.id
+  habits.value.current = item
   await habit.save({
     id: habits.value.id,
     current: habits.value.current

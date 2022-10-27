@@ -1,10 +1,14 @@
 <template>
   <div class="app-header">
-    <div class="app-logo">
-      <!-- http://pic.xyaxw.cn/static/img/logo.cf036a4d.jpg -->
+    <router-link :to="'/'" tag="div" class="app-logo">
       <img v-if="website.logo" :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
       <span class="app-name">{{ website.name || '默认名称' }}</span>
-    </div>
+    </router-link>
+    <!-- <div class="app-logo">
+      http://pic.xyaxw.cn/static/img/logo.cf036a4d.jpg
+      <img v-if="website.logo" :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
+      <span class="app-name">{{ website.name || '默认名称' }}</span>
+    </div> -->
     <div class="app-rightmenu">
       <div class="app-links">
         <div class="link-item">文档</div>
@@ -52,6 +56,9 @@ const website = computed(() => {
       word-break: keep-all;
       white-space: nowrap;
       color: #181818;
+    }
+    &:link, &:visited {
+      text-decoration: none;
     }
   }
   .app-rightmenu {

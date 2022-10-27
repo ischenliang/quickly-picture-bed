@@ -4,19 +4,19 @@ export const constRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/logn-register/login.vue'),
+    component: () => import('@/views/login-register/login.vue'),
     meta: { title: '登录' }
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('@/views/logn-register/register.vue'),
+    component: () => import('@/views/login-register/register.vue'),
     meta: { title: '注册' }
   },
   {
     path: '/forget',
     name: 'Forget',
-    component: () => import('@/views/logn-register/forget.vue'),
+    component: () => import('@/views/login-register/forget.vue'),
     meta: { title: '忘记密码' }
   },
   {

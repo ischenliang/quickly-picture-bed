@@ -50,9 +50,10 @@ const HabitsModel = seq.define('habits', {
     defaultValue: false
   },
   current: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: '当前使用图床id'
+    type: DataTypes.JSON,
+    allowNull: true,
+    comment: '当前使用图床',
+    defaultValue: '{}'
   },
   link_format: {
     type: DataTypes.STRING,

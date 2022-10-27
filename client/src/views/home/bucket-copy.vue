@@ -1,13 +1,11 @@
 <template>
   <div class="bucket-title">链接格式</div>
   <el-tabs v-model="habits.pasteStyle" type="border-card" class="bucket-copy-tabs" @tab-change="handleTabChange">
-    <el-tab-pane v-for="(item, index) in linkTypes" :key="'linkType-' + index" :label="item.label" :name="item.id">
+    <el-tab-pane v-for="(item, index) in linkTypesComputed" :key="'linkType-' + index" :label="item.label" :name="item.id">
       <div class="links-copy" @click="copyLink(item)">
         {{ getLinkValue(item) }}
         <span class="link-copy-btn">
-          <el-icon>
-            <CopyDocument />
-          </el-icon>
+          <el-icon><CopyDocument /></el-icon>
         </span>
       </div>
     </el-tab-pane>
@@ -49,6 +47,14 @@ const habits = computed({
 // 当前上传图片
 const current = computed(() => {
   return userStore.currentImage
+})
+const linkTypesComputed = computed(() => {
+  return linkTypes.value.map(item => {
+    if (item.id === 'custom') {
+      item.value = habits.value.link_format
+    }
+    return item
+  })
 })
 
 

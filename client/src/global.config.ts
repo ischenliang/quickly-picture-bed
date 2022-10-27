@@ -11,7 +11,7 @@ export const user_habits: HabitsInter = {
   autoRename: true,
   autoPaste: true,
   pasteStyle: 'markdown',
-  current: '',
+  current: {},
   link_format: 'URL',
 }
 

@@ -2,7 +2,7 @@
   <el-form class="website-form" :model="myForm" ref="formRef" :rules="rules" label-position="top" label-width="97px">
     <c-card :title="'网站logo&打赏'" :header-padding="'18px 15px'">
       <el-row class="center-row">
-        <el-col :xl="6" :lg="12">
+        <el-col :xl="6" :lg="12" :md="12">
           <el-form-item prop="logo" label="网站logo">
             <img-upload
               :base-url="myForm.website.baseUrl"
@@ -11,7 +11,7 @@
               @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="12">
+        <el-col :xl="6" :lg="12" :md="12">
           <el-form-item prop="ico" label="网站ico">
             <img-upload
               :base-url="myForm.website.baseUrl"
@@ -20,7 +20,7 @@
               @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="12">
+        <el-col :xl="6" :lg="12" :md="12">
           <el-form-item prop="reward_alipay" label="阿里支付">
             <img-upload
               :base-url="myForm.website.baseUrl"
@@ -29,7 +29,7 @@
               @submit="handleSubmit"></img-upload>
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="12">
+        <el-col :xl="6" :lg="12" :md="12">
           <el-form-item prop="reward_weixin" label="微信支付">
             <img-upload
               :base-url="myForm.website.baseUrl"

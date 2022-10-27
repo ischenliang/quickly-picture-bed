@@ -345,7 +345,7 @@ export interface HabitsInter {
   // 上传后自动复制图片地址
   autoPaste?: boolean
   // 当前使用图床id
-  current?: string
+  current?: BucketInter
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名

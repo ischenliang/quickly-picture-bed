@@ -104,6 +104,7 @@ const getLinkValue = (item: Link) => {
 }
 // 文件上传前对文件大小限制
 const beforeUpload = (e: { files: FileList, error: string }) => {
+  console.log(e)
   if (e.error) {
     return ctx.$message({ message: e.error, duration: 1000, type: 'error' })
   }
@@ -127,7 +128,7 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 }
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
-  const { type, id } = habits.value.current
+  const { id, type } = habits.value.current
   if (type === '' || id === '') {
     return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
   }
