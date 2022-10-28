@@ -40,7 +40,8 @@ const ctx = useCtxInstance()
  */
 const visible = ref(false)
 const style = ref({
-  flex: '1'
+  flex: '1',
+  backgroundColor: 'transparent'
 })
 
 /**
@@ -57,6 +58,12 @@ watch(() => ctx.$route, (val, old) => {
     style.value.flex = '0 0 calc(100% - 50px)'
   } else {
     style.value.flex = '1'
+  }
+
+  if (['About', 'Uplog'].includes(val.name)) {
+    style.value.backgroundColor = '#fff'
+  } else {
+    style.value.backgroundColor = 'transparent'
   }
 }, {
   immediate: true

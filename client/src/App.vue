@@ -28,7 +28,7 @@ watch(() => userStore.user_habits.data.shortKey, (val) => {
     //   return false
     // })
     
-    val.forEach(item => {
+    val && val.forEach(item => {
       console.log(item.value.toLowerCase())
       key(item.value.toLowerCase(), () => {
         console.log('绑定成功额')
@@ -51,6 +51,9 @@ html {
 *, *:before, *:after {
   box-sizing: border-box;
   padding: 0;
+  margin: 0;
+}
+p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div style="padding: 30px;">
+    <p style="color: red;">需要根据角色来判断显示什么样的统计，例如：管理员查看则是看平台所有的数据，其他角色则是看自己相关的数据即可。</p>
     图片数量、存储桶数量、占用总存储量、动态数量(图片操作、系统操作)、用户数量
     <div style="width: 100%;">
       <div style="margin: 0 auto;text-align: center;margin-bottom: 10px;font-weight: bold;">贡献度</div>

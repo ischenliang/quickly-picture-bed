@@ -1,7 +1,5 @@
 <template>
-  <div>
-    关于也
-  </div>
+  <div>使用情况分析</div>
 </template>
 
 <script lang="ts" setup>

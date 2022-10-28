@@ -46,7 +46,9 @@ const useUserStore = defineStore('user', () => {
   }
   // 更新habits
   const updateUserHabits = (payload: HabitsInter) => {
-    user_habits.data = toRaw(payload)
+    if (payload) {
+      user_habits.data = toRaw(payload)
+    }
   }
   // 更新日志
   const updateUserLogs = (payload: LogInter[]) => {

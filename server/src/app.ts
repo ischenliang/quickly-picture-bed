@@ -15,7 +15,7 @@ const app: Koa = new Koa({
 app.use(cors({
   credentials: true,
   allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept']
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'notAuth']
 }))
 const router: KoaRouter = new KoaRouter()
 Colors.enable()
@@ -51,7 +51,7 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
       }
       await next()
     } catch (error) {
-      if (error.message === 'jwt expired') {
+      if (['jwt expired', 'jwt malformed'].includes(error.message)) {
         ctx.body = {
           code: 401,
           message: '登录状态已失效，请重新登录'

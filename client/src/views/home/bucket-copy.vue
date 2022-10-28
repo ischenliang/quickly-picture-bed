@@ -77,10 +77,12 @@ const copyLink = (item: Link) => {
 }
 
 const handleTabChange = async (name) => {
-  await habit.save({
-    id: habits.value.id,
-    pasteStyle: name
-  })
+  if (habits.value.id) {
+    await habit.save({
+      id: habits.value.id,
+      pasteStyle: name
+    })
+  }
 }
 </script>
 

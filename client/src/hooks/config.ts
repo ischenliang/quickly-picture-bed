@@ -26,13 +26,11 @@ export function useGetSystemConfig () {
   return new Promise((resolve) => {
     const configStore = useConfigStore()
     if (!configStore.systemConfig.id) {
-      setting.find().then((res: PageResponse<SettingInter>) => {
-        configStore.updateSystemConfig(res.items.map(item => {
-          const { ico, baseUrl, logo } = item.website
-          item.website.ico_preview = baseUrl + ico
-          item.website.logo_preview = baseUrl + logo
-          return item
-        })[0])
+      setting.default().then((res: SettingInter) => {
+        const { ico, baseUrl, logo } = res.website
+        res.website.ico_preview = baseUrl + ico
+        res.website.logo_preview = baseUrl + logo
+        configStore.updateSystemConfig(res)
 
         const { ico_preview, title, name, logo_preview } = configStore.systemConfig.website
         const { icon_url } = configStore.systemConfig.system

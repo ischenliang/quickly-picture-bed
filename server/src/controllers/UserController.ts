@@ -134,4 +134,37 @@ class UserController {
       })
     }
   }
+
+
+  /**
+   * 修改密码
+   * @param params User用户
+   * @returns 
+   */
+  @Post('/changePwd')
+  async changePwd (@Body() params: { password: string, old_password: string }, @CurrentUser() current: User) {
+    const tmp = await UserModel.findOne({
+      where: {
+        id: current.id
+      }
+    }) as User
+    if (tmp.password !== params.old_password) {
+      return {
+        code: 500,
+        message: '原密码错误，请重新输入',
+        data: null
+      }
+    }
+    return {
+      code: 200,
+      message: '成功',
+      data: await UserModel.update({
+        password: params.password
+      }, {
+        where: {
+          id: current.id
+        }
+      })
+    }
+  }
 }

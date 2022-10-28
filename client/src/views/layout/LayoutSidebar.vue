@@ -21,12 +21,16 @@
         <el-icon><HelpFilled /></el-icon>
         <span>存储桶</span>
       </el-menu-item>
+      <el-menu-item index="/log">
+        <el-icon><ChatDotRound /></el-icon>
+        <span>操作日志</span>
+      </el-menu-item>
       <el-sub-menu index="/system">
         <template #title>
           <el-icon><Setting /></el-icon>
           <span>系统管理</span>
         </template>
-        <el-menu-item index="/system/dash">
+        <el-menu-item index="/system/analysis">
           <el-icon><Odometer /></el-icon>
           <span>概况</span>
         </el-menu-item>

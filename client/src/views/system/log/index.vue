@@ -1,5 +1,6 @@
 <template>
   <div>
+    管理员查看所有的日志
     日志管理|动态管理
     <div style="margin-top: 20px;">此处的动态记录可以使用koa-ts-tools自行编写并存储在数据库中</div>
     <el-button @click="handleClick">点击</el-button>

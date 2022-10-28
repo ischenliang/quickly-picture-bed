@@ -111,4 +111,17 @@ class SettingController {
       data: data
     }
   }
+  /**
+   * 列表
+   * @returns 
+   */
+  @Post('/default')
+  async default(@Body() params: Filter) {
+    const tmp = await SettingModel.findOne()
+    return {
+      code: 200,
+      message: '成功',
+      data: tmp
+    }
+  }
 }

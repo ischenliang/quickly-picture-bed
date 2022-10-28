@@ -8,7 +8,11 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config: AxiosRequestConfig) => {
-  config.headers['authorization'] = localStorage.getItem('token')
+  const { notAuth = false } = config.headers
+  if (!notAuth) {
+    config.headers['authorization'] = localStorage.getItem('token')
+  }
+  delete config.data.notAuth
   return config
 }, (error) => {
 
@@ -28,13 +32,16 @@ function http (url, data) {
     instance({
       url,
       method: 'post',
-      data
+      data,
+      headers: {
+        notAuth: data.notAuth
+      },
     }).then((res: any) => {
       resolve(res)
     }).catch(error => {
       console.log('报错了: ', error)
       ElMessage({ message: error.message, type: 'error' })
-      if (error.code === 401) {
+      if ([500, 401].includes(error.code)) {
         localStorage.clear()
         useUserStore().updateUserInfo(null)
         router.push({

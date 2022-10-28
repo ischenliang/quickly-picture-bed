@@ -26,4 +26,10 @@ export default class Setting {
       return this.create(params)
     }
   }
+  // 默认配置
+  default () {
+    return http('/setting/default', {
+      notAuth: true
+    })
+  }
 }

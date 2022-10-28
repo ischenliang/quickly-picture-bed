@@ -73,10 +73,10 @@ const userAvatar = computed(() => {
 const router = useRouter()
 
 const entries = ref([
-  { label: '使用分析', icon: 'DataAnalysis', route: '' },
+  { label: '使用分析', icon: 'DataAnalysis', route: 'Analysis' },
   { label: '使用习惯', icon: 'Setting', route: 'Habits' },
-  { label: '更新日志', icon: 'ScaleToOriginal', route: '' },
-  { label: '关于系统', icon: 'InfoFilled', route: '' }
+  { label: '更新日志', icon: 'ScaleToOriginal', route: 'Uplog' },
+  { label: '关于系统', icon: 'InfoFilled', route: 'About' }
 ])
 
 const goProfile = (type) => {

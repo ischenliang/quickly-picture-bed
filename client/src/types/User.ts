@@ -62,4 +62,8 @@ export default class Users {
   save (params: UserInter) {
     return http('/user/save', params)
   }
+  // 保存
+  changePwd (params: { password: string, old_password: string }) {
+    return http('/user/changePwd', params)
+  }
 }

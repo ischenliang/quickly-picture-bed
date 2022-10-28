@@ -64,15 +64,39 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '存储桶', icon: 'PictureFilled' }
       },
       {
+        path: 'log',
+        name: 'Log',
+        component: () => import('@/views/log/index.vue'),
+        meta: { title: '操作日志', icon: 'PictureFilled' }
+      },
+      {
+        path: 'uplog',
+        name: 'Uplog',
+        component: () => import('@/views/log/uplog.vue'),
+        meta: { title: '更新日志', icon: 'PictureFilled', hidden: true, active: '/' }
+      },
+      {
+        path: 'about',
+        name: 'About',
+        component: () => import('@/views/log/about.vue'),
+        meta: { title: '关于系统', icon: 'PictureFilled', hidden: true, active: '/' }
+      },
+      {
+        path: 'analysis',
+        name: 'Analysis',
+        component: () => import('@/views/log/analysis.vue'),
+        meta: { title: '使用分析', icon: 'PictureFilled', hidden: true, active: '/' }
+      },
+      {
         path: 'system',
         name: 'System',
         component: () => import('@/views/system/index.vue'),
         meta: { title: '系统管理', icon: 'PictureFilled' },
         children: [
           {
-            path: 'dash',
-            name: 'SystemDash',
-            component: () => import('@/views/system/home/index.vue'),
+            path: 'analysis',
+            name: 'SystemAnalysis',
+            component: () => import('@/views/system/analysis/index.vue'),
             meta: { title: '概况', icon: 'PictureFilled' }
           },
           {

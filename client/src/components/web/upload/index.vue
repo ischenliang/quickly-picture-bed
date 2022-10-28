@@ -142,7 +142,7 @@ const handleDragenter = (e: DragEvent) => {
         text-align: center;
       }
       &:hover, &.is-dragover {
-        border: 2px dashed #0974f7;
+        border: 1px dashed #0974f7;
         background: rgba(32, 159, 255, 0.06);
       }
     }

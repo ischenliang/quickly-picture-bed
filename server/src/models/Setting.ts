@@ -25,7 +25,7 @@ const SettingModel = seq.define('setting', {
     comment: '系统配置'
   },
   uplog: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
     comment: '更新日志url'
   },

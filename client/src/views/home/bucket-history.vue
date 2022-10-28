@@ -1,7 +1,12 @@
 <template>
   <div class="bucket-title">上传记录<small>(今日)</small></div>
   <div class="history-list">
-    <log-item v-for="(item, index) in logs" :key="index" :log="item"></log-item>
+    <template v-if="logs.length">
+      <log-item v-for="(item, index) in logs" :key="index" :log="item"></log-item>
+    </template>
+    <template v-else>
+      <div class="empty">今日还未上传图片哦</div>
+    </template>
   </div>
 </template>
 
@@ -56,5 +61,13 @@ withDefaults(defineProps<{ logs: LogInter[] }>(), {
 .history-list {
   overflow: auto;
   flex: 1;
+  .empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #909399;
+  }
 }
 </style>

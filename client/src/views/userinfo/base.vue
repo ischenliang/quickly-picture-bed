@@ -1,6 +1,6 @@
 <template>
   <div class="user-base">
-    <div class="user-base-title">基本设置</div>
+    <!-- <div class="user-base-title">基本设置</div> -->
     <div class="user-base-view">
       <el-form :model="form" :rules="rules" :label-position="'right'" :label-width="150">
         <el-form-item label="头像" prop="avatar">

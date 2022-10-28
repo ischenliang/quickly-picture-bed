@@ -38,15 +38,15 @@ class PublicController {
       } else {
         return {
           code: 500,
-          message: '登录失败',
-          data: '账号和密码不匹配'
+          message: '账号和密码不匹配',
+          data: '登陆失败'
         }
       }
     }
     return {
       code: 500,
-      message: '登录失败',
-      data: '账号不存在'
+      message: '账号不存在',
+      data: '登录失败'
     }
   }
 

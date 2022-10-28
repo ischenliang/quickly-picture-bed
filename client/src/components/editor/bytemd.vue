@@ -51,7 +51,9 @@ const instance = getCurrentInstance();
 
 onMounted(() => {
   editor.value = new bytemd.Editor({
+    // @ts-ignore
     target: instance?.subTree.el,
+    // @ts-ignore
     props,
   });
   editor.value.$on('change', (e: { detail: { value: string; }; }) => {

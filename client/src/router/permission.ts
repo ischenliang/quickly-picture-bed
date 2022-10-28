@@ -8,6 +8,7 @@ const user = new Users()
 router.beforeEach(async (to, from, next) => {
   // 获取系统配置
   const token = localStorage.getItem('token')
+  const flag = await useGetSystemConfig()
   const userStore = useUserStore()
   const userInfo = userStore.userInfo
   if (token) {
@@ -16,7 +17,6 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const data: UserInter = await user.current()
       userStore.updateUserInfo(data)
-      const flag = await useGetSystemConfig()
       const habit = await useGetHabits()
       if (!flag || !habit) {
         next({ ...to, replace: true })
