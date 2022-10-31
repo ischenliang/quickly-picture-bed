@@ -36,6 +36,6 @@ export default class Log {
     return http('/log/detail', { id })
   }
   today () {
-    return http('/log/listByDay', null)
+    return http('/log/listByDay', {})
   }
 }

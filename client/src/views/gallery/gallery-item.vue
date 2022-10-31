@@ -109,7 +109,7 @@ const actions = {
 .gallery-item {
   padding: 10px;
   // width: 270px;
-  height: 250px;
+  height: 210px;
   // border: 1px solid #dcdee2;
   border: 1px solid #e9ecef;
   border-radius: 4px;

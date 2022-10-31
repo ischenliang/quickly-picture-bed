@@ -34,100 +34,100 @@ const routes: RouteRecordRaw[] = [
     name: 'Layout',
     children: [
       {
-        path: '',
+        path: '/',
         name: 'Home',
         component: () => import('@/views/home/index.vue'),
-        meta: { title: '首页', icon: 'UploadFilled' }
+        meta: { title: '首页', icon: 'UploadFilled', role: [1, 2, 10] }
       },
       {
-        path: 'profile',
+        path: '/profile',
         name: 'Profile',
         component: () => import('@/views/userinfo/index.vue'),
-        meta: { title: '个人中心', icon: 'UploadFilled', hidden: true, active: '/' }
+        meta: { title: '个人中心', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
-        path: 'habits',
+        path: '/habits',
         name: 'Habits',
         component: () => import('@/views/userinfo/habits.vue'),
-        meta: { title: '使用习惯', icon: 'UploadFilled', hidden: true, active: '/' }
+        meta: { title: '使用习惯', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
-        path: 'gallery',
+        path: '/gallery',
         name: 'Gallery',
         component: () => import('@/views/gallery/index.vue'),
-        meta: { title: '图库', icon: 'PictureFilled' }
+        meta: { title: '图库', icon: 'PictureFilled', role: [1, 2, 10] }
       },
       {
-        path: 'bucket',
+        path: '/bucket',
         name: 'Bucket',
         component: () => import('@/views/bucket/index.vue'),
-        meta: { title: '存储桶', icon: 'PictureFilled' }
+        meta: { title: '存储桶', icon: 'HelpFilled', role: [1, 2, 10] }
       },
       {
-        path: 'log',
+        path: '/log',
         name: 'Log',
         component: () => import('@/views/log/index.vue'),
-        meta: { title: '操作日志', icon: 'PictureFilled' }
+        meta: { title: '操作日志', icon: 'ChatDotRound', role: [1, 2, 10] }
       },
       {
-        path: 'uplog',
+        path: '/uplog',
         name: 'Uplog',
         component: () => import('@/views/log/uplog.vue'),
-        meta: { title: '更新日志', icon: 'PictureFilled', hidden: true, active: '/' }
+        meta: { title: '更新日志', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
-        path: 'about',
+        path: '/about',
         name: 'About',
         component: () => import('@/views/log/about.vue'),
-        meta: { title: '关于系统', icon: 'PictureFilled', hidden: true, active: '/' }
+        meta: { title: '关于系统', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
-        path: 'analysis',
+        path: '/analysis',
         name: 'Analysis',
         component: () => import('@/views/log/analysis.vue'),
-        meta: { title: '使用分析', icon: 'PictureFilled', hidden: true, active: '/' }
+        meta: { title: '使用分析', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
-        path: 'system',
+        path: '/system',
         name: 'System',
         component: () => import('@/views/system/index.vue'),
-        meta: { title: '系统管理', icon: 'PictureFilled' },
+        meta: { title: '系统管理', icon: 'Setting', role: [10] },
         children: [
           {
-            path: 'analysis',
+            path: '/system/analysis',
             name: 'SystemAnalysis',
             component: () => import('@/views/system/analysis/index.vue'),
-            meta: { title: '概况', icon: 'PictureFilled' }
+            meta: { title: '概况', icon: 'Odometer' }
           },
           {
-            path: 'user',
+            path: '/system/user',
             name: 'SystemUser',
             component: () => import('@/views/system/user/index.vue'),
-            meta: { title: '用户管理', icon: 'PictureFilled' }
+            meta: { title: '用户管理', icon: 'UserFilled' }
           },
           {
-            path: 'bucketSource',
+            path: '/system/bucketSource',
             name: 'SystemBucketSource',
             component: () => import('@/views/system/bucket-source/index.vue'),
-            meta: { title: '存储桶源', icon: 'PictureFilled' }
+            meta: { title: '存储桶源', icon: 'DeleteFilled' }
           },
           {
-            path: 'dict',
+            path: '/system/dict',
             name: 'SystemDict',
             component: () => import('@/views/system/dict/index.vue'),
-            meta: { title: '字典管理', icon: 'PictureFilled' }
+            meta: { title: '字典管理', icon: 'Basketball' }
           },
           {
-            path: 'log',
+            path: '/system/log',
             name: 'SystemLog',
             component: () => import('@/views/system/log/index.vue'),
-            meta: { title: '日志管理', icon: 'PictureFilled' }
+            meta: { title: '日志管理', icon: 'List' }
           },
           {
-            path: 'setting',
+            path: '/system/setting',
             name: 'SystemSetting',
             component: () => import('@/views/system/setting/index.vue'),
-            meta: { title: '系统设置', icon: 'PictureFilled' }
+            meta: { title: '系统设置', icon: 'Tools' }
           }
         ]
       }

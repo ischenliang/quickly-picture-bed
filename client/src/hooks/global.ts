@@ -258,3 +258,36 @@ export function useWindowClipboard () {
     })
   })
 }
+
+
+// 深克隆
+export function useDeepClone (obj, hash = new WeakMap()) {
+  // 正则：直接返回新对象
+  if (obj instanceof RegExp) return new RegExp(obj)
+  // 日期：直接返回新对象
+  if (obj instanceof Date) return new Date(obj)
+  // 空或者非对象类型：直接返回原值
+  if (obj === null || typeof obj !== 'object') return obj
+  // 循环引用的情况
+  if (hash.has(obj)) {
+    return hash.get(obj)
+  }
+  // new一个相应的对象
+  // obj为Array，相当于new Array()
+  // obj为Object，相当于new Object()
+  const constr = new obj.constructor()
+  hash.set(obj, constr)
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      constr[key] = useDeepClone(obj[key], hash)
+    }
+  }
+  // 考虑symbol的情况
+  const symbolObj = Object.getOwnPropertySymbols(obj)
+  for (let i = 0; i < symbolObj.length; i++) {
+    if (obj.hasOwnProperty(symbolObj[i])) {
+      constr[symbolObj[i]] = useDeepClone(obj[symbolObj[i]], hash)
+    }
+  }
+  return constr
+}

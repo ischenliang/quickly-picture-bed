@@ -32,10 +32,7 @@ function http (url, data) {
     instance({
       url,
       method: 'post',
-      data,
-      headers: {
-        notAuth: data.notAuth
-      },
+      data
     }).then((res: any) => {
       resolve(res)
     }).catch(error => {

@@ -5,7 +5,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     ...constRoutes,
-    ...routes,
+    // ...routes,
   ]
 })
 

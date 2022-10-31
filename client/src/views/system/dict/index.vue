@@ -15,7 +15,7 @@
         </filter-item>
       </template>
       <template #action>
-        <el-button type="primary" size="large" @click="itemOperate(null, 'add')">新增</el-button>
+        <el-button type="primary" @click="itemOperate(null, 'add')">新增</el-button>
       </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">编辑</el-button>
@@ -76,6 +76,7 @@ const listGet = () => {
     size: list.size,
     ...list.filters
   }).then((res: PageResponse<DictInter>) => {
+    list.total = res.total
     list.data = res.items.map(item => {
       item.values_str = JSON.stringify(item.values, null, '\t')
       item.createdAt = useFormat(item.createdAt)

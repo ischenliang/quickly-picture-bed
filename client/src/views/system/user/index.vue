@@ -28,7 +28,7 @@
         </filter-item>
       </template>
       <template #action>
-        <el-button type="primary" size="large" @click="itemOperate(null, 'add')">新增</el-button>
+        <el-button type="primary" @click="itemOperate(null, 'add')">新增</el-button>
       </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">编辑</el-button>

@@ -1,6 +1,7 @@
 <template>
   <c-upload
     :accept="systemConfig.system.accept"
+    :limit="systemConfig.system.maxcount"
     @upload="beforeUpload">
     <template #progress v-if="totalProgress.percent">
       <el-progress :percentage="totalProgress.percent" />

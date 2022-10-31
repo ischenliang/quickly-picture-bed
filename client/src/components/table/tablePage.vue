@@ -1,6 +1,6 @@
 <template>
   <div class="table-page">
-    <filter-input @filter="$emit('filter')" @reset="$emit('reset')" v-if="enableFilter">
+    <filter-input @filter="$emit('filter')" @reset="$emit('reset')" v-if="slots.filter">
       <template #content>
         <slot name="filter"></slot>
       </template>
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue'
+import { PropType, useSlots } from 'vue'
 import tableCard from './tableCard.vue'
 import tableTable from './tableTable.vue'
 import { ListInter } from '@/typings/interface'
@@ -89,10 +89,6 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  enableFilter: {
-    type: Boolean,
-    default: true
-  },
   // 边框
   border: {
     type: Boolean,
@@ -100,6 +96,7 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['update:tableData'])
+const slots = useSlots()
 
 
 /**

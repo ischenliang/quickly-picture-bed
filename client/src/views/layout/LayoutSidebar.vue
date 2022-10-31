@@ -9,69 +9,51 @@
       active-text-color="#2d8cf0"
       style="border-right: none;"
       router>
-      <el-menu-item index="/">
-        <el-icon><UploadFilled /></el-icon>
-        <span>首页</span>
-      </el-menu-item>
-      <el-menu-item index="/gallery">
-        <el-icon><PictureFilled /></el-icon>
-        <span>图库</span>
-      </el-menu-item>
-      <el-menu-item index="/bucket">
-        <el-icon><HelpFilled /></el-icon>
-        <span>存储桶</span>
-      </el-menu-item>
-      <el-menu-item index="/log">
-        <el-icon><ChatDotRound /></el-icon>
-        <span>操作日志</span>
-      </el-menu-item>
-      <el-sub-menu index="/system">
-        <template #title>
-          <el-icon><Setting /></el-icon>
-          <span>系统管理</span>
-        </template>
-        <el-menu-item index="/system/analysis">
-          <el-icon><Odometer /></el-icon>
-          <span>概况</span>
+      <template v-for="(item, index) in menus[0].children" :key="index">
+        <el-sub-menu v-if="item.children" :index="item.path">
+          <template #title>
+            <el-icon><component :is="item.meta.icon"></component></el-icon>
+            <span>{{ item.meta.title }}</span>
+          </template>
+          <el-menu-item
+            v-for="(subItem, subIndex) in item.children"
+            :index="subItem.path"
+            :key="subIndex">
+            <el-icon><component :is="subItem.meta.icon"></component></el-icon>
+            <span>{{ subItem.meta.title }}</span>
+          </el-menu-item>
+        </el-sub-menu>
+        <el-menu-item v-else-if="!item.meta.hidden" :index="item.path">
+          <el-icon><component :is="item.meta.icon"></component></el-icon>
+          <span>{{ item.meta.title }}</span>
         </el-menu-item>
-        <el-menu-item index="/system/user">
-          <el-icon><UserFilled /></el-icon>
-          <span>用户管理</span>
-        </el-menu-item>
-        <el-menu-item index="/system/bucketSource">
-          <el-icon><DeleteFilled /></el-icon>
-          <span>存储桶配置</span>
-        </el-menu-item>
-        <el-menu-item index="/system/dict">
-          <el-icon><Basketball /></el-icon>
-          <span>字典管理</span>
-        </el-menu-item>
-        <el-menu-item index="/system/log">
-          <el-icon><List /></el-icon>
-          <span>日志管理</span>
-        </el-menu-item>
-        <el-menu-item index="/system/setting">
-          <el-icon><Tools /></el-icon>
-          <span>系统设置</span>
-        </el-menu-item>
-      </el-sub-menu>
+      </template>
     </el-menu>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import useUserStore from '@/store/user';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 /**
  * 实例
  */
 const route = useRoute()
+const userStore = useUserStore()
 
 /**
  * 变量
  */
 const activeMenu: any = ref('/')
+const menus = computed(() => {
+  return userStore.user_menus
+})
+
+/**
+ * 监听器
+ */
 watch(() => route, (val) => {
   const { meta, path, name } = val
   if (meta && meta.active) {

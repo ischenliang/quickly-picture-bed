@@ -15,7 +15,7 @@ const app: Koa = new Koa({
 app.use(cors({
   credentials: true,
   allowMethods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'notAuth']
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept']
 }))
 const router: KoaRouter = new KoaRouter()
 Colors.enable()

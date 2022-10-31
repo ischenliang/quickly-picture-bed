@@ -10,13 +10,13 @@
           </div>
         </el-form-item>
         <el-form-item label="昵称" prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名" size="large" />
+          <el-input v-model="form.username" placeholder="请输入昵称" size="large" />
         </el-form-item>
         <el-form-item label="联系邮箱" prop="emailemail">
-          <el-input v-model="form.email" placeholder="请输入用户名" size="large" />
+          <el-input v-model="form.email" placeholder="请输入邮箱" disabled size="large" />
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="form.phone" placeholder="请输入用户名" size="large" />
+          <el-input v-model="form.phone" placeholder="请输入联系电话" size="large" />
         </el-form-item>
         <el-form-item label="职业" prop="major">
           <!-- 程序猿  设计师  开发者  学生  其他 -->
@@ -77,7 +77,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="个人简介|个性签名" prop="desc">
-          <el-input v-model="form.desc" type="textarea" :rows="4" placeholder="请输入用户名"></el-input>
+          <el-input v-model="form.desc" type="textarea" :rows="4" placeholder="请输入个人简介"></el-input>
         </el-form-item>
         <el-form-item prop="name" style="margin-top: 25px;">
           <el-button type="primary" @click="submit">提交</el-button>
