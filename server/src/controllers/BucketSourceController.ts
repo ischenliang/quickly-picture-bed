@@ -2,6 +2,7 @@ import BucketSourceModel from '../models/BucketSource'
 import { BucketSource, Page } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
+import { useRoleAuthorization } from '../middlewares/authorization'
 
 interface Filter extends Page {
   name?: string
@@ -50,6 +51,7 @@ class BucketsourceController {
    * @returns 
    */
   @Post('/create')
+  @Flow([useRoleAuthorization])
   async create (@Body() params: BucketSource) {
     return {
       code: 200,
@@ -65,6 +67,7 @@ class BucketsourceController {
    * @returns 
    */
   @Post('/update')
+  @Flow([useRoleAuthorization])
   async update (@Body() params: BucketSource) {
     return {
       code: 200,
@@ -86,6 +89,7 @@ class BucketsourceController {
    * @returns 
    */
   @Post('/delete')
+  @Flow([useRoleAuthorization])
   async delete (@Body() params: { id: string }) {
     return {
       code: 200,

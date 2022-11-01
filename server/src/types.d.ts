@@ -90,6 +90,8 @@ export interface User {
   gender?: string
   // 联系地址
   address?: string[]
+  // 用户状态
+  status?: boolean
   // 个人简介
   desc?: string
   // 创建时间
@@ -287,7 +289,8 @@ export interface Habits {
   shortKey?: Array<{
     label: string, // 快捷键描述
     key: string // 快捷键code
-    value: string // 快捷键内容：Command + Shift + P 
+    value: string // 快捷键内容：Command + Shift + P
+    id: number // 快捷键id
   }>
   // 上传成功提示
   showUpdateTip?: boolean

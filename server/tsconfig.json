@@ -20,7 +20,8 @@
     "noImplicitAny": true,
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js"],
   "exclude": ["node_modules", "dist"],

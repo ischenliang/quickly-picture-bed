@@ -2,6 +2,7 @@ import { Dict, Page, Setting } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
 import SettingModel from '../models/Setting'
+import { useRoleAuthorization } from '../middlewares/authorization'
 
 interface Filter extends Page {
   name?: string
@@ -14,6 +15,7 @@ class SettingController {
    * @returns 
    */
   @Post('/list')
+  @Flow([useRoleAuthorization])
   async list(@Body() params: Filter) {
     const tmp: any = {
       order: [
@@ -44,6 +46,7 @@ class SettingController {
    * @returns 
    */
   @Post('/create')
+  @Flow([useRoleAuthorization])
   async create (@Body() params: Setting) {
     return {
       code: 200,
@@ -59,6 +62,7 @@ class SettingController {
    * @returns 
    */
   @Post('/update')
+  @Flow([useRoleAuthorization])
   async update (@Body() params: Setting) {
     return {
       code: 200,
@@ -80,6 +84,7 @@ class SettingController {
    * @returns 
    */
   @Post('/delete')
+  @Flow([useRoleAuthorization])
   async delete (@Body() params: { id: string }) {
     return {
       code: 200,
@@ -99,6 +104,7 @@ class SettingController {
    * @returns 
    */
   @Post('/findByPro')
+  @Flow([useRoleAuthorization])
   async findByPro(@Body() params: { property: string, value: string }) {
     const data = await SettingModel.findOne({
       where: {

@@ -20,7 +20,7 @@ interface Filter extends PageReq {
 export default class Users {
   // 创建用户
   create (params: UserInter) {
-    return http('/user/login', params)
+    return http('/user/create', params)
   }
   // 删除用户
   delete (id: string) {
@@ -65,5 +65,9 @@ export default class Users {
   // 保存
   changePwd (params: { password: string, old_password: string }) {
     return http('/user/changePwd', params)
+  }
+  // 切换用户状态
+  toggleStatus (id: string) {
+    return http('/user/toggle', { id })
   }
 }

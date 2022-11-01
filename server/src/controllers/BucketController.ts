@@ -88,7 +88,7 @@ class BucketController {
    * @returns 
    */
   @Post('/update')
-  async update (@Body() params: Bucket) {
+  async update (@Body() params: Bucket, @CurrentUser() user: User) {
     return {
       code: 200,
       message: '成功',
@@ -96,7 +96,8 @@ class BucketController {
       ...params
       }, {
         where: {
-          id: params.id
+          id: params.id,
+          uid: user.id
         }
       })
     }

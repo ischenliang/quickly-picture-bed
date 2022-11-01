@@ -2,6 +2,7 @@ import { Dict, Page } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
 import DictModel from '../models/Dict'
+import { useRoleAuthorization } from '../middlewares/authorization'
 
 interface Filter extends Page {
   name?: string
@@ -49,6 +50,7 @@ class DictController {
    * @returns 
    */
   @Post('/create')
+  @Flow([useRoleAuthorization])
   async create (@Body() params: Dict) {
     return {
       code: 200,
@@ -64,6 +66,7 @@ class DictController {
    * @returns 
    */
   @Post('/update')
+  @Flow([useRoleAuthorization])
   async update (@Body() params: Dict) {
     return {
       code: 200,
@@ -85,6 +88,7 @@ class DictController {
    * @returns 
    */
   @Post('/delete')
+  @Flow([useRoleAuthorization])
   async delete (@Body() params: { id: string }) {
     return {
       code: 200,

@@ -37,8 +37,8 @@ function http (url, data) {
       resolve(res)
     }).catch(error => {
       console.log('报错了: ', error)
-      ElMessage({ message: error.message, type: 'error' })
-      if ([500, 401].includes(error.code)) {
+      ElMessage({ message: error.data || error.message, type: 'error' })
+      if ([401].includes(error.code)) {
         localStorage.clear()
         useUserStore().updateUserInfo(null)
         router.push({

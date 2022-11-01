@@ -177,20 +177,23 @@ class LogController {
 
 
   /**
-   * 删除
+   * 删除:需要根据角色来判断
    * @param params Log日志
    * @returns 
    */
   @Post('/delete')
   async delete (@Body() params: { id: string }, @CurrentUser() user: User) {
+    const where: any = {
+      id: params.id,
+    }
+    if (user.role !== 10) {
+      where.uid = user.id
+    }
     return {
       code: 200,
       message: '成功',
       data: await LogModel.destroy({
-        where: {
-          id: params.id,
-          uid: user.id
-        }
+        where: where
       })
     }
   }

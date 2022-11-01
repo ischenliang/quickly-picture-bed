@@ -8,7 +8,7 @@
       :border="true"
       @pageChange="pageChange"
       @select-change="hanleSelectChange"
-      :actionWidth="200">
+      :actionWidth="260">
       <template #filter>
         <filter-item :text="'用户名称:'">
           <el-input v-model="list.filters.username" placeholder="请输入用户名称" />
@@ -28,12 +28,18 @@
         </filter-item>
       </template>
       <template #action>
-        <el-button type="primary" @click="itemOperate(null, 'add')">新增</el-button>
+        <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">编辑</el-button>
         <el-button type="success" size="small" @click="itemOperate(row, 'detail')">查看</el-button>
-        <el-button type="danger" size="small" @click="itemOperate(row, 'update')">{{ row.status ? '禁用' : '删除' }}</el-button>
+        <el-button
+          :type="row.status ? 'warning' : 'info'"
+          size="small"
+          @click="itemOperate(row, 'disable')">
+          {{ row.status ? '禁用' : '启用' }}
+        </el-button>
+        <el-button type="danger" size="small" @click="itemOperate(row, 'delete')">删除</el-button>
       </template>
     </table-page>
   </div>
@@ -124,11 +130,17 @@ const listGet = () => {
 const itemOperate = (data: UserInter, type) => {
   item.data = data
   visible[type] = true
-  if (type === 'update') {
-    user.update({
-      id: data.id,
-      status: !data.status
-    }).then(res => {
+  if (type === 'delete') {
+    useDeleteConfirm('删除用户将会把用户关联数据一并删除，确定要删除吗').then(res => {
+      user.delete(data.id).then(res => {
+        ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
+        listGet()
+      })
+    })
+  }
+  if (type === 'disable') {
+    user.toggleStatus(data.id).then(res => {
+      ctx.$message({ message: '操作成功', type: 'success', duration: 1000 })
       listGet()
     })
   }

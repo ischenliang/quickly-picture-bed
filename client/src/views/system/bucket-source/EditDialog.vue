@@ -35,6 +35,7 @@ import monacoEditor from '@/components/editor/index.vue'
 import Dict from '@/types/Dict';
 import { JsonResponse } from '@/typings/req-res';
 import BucketSource from '@/types/BucketSource';
+import { useCtxInstance } from '@/hooks/global';
 
 /**
  * 实例
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const bucketSource = new BucketSource()
+const ctx = useCtxInstance()
 
 
 /**
@@ -126,11 +128,13 @@ const submit = () => {
         }).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
         })
       } else {
         bucketSource.create(tmp).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '创建成功', type: 'success', duration: 1000 })
         })
       }
     }

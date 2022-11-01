@@ -2,9 +2,17 @@ import { Dict, Page, User } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
 import UserModel from '../models/User'
+import LogModel from '../models/Log'
+import BucketModel from '../models/Bucket'
+import ImageModel from '../models/Image'
+import HabitsModel from '../models/Habits'
+import { useRoleAuthorization } from '../middlewares/authorization'
+import { default_habits } from '../global.config'
 
 interface Filter extends Page {
   username?: string
+  role?: number
+  [prop: string]: any
 }
 
 @Controller('/user')
@@ -14,6 +22,7 @@ class UserController {
    * @returns 
    */
   @Post('/list')
+  @Flow([useRoleAuthorization])
   async list(@Body() params: Filter) {
     const tmp: any = {
       order: [
@@ -24,7 +33,13 @@ class UserController {
           [Op.like]: params.username ? `%${params.username}%` : '%%'
         }
       }
-    }
+    };
+    // 针对其他的查询数据
+    ['role'].forEach(item => {
+      if (params[item]) {
+        tmp.where[item] = params[item]
+      }
+    })
     const data: any = {}
     if (params.page) {
       tmp.limit = params.size
@@ -44,16 +59,34 @@ class UserController {
 
 
   /**
-   * 新建
+   * 新建：需要根据邮箱来判断当前用户是否已存在，并且还需要新建habits
    * @param params User用户
    * @returns 
    */
   @Post('/create')
+  @Flow([useRoleAuthorization])
   async create (@Body() params: User) {
+    const user = await UserModel.findOne({
+      where: {
+        email: params.email
+      }
+    })
+    if (user) {
+      return {
+        code: 500,
+        message: '账号已存在',
+        data: '账号已存在'
+      }
+    }
+    const data = await UserModel.create(params) as User
+    await HabitsModel.create({
+      ...default_habits,
+      uid: data.id
+    })
     return {
       code: 200,
       message: '成功',
-      data: await UserModel.create(params)
+      data: data
     }
   }
 
@@ -80,12 +113,22 @@ class UserController {
 
 
   /**
-   * 删除
+   * 删除用户，应当还需要将用户关联的数据删除
    * @param params User用户
    * @returns 
    */
   @Post('/delete')
+  @Flow([useRoleAuthorization])
   async delete (@Body() params: { id: string }) {
+    const where = {
+      where: {
+        uid: params.id
+      }
+    }
+    await LogModel.destroy(where)
+    await ImageModel.destroy(where)
+    await BucketModel.destroy(where)
+    await HabitsModel.destroy(where)
     return {
       code: 200,
       message: '成功',
@@ -163,6 +206,34 @@ class UserController {
       }, {
         where: {
           id: current.id
+        }
+      })
+    }
+  }
+
+
+  /**
+   * 切换用户状态
+   * @param params User用户
+   * @returns 
+   */
+  @Post('/toggle')
+  @Flow([useRoleAuthorization])
+  async toggle (@Body() params: { id: string }) {
+    const tmp = await UserModel.findOne({
+      where: {
+        id: params.id
+      }
+    }) as User
+
+    return {
+      code: 200,
+      message: '成功',
+      data: await UserModel.update({
+        status: !tmp.status
+      }, {
+        where: {
+          id: params.id
         }
       })
     }

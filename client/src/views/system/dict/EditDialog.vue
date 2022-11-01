@@ -27,6 +27,7 @@ import { DictInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import monacoEditor from '@/components/editor/index.vue'
 import Dict from '@/types/Dict';
+import { useCtxInstance } from '@/hooks/global';
 
 /**
  * 实例
@@ -46,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const dict = new Dict()
+const ctx = useCtxInstance()
 
 
 /**
@@ -100,11 +102,13 @@ const submit = () => {
         }).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
         })
       } else {
         dict.create(tmp).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '创建成功', type: 'success', duration: 1000 })
         })
       }
     }

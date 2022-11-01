@@ -6,7 +6,7 @@
     :before-close="handleClose">
     <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" :label-position="'left'" class="dict-form">
       <el-form-item label="邮箱/账号" prop="email">
-       <el-input v-model="form.email" size="large" placeholder="请输入邮箱" disabled />
+       <el-input v-model="form.email" size="large" placeholder="请输入邮箱" :disabled="detail && detail.id ? true : false" />
       </el-form-item>
       <el-form-item label="角色" prop="role">
         <el-select v-model="form.role" size="large" style="width: 100%;">
@@ -21,7 +21,7 @@
        <el-input v-model="form.username" size="large" placeholder="请输入姓名" />
       </el-form-item>
       <el-form-item label="联系电话" prop="phone">
-       <el-input v-model="form.phone" size="large" placeholder="请输入联系电话" disabled />
+       <el-input v-model="form.phone" size="large" placeholder="请输入联系电话" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
        <el-switch v-model="form.status" size="large" active-text="启用" inactive-text="禁用"/>
@@ -40,6 +40,7 @@ import Dict from '@/types/Dict';
 import { DictInter, UserInter } from '@/typings/interface';
 import Users from '@/types/User';
 import { JsonResponse } from '@/typings/req-res';
+import { useCtxInstance } from '@/hooks/global';
 
 /**
  * 实例
@@ -60,6 +61,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const user = new Users()
+const ctx = useCtxInstance()
 
 
 /**
@@ -75,15 +77,24 @@ const dialogVisible = computed({
 })
 const form: UserInter = reactive({
   id: '',
-  username: '',
+  username: '用户名称',
   email: '',
-  role: 2,
+  role: 1,
   phone: '',
-  status: true
+  status: true,
+  avatar: '星座_白羊座'
 })
 const rules = reactive({
   email: [
-    { required: true, message: '请输入邮箱', trigger: ['blur'] }
+    { required: true, message: '请输入邮箱', trigger: ['blur'] },
+    {
+      validator: (rule, value, callback) => {
+        if (!/^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/.test(value)) {
+          return callback('邮箱格式不正确')
+        }
+        callback()
+      }
+    }
   ],
   role: [
     { required: true, message: '请勾选角色', trigger: ['blur'] }
@@ -125,6 +136,7 @@ const submit = () => {
         }).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
         })
       } else {
         user.create({
@@ -133,6 +145,7 @@ const submit = () => {
         }).then(res => {
           handleClose()
           emit('submit')
+          ctx.$message({ message: '创建成功', type: 'success', duration: 1000 })
         })
       }
     }

@@ -14,7 +14,7 @@ export const config: Array<TableColumnConfig> = [
   },
   {
     align: 'center',
-    label: '邮箱',
+    label: '邮箱 | 账号',
     width: '',
     prop: 'email'
   },

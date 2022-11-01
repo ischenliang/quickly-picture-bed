@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { useFormat } from '@/hooks/date-time';
-import { useCtxInstance } from '@/hooks/global';
+import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import Log from '@/types/Log';
 import { ListInter, LogInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
@@ -111,13 +111,15 @@ listGet()
  */
 // 删除
 const itemDelete = (data: LogInter) => {
-  log.delete(data.id).then(res => {
-    ctx.$message({
-      message: '删除成功',
-      duration: 1000,
-      type: 'success'
+  useDeleteConfirm().then(res => {
+    log.delete(data.id).then(res => {
+      ctx.$message({
+        message: '删除成功',
+        duration: 1000,
+        type: 'success'
+      })
+      listGet()
     })
-    listGet()
   })
 }
 // 批量删除

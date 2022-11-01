@@ -1,10 +1,12 @@
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
-import moment from 'moment'
-import RoleModel  from '../models/Role'
 import { Role, User } from '../types'
-import authorization from '../middlewares/authorization'
 import UserModel from '../models/User'
+import LogModel from '../models/Log'
+import HabitsModel from '../models/Habits'
 import webtoken from 'jsonwebtoken'
+import { LogEnum } from '../enum'
+import { default_habits } from '../global.config'
+
 
 @Controller('/')
 class PublicController {
@@ -22,6 +24,13 @@ class PublicController {
     if (user) {
       if (user.password === params.password) {
         const token = webtoken.sign({ data: user.id, role: user.role }, 'a1b2c3', { expiresIn: 60 * 60 * 24 })
+        if (!user.status) {
+          return {
+            code: 500,
+            message: '账号已被禁用',
+            data: '账号已被禁用'
+          }
+        }
         await UserModel.update({
           token: token
         }, {
@@ -30,6 +39,14 @@ class PublicController {
           }
         })
         user.token = token
+        // 记录登录日志
+        await LogModel.create({
+          type: LogEnum.Login,
+          operate_id: params.email || params.phone,
+          operate_cont: user.username,
+          content: '登录成功',
+          uid: user.id
+        })
         return {
           code: 200,
           message: '登录成功',
@@ -39,14 +56,14 @@ class PublicController {
         return {
           code: 500,
           message: '账号和密码不匹配',
-          data: '登陆失败'
+          data: '账号和密码不匹配'
         }
       }
     }
     return {
       code: 500,
       message: '账号不存在',
-      data: '登录失败'
+      data: '账号不存在'
     }
   }
 
@@ -54,10 +71,27 @@ class PublicController {
   // 注册:还需要判断当前账号是否已经存在
   @Post('/register')
   async register(@Body({ required: true }) params: User) {
+    const user = await UserModel.findOne({
+      where: {
+        email: params.email
+      }
+    })
+    if (user) {
+      return {
+        code: 500,
+        message: '账号已存在',
+        data: '账号已存在'
+      }
+    }
+    const data = await UserModel.create(params) as User
+    await HabitsModel.create({
+      ...default_habits,
+      uid: data.id
+    })
     return {
       code: 200,
       message: '注册成功',
-      data: await UserModel.create(params)
+      data: data
     }
   }
 
