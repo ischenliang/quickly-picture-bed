@@ -355,3 +355,13 @@ export interface HabitsInter {
   // 更新时间
   updatedAt?: string
 }
+
+
+/**
+ * 图形验证码
+ */
+export interface VerifyCodeInter {
+  id?: string
+  code?: string
+  last_id?: string
+}

@@ -10,7 +10,7 @@ import { default_habits } from '../global.config'
 
 @Controller('/')
 class PublicController {
-  // 登录
+  // 登录:还需要验证图形验证码是否正确
   @Post('/login')
   async login(@Body({ required: true }) params: User, @Header() header: any) {
     const tmp: User = {}
@@ -68,7 +68,7 @@ class PublicController {
   }
 
   
-  // 注册:还需要判断当前账号是否已经存在
+  // 注册:还需要判断当前账号是否已经存在，并且需要验证图形验证码是否正确
   @Post('/register')
   async register(@Body({ required: true }) params: User) {
     const user = await UserModel.findOne({
