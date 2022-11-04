@@ -1,16 +1,16 @@
-import ImageModel from '../models/Image'
-import { Bucket, Dict, Page, User } from '@/types'
+import { Bucket, Dict, Log, Page, User, Album } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
+import AlbumModel from '../models/Album'
+import ImageModel from '../models/Image'
 import { Op } from 'sequelize'
-import BucketModel from '../models/Bucket'
 
 interface Filter extends Page {
   name?: string
-  visible?: boolean
+  desc?: string
 }
 
-@Controller('/bucket')
-class BucketController {
+@Controller('/album')
+class AlbumController {
   /**
    * 列表
    * @returns 
@@ -22,75 +22,57 @@ class BucketController {
         ['updatedAt', 'desc']
       ],
       where: {
+        uid: user.id,
         name: {
           [Op.like]: params.name ? `%${params.name}%` : '%%'
         },
-        uid: user.id
+        desc: {
+          [Op.like]: params.desc ? `%${params.desc}%` : '%%'
+        },
       }
-    }
-
-    if (params.visible) {
-      tmp.where.visible = params.visible
     }
     const data: any = {}
     if (params.page) {
       tmp.limit = params.size
       tmp.offset = params.page ? (params.page - 1) * params.size : 0
     }
-    const { rows, count } = await BucketModel.findAndCountAll(tmp)
+    const { rows, count } = await AlbumModel.findAndCountAll(tmp)
     data.total = count
     data.items = rows
-    // 计算占用存储和总数量
-    const promise = data.items.map(async (item: any) => {
-      let filter = {
-        where: {
-          bucket_id: item.id
-        }
-      }
-      return {
-        id: item.id,
-        bucket_storage: await ImageModel.sum('img_size', filter),
-        bucket_count: await ImageModel.count(filter)
-      }
-    })
     return {
       code: 200,
       message: '成功',
-      data: {
-        ...data,
-        stats: await Promise.all(promise)
-      }
+      data: data
     }
   }
 
-
   /**
    * 新建
-   * @param params Bucket存储桶
+   * @param params Album相册
    * @returns 
    */
   @Post('/create')
-  async create (@Body() params: Bucket, @CurrentUser() user: User) {
+  async create (@Body() params: Album, @CurrentUser() user: User) {
     params.uid = user.id
     return {
       code: 200,
       message: '成功',
-      data: await BucketModel.create(params)
+      data: await AlbumModel.create(params)
     }
   }
 
 
   /**
    * 更新
-   * @param params Bucket存储桶
+   * @param params Album相册
    * @returns 
    */
   @Post('/update')
-  async update (@Body() params: Bucket, @CurrentUser() user: User) {
+  async update (@Body() params: Album, @CurrentUser() user: User) {
     return {
       code: 200,
       message: '成功',
-      data: await BucketModel.update({
+      data: await AlbumModel.update({
       ...params
       }, {
         where: {
@@ -104,7 +86,7 @@ class BucketController {
 
   /**
    * 删除
-   * @param params Bucket存储桶
+   * @param params
    * @returns 
    */
   @Post('/delete')
@@ -112,7 +94,7 @@ class BucketController {
     return {
       code: 200,
       message: '成功',
-      data: await BucketModel.destroy({
+      data: await AlbumModel.destroy({
         where: {
           id: params.id,
           uid: user.id
@@ -124,7 +106,7 @@ class BucketController {
 
   /**
    * 详情
-   * @param params Bucket存储桶
+   * @param params
    * @returns 
    */
   @Post('/detail')
@@ -132,12 +114,46 @@ class BucketController {
     return {
       code: 200,
       message: '成功',
-      data: await BucketModel.findOne({
+      data: await AlbumModel.findOne({
         where: {
           id: params.id,
           uid: user.id
         }
       })
+    }
+  }
+
+
+  /**
+   * 详情
+   * @param params
+   * @returns 
+   */
+  @Post('/images')
+  async images (@Body() params: { id: string, page: number, size: number }, @CurrentUser() user: User) {
+    const tmp: any = {
+      order: [
+        ['add_time', 'desc']
+      ],
+      where: {
+        uid: user.id,
+        album_id: params.id
+      }
+    }
+    const data: any = {}
+    if (params.page) {
+      tmp.limit = params.size
+      tmp.offset = params.page ? (params.page - 1) * params.size : 0
+      const { rows, count } = await ImageModel.findAndCountAll(tmp)
+      data.total = count
+      data.items = rows
+    } else {
+      data.items = await ImageModel.findAll(tmp)
+    }
+    return {
+      code: 200,
+      message: '成功',
+      data: data
     }
   }
 }

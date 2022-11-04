@@ -14,6 +14,11 @@ const ImageModel = seq.define('image', {
     allowNull: false,
     comment: '存储桶id'
   },
+  album_id: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: '相册id'
+  },
   bucket_type: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -60,6 +65,11 @@ const ImageModel = seq.define('image', {
     type: DataTypes.STRING,
     allowNull: false,
     comment: '用户id'
+  },
+  add_time: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: '添加进相册时间'
   }
 }, {
   freezeTableName: true

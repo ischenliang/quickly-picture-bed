@@ -76,8 +76,6 @@ const configStore = useConfigStore()
  * 变量
  */
 const list: ListInter<BucketInter, Stats> = reactive({
-  page: 1,
-  size: 10,
   total: 0,
   filters: {
     name: '',
@@ -103,8 +101,6 @@ const bucketIcons = ref({})
 // 获取数据
 const listGet = () => {
   bucket.find({
-    page: list.page,
-    size: list.size,
     ...list.filters
   }).then((res: PageResponse<BucketInter, Stats>) => {
     list.total = res.total

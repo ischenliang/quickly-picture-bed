@@ -365,3 +365,18 @@ export interface VerifyCodeInter {
   code?: string
   last_id?: string
 }
+
+
+/**
+ * 相册
+ */
+export interface AlbumInter {
+  id?: string // 验证码id
+  uid?: string // 相册拥有者
+  name?: string // 相册名称
+  desc?: string // 相册描述
+  cover?: string // 相册封面
+  background?: string // 相册背景
+  createdAt?: string // 创建时间
+  updatedAt?: string // 更新时间
+}

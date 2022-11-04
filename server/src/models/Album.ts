@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize'
 import seq from '../utils/seq'
 
 // 相册
-const AlbumModel = seq.define('habits', {
+const AlbumModel = seq.define('album', {
   id: {
     type: DataTypes.UUID,
     allowNull: false,
