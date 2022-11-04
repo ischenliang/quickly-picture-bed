@@ -12,6 +12,11 @@ interface Filter extends PageReq {
 }
 
 
+interface Params extends UserInter {
+  verify_code?: string
+  verify_id?: string
+}
+
 /**
  * ================= 用户管理 =================
  * 用于管理员对本系统上的所有用户进行管理
@@ -38,21 +43,34 @@ export default class Users {
       value
     })
   }
+  // 重置密码
+  resetPwd (id: string) {
+    return http('/user/resetPwd', { id })
+  }
   // 查找用户
   // 查询列表
   find (params: Filter) {
     return http('/user/list', params)
   }
   // 登录
-  login (params: UserInter) {
+  login (params: Params) {
     return http('/login', params)
   }
   // 重置密码
-  resetPwd () {
+  forget (params: {
+    account: string
+    password: string
+    sms_code: string
+  }) {
+    return http('/forget', params)
   }
   // 注册用户
-  register () {
-
+  register (params: {
+    account: string
+    password: string
+    sms_code: string
+  }) {
+    return http('/register', params)
   }
   // 当前登录用户
   current () {

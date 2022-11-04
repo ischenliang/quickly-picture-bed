@@ -32,7 +32,8 @@ const UserModel = seq.define('user', {
   username: {
     type: DataTypes.STRING,
     allowNull: true,
-    comment: '用户昵称'
+    comment: '用户昵称',
+    defaultValue: '默认名称'
   },
   password: {
     type: DataTypes.STRING,
@@ -43,7 +44,7 @@ const UserModel = seq.define('user', {
     type: DataTypes.STRING,
     allowNull: false,
     comment: '头像',
-    defaultValue: '01'
+    defaultValue: '星座_白羊座'
   },
   role: {
     type: DataTypes.INTEGER,

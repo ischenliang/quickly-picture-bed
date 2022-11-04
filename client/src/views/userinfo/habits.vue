@@ -9,7 +9,7 @@
                 <span>用占位符<b> ${url} </b>来表示url的位置</span>
                 <span>用占位符<b> ${filename} </b>来表示文件名</span>
               </p>
-              <p style="width: 100%;line-height: 20px;font-size: 12px;color: #999;">如：[$filename]($url)</p>
+              <p style="width: 100%;line-height: 20px;font-size: 12px;color: #999;">如：[${filename}](${url})</p>
               <el-input v-model="detail.data.link_format" placeholder="请输入用户名" size="large" />
             </el-form-item>
           </el-col>

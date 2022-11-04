@@ -38,6 +38,7 @@
     "qiniu-js": "^3.4.1",
     "reset.css": "^2.0.2",
     "sass": "^1.55.0",
+    "swiper": "^8.4.4",
     "v-viewer": "^3.0.10",
     "vite": "^3.1.4",
     "vite-plugin-monaco-editor": "^1.0.10",

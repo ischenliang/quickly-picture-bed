@@ -1,10 +1,13 @@
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { QiniuUploadConfig, QiniuFileManager, VerifyCode } from '@/types'
 import { getUploadToken, deleteFile } from '../utils/qiniu'
+import useSendMail, { useGenerateCode } from '../utils/nodemailer'
 import { generateVerifyCode } from '../utils/svg-captcha'
 import VerifyCodeModel from '../models/VerifyCode'
+import SmsCodeModel from '../models/SmsCode'
 import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
+import { Op } from 'sequelize'
 
 @Controller('/tool')
 class ToolController {
@@ -53,6 +56,7 @@ class ToolController {
   @Post('/imgCreate')
   async img(@Body({ required: true }) params: { last_id: string }) {
     const res: { text: string, data: string } = generateVerifyCode()
+    // useSendMail('23456', 'itchenliang@163.com')
     let data: any = null
     if (params.last_id !== '-') {
       await VerifyCodeModel.destroy({
@@ -61,6 +65,15 @@ class ToolController {
         }
       })
     }
+    // 删除所有已过期的验证码: 过期时间在当前时间之前的数据都认为已经过期
+    await VerifyCodeModel.destroy({
+      where: {
+        expire_at: {
+          [Op.lt]: new Date()
+        }
+      }
+    })
+
     data = await VerifyCodeModel.create({
       code: res.data,
       anser: res.text,
@@ -103,6 +116,74 @@ class ToolController {
       code: 500,
       message: '验证码已过期，请重新生成',
       data: {}
+    }
+  }
+
+  
+ 
+ 
+  /**
+  * 短信验证码 | 邮箱验证码
+  *   1. 先校验图形验证码是否正确
+  *   2. 正确：生成验证码
+  *   3. 判断type，根据type做处理
+  *   3. 先删除数据库中的account相关的数据
+  *   4. 发送验证码
+  */
+  @Post('/smsSend')
+  async smsSend(@Body({ required: true }) params: { account: string, verify_code: string, verify_id: string, type: string }) {
+    const data = (await VerifyCodeModel.findOne({
+      where: {
+        id: params.verify_id
+      }
+    }) as VerifyCode)
+    if (useDiffTime(null, data.expire_at) <= 0) {
+      const flag = data.anser.toUpperCase() === params.verify_code.toUpperCase()
+      if (flag) {
+        const code = useGenerateCode()
+        if (params.type === 'email') {
+          const flag = await useSendMail(code, params.account)
+          if (flag) {
+            // 清除已经过期的数据
+            await SmsCodeModel.destroy({
+              where: {
+                expire_at: {
+                  [Op.lt]: new Date()
+                }
+              }
+            })
+            // 删除和用户account相关的数据
+            await SmsCodeModel.destroy({ where: { account: params.account } })
+            await SmsCodeModel.create({
+              account: params.account,
+              type: params.type,
+              code: code,
+              expire_at: useFormatTime(moment().add(3, 'm'))
+            })
+            return {
+              code: 200,
+              message: '验证码发送成功',
+              data: '验证码发送成功'
+            }
+          }
+        } else {
+          return {
+            code: 500,
+            message: '暂不支持其他验证码功能',
+            data: '暂不支持其他验证码功能'
+          }
+        }
+      }
+      return {
+        code: 500,
+        message: '图形验证码不正确',
+        data: '图形验证码不正确'
+      }
+    }
+    return {
+      code: 500,
+      message: '验证码已过期，请重新生成',
+      data: '图形验证码已过期，请重新生成'
     }
   }
 }

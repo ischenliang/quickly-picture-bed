@@ -85,7 +85,7 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
     versions: [1], // 版本
     controllers: [__dirname + '/controllers/**/*.ts'], // 存放所有控制器类，是数组
     errorHandler (error: any, ctx: Context) {
-      console.log(error)
+      console.log(123, error)
       ctx.body = {
         code: error.status || 500,
         message: '报错了',

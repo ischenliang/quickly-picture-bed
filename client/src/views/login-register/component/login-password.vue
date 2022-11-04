@@ -1,7 +1,7 @@
 <template>
-  <el-form :model="form" :rules="rules" ref="formRef">
+  <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
     <el-form-item prop="username">
-      <el-input v-model="form.username" :prefix-icon="'User'" placeholder="账号" size="large"></el-input>
+      <el-input v-model="form.username" :prefix-icon="'User'" placeholder="账号或邮箱" size="large"></el-input>
     </el-form-item>
     <el-form-item prop="password">
       <el-input v-model="form.password" :prefix-icon="'Lock'" show-password placeholder="密码" size="large"></el-input>
@@ -28,10 +28,11 @@ import { useCtxInstance } from '@/hooks/global';
 import Users from '@/types/User';
 import { VerifyCodeInter } from '@/typings/interface'
 import VerifyCode from '@/types/VerifyCode';
-import { reactive, Ref, ref } from 'vue';
+import { onMounted, reactive, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormInstance } from 'element-plus';
 import Cookies from 'js-cookie'
+import key from 'keymaster'
 
 /**
  * 实例
@@ -80,7 +81,9 @@ const login = () => {
     if (valid) {
       user.login({
         email: form.username,
-        password: form.password
+        password: form.password,
+        verify_id: form.verify_id,
+        verify_code: form.verify_code
       }).then((res: any) => {
         if (form.remember) {
           Cookies.set('email', form.username)
@@ -89,6 +92,9 @@ const login = () => {
         localStorage.setItem('token', res.token)
         ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
         router.push({ path: '/' })
+      }).catch(error => {
+        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
+        getImgCode()
       })
     }
   })
@@ -104,10 +110,24 @@ const getImgCode = () => {
   })
 }
 getImgCode()
+
+onMounted(() => {
+  key('enter', () => {
+    login()
+    return false
+  })
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.preventDefault()
+      login()
+    }
+  })
+
+})
 </script>
 
 <style lang="scss">
-.el-form{
+.el-form.login-form{
   padding: 10px 0 25px;
   .el-input__inner{
     background-color: rgba(255,255,255,0.8);

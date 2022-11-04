@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <div class="logo-bannner">
-      <img src="http://pic.xyaxw.cn/static/img/logo.cf036a4d.jpg" alt="">
+      <img src="./images/banner.png" alt="">
     </div>
     <el-menu
       :default-active="activeMenu"

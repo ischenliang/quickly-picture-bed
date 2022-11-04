@@ -1,6 +1,6 @@
 <template>
   <div class="bucket-title">选择存储桶</div>
-  <div class="bucket-list">
+  <div class="bucket-list" v-if="buckets.length">
     <el-tag
       v-for="(item, index) in buckets"
       :key="'bucket-' + index"
@@ -10,6 +10,11 @@
       @click="toggleCurrentBucket(item)">
       {{ item.name }}
     </el-tag>
+  </div>
+  <div class="bucket-list" v-else>
+    <p class="empty-bucket">
+      暂无存储桶可选，请前往<router-link :to="'/bucket'">存储桶</router-link>页创建
+    </p>
   </div>
 </template>
 
@@ -108,6 +113,14 @@ $color-active: #ffffff;
       background: $color;
       color: $color-active;
     }
+  }
+}
+.empty-bucket {
+  color: #909399;
+  a {
+    text-decoration: none;
+    margin: 0 5px;
+    color: #2d8cf0;
   }
 }
 </style>

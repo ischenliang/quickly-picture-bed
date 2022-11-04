@@ -97,12 +97,37 @@ class UserController {
    * @returns 
    */
   @Post('/update')
+  @Flow([useRoleAuthorization])
   async update (@Body() params: User) {
+    const tmp = JSON.parse(JSON.stringify(params))
+    delete tmp.id
     return {
       code: 200,
       message: '成功',
       data: await UserModel.update({
-      ...params
+        ...tmp
+      }, {
+        where: {
+          id: params.id
+        }
+      })
+    }
+  }
+
+
+  /**
+   * 重置密码
+   * @param params User用户
+   * @returns 
+   */
+  @Post('/resetPwd')
+  @Flow([useRoleAuthorization])
+  async resetPwd (@Body() params: { id: string }) {
+    return {
+      code: 200,
+      message: '成功',
+      data: await UserModel.update({
+        password: '000000'
       }, {
         where: {
           id: params.id

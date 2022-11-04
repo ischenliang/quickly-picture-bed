@@ -345,3 +345,27 @@ export interface VerifyCode {
   expire_at?: string // 有效期至
   createdAt?: string // 创建时间
 }
+
+
+/**
+ * 图形验证码
+ */
+export interface SmsCode {
+  id?: string // 验证码id
+  account?: string // 账号，邮箱或者手机号
+  type?: string // 类型，phone或者email
+  code?: string // 验证码结果
+  expire_at?: string // 有效期至
+}
+
+/**
+ * 相册
+ */
+export interface Album {
+  id?: string // 验证码id
+  uid?: string // 相册拥有者
+  name?: string // 相册名称
+  desc?: string // 相册描述
+  cover?: string // 相册封面
+  background?: string // 相册背景
+}

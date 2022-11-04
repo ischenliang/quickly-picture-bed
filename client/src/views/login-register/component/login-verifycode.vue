@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" :rules="rules" ref="formRef">
+  <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
     <el-form-item prop="username">
       <el-input
         v-model="form.username"
@@ -66,7 +66,7 @@ const rules = reactive({
 </script>
 
 <style lang="scss">
-.el-form{
+.el-form.login-form{
   padding-bottom: 25px;
   .el-input__inner{
     background-color: rgba(255,255,255,0.8);

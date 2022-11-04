@@ -146,7 +146,7 @@ const handleClose = () => {
   dialogVisible.value = false
 }
 const resetPassword = () => {
-  user.updateByPro(props.detail.id, 'password', '000000').then(res => {
+  user.resetPwd(props.detail.id).then(res => {
     ctx.$message({
       type: 'success',
       message: '密码重置成功，重置密码为000000',
