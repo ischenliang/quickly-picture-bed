@@ -376,7 +376,10 @@ export interface AlbumInter {
   name?: string // 相册名称
   desc?: string // 相册描述
   cover?: string // 相册封面
+  cover_preview?: string // 相册封面预览
   background?: string // 相册背景
+  background_preview?: string // 相册背景预览
+  count?: number // 关联图片数量
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
 }

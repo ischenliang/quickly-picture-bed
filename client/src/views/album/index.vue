@@ -1,12 +1,14 @@
 <template>
   <div class="album-container">
     <c-card :title="'我的相册(' + list.total + ')'">
-      <div></div>
+      <template #cardAction>
+        <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
+      </template>
       <el-row>
-        <el-col :xl="6" v-for="(item, index) in 8" :key="index">
-          <div class="album-item">
-
-          </div>
+        <el-col :xl="6" v-for="(item, index) in list.data" :key="index">
+          <album-item
+            :album="item"
+            @submit="itemOperate(item, $event)"></album-item>
         </el-col>
       </el-row>
     </c-card>
@@ -21,18 +23,14 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import { AlbumInter, BucketInter, ListInter } from '@/typings/interface'
+import { AlbumInter, ListInter } from '@/typings/interface'
 import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import useConfigStore from '@/store/config'
 import { useFormat } from '@/hooks/date-time'
+import AlbumItem from '@/components/web/album/index.vue'
 import Album from '@/types/Album'
-interface Stats {
-  id: string
-  bucket_storage: string
-  bucket_count: number
-}
 /**
  * 实例
  */
@@ -43,15 +41,43 @@ const configStore = useConfigStore()
 /**
  * 变量
  */
-const list: ListInter<AlbumInter, Stats> = reactive({
+const list: ListInter<AlbumInter> = reactive({
   total: 0,
   filters: {
     name: '',
     sort: 'updatedAt',
     order: 'desc'
   },
-  data: [],
-  stats: []
+  data: [
+    {
+      id: '',
+      name: '回忆往事',
+      desc: '一些好的回忆',
+      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/memory_cover.jpg',
+      background: ''
+    },
+    {
+      id: '',
+      name: '文章封面',
+      desc: '文章所使用到的封面',
+      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/921bab5e2277b8c4b2a9ba46de2b7056.jpg',
+      background: ''
+    },
+    {
+      id: '',
+      name: '壁纸',
+      desc: '收藏的一些好看的壁纸',
+      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/wallpaper_cover.jpg',
+      background: ''
+    },
+    {
+      id: '',
+      name: '美食',
+      desc: '记录自己煮的或者吃过的美食',
+      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/food_cover.jpg',
+      background: ''
+    }
+  ]
 })
 // 当前被操作项
 let item = reactive({
@@ -68,15 +94,21 @@ const visible = reactive({
 const listGet = () => {
   album.find({
     ...list.filters
-  }).then((res: PageResponse<AlbumInter, Stats>) => {
+  }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     list.total = res.total
-    console.log(res.items, res.total)
+    list.data = res.items.map(item => {
+      item.cover_preview = configStore.systemConfig.website.baseUrl + item.cover
+      item.count = res.stats.find(stat => stat.id === item.id).count
+      item.createdAt = useFormat(item.createdAt)
+      item.updatedAt = useFormat(item.updatedAt)
+      return item
+    })
   })
 }
 listGet()
 
 // 操作
-const itemOperate = (data: BucketInter, type) => {
+const itemOperate = (data: AlbumInter, type) => {
   item.data = data
   visible[type] = true
   if (type === 'delete') {
@@ -110,18 +142,16 @@ $text-color-active: #32cfaa;
 .album-container {
   width: 100%;
   height: 100%;
+  .el-card__header {
+    padding: 12px 20px;
+  }
   .el-card__body {
     overflow: auto;
-  }
-  .album-item {
-    height: 250px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
   }
   
   .el-row {
     .el-col {
-      padding: 10px;
+      padding: 8px;
     }
   }
 }

@@ -93,7 +93,8 @@ export function useDeleteConfirm (text = '确定删除吗?', title = '提示') {
     }).then((res) => {
       resolve(res)
     }).catch((err) => {
-      reject(err)
+      // console.log('取消了')
+      // reject(err)
     })
   })
 }

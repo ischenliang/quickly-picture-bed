@@ -7,6 +7,12 @@ export function initAv() {
   })
 }
 
+/**
+ * 上传图片
+ * @param filename 文件名称
+ * @param file 文件
+ * @returns 
+ */
 export function uploadImg (filename: string, file: File) {
   initAv()
   return new AV.File(filename, file).save()

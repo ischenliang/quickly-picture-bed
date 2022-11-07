@@ -39,10 +39,25 @@ class AlbumController {
     const { rows, count } = await AlbumModel.findAndCountAll(tmp)
     data.total = count
     data.items = rows
+    // 计算数量
+    const promises = data.items.map(async (item: any) => {
+      let filter = {
+        where: {
+          album_id: item.id
+        }
+      }
+      return {
+        id: item.id,
+        count: await ImageModel.count(filter)
+      }
+    })
     return {
       code: 200,
       message: '成功',
-      data: data
+      data: {
+        ...data,
+        stats: await Promise.all(promises)
+      }
     }
   }
 
