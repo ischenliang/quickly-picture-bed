@@ -34,7 +34,13 @@ const AlbumModel = seq.define('album', {
     type: DataTypes.STRING,
     allowNull: true,
     comment: '相册背景'
-  }
+  },
+  sort: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    comment: '排序值',
+    defaultValue: 1.00
+  },
 }, {
   freezeTableName: true
 })

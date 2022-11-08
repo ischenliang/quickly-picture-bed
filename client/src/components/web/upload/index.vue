@@ -16,7 +16,7 @@
       <input
         type="file"
         name="file"
-        multiple
+        :multiple="multiple"
         ref="file"
         :accept="accept_str"
         class="c-upload__input"
@@ -34,6 +34,7 @@ import { computed, Ref, ref, useSlots } from 'vue';
 interface Props {
   accept?: string[]
   limit?: number // 一次最多勾选文件数量
+  multiple?: boolean // 是否支持多选
 }
 
 /**
@@ -41,7 +42,8 @@ interface Props {
  */
 const props = withDefaults(defineProps<Props>(), {
   accept: () => (['*']),
-  limit: 3
+  limit: 3,
+  multiple: true
 })
 const emit = defineEmits(['upload'])
 const slots = useSlots()
@@ -112,6 +114,7 @@ const handleDragenter = (e: DragEvent) => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
   .c-upload__content {
     position: relative;
     flex: 1;
@@ -140,6 +143,7 @@ const handleDragenter = (e: DragEvent) => {
         color: #606266;
         font-size: 14px;
         text-align: center;
+        line-height: 1.6;
       }
       &:hover, &.is-dragover {
         border: 1px dashed #0974f7;

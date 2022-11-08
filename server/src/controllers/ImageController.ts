@@ -8,6 +8,7 @@ import LogModel from '../models/Log'
 interface Filter extends Page {
   img_name?: string
   bucket_id?: string
+  album_id?: string
   [prop: string]: any
 }
 
@@ -30,8 +31,8 @@ class ImageController {
         uid: user.id
       }
     };
-    ['bucket_id'].forEach(item => {
-      if (params[item] !== '') {
+    ['bucket_id', 'album_id'].forEach(item => {
+      if (params[item]) {
         tmp.where[item] = params[item]
       }
     })
@@ -39,12 +40,10 @@ class ImageController {
     if (params.page) {
       tmp.limit = params.size
       tmp.offset = params.page ? (params.page - 1) * params.size : 0
-      const { rows, count } = await ImageModel.findAndCountAll(tmp)
-      data.total = count
-      data.items = rows
-    } else {
-      data.items = await ImageModel.findAll(tmp)
     }
+    const { rows, count } = await ImageModel.findAndCountAll(tmp)
+    data.total = count
+    data.items = rows
     return {
       code: 200,
       message: '成功',
@@ -84,21 +83,15 @@ class ImageController {
    */
   @Post('/update')
   async update (@Body() params: Image, @CurrentUser() user: User) {
-    await LogModel.create({
-      type: 4,
-      operate_id: `ID:${params.id}`,
-      operate_cont: params.img_name,
-      content: '上传了图片',
-      uid: user.id
-    })
     return {
       code: 200,
       message: '成功',
       data: await ImageModel.update({
-      ...params
+        ...params
       }, {
         where: {
-          id: params.id
+          id: params.id,
+          uid: user.id
         }
       })
     }

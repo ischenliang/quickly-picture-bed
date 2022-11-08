@@ -98,6 +98,8 @@ export interface ImageInter {
   img_size?: number
   // 存储桶id
   bucket_id?: string
+  // 相册id
+  album_id?: string
   // 存储桶类型
   bucket_type?: string
   // hash值：用于后续更新时使用
@@ -380,6 +382,7 @@ export interface AlbumInter {
   background?: string // 相册背景
   background_preview?: string // 相册背景预览
   count?: number // 关联图片数量
+  sort?: number // 排序值
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
 }

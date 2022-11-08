@@ -368,4 +368,5 @@ export interface Album {
   desc?: string // 相册描述
   cover?: string // 相册封面
   background?: string // 相册背景
+  sort?: number // 排序值
 }

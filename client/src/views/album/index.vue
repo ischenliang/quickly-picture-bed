@@ -4,11 +4,17 @@
       <template #cardAction>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
-      <el-row>
-        <el-col :xl="6" v-for="(item, index) in list.data" :key="index">
+      <el-row v-loading="list.loading">
+        <el-col
+          v-for="(item, index) in list.data"
+          :key="index"
+          :xl="6"
+          :lg="8"
+          :md="12">
           <album-item
             :album="item"
-            @submit="itemOperate(item, $event)"></album-item>
+            @submit="itemOperate(item, $event)"
+            @click="handleClick(item)"></album-item>
         </el-col>
       </el-row>
     </c-card>
@@ -17,6 +23,7 @@
       v-if="visible.edit"
       v-model="visible.edit"
       :detail="item.data"
+      :base-url="configStore.systemConfig.website.baseUrl"
       @submit="listGet"/>
   </div>
 </template>
@@ -31,12 +38,14 @@ import useConfigStore from '@/store/config'
 import { useFormat } from '@/hooks/date-time'
 import AlbumItem from '@/components/web/album/index.vue'
 import Album from '@/types/Album'
+import { useRouter } from 'vue-router'
 /**
  * 实例
  */
 const ctx = useCtxInstance()
 const album = new Album()
 const configStore = useConfigStore()
+const router = useRouter()
 
 /**
  * 变量
@@ -45,39 +54,11 @@ const list: ListInter<AlbumInter> = reactive({
   total: 0,
   filters: {
     name: '',
-    sort: 'updatedAt',
+    sort: 'sort',
     order: 'desc'
   },
-  data: [
-    {
-      id: '',
-      name: '回忆往事',
-      desc: '一些好的回忆',
-      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/memory_cover.jpg',
-      background: ''
-    },
-    {
-      id: '',
-      name: '文章封面',
-      desc: '文章所使用到的封面',
-      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/921bab5e2277b8c4b2a9ba46de2b7056.jpg',
-      background: ''
-    },
-    {
-      id: '',
-      name: '壁纸',
-      desc: '收藏的一些好看的壁纸',
-      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/wallpaper_cover.jpg',
-      background: ''
-    },
-    {
-      id: '',
-      name: '美食',
-      desc: '记录自己煮的或者吃过的美食',
-      cover: 'https://cdn.jsdelivr.net/gh/helinghands/cdn/img/food_cover.jpg',
-      background: ''
-    }
-  ]
+  data: [],
+  loading: false
 })
 // 当前被操作项
 let item = reactive({
@@ -92,17 +73,20 @@ const visible = reactive({
  */
 // 获取数据
 const listGet = () => {
+  list.loading = true
   album.find({
     ...list.filters
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     list.total = res.total
     list.data = res.items.map(item => {
       item.cover_preview = configStore.systemConfig.website.baseUrl + item.cover
+      item.background_preview = configStore.systemConfig.website.baseUrl + item.background
       item.count = res.stats.find(stat => stat.id === item.id).count
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
     })
+    list.loading = false
   })
 }
 listGet()
@@ -120,6 +104,14 @@ const itemOperate = (data: AlbumInter, type) => {
       })
     })
   }
+}
+const handleClick = (data: AlbumInter) => {
+  router.push({
+    path: '/albums/images',
+    query: {
+      id: data.id
+    }
+  })
 }
 </script>
 
@@ -150,6 +142,9 @@ $text-color-active: #32cfaa;
   }
   
   .el-row {
+    width: 100%;
+    height: 100%;
+    align-content: flex-start;
     .el-col {
       padding: 8px;
     }

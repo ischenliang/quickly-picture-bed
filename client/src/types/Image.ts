@@ -38,8 +38,8 @@ export default class Image {
     return http('/image/delete', { id })
   }
   // 更新
-  update () {
-
+  update (params: ImageInter) {
+    return http('/image/update', params)
   }
   // 查询
   async find (params: Filter) {

@@ -67,7 +67,13 @@ const routes: RouteRecordRaw[] = [
         path: '/albums',
         name: 'Albums',
         component: () => import('@/views/album/index.vue'),
-        meta: { title: '我的相册', icon: 'Menu', role: [1, 2, 10] }
+        meta: { title: '我的相册', icon: 'Reading', role: [1, 2, 10] }
+      },
+      {
+        path: '/albums/images',
+        name: 'AlbumsImages',
+        component: () => import('@/views/album/Images.vue'),
+        meta: { title: '我的相册', icon: 'Reading', role: [1, 2, 10], hidden: true, active: '/albums' }
       },
       {
         path: '/log',

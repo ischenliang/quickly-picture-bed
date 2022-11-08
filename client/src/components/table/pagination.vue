@@ -51,7 +51,7 @@ const props = defineProps({
   },
   singleHide: {
     type: Boolean,
-    default: false
+    default: true
   },
   pageSizes: {
     type: Array,

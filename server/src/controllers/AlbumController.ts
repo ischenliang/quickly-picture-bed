@@ -7,6 +7,8 @@ import { Op } from 'sequelize'
 interface Filter extends Page {
   name?: string
   desc?: string
+  sort?: string
+  order?: string
 }
 
 @Controller('/album')
@@ -19,7 +21,7 @@ class AlbumController {
   async list(@Body() params: Filter, @CurrentUser() user: User) {
     const tmp: any = {
       order: [
-        ['updatedAt', 'desc']
+        [params.sort || 'updatedAt', params.order || 'desc']
       ],
       where: {
         uid: user.id,
@@ -100,12 +102,20 @@ class AlbumController {
 
 
   /**
-   * 删除
+   * 删除: 需要将已关联该相册的图片更新为空
    * @param params
    * @returns 
    */
   @Post('/delete')
   async delete (@Body() params: { id: string }, @CurrentUser() user: User) {
+    await ImageModel.update({
+      album_id: ''
+    }, {
+      where: {
+        album_id: params.id,
+        uid: user.id
+      }
+    })
     return {
       code: 200,
       message: '成功',

@@ -36,6 +36,7 @@ import bucketUpload from '@/hooks/bucket/index';
 import Image from '@/types/Image';
 import { JsonResponse } from '@/typings/req-res';
 import useUserStore from '@/store/user';
+import { useRoute } from 'vue-router';
 interface Props {
   userHabits: HabitsInter
 }
@@ -105,7 +106,7 @@ const getLinkValue = (item: Link) => {
 }
 // 文件上传前对文件大小限制
 const beforeUpload = (e: { files: FileList, error: string }) => {
-  console.log(e)
+  // console.log(e)
   if (e.error) {
     return ctx.$message({ message: e.error, duration: 1000, type: 'error' })
   }
@@ -140,10 +141,17 @@ const upload = (fileList: File[], errorList: File[] = []) => {
   }).then((res: Array<ImageInter>) => {
     totalProgress.percent = 0
     res.forEach((item, index) => {
-      image.create({
+      const album_id = ctx.$route.query.album_id
+      let tmp = {
         ...item,
         bucket_id: id,
         bucket_type: type
+      }
+      if (album_id) {
+        tmp.album_id = album_id
+      }
+      image.create({
+        ...tmp
       }).then((result: ImageInter) => {
         if (index === res.length - 1) {
           ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })

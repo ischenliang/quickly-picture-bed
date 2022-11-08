@@ -2,7 +2,7 @@
   <com-dialog
     :visible.sync="dialogVisible"
     :title="'图片ID:' + detail.id"
-    :width="'550px'"
+    :width="'600px'"
     :before-close="handleClose">
     <div class="c-list">
       <div class="c-list-item">
@@ -12,7 +12,7 @@
       <div class="c-list-item">
         <span class="item-label">链&emsp;接：</span>
         <div style="width: 100%;">
-          <el-select v-model="linkType" placeholder="Select" style="width: 110px">
+          <el-select v-model="linkType" placeholder="Select" style="width: 110px" class="link-type-select">
             <el-option
               v-for="(item, index) in linkTypes"
               :key="index"
@@ -53,9 +53,26 @@
         <span class="item-label">时&emsp;间：</span>
         <div>{{ detail.createdAt }}(创建)&emsp;&emsp;{{ detail.updatedAt }}(更新)</div>
       </div>
+      <div class="c-list-item" style="flex-wrap: wrap;" v-if="showAlbum">
+        <div style="display: flex;width: 100%;align-items: center;">
+          <span class="item-label">关联相册：</span>
+          <el-select v-model="album_id" style="width: 100%;" filterable class="album-select">
+            <el-option
+              v-for="(item, index) in albums"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+              <span>{{ item.label }}</span>
+              <span style="font-size: 12px;margin-left: 10px;color: var(--el-text-color-secondary);">{{ item.desc }}</span>
+            </el-option>
+          </el-select>
+        </div>
+        <p style="width: 100%;margin-top: 5px;color: var(--el-text-color-secondary);">选择相册后，点击加入相册按钮</p>
+      </div>
     </div>
     <template #action>
-      <el-button type="danger" @click="handleClose">删除</el-button>
+      <el-button type="primary" @click="addAlbum" v-if="showAlbum">加入相册</el-button>
+      <el-button type="default" @click="handleClose">取消</el-button>
       <el-button type="primary" @click="copyLink">复制</el-button>
       <el-button type="primary" @click="copyLink">设为头像</el-button>
       <el-button type="success" @click="openLink">打开链接</el-button>
@@ -64,10 +81,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ImageInter } from '@/typings/interface';
-import { computed, ref } from 'vue';
+import { AlbumInter, ImageInter } from '@/typings/interface';
+import { computed, Ref, ref } from 'vue';
 import { useCopyText, useCtxInstance, useFormatImageSize } from '@/hooks/global'
 import { linkTypes } from '@/global.config';
+import Album from '@/types/Album';
+import { PageResponse } from '@/typings/req-res';
+import Image from '@/types/Image';
 
 /**
  * 实例
@@ -75,13 +95,17 @@ import { linkTypes } from '@/global.config';
 interface Props {
   modelValue: boolean
   detail: ImageInter
+  showAlbum?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  detail: () => ({} as ImageInter)
+  detail: () => ({} as ImageInter),
+  showAlbum: true
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'submit'])
 const ctx = useCtxInstance()
+const album = new Album()
+const image = new Image()
 
 /**
  * 变量
@@ -108,12 +132,17 @@ const link = computed({
 
   }
 })
+const album_id = ref(props.detail.album_id || '')
+const albums: Ref<Array<{ label: string, value: string, desc: string }>> = ref([])
 
 /**
  * 回调函数
  */
 const handleClose = () => {
   dialogVisible.value = false
+  if (album_id.value !== props.detail.album_id) {
+    emit('submit')
+  }
 }
 // 打开链接
 const openLink = () => {
@@ -127,6 +156,28 @@ const copyLink = () => {
 // 点击复制
 const handleClick = () => {
   useCopyText(ctx, link.value)
+}
+// 获取相册列表
+const getAlbums = () => {
+  album.find({}).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
+    albums.value = res.items.map(item => {
+      return {
+        label: item.name,
+        value: item.id,
+        desc: item.desc
+      }
+    })
+  })
+}
+getAlbums()
+// 相册下拉回调
+const addAlbum = () => {
+  image.update({
+    id: props.detail.id,
+    album_id: album_id.value
+  }).then(res => {
+    ctx.$message({ message: '加入相册成功', duration: 1000, type: 'success' })
+  })
 }
 </script>
 
@@ -151,7 +202,7 @@ const handleClick = () => {
     .item-label {
       flex-shrink: 0;
     }
-    .el-select {
+    .el-select.link-type-select {
       .el-input__wrapper {
         border-radius: 4px 4px 0 0;
       }

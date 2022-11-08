@@ -67,6 +67,7 @@ import Dict from '@/types/Dict';
 import BucketSource from '@/types/BucketSource';
 import { BasicResponse, PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
+import { useCtxInstance} from '@/hooks/global';
 
 /**
  * 实例
@@ -85,6 +86,7 @@ const emit = defineEmits(['update:modelValue', 'submit'])
 const dict = new Dict()
 const bucketSource = new BucketSource()
 const bucket = new Bucket()
+const ctx = useCtxInstance()
 
 
 /**
@@ -183,6 +185,7 @@ const itemCreate = (data) => {
   bucket.create(data).then(res => {
     handleClose()
     emit('submit')
+    ctx.$message({ message: '新建成功', duration: 1000, type: 'success' })
   })
 }
 // 更新
@@ -190,6 +193,7 @@ const itemUpdate = (data) => {
   bucket.update(data).then(res => {
     handleClose()
     emit('submit')
+    ctx.$message({ message: '更新成功', duration: 1000, type: 'success' })
   })
 }
 // 处理数据
