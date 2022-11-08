@@ -2,9 +2,10 @@ import axios, { AxiosRequestConfig } from "axios";
 import { ElMessage } from 'element-plus'
 import router from '@/router/index'
 import useUserStore from "@/store/user";
+import { baseURL } from "@/global.config";
 
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:3002/api/v1'
+  baseURL: baseURL
 })
 
 instance.interceptors.request.use((config: AxiosRequestConfig) => {

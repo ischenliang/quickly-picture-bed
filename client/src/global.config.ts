@@ -62,4 +62,4 @@ export const mimeTypes = {
 }
 
 
-export const baseURL = 'http://127.0.0.1:3002/api/v1'
+export const baseURL = 'http://124.222.54.192:3002/api/v1'
