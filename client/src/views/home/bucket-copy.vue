@@ -68,8 +68,12 @@ const getLinkValue = (item: Link) => {
     url: url ? url : '',
     filename: current.value.img_name
   }
-  const tmp = item.value.replace(/\$\{/g, '${obj.')
-  return eval('`' + tmp + '`')
+  // const tmp = item.value.replace(/\$\{/g, '${obj.')
+  // return eval('`' + tmp + '`')
+
+  return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+    return obj[key]
+  })
 }
 // 复制链接
 const copyLink = (item: Link) => {

@@ -60,6 +60,13 @@
         :page-sizes="[18, 36, 72, 100]"
         @change="listGet"/>
     </div>
+    <!-- 图片弹窗 -->
+    <detail-dialog
+      v-if="item.detail"
+      v-model="item.detail"
+      :show-album="false"
+      :detail="item.data"
+      @submit="listGet"/>
   </div>
 </template>
 
@@ -73,6 +80,7 @@ import { AlbumInter, BucketInter, ImageInter, ListInter } from '@/typings/interf
 import { PageResponse } from '@/typings/req-res';
 import { reactive, Ref, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import DetailDialog from '@/views/gallery/DetailDialog.vue'
 import GalleryItem from '@/views/gallery/gallery-item.vue'
 import useConfigStore from '@/store/config';
 
@@ -107,6 +115,10 @@ const list: ListInter<ImageInter> = reactive({
 const buckets: Ref<BucketInter[]> = ref([
   { name: '全部', id: '' }
 ])
+const item = reactive({
+  detail: false,
+  data: null
+})
 
 /**
  * 数据获取
@@ -124,8 +136,11 @@ const getBuckets = () => {
       ...res.items.map(item => {
         const obj = JSON.parse(item.config)
         const { baseUrl } = obj
-        const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-        obj.baseUrl = eval('`' + tmp + '`')
+        // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
+        // obj.baseUrl = eval('`' + tmp + '`')
+        obj.baseUrl = baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
+          return obj[key]
+        })
         return {
           id: item.id,
           name: item.name,
@@ -204,6 +219,10 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
           listGet()
         })
       })
+      break
+    case 'detail':
+      item[e.type] = true
+      item.data = e.data
       break
   }
 }

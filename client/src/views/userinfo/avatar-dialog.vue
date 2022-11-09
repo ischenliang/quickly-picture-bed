@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="'头像切换'"
     :width="'600px'"
     :before-close="handleClose"

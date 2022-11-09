@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="'存储源预览'"
     :width="'600px'"
     :before-close="handleClose">
@@ -23,8 +23,8 @@
       </template>
     </el-form>
     <template #action>
-      <el-button size="large" @click="handleClose">取 消</el-button>
-      <el-button size="large" type="primary" @click="submit">确 定</el-button>
+      <el-button @click="handleClose">取 消</el-button>
+      <el-button type="primary" @click="submit">确 定</el-button>
     </template>
   </com-dialog>
 </template>

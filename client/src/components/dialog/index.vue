@@ -3,14 +3,9 @@
   &.el-dialog {
     display: flex;
     flex-direction: column;
-    margin: 0 !important;
-    position: absolute;
-    top: 50%;
-    border-radius: 10px;
-    left: 50%;
-    transform: translate(-50%, -50%);
     max-height: calc(100% - 30px);
     max-width: calc(100% - 30px);
+    border-radius: 10px;
 
     .el-dialog__header {
       padding: 15px 20px !important;
@@ -36,10 +31,10 @@
 </style>
 <template>
   <el-dialog
-    v-if="visible"
     :title="title"
     :draggable="false"
-    v-model="visible"
+    v-model="modelValue"
+    align-center
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="handleClose"
@@ -49,55 +44,42 @@
     destroy-on-close
     :class="footerBorder ? 'com-dialog com-dialog-border': 'com-dialog'"
     append-to-body>
-    <slot> </slot>
-    <div slot="footer" class="dialog-footer" :style="footerStyle">
-      <slot name="action" />
-    </div>
+    <slot></slot>
+    <template #footer>
+      <div slot="footer" class="dialog-footer" :style="footerStyle">
+        <slot name="action" />
+      </div>
+    </template>
   </el-dialog>
 </template>
-<script lang="ts">
-export default {
-  props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: '提示'
-    },
-    width: {
-      type: String,
-      default: '50%'
-    },
-    isCenter: {
-      type: Boolean,
-      default: false
-    },
-    isShowclose: {
-      type: Boolean,
-      default: true
-    },
-    footerStyle: {
-      type: Object,
-      default: () => ({
-        'text-align': 'right'
-      })
-    },
-    footerBorder: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
+<script lang="ts" setup>
+import { StyleValue } from 'vue';
 
-    }
-  },
-  methods: {
-    handleClose() {
-      this.$emit('update:visible', false)
-    }
-  }
+interface Props {
+  modelValue: boolean
+  title?: string
+  width?: string | number
+  isCenter?: boolean
+  isShowclose?: boolean
+  footerStyle?: StyleValue
+  footerBorder: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  title: '提示',
+  width: '50%',
+  isCenter: false,
+  isShowclose: true,
+  footerStyle: () => ({
+    'text-align': 'right'
+  }),
+  footerBorder: false
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const handleClose = () => {
+  emit('update:modelValue', false)
 }
 </script>

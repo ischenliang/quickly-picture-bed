@@ -103,6 +103,11 @@ import AvatarDialog from './avatar-dialog.vue'
 // console.log(citys.list)
 import citys from '@/assets/pca-code.json'
 import { useCtxInstance } from '@/hooks/global';
+interface AvatarInter {
+  name: string
+  suffix: string
+  url?: string
+}
 
 /**
  * 实例
@@ -134,8 +139,96 @@ const majors: Ref<Array<{ label: string, value: string | number | boolean }>> = 
 // 角色列表
 const roles: Ref<Array<{ label: string, value: string | number | boolean }>> = ref([])
 // 用户头像
+// 所有头像列表
+const avatars: Ref<AvatarInter[]> = ref([
+  { name: '星座_白羊座', suffix: 'png' },
+  { name: '星座_金牛座', suffix: 'png' },
+  { name: '星座_双子座', suffix: 'png' },
+  { name: '星座_巨蟹座', suffix: 'png' },
+  { name: '星座_狮子座', suffix: 'png' },
+  { name: '星座_处女座', suffix: 'png' },
+  { name: '星座_天秤座', suffix: 'png' },
+  { name: '星座_天蝎座', suffix: 'png' },
+  { name: '星座_射手座', suffix: 'png' },
+  { name: '星座_摩羯座', suffix: 'png' },
+  { name: '星座_水瓶座', suffix: 'png' },
+  { name: '星座_双鱼座', suffix: 'png' },
+
+  
+  { name: '生肖_鼠', suffix: 'png' },
+  { name: '生肖_牛', suffix: 'png' },
+  { name: '生肖_虎', suffix: 'png' },
+  { name: '生肖_兔', suffix: 'png' },
+  { name: '生肖_龙', suffix: 'png' },
+  { name: '生肖_蛇', suffix: 'png' },
+  { name: '生肖_马', suffix: 'png' },
+  { name: '生肖_羊', suffix: 'png' },
+  { name: '生肖_猴', suffix: 'png' },
+  { name: '生肖_鸡', suffix: 'png' },
+  { name: '生肖_狗', suffix: 'png' },
+  { name: '生肖_猪', suffix: 'png' },
+
+  
+  { name: '比赛_1', suffix: 'png' },
+  { name: '比赛_2', suffix: 'png' },
+  { name: '比赛_3', suffix: 'png' },
+  { name: '比赛_4', suffix: 'png' },
+  { name: '比赛_5', suffix: 'png' },
+  { name: '比赛_6', suffix: 'png' },
+  { name: '比赛_7', suffix: 'png' },
+  { name: '比赛_8', suffix: 'png' },
+  { name: '比赛_9', suffix: 'png' },
+  { name: '比赛_10', suffix: 'png' },
+  { name: '比赛_11', suffix: 'png' },
+  { name: '比赛_12', suffix: 'png' },
+  
+  
+  { name: '学生卡通_1', suffix: 'png' },
+  { name: '学生卡通_2', suffix: 'png' },
+  { name: '学生卡通_3', suffix: 'png' },
+  { name: '学生卡通_4', suffix: 'png' },
+  { name: '学生卡通_5', suffix: 'png' },
+  { name: '学生卡通_6', suffix: 'png' },
+  { name: '学生卡通_7', suffix: 'png' },
+  { name: '学生卡通_8', suffix: 'png' },
+  { name: '学生卡通_9', suffix: 'png' },
+  { name: '学生卡通_10', suffix: 'png' },
+  { name: '学生卡通_11', suffix: 'png' },
+  { name: '学生卡通_12', suffix: 'png' },
+  
+  
+  { name: '学生扁平_1', suffix: 'png' },
+  { name: '学生扁平_2', suffix: 'png' },
+  { name: '学生扁平_3', suffix: 'png' },
+  { name: '学生扁平_4', suffix: 'png' },
+  { name: '学生扁平_5', suffix: 'png' },
+  { name: '学生扁平_6', suffix: 'png' },
+  { name: '学生扁平_7', suffix: 'png' },
+  { name: '学生扁平_8', suffix: 'png' },
+  { name: '学生扁平_9', suffix: 'png' },
+  { name: '学生扁平_10', suffix: 'png' },
+  { name: '学生扁平_11', suffix: 'png' },
+  { name: '学生扁平_12', suffix: 'png' },
+  
+  { name: '通用_1', suffix: 'png' },
+  { name: '通用_2', suffix: 'png' },
+  { name: '通用_3', suffix: 'png' },
+  { name: '通用_4', suffix: 'png' },
+  { name: '通用_5', suffix: 'png' },
+  { name: '通用_6', suffix: 'png' },
+  { name: '通用_7', suffix: 'png' },
+  { name: '通用_8', suffix: 'png' },
+  { name: '通用_9', suffix: 'png' },
+  { name: '通用_10', suffix: 'png' },
+  { name: '通用_11', suffix: 'png' },
+  { name: '通用_12', suffix: 'png' },
+])
+avatars.value.forEach(item => {
+  item.url = new URL(`./images/${item.name}.${item.suffix}`, import.meta.url).href
+})
 const userAvatar = computed(() => {
-  return new URL('./images/' + form.value.avatar + '.png', import.meta.url).href
+  // props.userInfo.avatar
+  return avatars.value.find(item => item.name === form.value.avatar).url
 })
 
 /**

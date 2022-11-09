@@ -60,8 +60,11 @@ const listGet = () => {
     buckets.value = res.items.map(item => {
       const obj = JSON.parse(item.config)
       const { baseUrl } = obj
-      const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-      obj.baseUrl = eval('`' + tmp + '`')
+      // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
+      // obj.baseUrl = eval('`' + tmp + '`')
+      obj.baseUrl = baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
+        return obj[key]
+      })
       return {
         id: item.id,
         name: item.name,

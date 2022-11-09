@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="'查看用户'"
     :width="'800px'"
     :footerStyle="{
@@ -71,7 +71,7 @@
       </el-form-item>
     </el-form>
     <template #action>
-      <el-button type="primary" size="large" @click="handleClose">确 定</el-button>
+      <el-button type="primary" @click="handleClose">确 定</el-button>
     </template>
   </com-dialog>
 </template>

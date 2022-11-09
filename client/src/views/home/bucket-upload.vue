@@ -101,8 +101,12 @@ const getLinkValue = (item: Link) => {
     url: current.value.img_url,
     filename: current.value.img_name
   }
-  const tmp = item.value.replace(/\$\{/g, '${obj.')
-  return eval('`' + tmp + '`')
+  // const tmp = item.value.replace(/\$\{/g, '${obj.')
+  // return eval('`' + tmp + '`')
+
+  return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+    return obj[key]
+  })
 }
 // 文件上传前对文件大小限制
 const beforeUpload = (e: { files: FileList, error: string }) => {

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="aa"></div>
+  <button onclick="handleClick()">点击</button>
+  <script>
+    document.addEventListener('keydown', (e) => {
+      console.log(123, e)
+    })
+
+    document.addEventListener('paste', (event) => {
+      console.log('paste')
+      const clipboardData = event.clipboardData || window.clipboardData
+      console.log(event)
+      // useDocumentClipboard(e).then(res => {
+      //   console.log(res)
+      // })
+    })
+
+    function handleClick () {
+      // document.dispatchEvent(new Event('paste'))
+      document.dispatchEvent(new ClipboardEvent('paste', {dataType: 'text/plain', data: 'My string' }))
+      // document.dispatchEvent(new KeyboardEvent('keydown', {
+      //   key: 'Control',
+      //   code: 'ControlLeft',
+      //   location: 1,
+      //   ctrlKey: true,
+      //   shiftKey: false,
+      //   altKey: false,
+      //   metaKey: false,
+      //   repeat: false,
+      //   isComposing: false,
+      //   charCode: 0,
+      //   keyCode: 17,
+      //   which: 17
+      // }))
+      // document.dispatchEvent(new KeyboardEvent('keydown', {
+      //   key: 'v',
+      //   code: 'KeyV',
+      //   location: 1,
+      //   ctrlKey: true,
+      //   shiftKey: false,
+      //   altKey: false,
+      //   metaKey: false,
+      //   repeat: false,
+      //   isComposing: false,
+      //   charCode: 0,
+      //   keyCode: 86,
+      //   which: 86
+      // }))
+    }
+  
+    function useDocumentClipboard (event) {
+      return new Promise((resolve, reject) => {
+        const files = []
+        const clipboardData = event.clipboardData || window.clipboardData
+        const items = clipboardData.items
+
+        // 搜索剪切板items
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i]
+          // 文件格式
+          if (item.kind === 'file') {
+            // 匹配图片类型
+            if (item.type.indexOf('image') !== -1) {
+              const file = item.getAsFile()
+              if (file.size === 0) {
+                return
+              }
+              files.push(file)
+            }
+          }
+        }
+        resolve(files)
+      })
+    }
+  </script>
+</body>
+
+</html>

@@ -14,21 +14,13 @@
           @click.stop="actions[item.action]" />
       </el-tooltip>
     </div>
-    <!-- 需放进来：放在和gallery-item同级会导致点击时无效果 -->
-    <detail-dialog
-      v-if="item.detail"
-      v-model="item.detail"
-      :show-album="!remove"
-      :detail="data"
-      @submit="emit('reload')"/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ImageInter } from '@/typings/interface';
-import { computed, reactive, ref, useSlots } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
-import DetailDialog from './DetailDialog.vue'
 
 interface Props {
   data: ImageInter
@@ -73,10 +65,6 @@ const btns = ref([
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
   { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
 ])
-// 弹窗状态
-const item = reactive({
-  detail: false
-})
 
 
 /**
@@ -96,7 +84,7 @@ const actions = {
   crop () {},
   // 详情
   detail () {
-    item.detail = true
+    emit('submit', { type: 'detail', data: myData.value })
   },
   /**
    * 先删除文件，后删除数据

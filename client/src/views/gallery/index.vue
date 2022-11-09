@@ -53,19 +53,26 @@
         :page-sizes="[18, 36, 72, 100]"
         @change="listGet"/>
     </c-card>
+    <!-- 需放进来：放在和gallery-item同级会导致点击时无效果 -->
+    <detail-dialog
+      v-if="item.detail"
+      v-model="item.detail"
+      :show-album="!false"
+      :detail="item.data"
+      @submit="listGet"/>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useConfirmBox, useCtxInstance, useDeleteConfirm } from '@/hooks/global';
+import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
-import { BasicResponse, PageResponse } from '@/typings/req-res';
+import { PageResponse } from '@/typings/req-res';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import GalleryItem from './gallery-item.vue'
-import bucketUpload from '@/hooks/bucket/index'
 import { useFormat } from '@/hooks/date-time';
+import DetailDialog from './DetailDialog.vue'
 
 /**
  * 实例
@@ -100,6 +107,10 @@ const buckets: Ref<BucketInter[]> = ref([
 const disabled = computed(() => {
   return list.data.filter(item => item.checked).length === 0
 })
+const item = reactive({
+  detail: false,
+  data: null
+})
 
 /**
  * 数据获取
@@ -128,8 +139,11 @@ const getBuckets = () => {
          *    在此处使用的方法中即${obj.test}不会报错，因为我们的obj是引用类型，查找不到该属性时会直接返回undefined
          */
         const { baseUrl } = obj
-        const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-        obj.baseUrl = eval('`' + tmp + '`')
+        // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
+        // obj.baseUrl = eval('`' + tmp + '`')
+        obj.baseUrl = baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
+          return obj[key]
+        })
         return {
           id: item.id,
           name: item.name,
@@ -188,23 +202,16 @@ const handleClick = (index: number) => {
 const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
   switch (e.type) {
     case 'delete':
-      // useDeleteConfirm().then(() => {
-      //   const { bucket_id, bucket_type, id, hash } = e.data
-      //   // 1、删除文件
-      //   bucketUpload[bucket_type].deleteFile(bucket_id, [hash]).then(res => {
-      //     // 2、删除数据
-      //     image.delete(id).then(result => {
-      //       ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
-      //       listGet()
-      //     })
-      //   })
-      // })
       useDeleteConfirm().then(() => {
         image.delete(e.data.id).then(res => {
           ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
           listGet()
         })
       })
+      break
+    case 'detail':
+      item[e.type] = true
+      item.data = e.data
       break
   }
 }

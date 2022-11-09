@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="'图片ID:' + detail.id"
     :width="'600px'"
     :before-close="handleClose">
@@ -19,7 +19,7 @@
               :label="item.label"
               :value="item.label" />
           </el-select>
-          <el-input v-model="link" readonly>
+          <el-input :value="link" readonly>
             <template #append>
               <el-button @click="handleClick">复制</el-button>
             </template>
@@ -125,8 +125,15 @@ const link = computed({
     const item = linkTypes.value.find(item => item.label === linkType.value)
     const { img_preview_url: url = '', img_name: filename = '' } = props.detail
     const obj = { url, filename }
-    const tmp = item.value.replace(/\$\{/g, '${obj.')
-    return eval('`' + tmp + '`')
+
+    // 方式一：使用eval来替换
+    // const tmp = item.value.replace(/\$\{/g, '${obj.')
+    // return eval('`' + tmp + '`')
+
+    // 方式二直接替换
+    return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+      return obj[key]
+    })
   },
   set (val) {
 

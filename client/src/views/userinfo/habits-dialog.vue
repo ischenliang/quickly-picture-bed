@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="'快捷键绑定'"
     :width="'550px'"
     :before-close="handleClose">

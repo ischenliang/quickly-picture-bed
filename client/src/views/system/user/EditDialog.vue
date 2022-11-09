@@ -1,6 +1,6 @@
 <template>
   <com-dialog
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :title="detail && detail.id ? '编辑用户' : '新建用户'"
     :width="'600px'"
     :before-close="handleClose">
@@ -28,8 +28,8 @@
       </el-form-item>
     </el-form>
     <template #action>
-      <el-button size="large" @click="handleClose">取 消</el-button>
-      <el-button size="large" type="primary" @click="submit">确 定</el-button>
+      <el-button @click="handleClose">取 消</el-button>
+      <el-button type="primary" @click="submit">确 定</el-button>
     </template>
   </com-dialog>
 </template>
