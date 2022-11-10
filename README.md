@@ -1,5 +1,5 @@
-# 快捷图床
-使用vue3.x + vite + typescript + pinia + vue-router + element-plus + sass + axios构建的在线图床系统<br/>
-数据存储采用leancloud<br/>
-并且支持使用qiniu、gitee、github等存储桶在线构建图床<br/>
-同时支持bytemd和monaco-editor编辑器的使用。
+# 轻快图片管理系统 | 图床管理系统
+是一款使用koa全家桶和vue3.x全家桶搭建的图片管理系统
+
+**前台**：vite3.x + vue3.x + typescript + vue-router + pinia + element-plus + axios + sass等技术。<br/>
+**后台**：koa2 + typescript + koa-ts-controllers + sequelize + mysql + koa-router + jsonwebtoken等技术。 
