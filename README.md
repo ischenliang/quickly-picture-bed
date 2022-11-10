@@ -1,9 +1,9 @@
-<div style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+<div align="center">
     <img src="http://imgs.itchenliang.club/img/202211101734215.png"/>
-    <div style="text-align: center;font-size: 18px;font-weight: bold;margin-bottom: 10px;">
-        基于Koa2 + Vue3.x + Vite3.x + typescript开发的轻量级快捷图片管理系统、图床系统
+    <div align="center">
+      基于Koa2 + Vue3.x + Vite3.x + typescript开发的轻量级快捷图片管理系统、图床系统
     </div>
-    <span>
+    <span align="center">
         <img src="https://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
         <img src="https://img.shields.io/badge/vite-3.1.4-brightgreen" />
         <img src="https://img.shields.io/badge/vuerouter-4.1.5-brightgreen" />
@@ -24,37 +24,49 @@
 
 
 ## 内置功能
-**图片上传**
+**图片上传**<br/>
 支持图片多图上传、拖拽上传、粘贴上传、一键复制多种格式的图片外链。
-**图片管理**
+
+**图片管理**<br/>
 多上传的图片进行管理，支持文件重命名、移入指定相册、删除图片、预览图片等。
-**存储桶管理**
+
+**存储桶管理**<br/>
 支持多桶储存，可同时添加多个对象存储桶管理，上不封顶，例如：七牛云对象存储、阿里云对象存储、腾讯云对象存储等等，系统会统计出每个存储桶下的图片数量以及已使用存储量。同时也支持控制存储桶是否显示在上传区。
-**相册管理**
+
+**相册管理**<br/>
 支持相册管理，可以对图片进行分组分类管理，便于用户将不同的图片进行分类挂办理，同时也支持直接将图片上传到相册中。
-**操作日志管理**
+
+**操作日志管理**<br/>
 完整的可视化日志功能，记录用户所有操作，方便事件溯源。普通用户只能查看自己的操作记录，管理员则能查看所有人员的操作记录，于此同时数据统计中的贡献图的数据来源也是从操作记录中提取。
-**个人信息维护**
+
+**个人信息维护**<br/>
 用户可以对自己的信息管理，如头像(系统内置4组不同维度的头像供选择)、昵称、职业、性别、个人简介以及个人登录密码进行维护管理。
-**数据统计**
+
+**数据统计**<br/>
 系统提供了数据统计功能，统计用户的图片数量、存储桶数量、总占用存储量、相册数量以及系统贡献度数据进行统计。
-**使用习惯配置**
+
+**使用习惯配置**<br/>
 考虑到每个用户的使用习惯不同，系统提供了使用习惯配置中心，可以对默认复制的图片链接格式、自定义链接格式、常用快捷键配置以及是否开启上传成功提示、复制链接成功提示等配置。
-**用户管理**
+
+**用户管理**<br/>
 多用户管理，根据不同的角色可以管理不同的数据，同时用户可以通过自主注册或者管理员在管理页面直接创建。
-**存储桶源管理**
+
+**存储桶源管理**<br/>
 存储桶管理是用于管理员对存储桶源的相关配置进行管理，例如七牛云对象存储，需要用户在界面上感知出需要填写哪些数据、哪些数据时必填项、有哪些数据的智能提示，其实就是对存储桶拥有哪些元数据进行配置，于此同时还提供了是否启用或者禁用的功能，比如某一个对象存储已经从市面上out，则管理员可以进行禁用操作，这样用户就不能创建该类型的存储桶。
-**字典管理**
+
+**字典管理**<br/>
 对系统中经常使用的一些较为固定的数据进行维护，例如个人中心的职业、用户性别、存储桶页面不同的存储桶展示不同的图标等数据维护。
-**系统设置**
+
+**系统设置**<br/>
 对系统中一些常用的数据进行维护，包括系统名称、系统logo、备案信息、更新日志、系统上所使用的的图标的来源进行配置。
-**权限控制**
+
+**权限控制**<br/>
 完整的权限控制功能，不同的角色可分配不同的操作权限，控制对应的删除及查看。
 
 ## 在线体验
 **在线演示**
-地址：[http://picture.itchenliang.club/#/](http://picture.itchenliang.club/#/)
-账号：guest@163.com
+地址：[http://picture.itchenliang.club/#/](http://picture.itchenliang.club/#/)<br/>
+账号：guest@163.com<br/>
 密码：000000
 
 
@@ -68,8 +80,10 @@
 ### 安装步骤
 **1. 安装node**
 前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
+
 **2. 安装git**
 前往[Git官网](https://git-scm.com/)下载`git`并安装，此步可忽略。
+
 **3. 安装typescript、nodemon、ts-node**
 使用下面的命令全局安装`typescript`
 ```shell
@@ -77,8 +91,10 @@ npm install typescript -g
 npm install nodemon -g
 npm install ts-node -g
 ```
+
 **4. 克隆代码**
 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压
+
 **5. 依赖安装**
 ```shell
 # 前端依赖安装
@@ -89,6 +105,7 @@ npm install
 cd server
 npm install
 ```
+
 **6. 项目启动**
 ```shell
 # 前端项目启动
@@ -100,7 +117,7 @@ cd server
 npm run start
 ```
 控制台出现如下如所示即代表启动成功
-![202211101711526.png](https://imgs.itchenliang.club/img/202211101711526.png)
+![202211101711526.png](https://imgs.itchenliang.club/img/202211101711526.png)<br/>
 ![202211101712519.png](https://imgs.itchenliang.club/img/202211101712519.png)
 
 **7. 项目打包部署**
