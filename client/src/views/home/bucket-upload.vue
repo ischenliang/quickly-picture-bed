@@ -19,8 +19,10 @@
   <div class="quick-entry">
     <div class="entry-title">快捷上传</div>
     <div class="entry-list">
-      <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
-      <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
+      <el-tooltip effect="dark" content="'如果不支持，可以尝试直接按Ctrl + V'" placement="bottom">
+        <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
+      </el-tooltip>
+      <el-button type="primary" :disabled="true" @click="entryUpload('url')">网络图URL</el-button>
     </div>
   </div>
 </template>
@@ -186,6 +188,8 @@ const entryUpload = (type: string) => {
         totalProgress.progress[index] = { loaded: 0, total: file.size }
       })
       files.length && upload(files)
+    }).catch(error => {
+      ctx.$message({ message: error.message, type: 'error', duration: 1000 })
     })
   }
   if (type === 'url') {
