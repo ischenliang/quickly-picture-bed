@@ -1,20 +1,22 @@
-<center>
-    <img src="http://picture.itchenliang.club/static/png/banner-afa292be.png"/>
+<div style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+    <img src="http://imgs.itchenliang.club/img/202211101734215.png"/>
     <div style="text-align: center;font-size: 18px;font-weight: bold;margin-bottom: 10px;">
         基于Koa2 + Vue3.x + Vite3.x + typescript开发的轻量级快捷图片管理系统、图床系统
     </div>
-    <img src="https://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
-    <img src="https://img.shields.io/badge/vite-3.1.4-brightgreen" />
-    <img src="https://img.shields.io/badge/vuerouter-4.1.5-brightgreen" />
-    <img src="https://img.shields.io/badge/element--plus-2.2.17-brightgreen" />
-    <img src="https://img.shields.io/badge/pinia-2.0.22-brightgreen" />
-    <img src="https://img.shields.io/badge/typescript-4.8.4-brightgreen" />
-    <img src="https://img.shields.io/badge/koa-2.x-brightgreen" />
-    <img src="https://img.shields.io/badge/koa--ts--controllers-3.x-brightgreen" />
-    <img src="https://img.shields.io/badge/sequelize-6.x-brightgreen" />
-    <img src="https://img.shields.io/badge/mysql-brightgreen" />
-    <img src="https://img.shields.io/badge/jsonwebtoken-brightgreen" />
-</center>
+    <span>
+        <img src="https://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
+        <img src="https://img.shields.io/badge/vite-3.1.4-brightgreen" />
+        <img src="https://img.shields.io/badge/vuerouter-4.1.5-brightgreen" />
+        <img src="https://img.shields.io/badge/element--plus-2.2.17-brightgreen" />
+        <img src="https://img.shields.io/badge/pinia-2.0.22-brightgreen" />
+        <img src="https://img.shields.io/badge/typescript-4.8.4-brightgreen" />
+        <img src="https://img.shields.io/badge/koa-2.x-brightgreen" />
+        <img src="https://img.shields.io/badge/koa--ts--controllers-3.x-brightgreen" />
+        <img src="https://img.shields.io/badge/sequelize-6.x-brightgreen" />
+        <img src="https://img.shields.io/badge/mysql-brightgreen" />
+        <img src="https://img.shields.io/badge/jsonwebtoken-brightgreen" />
+    </span>
+</div>
 
 ## 简介
 程序员日常就是写博客，当然写博客时就会涉及到在博文中插入图片，所以往往会使用图床来进行图片资源管理，市面上较流行的图床是`PicGo`，是使用`electron-vue`开发的桌面应用程序，所以每次需要下载安装并配置图床，比较麻烦。所以开发了这款**轻快图片管理系统**，是基于vue3.x + typescript + vite + koa + mysql开发的前后端分离图床系统，使用该系统可以不需要每次都配置图床。
