@@ -8,7 +8,7 @@
       :border="true"
       @pageChange="pageChange"
       @select-change="hanleSelectChange"
-      :actionWidth="200">
+      :actionWidth="270">
       <template #filter>
         <filter-item :text="'存储源名称:'">
           <el-input v-model="list.filters.name" placeholder="请输入存储源名称" />
@@ -17,8 +17,17 @@
       <template #action>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
+      <template #status="data">
+        <el-tag :type="data.status ? 'success' : 'error'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
+      </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">编辑</el-button>
+        <el-button
+          :type="row.status ? 'warning' : 'info'"
+          size="small"
+          @click="itemOperate(row, 'switch')">
+          {{ row.status ? '禁用' : '启用' }}
+        </el-button>
         <el-button type="success" size="small" @click="itemOperate(row, 'detail')">预览</el-button>
         <el-button type="danger" size="small" @click="itemOperate(row, 'delete')">删除</el-button>
       </template>
@@ -105,6 +114,18 @@ const itemOperate = (data: any, type) => {
           type: 'success',
           duration: 1000,
           message: '删除成功'
+        })
+        listGet()
+      })
+    })
+  }
+  if (type === 'switch') {
+    useDeleteConfirm(`确定要${ data.status ? '禁用' : '启用' }该存储源吗？`).then(() => {
+      bucketSource.switch(data.id).then(res => {
+        ctx.$message({
+          type: 'success',
+          duration: 1000,
+          message: `${ data.status ? '禁用' : '启用' }成功`
         })
         listGet()
       })

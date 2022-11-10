@@ -7,7 +7,12 @@
     <div class="c-list">
       <div class="c-list-item">
         <span class="item-label">文件名：</span>
-        <div>{{ detail.img_name }}</div>
+        <!-- <div>{{ detail.img_name }}</div> -->
+        <el-input v-model="image_name" placeholder="请输入文件名称，可不带后缀">
+          <template #append>
+            <el-button @click="saveName">保存</el-button>
+          </template>
+        </el-input>
       </div>
       <div class="c-list-item">
         <span class="item-label">链&emsp;接：</span>
@@ -19,7 +24,7 @@
               :label="item.label"
               :value="item.label" />
           </el-select>
-          <el-input :value="link" readonly>
+          <el-input :value="link" readonly class="special-input">
             <template #append>
               <el-button @click="handleClick">复制</el-button>
             </template>
@@ -66,15 +71,15 @@
               <span style="font-size: 12px;margin-left: 10px;color: var(--el-text-color-secondary);">{{ item.desc }}</span>
             </el-option>
           </el-select>
+          <el-button type="primary" @click="addAlbum">确定</el-button>
         </div>
         <p style="width: 100%;margin-top: 5px;color: var(--el-text-color-secondary);">选择相册后，点击加入相册按钮</p>
       </div>
     </div>
     <template #action>
-      <el-button type="primary" @click="addAlbum" v-if="showAlbum">加入相册</el-button>
       <el-button type="default" @click="handleClose">取消</el-button>
       <el-button type="primary" @click="copyLink">复制</el-button>
-      <el-button type="primary" @click="copyLink">设为头像</el-button>
+      <!-- <el-button type="primary" @click="copyLink">设为头像</el-button> -->
       <el-button type="success" @click="openLink">打开链接</el-button>
     </template>
   </com-dialog>
@@ -119,6 +124,8 @@ const dialogVisible = computed({
   }
 })
 const linkType = ref('URL')
+// 名称
+const image_name = ref(props.detail.img_name || '')
 
 const link = computed({
   get () {
@@ -147,7 +154,7 @@ const albums: Ref<Array<{ label: string, value: string, desc: string }>> = ref([
  */
 const handleClose = () => {
   dialogVisible.value = false
-  if (album_id.value !== props.detail.album_id) {
+  if (album_id.value !== props.detail.album_id || props.detail.img_name !== image_name.value) {
     emit('submit')
   }
 }
@@ -181,9 +188,20 @@ getAlbums()
 const addAlbum = () => {
   image.update({
     id: props.detail.id,
-    album_id: album_id.value
+    album_id: album_id.value,
+    slient: true
   }).then(res => {
     ctx.$message({ message: '加入相册成功', duration: 1000, type: 'success' })
+  })
+}
+// 保存名称
+const saveName = () => {
+  image.update({
+    id: props.detail.id,
+    img_name: image_name.value,
+    slient: true
+  }).then(res => {
+    ctx.$message({ message: '名称修改成功', duration: 1000, type: 'success' })
   })
 }
 </script>
@@ -214,7 +232,7 @@ const addAlbum = () => {
         border-radius: 4px 4px 0 0;
       }
     }
-    .el-input-group--append {
+    .special-input {
       margin-top: -1px;
       .el-input__wrapper {
         border-radius: 0 0 0 4px;

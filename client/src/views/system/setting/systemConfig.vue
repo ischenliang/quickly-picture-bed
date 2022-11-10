@@ -60,8 +60,8 @@
       </el-row>
     </c-card>
 
-    <c-card :title="'服务配置'">
-      <p style="line-height: 22px;color: #666;margin-bottom: 5px;">对几种存储桶的后台服务地址配置</p>
+    <c-card :title="'菜单配置'">
+      <p style="line-height: 22px;color: #666;margin-bottom: 5px;">对右上角的菜单和链接配置</p>
       <monaco-editor v-model="myForm.bucket_service"></monaco-editor>
     </c-card>
 

@@ -34,4 +34,22 @@ const value = ref(configStore.systemConfig.uplog)
   padding: 0 150px;
   margin-top: 20px;
 }
+
+.img-small {
+  display: block;
+  height: 200px;
+  border: 1px dashed #ddd !important; 
+}
+.img-medium {
+  display: block;
+  height: 300px;
+  border: 1px dashed #ddd !important; 
+}
+.img-large {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px dashed #ddd !important; 
+}
+
 </style>

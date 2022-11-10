@@ -28,11 +28,10 @@ export default class Bucket {
   update (params: BucketInter) {
     return http('/bucket/update', params)
   }
-  // 更新用户属性
-  updateByPro (id: string, uid: string, property: string, value: any) {
-    return http('/bucket/update', {
-      id,
-      [property]: value
+  // 切换状态
+  toggle (id: string) {
+    return http('/bucket/toggle', {
+      id
     })
   }
   // 查询

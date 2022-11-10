@@ -56,6 +56,8 @@ export interface BucketSource {
   name?: string
   // 存储源类型: 存储源对应的类别,例如：qiniu、oss
   type?: string
+  // 存储源状态
+  status?: boolean
   // 存储源配置，界面上需要提供可以拖拽调整顺序
   config?: Array<BucketSourceConfig>
   // 存储源配置字符串
@@ -176,6 +178,8 @@ export interface Image {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 是否静态更新
+  slient?: boolean
 }
 
 // 日志

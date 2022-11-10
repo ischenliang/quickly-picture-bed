@@ -92,7 +92,8 @@ class ImageController {
         where: {
           id: params.id,
           uid: user.id
-        }
+        },
+        silent: params.slient
       })
     }
   }

@@ -14,6 +14,13 @@ export const config: Array<TableColumnConfig> = [
   },
   {
     align: 'center',
+    label: '状态',
+    width: '',
+    prop: 'status',
+    slot: 'status'
+  },
+  {
+    align: 'center',
     label: '创建时间',
     width: '',
     prop: 'createdAt'

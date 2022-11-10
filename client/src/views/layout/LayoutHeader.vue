@@ -11,8 +11,14 @@
     </div> -->
     <div class="app-rightmenu">
       <div class="app-links">
-        <div class="link-item">文档</div>
-        <div class="link-item">Github</div>
+        <!-- <div class="link-item">文档</div>
+        <div class="link-item">Github</div> -->
+        <a
+          v-for="(item, index) in JSON.parse(configStore.systemConfig.bucket_service)"
+          :key="index"
+          :href="item.link"
+          class="link-item"
+          :target="item.target">{{ item.label }}</a>
       </div>
       <user-dropdown
         :user-info="userInfo"
@@ -101,6 +107,8 @@ getRoles()
         display: flex;
         align-items: center;
         cursor: pointer;
+        text-decoration: none;
+        color: #606266;
         &:hover {
           color: #32cfaa;
         }

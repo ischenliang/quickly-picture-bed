@@ -120,7 +120,9 @@ const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
  * 数据获取
  */
 const getBucketSource = () => {
-  bucketSource.find({}).then((res: PageResponse<BucketSourceInter>) => {
+  bucketSource.find({
+    status: true
+  }).then((res: PageResponse<BucketSourceInter>) => {
     handleBucketData(res.items)
     if (form.type) {
       handleData(form.type)

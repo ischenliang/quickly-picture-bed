@@ -259,7 +259,8 @@ class UserController {
       }, {
         where: {
           id: params.id
-        }
+        },
+        silent: true
       })
     }
   }

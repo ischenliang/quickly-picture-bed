@@ -6,6 +6,7 @@ import http from '@/api'
 interface Filter extends PageReq {
   name?: string,
   type?: string
+  status?: boolean
 }
 /**
  * =========== 存储桶源 ===========
@@ -32,5 +33,9 @@ export default class BucketSource {
   // 详情
   detail (id: string) {
     return http('/bucketSource/detail', { id })
+  }
+  // 切换状态
+  switch (id: string) {
+    return http('/bucketSource/switch', { id })
   }
 }

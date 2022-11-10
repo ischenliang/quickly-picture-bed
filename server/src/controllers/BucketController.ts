@@ -140,4 +140,28 @@ class BucketController {
       })
     }
   }
+
+
+  /**
+   * 切换状态
+   * @param params Bucket存储桶
+   * @returns 
+   */
+  @Post('/toggle')
+  async toggle (@Body() params: { id: string }, @CurrentUser() user: User) {
+    const tmp = await BucketModel.findOne({ where: { id: params.id } }) as Bucket
+    return {
+      code: 200,
+      message: '成功',
+      data: await BucketModel.update({
+        visible: !tmp.visible
+      }, {
+        where: {
+          id: params.id,
+          uid: user.id
+        },
+        silent: true
+      })
+    }
+  }
 }

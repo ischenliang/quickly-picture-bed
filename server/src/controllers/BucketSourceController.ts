@@ -6,6 +6,7 @@ import { useRoleAuthorization } from '../middlewares/authorization'
 
 interface Filter extends Page {
   name?: string
+  status?: boolean
 }
 
 // 注意：这里将class名改为BucketSourceController则访问时会报404
@@ -28,6 +29,9 @@ class BucketsourceController {
       }
     }
     const data: any = {}
+    if (params.status) {
+      tmp.where.status = params.status
+    }
     if (params.page) {
       tmp.limit = params.size
       tmp.offset = params.page ? (params.page - 1) * params.size : 0
@@ -73,11 +77,13 @@ class BucketsourceController {
       code: 200,
       message: '成功',
       data: await BucketSourceModel.update({
-      ...params
+        ...params
       }, {
         where: {
           id: params.id
-        }
+        },
+        // 更新数据，不更新updatedAt字段
+        silent: params.status
       })
     }
   }
@@ -98,6 +104,31 @@ class BucketsourceController {
         where: {
           id: params.id
         }
+      })
+    }
+  }
+
+
+  /**
+   * 切换状态
+   * @param params BucketSource存储源
+   * @returns 
+   */
+  @Post('/switch')
+  @Flow([useRoleAuthorization])
+  async switch (@Body() params: { id: string }) {
+    const data = await BucketSourceModel.findOne({where: { id: params.id } }) as BucketSource
+    return {
+      code: 200,
+      message: '成功',
+      data: await BucketSourceModel.update({
+        status: !data.status
+      }, {
+        where: {
+          id: params.id
+        },
+        // 更新数据，不更新updatedAt字段
+        silent: true
       })
     }
   }

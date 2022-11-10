@@ -114,6 +114,8 @@ export interface ImageInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 是否静态更新
+  slient?: boolean
 }
 
 
@@ -309,6 +311,11 @@ export interface SettingInter {
   // 更新日志
   uplog?: string // 更新日志url
   // 存储桶后台服务配置
+  // Array<{
+  //   label: string
+  //   link: string
+  //   target: string
+  // }> | string
   bucket_service?: string
   // 创建时间
   createdAt?: string

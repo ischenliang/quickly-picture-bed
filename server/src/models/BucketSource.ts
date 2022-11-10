@@ -26,6 +26,12 @@ const BucketSourceModel = seq.define('bucketSource', {
     allowNull: false,
     comment: '存储源类型'
   },
+  status: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    comment: '存储源状态',
+    defaultValue: true
+  },
   config: {
     type: DataTypes.JSON,
     allowNull: false,

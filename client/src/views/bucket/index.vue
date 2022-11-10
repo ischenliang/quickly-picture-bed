@@ -22,7 +22,7 @@
             </div>
             <div class="bucket-item-tags">
               <el-tag size="small" type="success">{{ item.tag }}</el-tag>
-              <el-tag size="small">{{ item.visible ? '已启用' : '已禁用' }}</el-tag>
+              <el-tag size="small" :type="item.visible ? 'primary' : 'error'">{{ item.visible ? '已启用' : '已禁用' }}</el-tag>
             </div>
             <div class="bucket-item-content">
               <div class="bucket-content-title">{{ item.name }}</div>
@@ -34,7 +34,7 @@
             </div>
             <div class="bucket-item-action">
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
-              <div class="bucket-action-item" @click="itemOperate(item, 'update')">{{ item.visible ? '禁用' : '启用' }}</div>
+              <div class="bucket-action-item" @click="itemOperate(item, 'toggle')">{{ item.visible ? '禁用' : '启用' }}</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'delete')">删除</div>
             </div>
           </div>
@@ -143,11 +143,13 @@ const itemOperate = (data: BucketInter, type) => {
       })
     })
   }
-  if (type === 'update') {
-    bucket.updateByPro(data.id, data.uid, 'visible', !data.visible)
-      .then(res => {
+  if (type === 'toggle') {
+    useDeleteConfirm(`确定要${ data.visible ? '禁用' : '启用' }该存储桶吗？`).then(() => {
+      bucket.toggle(data.id).then(res => {
+        ctx.$message({ message: `${ data.visible ? '禁用' : '启用' }成功`, type: 'success', duration: 1000 })
         listGet()
       })
+    })
   }
 }
 </script>

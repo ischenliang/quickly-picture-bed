@@ -30,7 +30,7 @@ const SettingModel = seq.define('setting', {
     comment: '更新日志url'
   },
   bucket_service: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
     comment: '存储桶后台服务配置'
   }
