@@ -180,6 +180,7 @@ export function useCopyText (ctx: Ctx, text: string) {
   })
   isSupported && copy(text)
   copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
+  console.log(text)
 }
 
 
