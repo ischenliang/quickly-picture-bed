@@ -238,6 +238,7 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
   .album-image-header {
     width: calc(100% + 19px + 19px);
     height: 250px;
+    flex-shrink: 0;
     background-image: url('http://lc-DZNcsGI3.cn-n1.lcfile.com/Dy9tIIgJPRTmHbCGfUuc2k4p0BcDO3qE/202211081037249.jpg');
     background-size: 100% auto;
     background-position: center center;
