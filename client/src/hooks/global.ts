@@ -1,5 +1,5 @@
 import { ListInter } from './../typings/interface';
-import { getCurrentInstance } from "vue";
+import { getCurrentInstance, Ref } from "vue";
 import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
 import { useClipboard } from '@vueuse/core';
@@ -176,12 +176,12 @@ export function useGetImageSize (file: File | string) {
  */
 export function useCopyText (ctx: Ctx, text: string) {
   const { copy, isSupported, copied } = useClipboard({
-    source: text
+    source: text,
+    legacy: true
   })
   if (isSupported.value) {
-    copy()
+    copy(text)
     copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
-    console.log(text)
   } else {
     console.log('不支持')
   }
