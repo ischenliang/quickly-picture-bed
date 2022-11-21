@@ -178,9 +178,13 @@ export function useCopyText (ctx: Ctx, text: string) {
   const { copy, isSupported, copied } = useClipboard({
     source: text
   })
-  isSupported && copy(text)
-  copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
-  console.log(text)
+  if (isSupported.value) {
+    copy()
+    copied && ctx.$message({ type: 'success', message: '复制成功', duration: 1000 })
+    console.log(text)
+  } else {
+    console.log('不支持')
+  }
 }
 
 
