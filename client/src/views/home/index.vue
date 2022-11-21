@@ -1,6 +1,9 @@
 <template>
   <div class="home-container">
-    <div class="home-title">让存储变得简单有效</div>
+    <div class="home-title">
+      <span>让存储变得简单有效</span>
+      <el-button type="success" @click="handleClick" v-if="route.query.album_id">返回相册</el-button>
+    </div>
     <div class="home-tips">严禁上传包含反动、暴力、色情、违法、及侵权内容的文件。</div>
     <!-- 选择存储桶 -->
     <el-card>
@@ -41,11 +44,14 @@ import Log from '@/types/Log';
 import { PageResponse } from '@/typings/req-res';
 import { LogInter } from '@/typings/interface';
 import { useFormat } from '@/hooks/date-time';
+import { useRoute, useRouter } from 'vue-router';
 /**
  * 实例
  */
 const userStore = useUserStore()
 const log = new Log()
+const router = useRouter()
+const route = useRoute()
 
 
 /**
@@ -67,6 +73,11 @@ const getTodayLog = () => {
   })
 }
 getTodayLog()
+
+// 返回
+const handleClick = () => {
+  router.back()
+}
 </script>
 
 <style lang="scss">
@@ -90,6 +101,9 @@ getTodayLog()
   .home-title {
     font-size: 28px;
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .home-tips {
     font-size: 16px;

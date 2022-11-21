@@ -4,6 +4,7 @@ import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
 import { useClipboard } from '@vueuse/core';
 import { useFileName } from './date-time';
+import { mimeTypes } from '@/global.config';
 
 
 interface Ctx {
@@ -296,4 +297,41 @@ export function useDeepClone (obj, hash = new WeakMap()) {
     }
   }
   return constr
+}
+
+
+/**
+ * 将网络图片转成file对象
+ * @param url 网络图片url
+ * @param imageName 图片名称
+ * @returns () => Promise()
+ */
+export function useUrlToImageFile (url: string, imageName: string, accept: string[]) {
+  return new Promise((resolve, reject) => {
+    let blob = null
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', url)
+    // xhr.setRequestHeader('Accept', 'image/png');
+    xhr.responseType = "blob";
+    // 加载时处理
+    xhr.onload = () => {
+      // 获取返回结果
+      const contentType = xhr.getResponseHeader('Content-type')
+      const types = accept.map(item => {
+        return mimeTypes[item]
+      })
+      blob = xhr.response
+      if (types.includes(contentType)) {
+        const file = new File([blob], imageName, { type: contentType })
+        resolve(file)
+      } else {
+        reject(new Error(`${contentType}: 格式不符合要求`))
+      }
+    }
+    xhr.onerror = (e) => {
+      reject(e)
+    }
+    // 发送
+    xhr.send()
+  })
 }

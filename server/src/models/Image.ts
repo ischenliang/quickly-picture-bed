@@ -70,7 +70,13 @@ const ImageModel = seq.define('image', {
     type: DataTypes.STRING,
     allowNull: true,
     comment: '添加进相册时间'
-  }
+  },
+  sort: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    comment: '图片在相册中的排序值',
+    defaultValue: 0
+  },
 }, {
   freezeTableName: true
 })

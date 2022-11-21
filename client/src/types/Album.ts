@@ -5,8 +5,9 @@ import http from '@/api'
 
 // 筛选条件
 interface Filter extends PageReq {
-  uid?: string,
-  desc?: string,
+  uid?: string
+  id?: string
+  desc?: string
   name?: string
 }
 
@@ -35,5 +36,9 @@ export default class Album {
   // 详情
   detail (id: string) {
     return http('/album/detail', { id })
+  }
+  // 图片列表
+  images (params: Filter) {
+    return http('/album/images', params)
   }
 }

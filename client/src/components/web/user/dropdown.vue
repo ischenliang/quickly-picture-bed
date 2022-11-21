@@ -1,5 +1,5 @@
 <template>
-  <el-popover placement="bottom-end" trigger="hover" :width="300" popper-class="user-info-popover">
+  <el-popover placement="bottom-end" trigger="click" :width="300" popper-class="user-info-popover">
     <template #reference>
       <div class="user-info">
         <img class="user-info-avatar" :src="userAvatar" alt="">

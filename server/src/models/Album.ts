@@ -41,6 +41,12 @@ const AlbumModel = seq.define('album', {
     comment: '排序值',
     defaultValue: 1.00
   },
+  tops: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    comment: '置顶项列表',
+    defaultValue: []
+  },
 }, {
   freezeTableName: true
 })

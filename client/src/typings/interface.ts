@@ -116,6 +116,10 @@ export interface ImageInter {
   updatedAt?: string
   // 是否静态更新
   slient?: boolean
+  // 排序值
+  sort?: number
+  // 是否置顶
+  top?: boolean | number
 }
 
 
@@ -392,4 +396,5 @@ export interface AlbumInter {
   sort?: number // 排序值
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
+  tops?: Array<string> // 置顶的元素项
 }

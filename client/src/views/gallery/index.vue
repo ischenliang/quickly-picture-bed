@@ -12,7 +12,7 @@
       </template>
       <div class="gallery-filter">
         <div>
-          <el-select v-model="list.filters.bucket_id" placeholder="请选择需要显示的图床" @change="listGet">
+          <el-select v-model="list.filters.bucket_id" placeholder="请选择需要显示的图床" filterable @change="listGet">
             <el-option
               v-for="(item, index) in buckets"
               :key="'bucket-' + index"

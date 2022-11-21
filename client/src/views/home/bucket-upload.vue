@@ -22,13 +22,14 @@
       <el-tooltip effect="dark" content="'如果不支持，可以尝试直接按Ctrl + V'" placement="bottom">
         <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
       </el-tooltip>
-      <el-button type="primary" :disabled="true" @click="entryUpload('url')">网络图URL</el-button>
+      <!--  :disabled="true" -->
+      <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useCopyText, useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard, useUrlToImageFile } from '@/hooks/global';
 import { HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { linkTypes, Link } from '@/global.config'
@@ -39,6 +40,8 @@ import Image from '@/types/Image';
 import { JsonResponse } from '@/typings/req-res';
 import useUserStore from '@/store/user';
 import { useRoute } from 'vue-router';
+import { ElMessageBox } from 'element-plus';
+import { useFileName } from '@/hooks/date-time';
 interface Props {
   userHabits: HabitsInter
 }
@@ -96,20 +99,6 @@ const totalProgress: {
 /**
  * 逻辑处理
 */
-// 获取指定类型的链接地址
-const getLinkValue = (item: Link) => {
-  // 方式二：eval替换
-  const obj = {
-    url: current.value.img_url,
-    filename: current.value.img_name
-  }
-  // const tmp = item.value.replace(/\$\{/g, '${obj.')
-  // return eval('`' + tmp + '`')
-
-  return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
-    return obj[key]
-  })
-}
 // 文件上传前对文件大小限制
 const beforeUpload = (e: { files: FileList, error: string }) => {
   // console.log(e)
@@ -164,6 +153,7 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           current.value = result
           emit('success')
+          // totalProgress.progress = {}
         }
       })
     })
@@ -193,11 +183,22 @@ const entryUpload = (type: string) => {
     })
   }
   if (type === 'url') {
-    // 复制链接地址
-    const tmp = linkTypes.value.find(item => {
-      return item.label === habits.value.link_format
+    ElMessageBox.prompt('请输入网络图片url', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+    }).then(({ value }) => {
+      useUrlToImageFile(value, useFileName() + '.png', systemConfig.value.system.accept).then((res: File) => {
+        totalProgress.progress[0] = { loaded: 0, total: res.size }
+        upload([res])
+      }).catch(error => {
+        ctx.$notify({
+          title: '错误提示',
+          message: error.message,
+          type: 'error',
+          duration: 1000
+        })
+      })
     })
-    useCopyText(ctx, getLinkValue(tmp))
   }
 }
 // 提示错误信息

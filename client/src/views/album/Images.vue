@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="album-image-content">
-      <div class="album-image-list" v-loading="list.loading">
+      <div class="album-image-list" v-loading="list.loading" :key="list.page">
         <el-row v-if="list.data.length">
           <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
             <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
@@ -169,10 +169,10 @@ getDetail()
 // 获取图片列表
 const listGet = () => {
   list.loading = true
-  image.find({
+  album.images({
     page: list.page,
     size: list.size,
-    ...list.filters
+    id: list.filters.album_id
   }).then((res: PageResponse<ImageInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
@@ -181,6 +181,7 @@ const listGet = () => {
       item.img_preview_url = bk ? bk.config_baseUrl + item.img_url : item.img_url
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
+      // item.top = item.sort === 0 ? false : true
       return item
     })
     list.loading = false
@@ -213,16 +214,64 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       useDeleteConfirm('确定将图片移出该相册吗？').then(() => {
         image.update({
           id: e.data.id,
-          album_id: ''
-        }).then(res => {
+          album_id: '',
+          sort: 0,
+          slient: true
+        }).then(async (res) => {
           ctx.$message({ message: '移除成功', type: 'success', duration: 1000 })
           listGet()
+          const index = detail.value.tops.findIndex(el => el === e.data.id)
+          if (index !== -1) {
+            detail.value.tops.splice(index, 1)
+            await album.update({
+              id: detail.value.id,
+              tops: [
+                ...detail.value.tops
+              ]
+            })
+          }
         })
       })
       break
     case 'detail':
       item[e.type] = true
       item.data = e.data
+      break
+    case 'top':
+      image.update({
+        id: e.data.id,
+        slient: true,
+        sort: detail.value.tops.length + 1
+      }).then(res => {
+        album.update({
+          id: detail.value.id,
+          tops: [e.data.id, ...detail.value.tops]
+        }).then(res => {
+          detail.value.tops = [e.data.id, ...detail.value.tops]
+          listGet()
+        })
+      })
+      break
+    case 'unTop':
+      image.update({
+        id: e.data.id,
+        slient: true,
+        sort: 0
+      }).then(res => {
+        const index = detail.value.tops.findIndex(el => el === e.data.id)
+        if (index !== -1) {
+          detail.value.tops.splice(index, 1)
+          album.update({
+            id: detail.value.id,
+            tops: [
+              ...detail.value.tops
+            ]
+          }).then(res => {
+            listGet()
+          })
+        }
+      })
+      break
       break
   }
 }
@@ -310,6 +359,9 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       .el-col {
         padding: 10px;
       }
+    }
+    .pagination {
+      margin: 5px 0 10px;
     }
   }
   .empty-data {

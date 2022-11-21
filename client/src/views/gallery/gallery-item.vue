@@ -3,7 +3,10 @@
     <div class="gallery-item-cover">
       <el-image :src="data.img_preview_url" :fit="'scale-down'" :lazy="true" />
     </div>
-    <div class="gallery-item-name" :title="data.img_name">{{ data.img_name }}</div>
+    <div class="gallery-item-name" :title="data.img_name">
+      <span v-if="remove && data.sort > 0" style="color: #ff7242;margin-right: 3px;"><el-icon><Flag /></el-icon>置顶</span>
+      {{ data.img_name }}
+    </div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
         <el-button
@@ -19,7 +22,7 @@
 
 <script lang="ts" setup>
 import { ImageInter } from '@/typings/interface';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 
 interface Props {
@@ -56,15 +59,29 @@ const myData = computed({
   }
 })
 // 按钮组
-const btns = ref([
+const btns: Ref<Array<{
+  icon?: string
+  type?: string
+  title?: string
+  action?: string
+  disabled?: boolean
+}>> = ref([
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   props.remove ? 
   { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
-  { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
+  // { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
   { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
 ])
+
+if (props.remove) {
+  if (props.data.sort === 0) {
+    btns.value.push({ icon: 'Flag', type: 'warning', title: '置顶图片', action: 'topping' })
+  } else {
+    btns.value.push({ icon: 'SoldOut', type: 'warning', title: '取消置顶', action: 'unTopping' })
+  }
+}
 
 
 /**
@@ -95,6 +112,14 @@ const actions = {
   // 移除图片
   remove () {
     emit('submit', { type: 'remove', data: myData.value })
+  },
+  // 置顶图片
+  topping () {
+    emit('submit', { type: 'top', data: myData.value })
+  },
+  // 取消置顶
+  unTopping () {
+    emit('submit', { type: 'unTop', data: myData.value })
   }
 }
 </script>

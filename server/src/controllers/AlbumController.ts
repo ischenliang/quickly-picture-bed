@@ -150,7 +150,7 @@ class AlbumController {
 
 
   /**
-   * 详情
+   * 图片列表：需要先查询相册中以置顶的图片，然后再追加其他图片
    * @param params
    * @returns 
    */
@@ -158,7 +158,8 @@ class AlbumController {
   async images (@Body() params: { id: string, page: number, size: number }, @CurrentUser() user: User) {
     const tmp: any = {
       order: [
-        ['add_time', 'desc']
+        ['sort', 'desc'],
+        ['updatedAt', 'desc']
       ],
       where: {
         uid: user.id,

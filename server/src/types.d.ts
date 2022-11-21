@@ -180,6 +180,8 @@ export interface Image {
   updatedAt?: string
   // 是否静态更新
   slient?: boolean
+  // 置顶
+  top?: boolean
 }
 
 // 日志
@@ -373,4 +375,5 @@ export interface Album {
   cover?: string // 相册封面
   background?: string // 相册背景
   sort?: number // 排序值
+  tops?: string[] // 置顶项列表
 }
