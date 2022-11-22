@@ -375,5 +375,5 @@ export interface Album {
   cover?: string // 相册封面
   background?: string // 相册背景
   sort?: number // 排序值
-  tops?: string[] // 置顶项列表
+  // tops?: string[] // 置顶项列表
 }

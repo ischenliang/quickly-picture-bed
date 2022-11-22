@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="album-image-content">
-      <div class="album-image-list" v-loading="list.loading" :key="list.page">
+      <div class="album-image-list" v-loading="list.loading">
         <el-row v-if="list.data.length">
           <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
             <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
@@ -44,6 +44,7 @@
                 :remove="true"
                 :images="list.data.map(item => item.img_preview_url)"
                 @reload="listGet"
+                :key="list.page + '-' + index"
                 @submit="handleItemSubmit"
                 @click.native="handleClick(index)"></gallery-item>
             </el-col>
@@ -119,6 +120,8 @@ const item = reactive({
   detail: false,
   data: null
 })
+// 置顶数量
+const tops = ref(0)
 
 /**
  * 数据获取
@@ -169,6 +172,7 @@ getDetail()
 // 获取图片列表
 const listGet = () => {
   list.loading = true
+  tops.value = 0
   album.images({
     page: list.page,
     size: list.size,
@@ -182,6 +186,9 @@ const listGet = () => {
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       // item.top = item.sort === 0 ? false : true
+      if (item.sort > 0) {
+        tops.value++
+      }
       return item
     })
     list.loading = false
@@ -220,16 +227,16 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
         }).then(async (res) => {
           ctx.$message({ message: '移除成功', type: 'success', duration: 1000 })
           listGet()
-          const index = detail.value.tops.findIndex(el => el === e.data.id)
-          if (index !== -1) {
-            detail.value.tops.splice(index, 1)
-            await album.update({
-              id: detail.value.id,
-              tops: [
-                ...detail.value.tops
-              ]
-            })
-          }
+          // const index = detail.value.tops.findIndex(el => el === e.data.id)
+          // if (index !== -1) {
+          //   detail.value.tops.splice(index, 1)
+          //   await album.update({
+          //     id: detail.value.id,
+          //     tops: [
+          //       ...detail.value.tops
+          //     ]
+          //   })
+          // }
         })
       })
       break
@@ -241,15 +248,16 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       image.update({
         id: e.data.id,
         slient: true,
-        sort: detail.value.tops.length + 1
+        sort: tops.value + 1
       }).then(res => {
-        album.update({
-          id: detail.value.id,
-          tops: [e.data.id, ...detail.value.tops]
-        }).then(res => {
-          detail.value.tops = [e.data.id, ...detail.value.tops]
-          listGet()
-        })
+        listGet()
+        // album.update({
+        //   id: detail.value.id,
+        //   tops: [e.data.id, ...detail.value.tops]
+        // }).then(res => {
+        //   detail.value.tops = [e.data.id, ...detail.value.tops]
+        //   listGet()
+        // })
       })
       break
     case 'unTop':
@@ -258,20 +266,20 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
         slient: true,
         sort: 0
       }).then(res => {
-        const index = detail.value.tops.findIndex(el => el === e.data.id)
-        if (index !== -1) {
-          detail.value.tops.splice(index, 1)
-          album.update({
-            id: detail.value.id,
-            tops: [
-              ...detail.value.tops
-            ]
-          }).then(res => {
-            listGet()
-          })
-        }
+        listGet()
+        // const index = detail.value.tops.findIndex(el => el === e.data.id)
+        // if (index !== -1) {
+        //   detail.value.tops.splice(index, 1)
+        //   album.update({
+        //     id: detail.value.id,
+        //     tops: [
+        //       ...detail.value.tops
+        //     ]
+        //   }).then(res => {
+        //     listGet()
+        //   })
+        // }
       })
-      break
       break
   }
 }

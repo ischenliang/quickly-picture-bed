@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { ImageInter } from '@/typings/interface';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 
 interface Props {
@@ -58,14 +58,7 @@ const myData = computed({
     emit('update:data', val)
   }
 })
-// 按钮组
-const btns: Ref<Array<{
-  icon?: string
-  type?: string
-  title?: string
-  action?: string
-  disabled?: boolean
-}>> = ref([
+const defaultBtns = [
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   props.remove ? 
   { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
@@ -73,15 +66,36 @@ const btns: Ref<Array<{
   // { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
   { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
-])
+]
+// 按钮组
+const btns: Ref<Array<{
+  icon?: string
+  type?: string
+  title?: string
+  action?: string
+  disabled?: boolean
+}>> = ref([...defaultBtns])
 
-if (props.remove) {
-  if (props.data.sort === 0) {
-    btns.value.push({ icon: 'Flag', type: 'warning', title: '置顶图片', action: 'topping' })
-  } else {
-    btns.value.push({ icon: 'SoldOut', type: 'warning', title: '取消置顶', action: 'unTopping' })
+
+
+watch(() => props.data, () => {
+  if (props.remove) {
+    if (props.data.sort === 0) {
+      btns.value = [
+        ...defaultBtns,
+        { icon: 'Flag', type: 'warning', title: '置顶图片', action: 'topping' }
+      ]
+    } else {
+      btns.value = [
+        ...defaultBtns,
+        { icon: 'SoldOut', type: 'warning', title: '取消置顶', action: 'unTopping' }
+      ]
+    }
   }
-}
+}, {
+  deep: true,
+  immediate: true
+})
 
 
 /**

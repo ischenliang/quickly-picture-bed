@@ -396,5 +396,5 @@ export interface AlbumInter {
   sort?: number // 排序值
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
-  tops?: Array<string> // 置顶的元素项
+  // tops?: Array<string> // 置顶的元素项
 }
