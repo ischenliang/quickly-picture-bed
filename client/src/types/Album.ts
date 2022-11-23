@@ -9,6 +9,7 @@ interface Filter extends PageReq {
   id?: string
   desc?: string
   name?: string
+  tag?: string
 }
 
 /**
@@ -40,5 +41,9 @@ export default class Album {
   // 图片列表
   images (params: Filter) {
     return http('/album/images', params)
+  }
+  // 标签列表
+  tags (id: string) {
+    return http('/album/tags', { id })
   }
 }

@@ -77,6 +77,12 @@ const ImageModel = seq.define('image', {
     comment: '图片在相册中的排序值',
     defaultValue: 0
   },
+  tags: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    comment: '标签',
+    defaultValue: []
+  },
 }, {
   freezeTableName: true
 })

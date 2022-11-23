@@ -35,6 +35,25 @@
       </div>
     </div>
     <div class="album-image-content">
+      <div class="album-image-filter">
+        <div class="filter-input">
+          <el-input v-model="list.filters.img_name" size="large" placeholder="请输入搜索内容...">
+            <template #append>
+              <el-button type="primary" @click="() => { list.page = 1;listGet(); }">
+                <el-icon><Search/></el-icon>&nbsp;搜索
+              </el-button>
+            </template>
+          </el-input>
+        </div>
+        <div class="filter-tags" v-if="tags.length >= 2">
+          <span>标签搜索:</span>
+          <span
+            v-for="(tag, index) in tags"
+            :key="'filter-tag-' + index"
+            :class="['filter-tag-item', tag === list.filters.tag ? 'active' : '']"
+            @click="changeTag(tag)">{{ tag }}</span>
+        </div>
+      </div>
       <div class="album-image-list" v-loading="list.loading">
         <el-row v-if="list.data.length">
           <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
@@ -46,7 +65,22 @@
                 @reload="listGet"
                 :key="list.page + '-' + index"
                 @submit="handleItemSubmit"
-                @click.native="handleClick(index)"></gallery-item>
+                @click.native="handleClick(index)">
+                <template #tags>
+                  <div class="album-tags">
+                    <el-tag
+                      size="small"
+                      v-for="(tag, tIndex) in item.tags"
+                      :key="'tag-' + tIndex"
+                      :type="getTagType(tag)">
+                      {{ tag }}
+                    </el-tag>
+                    <el-tag class="tags-edit" size="small" effect="dark" type="primary" @click.stop="editItemTag(item)">
+                      <el-icon><Edit /></el-icon>
+                    </el-tag>
+                  </div>
+                </template>
+              </gallery-item>
             </el-col>
           </template>
         </el-row>
@@ -68,6 +102,12 @@
       :show-album="false"
       :detail="item.data"
       @submit="listGet"/>
+    <!-- 标签编辑 -->
+    <tag-dialog
+      v-if="item.edit"
+      v-model="item.edit"
+      :detail="item.data"
+      @submit="() => { getTags();listGet(); }" />
   </div>
 </template>
 
@@ -82,6 +122,7 @@ import { PageResponse } from '@/typings/req-res';
 import { reactive, Ref, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import DetailDialog from '@/views/gallery/DetailDialog.vue'
+import TagDialog from './TagDialog.vue'
 import GalleryItem from '@/views/gallery/gallery-item.vue'
 import useConfigStore from '@/store/config';
 
@@ -108,7 +149,9 @@ const list: ListInter<ImageInter> = reactive({
   total: 0,
   loading: false,
   filters: {
-    album_id: route.query.id || ''
+    album_id: route.query.id || '',
+    tag: '全部',
+    img_name: ''
   },
   data: []
 })
@@ -118,10 +161,13 @@ const buckets: Ref<BucketInter[]> = ref([
 ])
 const item = reactive({
   detail: false,
-  data: null
+  data: null,
+  edit: false
 })
 // 置顶数量
 const tops = ref(0)
+// 所有标签
+const tags = ref(['全部'])
 
 /**
  * 数据获取
@@ -157,6 +203,17 @@ const getBuckets = () => {
   })
 }
 getBuckets()
+// 获取标签列表
+const getTags = () => {
+  album.tags(route.query.id as string).then((res: string[]) => {
+    tags.value = [
+      '全部',
+      ...res
+    ]
+  })
+}
+getTags()
+// 相册详情获取
 const getDetail = () => {
   const id = route.query.id as string
   if (id) {
@@ -176,7 +233,9 @@ const listGet = () => {
   album.images({
     page: list.page,
     size: list.size,
-    id: list.filters.album_id
+    id: list.filters.album_id,
+    name: list.filters.img_name,
+    tag: list.filters.tag === '全部' ? '' : list.filters.tag
   }).then((res: PageResponse<ImageInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
@@ -187,7 +246,9 @@ const listGet = () => {
       item.updatedAt = useFormat(item.updatedAt)
       // item.top = item.sort === 0 ? false : true
       if (item.sort > 0) {
-        tops.value++
+        if (tops.value < item.sort) {
+          tops.value = item.sort
+        }
       }
       return item
     })
@@ -283,6 +344,26 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       break
   }
 }
+// 更新图片的标签
+const editItemTag = (data: ImageInter) => {
+  item.edit = true
+  item.data = data
+}
+// 根据tag名称渲染类别
+const getTagType = (tag) => {
+  if (tag === '已完结') {
+    return 'danger'
+  }
+  if (tag === '连载') {
+    return 'success'
+  }
+  return 'default'
+}
+// 切换标签
+const changeTag = (tag) => {
+  list.filters.tag = tag
+  listGet()
+}
 </script>
 
 <style lang="scss">
@@ -356,6 +437,49 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
     flex: 1;
     display: flex;
     flex-direction: column;
+    .album-image-filter {
+      flex-shrink: 0;
+      margin: 30px 0 0px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .filter-input {
+        width: 748px;
+        .el-input__wrapper {
+          box-shadow: 0 0 0 1px #409eff inset;
+        }
+        .el-input-group__append {
+          background: #409eff;
+          box-shadow: none;
+          border: 1px solid #409eff;
+          border-left: none;
+          color: #fff;
+        }
+      }
+      .filter-tags {
+        width: 748px;
+        font-size: 14px;
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        color: rgba($color: #000000, $alpha: 0.65);
+        span:first-child {
+          margin-right: 5px;
+        }
+        .filter-tag-item {
+          padding: 0 8px;
+          cursor: pointer;
+          margin-bottom: 8px;
+          &.active {
+            background: #409eff;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+            padding: 2px 5px;
+          }
+        }
+      }
+    }
     .album-image-list {
       flex: 1;
       padding-top: 10px;
@@ -366,6 +490,30 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       }
       .el-col {
         padding: 10px;
+      }
+      .album-tags {
+        position: absolute;
+        left: 5px;
+        bottom: 0;
+        width: 100%;
+        z-index: 3;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        .el-tag {
+          margin-bottom: 5px;
+          + .el-tag {
+            margin-left: 5px;
+          }
+        }
+        .tags-edit {
+          display: none;
+        }
+      }
+      .gallery-item:hover {
+        .tags-edit {
+          display: inline-flex;
+        }
       }
     }
     .pagination {

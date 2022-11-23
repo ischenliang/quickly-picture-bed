@@ -120,6 +120,8 @@ export interface ImageInter {
   sort?: number
   // 是否置顶
   top?: boolean | number
+  // 标签
+  tags?: string[]
 }
 
 

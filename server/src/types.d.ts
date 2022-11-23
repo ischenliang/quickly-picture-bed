@@ -182,6 +182,8 @@ export interface Image {
   slient?: boolean
   // 置顶
   top?: boolean
+  // 标签
+  tags?: string[]
 }
 
 // 日志

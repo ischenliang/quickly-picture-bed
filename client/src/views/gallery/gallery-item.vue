@@ -1,10 +1,11 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
     <div class="gallery-item-cover">
-      <el-image :src="data.img_preview_url" :fit="'scale-down'" :lazy="true" />
+      <slot name="tags"></slot>
+      <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
+      <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" />
     </div>
     <div class="gallery-item-name" :title="data.img_name">
-      <span v-if="remove && data.sort > 0" style="color: #ff7242;margin-right: 3px;"><el-icon><Flag /></el-icon>置顶</span>
       {{ data.img_name }}
     </div>
     <div class="gallery-item-action">
@@ -141,12 +142,13 @@ const actions = {
 <style lang="scss" scoped>
 @import '@/styles/text.scss';
 .gallery-item {
-  padding: 10px;
+  // padding: 10px;
   // width: 270px;
-  height: 210px;
+  // height: 210px;
+  height: 200px;
   // border: 1px solid #dcdee2;
   border: 1px solid #e9ecef;
-  border-radius: 4px;
+  border-radius: 8px 8px 4px 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -154,6 +156,7 @@ const actions = {
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   cursor: pointer;
   position: relative;
+  transition: all 0.3s;
   &.gallery-item-active {
     background: rgba(204,232,255,.5);
     border: 1px solid rgba(153,209,255,.57);
@@ -162,10 +165,28 @@ const actions = {
   .gallery-item-cover {
     flex: 1;
     overflow: hidden;
+    position: relative;
+    .gallery-item-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 12px;
+      padding: 3px 8px;
+      background: #409eff;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      border-radius: 4px 0 4px 0;
+      color: #fff;
+      i {
+        margin-right: 3px;
+      }
+    }
 
     .el-image {
       width: 100%;
       height: 100%;
+      transition: all 0.3s;
     }
     img {
       width: 100%;
@@ -182,6 +203,7 @@ const actions = {
     text-align: center;
     margin: 3px 0;
     line-height: 26px;
+    padding: 0 10px;
     @include line-text-ellipsis(1);
   }
 
@@ -191,12 +213,25 @@ const actions = {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    padding: 0 10px 10px;
 
     .el-button {
       +.el-button {
         margin-left: 8px;
       }
     }
+  }
+
+  &:hover {
+    // .gallery-item-cover {
+    //   .el-image {
+    //     transform: scale(1.2);
+    //     // opacity: 0.60;
+    //   }
+    // }
+    transform: translateY(-5px);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    border-color: #fff;
   }
 }
 </style>
