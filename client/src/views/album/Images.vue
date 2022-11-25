@@ -37,7 +37,7 @@
     <div class="album-image-content">
       <div class="album-image-filter">
         <div class="filter-input">
-          <el-input v-model="list.filters.img_name" size="large" placeholder="请输入搜索内容...">
+          <el-input v-model="list.filters.img_name" size="large" placeholder="请输入搜索内容..." clearable @keyup.enter="listGet" @clear="listGet">
             <template #append>
               <el-button type="primary" @click="() => { list.page = 1;listGet(); }">
                 <el-icon><Search/></el-icon>&nbsp;搜索

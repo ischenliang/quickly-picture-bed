@@ -155,6 +155,9 @@ watch(() => props.detail, (val) => {
         cursor: pointer;
       }
     }
+    .el-tag {
+      margin-top: 5px;
+    }
     p {
       font-size: 16px;
       font-weight: bold;
