@@ -1,6 +1,7 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
     <div class="gallery-item-cover">
+      <slot name="tags"></slot>
       <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
       <el-tooltip effect="dark" content="重新上传，覆盖图片" placement="top-end" >
         <span class="gallery-item-edit" @click.stop="actions.update">
