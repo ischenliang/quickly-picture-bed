@@ -3,6 +3,7 @@
     <div class="home-title">
       <span>让存储变得简单有效</span>
       <el-button type="success" @click="handleClick" v-if="route.query.album_id">返回相册</el-button>
+      <el-button type="success" @click="handleClick" v-if="!route.query.album_id && route.query.img_id">返回图库</el-button>
     </div>
     <div class="home-tips">严禁上传包含反动、暴力、色情、违法、及侵权内容的文件。</div>
     <!-- 选择存储桶 -->

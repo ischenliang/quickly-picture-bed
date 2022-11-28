@@ -1,8 +1,12 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
     <div class="gallery-item-cover">
-      <slot name="tags"></slot>
       <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
+      <el-tooltip effect="dark" content="重新上传，覆盖图片" placement="top-end" >
+        <span class="gallery-item-edit" @click.stop="actions.update">
+          <el-icon :size="16"><Sunset /></el-icon>
+        </span>
+      </el-tooltip>
       <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" />
     </div>
     <div class="gallery-item-name" :title="data.img_name">
@@ -135,6 +139,10 @@ const actions = {
   // 取消置顶
   unTopping () {
     emit('submit', { type: 'unTop', data: myData.value })
+  },
+  // 覆盖文件
+  update () {
+    emit('submit', { type: 'update', data: myData.value })
   }
 }
 </script>
@@ -183,6 +191,20 @@ const actions = {
       }
     }
 
+    .gallery-item-edit {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 12px;
+      padding: 3px 8px;
+      background: #409eff;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      border-radius: 0 4px 0 4px;
+      color: #fff;
+    }
+
     .el-image {
       width: 100%;
       height: 100%;
@@ -205,6 +227,9 @@ const actions = {
     line-height: 26px;
     padding: 0 10px;
     @include line-text-ellipsis(1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .gallery-item-action {

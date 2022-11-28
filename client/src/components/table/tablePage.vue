@@ -40,16 +40,17 @@
     </table-card>
     <!-- 分页栏 -->
     <pagination
-      v-if="enablePage"
-      v-model:page="tableData.page"
-      v-model:size="tableData.size"
+      v-if="enablePage && tableData.page"
+      :key="tableData.page + '-' + tableData.size"
+      v-model:page="myData.page"
+      v-model:size="myData.size"
       :total="tableData.total"
-      @page-change="$emit('pageChange', $event)" />
+      @change="pageChange" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PropType, useSlots } from 'vue'
+import { computed, PropType, useSlots } from 'vue'
 import tableCard from './tableCard.vue'
 import tableTable from './tableTable.vue'
 import { ListInter } from '@/typings/interface'
@@ -95,22 +96,22 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['update:tableData'])
+const emit = defineEmits(['update:tableData', 'pageChange'])
 const slots = useSlots()
 
 
-/**
- * 回调函数
- */
-// 重置筛选数据
-const reset = () => {
-  const params: ListInter<any> = JSON.parse(JSON.stringify(props.tableData))
-  for (let key in params.filters) {
-    params.filters[key] = typeof params.filters[key] === 'number' ? 0 : ''
+const myData = computed({
+  get: () => props.tableData,
+  set: (val) => {
+    emit('update:tableData', val)
   }
-  console.log('重置')
-  emit('update:tableData', params)
+})
+
+
+const pageChange = ($event) => {
+  emit('pageChange', $event)
 }
+
 </script>
 
 <style lang="scss">

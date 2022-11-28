@@ -10,16 +10,15 @@
 <template>
   <div class="pagination">
     <el-pagination
+      :key="pageNum"
       :layout="layout"
-      :current-page="page"
+      v-model:current-page="pageNum"
+      v-model:page-size="pageSize"
       :total="total"
-      :page-size="pageSize"
       :page-sizes="pageSizes"
       :pager-count="pager"
       :hide-on-single-page="singleHide"
-      background
-      @current-change="listPageChange"
-      @size-change="listPageSizeChange" />
+      background />
   </div>
 </template>
   
@@ -58,7 +57,22 @@ const props = defineProps({
     default: [10, 20, 30, 40, 50, 100]
   }
 })
-const emit = defineEmits(['change', 'update:page', 'update:size', 'page-change'])
+const emit = defineEmits(['change', 'update:page', 'update:size'])
+
+const pageNum = computed({
+  get: () => props.page,
+  set: (val) => {
+    emit('update:page', val)
+    emit('change')
+  }
+})
+const pageSize = computed({
+  get: () => props.size,
+  set: (val) => {
+    emit('update:size', val)
+    emit('change')
+  }
+})
 
 /**
  * 变量
@@ -72,15 +86,6 @@ const layout = computed(() => {
   }
 })
 
-const pageNum = computed({
-  get: () => props.page,
-  set: (val) => emit('update:page', val)
-})
-const pageSize = computed({
-  get: () => props.size,
-  set: (val) => emit('update:size', val)
-})
-
 /**
  * 回调函数
  */
@@ -88,7 +93,7 @@ const pageSize = computed({
 const listPageChange = (page) => {
   pageNum.value = page
   emit('change')
-  emit('page-change', { type: 'page', page: page })
+  console.log('page change', page)
 }
 // pageSize 改变时会触发
 const listPageSizeChange = (size) => {
@@ -98,24 +103,20 @@ const listPageSizeChange = (size) => {
   }
   if (props.page > maxPage) {
     pageSize.value = maxPage
-    emit('page-change', { type: 'page', page: maxPage })
   } else {
     pageSize.value = size
-    emit('page-change', { type: 'size', size: size })
   }
   emit('change')
 }
 
 // 根据判断是否传入size，如果有传入则使用传入的值
 // 没有传入则直接使用pageSizes的第一项
-watch(() => props.size, (val, old) => {
-  if (old) {
-    pageSize.value = val
-  } else {
-    pageSize.value = toRaw(props.pageSizes[0] as number)
-  }
-}, {
-  immediate: true
-})
+// watch(() => props.size, (val, old) => {
+//   if (!old) {
+//     pageSize.value = toRaw(props.pageSizes[0] as number)
+//   }
+// }, {
+//   immediate: true
+// })
 </script>
   

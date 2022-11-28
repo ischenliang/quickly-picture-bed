@@ -64,15 +64,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
+import { useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { computed, reactive, Ref, ref, watch } from 'vue';
+import { computed, onActivated, reactive, Ref, ref, watch } from 'vue';
 import GalleryItem from './gallery-item.vue'
 import { useFormat } from '@/hooks/date-time';
 import DetailDialog from './DetailDialog.vue'
+import { useRoute, useRouter } from 'vue-router';
 
 /**
  * 实例
@@ -80,6 +81,8 @@ import DetailDialog from './DetailDialog.vue'
 const bucket = new Bucket()
 const image = new Image()
 const ctx = useCtxInstance()
+const route = useRoute()
+const router = useRouter()
 
 /**
  * 变量
@@ -118,11 +121,8 @@ const item = reactive({
 // 获取存储桶列表
 const getBuckets = () => {
   bucket.find({
-    page: list.page,
-    size: list.size,
     ...list.filters
   }).then((res: PageResponse<BucketInter>) => {
-    list.total = res.total
     buckets.value = [
       { id: '', name: '全部' },
       ...res.items.map(item => {
@@ -156,7 +156,6 @@ const getBuckets = () => {
     listGet()
   })
 }
-getBuckets()
 // 获取图片列表
 const listGet = () => {
   list.loading = true
@@ -213,6 +212,15 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
       item[e.type] = true
       item.data = e.data
       break
+    case 'update':
+      useListFilter(list, route.name, 'set')
+      router.push({
+        path: '/',
+        query: {
+          img_id: e.data.id
+        }
+      })
+      break 
   }
 }
 // 删除所有
@@ -252,6 +260,11 @@ watch(() => list.data, (val, old) => {
   immediate: true
 })
 
+
+// 激活页
+onActivated(() => {
+  useListFilter(list, route.name, 'get', getBuckets)
+})
 </script>
 
 <style lang="scss">

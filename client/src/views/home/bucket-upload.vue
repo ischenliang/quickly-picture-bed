@@ -64,6 +64,7 @@ const emit = defineEmits(['update:userHabits', 'success'])
 const configStore = useConfigStore()
 const userStore = useUserStore()
 const image = new Image()
+const route = useRoute()
 
 /**
  * 变量
@@ -145,17 +146,34 @@ const upload = (fileList: File[], errorList: File[] = []) => {
       if (album_id) {
         tmp.album_id = album_id
       }
-      image.create({
-        ...tmp
-      }).then((result: ImageInter) => {
-        if (index === res.length - 1) {
-          ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
-          current.value = result
-          emit('success')
-          // totalProgress.progress = {}
-        }
-      })
+      // 判断是否传img_id，传了代表更新数据
+      if (route.query.img_id) {
+        delete tmp.img_name
+        image.update({
+          id: route.query.img_id as string,
+          ...tmp,
+          slient: true
+        }).then((result: ImageInter) => {
+          if (index === res.length - 1) {
+            ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+            result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+            current.value = result
+            emit('success')
+          }
+        })
+      } else {
+        image.create({
+          ...tmp
+        }).then((result: ImageInter) => {
+          if (index === res.length - 1) {
+            ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+            result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+            current.value = result
+            emit('success')
+            // totalProgress.progress = {}
+          }
+        })
+      }
     })
   })
 }

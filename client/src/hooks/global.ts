@@ -1,10 +1,11 @@
 import { ListInter } from './../typings/interface';
-import { getCurrentInstance, Ref } from "vue";
+import { getCurrentInstance, nextTick, Ref } from "vue";
 import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
 import { useClipboard } from '@vueuse/core';
 import { useFileName } from './date-time';
 import { mimeTypes } from '@/global.config';
+import useUserStore from '@/store/user';
 
 
 interface Ctx {
@@ -334,4 +335,40 @@ export function useUrlToImageFile (url: string, imageName: string, accept: strin
     // 发送
     xhr.send()
   })
+}
+
+
+/**
+ * 存储列表页面的查询条件
+ * @param ctx Ctx实例
+ * @param list list列表对象
+ * @param type 类型，set: 设置查询条件 | get: 获取查询条件
+ * @param callBack 回调函数，设置成功后执行的函数，通常是获取列表数据函数
+ */
+ export function useListFilter (list: any, name: any = '', type: 'set' | 'get' = 'set', callBack: Function = () => {}) {
+  const userStore = useUserStore()
+  if (type === 'set') {
+    userStore.updateListFilter( {
+      name: name,
+      page: list.page,
+      size: list.size,
+      total: list.total,
+      filters: list.filters
+    })
+  } else {
+    const list_filter: any = userStore.list_filter
+    if (list_filter && name === list_filter?.name) {
+      list.total = list_filter.total
+      list.page = list_filter.page
+      list.size = list_filter.size
+      list.filters = list_filter.filters
+      // 设置完成后就应该将数据删除
+      userStore.updateListFilter(null)
+      nextTick(() => {
+        callBack()
+      })
+    } else {
+      callBack()
+    }
+  }
 }

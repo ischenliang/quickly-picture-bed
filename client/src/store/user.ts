@@ -24,6 +24,8 @@ const useUserStore = defineStore('user', () => {
   const user_habits: { data: HabitsInter } = reactive({
     data: toRaw(defaultHabits)
   })
+  // 筛选数据
+  const list_filter = ref({})
 
   // 当前图片
   const currentImage: Ref<ImageInter> = ref({
@@ -62,6 +64,15 @@ const useUserStore = defineStore('user', () => {
   const updateUserMenus = (payload: RouteRecordRaw[]) => {
     user_menus.value = toRaw(payload)
   }
+  // 更新筛选数据
+  const updateListFilter = (payload) => {
+    if (payload) {
+      localStorage.setItem('list_filter', JSON.stringify(payload))
+    } else {
+      localStorage.removeItem('list_filter')
+    }
+    list_filter.value = payload
+  }
 
   return {
     userInfo,
@@ -69,10 +80,12 @@ const useUserStore = defineStore('user', () => {
     currentImage,
     user_logs,
     user_menus,
+    list_filter,
     updateUserInfo,
     updateUserHabits,
     updateUserLogs,
-    updateUserMenus
+    updateUserMenus,
+    updateListFilter
   }
 })
 

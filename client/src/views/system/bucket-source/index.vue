@@ -6,7 +6,7 @@
       @reset="restFilters"
       :is-index="true"
       :border="true"
-      @pageChange="pageChange"
+      @pageChange="listGet"
       @select-change="hanleSelectChange"
       :actionWidth="270">
       <template #filter>
@@ -143,11 +143,6 @@ const filterData = () => {
 // 切换tab栏
 const changeTabs = (type: number) => {
   list.filters.apply_status = type
-  listGet()
-}
-// 分页器数据变化
-const pageChange = (data) => {
-  list[data.type] = data[data.type]
   listGet()
 }
 // 表格数据变化

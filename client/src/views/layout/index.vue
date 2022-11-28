@@ -5,7 +5,12 @@
       <layout-sidebar></layout-sidebar>
       <div class="content-container">
         <div class="page-container" :style="style">
-          <router-view></router-view>
+          <router-view v-slot="{ Component }">
+            <keep-alive v-if="keepAlive">
+              <component :is="Component"></component>
+            </keep-alive>
+            <component v-else :is="Component"></component>
+          </router-view>
         </div>
         <!-- <layout-footer></layout-footer> -->
       </div>
@@ -34,6 +39,7 @@ import { useRoute } from 'vue-router';
  * 实例
  */
 const ctx = useCtxInstance()
+const route = useRoute()
 
 /**
  * 变量
@@ -43,6 +49,8 @@ const style = ref({
   flex: '1',
   backgroundColor: 'transparent'
 })
+// 是否缓存
+const keepAlive = ref(false)
 
 /**
  * 逻辑处理
@@ -67,6 +75,15 @@ watch(() => ctx.$route, (val, old) => {
   }
 }, {
   immediate: true
+})
+
+
+watch(() => route, (val) => {
+  const { keepAlive: alive } = val.meta
+  keepAlive.value = alive ? true : false
+}, {
+  immediate: true,
+  deep: true
 })
 </script>
 

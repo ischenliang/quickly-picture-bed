@@ -6,7 +6,7 @@
       :selection="true"
       :border="true"
       :actionWidth="100"
-      @pageChange="pageChange"
+      @pageChange="listGet"
       @select-change="hanleSelectChange">
       <template #type="data">
         <c-status
@@ -131,11 +131,6 @@ const batchDelete = () => {
     ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
     listGet()
   })
-}
-// 分页器数据变化
-const pageChange = (data) => {
-  list[data.type] = data[data.type]
-  listGet()
 }
 // 表格数据变化
 const hanleSelectChange = (data: LogInter[]) => {
