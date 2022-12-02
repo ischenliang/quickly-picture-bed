@@ -62,18 +62,33 @@ onMounted(() => {
   // 监听值的变化
   editor.onDidChangeModelContent((event) => {
     editorValue.value = editor.getValue()
+    // if (editorValue.value.length === 1) {
+    //   console.log(123)
+    //   editor.setPosition({ lineNumber: 1, column: 2 })
+    // }
   });
 })
 
 watch(() => props.modelValue, (val, old) => {
   nextTick(() => {
-    if (!old && val) {
+    if (!old && val && val !== old) {
       editor && editor.setValue(val)
     }
   })  
 }, {
   immediate: true
 })
+
+
+// watch(() => props.language, (val) => {
+//   setTimeout(() => {
+//     editor.updateOptions({
+//       language: 'json'
+//     });
+//   }, 2000)
+// }, {
+//   immediate: true
+// })
 </script>
 
 <style lang="scss">
