@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { markRaw, reactive, Ref, ref, toRaw, unref } from 'vue'
 import { user_habits as defaultHabits } from '@/global.config'
 import { RouteRecordRaw } from 'vue-router'
+import PluginManager from '@/typings/PluginManager'
 
 // const useUserStore = defineStore('user', {
 //   state: () => ({
@@ -43,6 +44,9 @@ const useUserStore = defineStore('user', () => {
   // 菜单列表
   const user_menus: Ref<RouteRecordRaw[]> = ref([])
 
+  // 插件管理器
+  const pluginManager: Ref<PluginManager> = ref(null)
+
   /**
    * 函数
    */
@@ -73,6 +77,10 @@ const useUserStore = defineStore('user', () => {
     }
     list_filter.value = payload
   }
+  // 更新插件管理器
+  const updatePluginManager = (payload: PluginManager) => {
+    pluginManager.value = payload
+  }
 
   return {
     userInfo,
@@ -81,11 +89,13 @@ const useUserStore = defineStore('user', () => {
     user_logs,
     user_menus,
     list_filter,
+    pluginManager,
     updateUserInfo,
     updateUserHabits,
     updateUserLogs,
     updateUserMenus,
-    updateListFilter
+    updateListFilter,
+    updatePluginManager
   }
 })
 

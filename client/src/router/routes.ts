@@ -121,7 +121,7 @@ const routes: RouteRecordRaw[] = [
             path: '/system/bucketSource',
             name: 'SystemBucketSource',
             component: () => import('@/views/system/bucket-source/index.vue'),
-            meta: { title: '存储桶源', icon: 'DeleteFilled' }
+            meta: { title: '存储桶插件', icon: 'ScaleToOriginal' }
           },
           {
             path: '/system/dict',
@@ -140,7 +140,13 @@ const routes: RouteRecordRaw[] = [
             name: 'SystemSetting',
             component: () => import('@/views/system/setting/index.vue'),
             meta: { title: '系统设置', icon: 'Tools' }
-          }
+          },
+          {
+            path: '/system/bucketSourceDetail',
+            name: 'SystemBucketSourceDetail',
+            component: () => import('@/views/system/bucket-source/edit.vue'),
+            meta: { title: '存储桶插件配置', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
+          },
         ]
       }
     ]

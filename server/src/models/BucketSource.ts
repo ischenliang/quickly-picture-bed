@@ -33,7 +33,7 @@ const BucketSourceModel = seq.define('bucketSource', {
     defaultValue: true
   },
   config: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
     allowNull: false,
     comment: '存储源配置'
   }

@@ -39,11 +39,11 @@
         <el-form-item
           v-if="!item.hidden"
           :label="item.label"
-          :prop="item.value"
+          :prop="item.field"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
+          <el-select v-if="item.options" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
-              v-for="(option, index) in item.listOptions_arr"
+              v-for="(option, index) in item.options"
               :key="'item-' + index"
               :label="option.label"
               :value="option.value"/>
@@ -61,13 +61,14 @@
 </template>
 
 <script lang="ts" setup>
-import { BucketInter, BucketSourceConfig, BucketSourceInter, DictInter } from '@/typings/interface';
+import { BucketInter, BucketSourceConfig, BucketSourceInter, DictInter, MyPlugin } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import Dict from '@/types/Dict';
 import BucketSource from '@/types/BucketSource';
 import { BasicResponse, PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
 import { useCtxInstance} from '@/hooks/global';
+import axios from 'axios'
 
 /**
  * 实例
@@ -107,7 +108,8 @@ const form: BucketInter = reactive({
   name: '',
   config: '',
   visible: true,
-  uid: ''
+  uid: '',
+  plugin: ''
 })
 // 表单ref
 const formRef = ref(null)
@@ -165,14 +167,15 @@ const submit = () => {
     if (valid) {
       let obj = {}
       bucketConfigs.value.forEach(item => {
-        obj[item.value] = item.default
+        obj[item.field] = item.default
       })
       const tmp = {
         name: form.name,
         type: form.type,
         tag: form.tag,
         config: JSON.stringify(obj),
-        uid: form.uid
+        uid: form.uid,
+        plugin: form.plugin
       }
       if (form.id) {
         itemUpdate({ id: form.id, ...tmp })
@@ -200,30 +203,33 @@ const itemUpdate = (data) => {
 }
 // 处理数据
 const handleData = (type: string) => {
-  const { config, name } = bucketSources.value.find(item => {
+  const { config: pluginConfig, name } = bucketSources.value.find(item => {
     return item.type === type
   })
   form.tag = name
-  let promise = config.map(async item => {
-    if (item.listOptions) {
-      const res: any = await dict.detailByPro('code', item.listOptions)
-      item.listOptions_arr = res.values
-      return item
+  form.plugin = pluginConfig
+  // 处理config，判断是否有默认值，有默认值则自动填充
+  const plugin: MyPlugin = new Function('return ' + pluginConfig)()
+  bucketConfigs.value = plugin.config.map(item => {
+    if (form.config) {
+      const config = JSON.parse(form.config)
+      if (config[item.field] && !item.hidden) {
+        item.default = config[item.field]
+      }
     }
     return item
-  })
-  Promise.all(promise).then(res => {
-    bucketConfigs.value = res
   })
 }
 // 处理存储桶配置数据
 const handleBucketData = (data) => {
   bucketSources.value = data.map(item => {
     if (form.type === item.type) {
-      bucketConfigs.value = item.config.map(el => {
+      const plugin: MyPlugin = new Function('return ' + item.config)()
+      bucketConfigs.value = plugin.config.map(el => {
         // 解决新增属性出现undefined问题
-        if (JSON.parse(form.config)[el.value] && !el.hidden) {
-          el.default = JSON.parse(form.config)[el.value]
+        const config = JSON.parse(form.config)
+        if (config[el.field] && !el.hidden) {
+          el.default = config[el.field]
         }
         return el
       })
@@ -237,6 +243,7 @@ const handleBucketData = (data) => {
  */
 watch(() => form.type, (val) => {
   if (bucketSources.value.length) {
+    console.log(123)
     handleData(val)
   }
 })

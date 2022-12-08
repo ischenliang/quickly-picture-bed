@@ -2,7 +2,7 @@
   <com-dialog
     v-model="dialogVisible"
     :title="detail && detail.id ? '编辑存储源' : '新建存储源'"
-    :width="'700px'"
+    :width="'1300px'"
     :before-close="handleClose">
     <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" :label-position="'left'" class="dict-form">
       <el-form-item label="存储源名称" prop="name">
@@ -18,7 +18,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="config_str" label="存储源配置" class="inline-item">
-        <monaco-editor v-model="form.config_str"></monaco-editor>
+        <monaco-editor v-model="form.config_str" language="javascript"></monaco-editor>
       </el-form-item>
     </el-form>
     <template #action>
@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   detail: () => ({
     name :'',
     code: '',
-    config: [],
+    config: '',
     config_str: JSON.stringify([], null, '\t')
   } as BucketSourceInter)
 })
@@ -73,7 +73,6 @@ const form: BucketSourceInter = reactive({
   id: '',
   name: '',
   type: '',
-  config: [],
   config_str: JSON.stringify([], null, '\t')
 })
 const rules = reactive({
@@ -119,7 +118,7 @@ const submit = () => {
       const tmp = {
         name: form.name,
         type: form.type,
-        config: JSON.parse(form.config_str)
+        config: form.config_str
       }
       if (form.id) {
         bucketSource.update({

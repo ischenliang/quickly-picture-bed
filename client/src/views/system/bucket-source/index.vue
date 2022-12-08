@@ -95,7 +95,8 @@ const listGet = () => {
   }).then((res: PageResponse<BucketSourceInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.config_str = JSON.stringify(item.config, null, '\t')
+      // item.config_str = JSON.stringify(item.config, null, '\t')
+      item.config_str = item.config
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item

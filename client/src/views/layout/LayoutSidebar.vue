@@ -15,13 +15,14 @@
             <el-icon><component :is="item.meta.icon"></component></el-icon>
             <span>{{ item.meta.title }}</span>
           </template>
-          <el-menu-item
-            v-for="(subItem, subIndex) in item.children"
-            :index="subItem.path"
-            :key="subIndex">
-            <el-icon><component :is="subItem.meta.icon"></component></el-icon>
-            <span>{{ subItem.meta.title }}</span>
-          </el-menu-item>
+          <template v-for="(subItem, subIndex) in item.children" :key="subIndex">
+            <el-menu-item
+              v-if="!subItem.meta.hidden"
+              :index="subItem.path">
+              <el-icon><component :is="subItem.meta.icon"></component></el-icon>
+              <span>{{ subItem.meta.title }}</span>
+            </el-menu-item>
+          </template>
         </el-sub-menu>
         <el-menu-item v-else-if="!item.meta.hidden" :index="item.path">
           <el-icon><component :is="item.meta.icon"></component></el-icon>

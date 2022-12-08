@@ -183,8 +183,15 @@ const getBuckets = () => {
         const { baseUrl } = obj
         // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
         // obj.baseUrl = eval('`' + tmp + '`')
-        obj.baseUrl = baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
-          return obj[key]
+        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
+        //   return obj[key]
+        // })
+        
+        obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
+          const keys = key.split('.')
+          if (keys[0] === 'config') {
+            return obj[keys[1]]
+          }
         })
         return {
           id: item.id,

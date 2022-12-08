@@ -21,9 +21,12 @@
 <script lang="ts" setup>
 import Bucket from '@/types/Bucket';
 import Habits from '@/types/Habits';
-import { BucketInter, HabitsInter } from '@/typings/interface';
+import PluginManager from '@/typings/PluginManager';
+import { BucketInter, HabitsInter, MyPlugin } from '@/typings/interface';
 import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
+import useUserStore from '@/store/user';
+import axios from 'axios';
 interface Props {
   userHabits: HabitsInter
 }
@@ -33,12 +36,14 @@ interface Props {
  */
 const bucket = new Bucket()
 const habit = new Habits()
+const pluginManager = new PluginManager()
 const props = withDefaults(defineProps<Props>(), {
   userHabits: () => ({
     link_format: 'URL'
   } as HabitsInter)
 })
 const emit = defineEmits(['update:userHabits'])
+const userStore = useUserStore()
 
 /**
  * 变量
@@ -60,19 +65,45 @@ const listGet = () => {
     buckets.value = res.items.map(item => {
       const obj = JSON.parse(item.config)
       const { baseUrl } = obj
-      // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-      // obj.baseUrl = eval('`' + tmp + '`')
-      obj.baseUrl = baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
-        return obj[key]
-      })
+      // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
+      //   return obj[key]
+      // })
+      obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
+          const keys = key.split('.')
+          if (keys[0] === 'config') {
+            return obj[keys[1]]
+          }
+        })
+      // 此处还需注册插件
+      if (item.plugin) {
+        // 第一步：将定义好的插件中的${config.xxx}替换成真实的数据(即全局config中的数据)
+        const tmp = item.plugin.replace(/\$\{((config|file).*?)\}/g, (v, key) => {
+          const keys = key.split('.')
+          if (keys[0] === 'config') {
+            return obj[keys[1]]
+          }
+        })
+
+        // 第二步：将定义好的插件转成js对象
+        const plugin: MyPlugin = new Function('return ' + tmp)()
+        plugin.name = item.id
+
+        // console.log(plugin.uploader.request({ filename: 'abc.test' }))
+        pluginManager.register(plugin)
+        // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
+        plugin.uploader.axios = axios
+      }
       return {
         id: item.id,
         name: item.name,
         type: item.type,
         tag: item.tag,
-        config_baseUrl: obj.baseUrl
+        config_baseUrl: obj.baseUrl,
+        plugin: item.plugin
       }
     })
+    // 将插件管理器存放到pinia中
+    userStore.updatePluginManager(pluginManager)
   })
 }
 listGet()

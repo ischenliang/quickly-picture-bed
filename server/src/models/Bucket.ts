@@ -39,6 +39,11 @@ const BucketModel = seq.define('bucket', {
     type: DataTypes.STRING,
     allowNull: false,
     comment: '操作人，用户id'
+  },
+  plugin: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    comment: '存储桶插件'
   }
 }, {
   freezeTableName: true

@@ -42,6 +42,7 @@ import useUserStore from '@/store/user';
 import { useRoute } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
 import { useFileName } from '@/hooks/date-time';
+import UploadManager from '@/hooks/uploader';
 interface Props {
   userHabits: HabitsInter
 }
@@ -65,6 +66,7 @@ const configStore = useConfigStore()
 const userStore = useUserStore()
 const image = new Image()
 const route = useRoute()
+const uploader = new UploadManager()
 
 /**
  * 变量
@@ -131,7 +133,53 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
   }
   showError(errorList)
-  bucketUpload[type].uploadFile(id, fileList, ({ loaded, index, total }) => {
+  // bucketUpload[type].uploadFile(id, fileList, ({ loaded, index, total }) => {
+  //   totalProgress.progress[index].loaded = loaded
+  //   totalProgress.progress[index].total = total
+  // }).then((res: Array<ImageInter>) => {
+  //   totalProgress.percent = 0
+  //   res.forEach((item, index) => {
+  //     const album_id = ctx.$route.query.album_id
+  //     let tmp = {
+  //       ...item,
+  //       bucket_id: id,
+  //       bucket_type: type
+  //     }
+  //     if (album_id) {
+  //       tmp.album_id = album_id
+  //     }
+  //     // 判断是否传img_id，传了代表更新数据
+  //     if (route.query.img_id) {
+  //       delete tmp.img_name
+  //       image.update({
+  //         id: route.query.img_id as string,
+  //         ...tmp,
+  //         slient: true
+  //       }).then((result: ImageInter) => {
+  //         if (index === res.length - 1) {
+  //           ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+  //           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+  //           current.value = result
+  //           emit('success')
+  //         }
+  //       })
+  //     } else {
+  //       image.create({
+  //         ...tmp
+  //       }).then((result: ImageInter) => {
+  //         if (index === res.length - 1) {
+  //           ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+  //           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+  //           current.value = result
+  //           emit('success')
+  //           // totalProgress.progress = {}
+  //         }
+  //       })
+  //     }
+  //   })
+  // })
+
+  uploader.uploadFile(id, fileList, ({ loaded, index, total }) => {
     totalProgress.progress[index].loaded = loaded
     totalProgress.progress[index].total = total
   }).then((res: Array<ImageInter>) => {

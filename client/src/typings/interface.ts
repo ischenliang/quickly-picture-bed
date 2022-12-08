@@ -1,4 +1,5 @@
 import { BucketSourceEnum } from "./enum"
+import { AxiosRequestConfig, AxiosResponse, AxiosStatic } from 'axios'
 
 export interface TableColumnConfig {
   align: string // 对齐方式：center、left、right
@@ -32,16 +33,14 @@ export interface BucketSourceConfig {
   // 配置描述
   label: string
   // 配置最后映射的键名
-  value: string
+  field: string
   // 配置类型：可选string、options
   type: string
   // 配置是否必填项
   required?: boolean
   // 配置对应的选择，只有当type为options时才有该属性
   // 对应Dict中的code字段
-  listOptions?: string
-  // 字典的列表表示
-  listOptions_arr?: Array<{
+  options?:  Array<{
     label: string
     value: any
   }>
@@ -49,8 +48,6 @@ export interface BucketSourceConfig {
   placeholder?: string
   // 默认值
   default?: any
-  // 排序值
-  sort?: number
   // 用户输入提示说明
   tips?: string
   // 是否隐藏不可见
@@ -67,7 +64,8 @@ export interface BucketSourceInter {
   // 存储源类型: 存储源对应的类别,例如：qiniu、oss
   type?: string
   // 存储源配置，界面上需要提供可以拖拽调整顺序
-  config?: Array<BucketSourceConfig>
+  // config?: Array<BucketSourceConfig>
+  config?: string
   // 存储源配置字符串
   config_str?: string
   // 创建时间
@@ -212,6 +210,8 @@ export interface BucketInter {
   updatedAt?: string
   // 操作人，用户id
   uid?: string
+  // 插件代码
+  plugin?: string
 }
 
 
@@ -399,4 +399,40 @@ export interface AlbumInter {
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
   // tops?: Array<string> // 置顶的元素项
+}
+
+
+/**
+ * 插件接口
+ */
+interface RequestParam {
+  file?: File
+  filename: string
+}
+export interface MyPlugin {
+  name: string // 名称，对应存储桶的类别
+  id?: string // 存储桶id，对应存储桶的id
+  version: string // 版本
+  config: Array<{ // 表单定义
+    type: string // 字段类型
+    label: string // 表单提示文字
+    field: string // 生成节点key名称
+    default: string // 默认值
+    required?: boolean // 是否必填项
+    placeholder?: string // 输入框提示文字
+    hidden?: boolean // 是否隐藏当前节点
+    options?: Array<{ // 下拉框选择项
+      label: string
+      value: string
+    }>
+  }>
+  uploader: { // 插件上传配置
+    axios?: AxiosStatic
+    // 前置操作：获取数据或者数据处理
+    beforeEach: (file?: File) => any
+    // 返回请求配置
+    request: (params: RequestParam) => AxiosRequestConfig
+    // 响应格式配置
+    response: (res?: AxiosResponse) => any
+  }
 }
