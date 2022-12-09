@@ -139,18 +139,33 @@ const getBuckets = () => {
          *    在此处使用的方法中即${obj.test}不会报错，因为我们的obj是引用类型，查找不到该属性时会直接返回undefined
          */
         const { baseUrl } = obj
+
+        // 第一版本
         // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
         // obj.baseUrl = eval('`' + tmp + '`')
         // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
         //   console.log(key, obj[key])
         //   return obj[key]
         // })
-        obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
-          const keys = key.split('.')
-          if (keys[0] === 'config') {
-            return obj[keys[1]]
-          }
-        })
+
+        // 第二版本
+        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
+        //   const keys = key.split('.')
+        //   if (keys[0] === 'config') {
+        //     return obj[keys[1]]
+        //   }
+        // })
+
+        // 第三版本
+        for (let key in obj) {
+          obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
+            const keys = key.split('.')
+            if (keys[0] === 'config') {
+              return obj[keys[1]]
+            }
+          })
+        }
+
         return {
           id: item.id,
           name: item.name,

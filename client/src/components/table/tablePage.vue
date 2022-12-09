@@ -1,6 +1,6 @@
 <template>
   <div class="table-page">
-    <filter-input @filter="$emit('filter')" @reset="$emit('reset')" v-if="slots.filter">
+    <filter-input :enableFilterBtn="enableFilterBtn" @filter="$emit('filter')" @reset="$emit('reset')" v-if="slots.filter">
       <template #content>
         <slot name="filter"></slot>
       </template>
@@ -94,6 +94,11 @@ const props = defineProps({
   border: {
     type: Boolean,
     default: false
+  },
+  // 是否启用查询和重置按钮
+  enableFilterBtn: {
+    type: Boolean,
+    defaul: true
   }
 })
 const emit = defineEmits(['update:tableData', 'pageChange'])

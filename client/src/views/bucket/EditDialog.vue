@@ -10,7 +10,7 @@
         存储桶说明1<br/>
       </div>
     </div>
-    <el-form ref="formRef" :model="form" label-width="130px" :label-position="'left'" class="dict-form">
+    <el-form ref="formRef" :model="form" label-width="auto" :label-position="'left'" class="dict-form">
       <el-form-item
         label="存储源"
         prop="type"
@@ -41,13 +41,21 @@
           :label="item.label"
           :prop="item.field"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.options" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
+          <el-select v-if="item.type === 'option'" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
               v-for="(option, index) in item.options"
               :key="'item-' + index"
               :label="option.label"
               :value="option.value"/>
           </el-select>
+          <el-input
+            v-else-if="item.type === 'password'"
+            v-model="item.default"
+            size="large"
+            :placeholder="item.placeholder"
+            :disabled="item.disabled"
+            show-password />
+          <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
           <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
           <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
         </el-form-item>
@@ -109,7 +117,8 @@ const form: BucketInter = reactive({
   config: '',
   visible: true,
   uid: '',
-  plugin: ''
+  plugin: '',
+  version: ''
 })
 // 表单ref
 const formRef = ref(null)
@@ -137,7 +146,7 @@ getBucketSource()
 // 校验表单项
 const validateForItem = (data, rule, value, callback) => {
   if (!data.default) {
-   return callback(`请输入${data.value}`)
+   return callback(`请输入${data.field}`)
   }
   return callback()
 }
@@ -175,7 +184,8 @@ const submit = () => {
         tag: form.tag,
         config: JSON.stringify(obj),
         uid: form.uid,
-        plugin: form.plugin
+        plugin: form.plugin,
+        version: form.version
       }
       if (form.id) {
         itemUpdate({ id: form.id, ...tmp })
@@ -203,10 +213,11 @@ const itemUpdate = (data) => {
 }
 // 处理数据
 const handleData = (type: string) => {
-  const { config: pluginConfig, name } = bucketSources.value.find(item => {
+  const { config: pluginConfig, name, version } = bucketSources.value.find(item => {
     return item.type === type
   })
   form.tag = name
+  form.version = version
   form.plugin = pluginConfig
   // 处理config，判断是否有默认值，有默认值则自动填充
   const plugin: MyPlugin = new Function('return ' + pluginConfig)()
@@ -243,7 +254,6 @@ const handleBucketData = (data) => {
  */
 watch(() => form.type, (val) => {
   if (bucketSources.value.length) {
-    console.log(123)
     handleData(val)
   }
 })

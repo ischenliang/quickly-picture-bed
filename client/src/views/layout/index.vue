@@ -126,6 +126,7 @@ watch(() => route, (val) => {
         width: 100%;
         overflow: auto;
         padding: 20px;
+        position: relative;
       }
       .footer-container {
         flex-shrink: 0;

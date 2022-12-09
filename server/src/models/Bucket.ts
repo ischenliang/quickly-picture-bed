@@ -40,6 +40,12 @@ const BucketModel = seq.define('bucket', {
     allowNull: false,
     comment: '操作人，用户id'
   },
+  version: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '存储源版本',
+    defaultValue: '1.0.0'
+  },
   plugin: {
     type: DataTypes.TEXT,
     allowNull: true,

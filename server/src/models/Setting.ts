@@ -24,6 +24,14 @@ const SettingModel = seq.define('setting', {
     allowNull: false,
     comment: '系统配置'
   },
+  plugin: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    comment: '插件配置',
+    defaultValue: {
+      default: ''
+    }
+  },
   uplog: {
     type: DataTypes.TEXT,
     allowNull: true,

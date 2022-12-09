@@ -66,6 +66,30 @@ export interface BucketSource {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 版本号
+  version?: string
+  // 备注
+  remark?: string
+}
+
+// 存储桶的存储源：即管理员对存储桶进行配置
+export interface BucketSourceHistory {
+  // 存储源版本id
+  id?: string
+  // 存储源id
+  bs_id?: string
+  // 存储源配置，界面上需要提供可以拖拽调整顺序
+  config?: string
+  // 存储桶配置老数据
+  config_old?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+  // 最新版本号
+  version?: string
+  // 旧版本号
+  version_old?: string
 }
 
 
@@ -147,6 +171,10 @@ export interface Bucket {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 版本号
+  version?: string
+  // 最新版本号
+  version_last?: string
 }
 
 
@@ -276,6 +304,10 @@ export interface Setting {
     copyright_miitbeian?: string // 工信部备案号
     // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
     copyright_miiturl?: string
+  }
+  // 插件配置
+  plugin?: {
+    default: string // 插件默认值
   }
   // 更新日志
   uplog?: string // 更新日志url

@@ -27,10 +27,20 @@
             <div class="bucket-item-content">
               <div class="bucket-content-title">{{ item.name }}</div>
               <div class="bucket-content-count">
+                <el-tag type="primary" size="small">版本号: {{ item.version }}</el-tag>
                 <el-tag type="info" size="small">图片数量: {{ getStats(item).bucket_count }}</el-tag>
                 <el-tag type="info" size="small">占用存储: {{ getStats(item).bucket_storage }}MB</el-tag>
               </div>
-              <div class="bucket-content-time">创建时间: {{ item.createdAt }}</div>
+              <div class="bucket-content-time">
+                <el-tooltip
+                  v-if="getVersion(item).version_last !== item.version"
+                  effect="dark"
+                  :content="'有新版本，最新版本:' + getVersion(item).version_last"
+                  placement="top">
+                  <el-tag type="danger" effect="dark" size="small">New</el-tag>
+                </el-tooltip>
+                创建时间: {{ item.createdAt }}
+              </div>
             </div>
             <div class="bucket-item-action">
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
@@ -65,6 +75,11 @@ interface Stats {
   bucket_storage: string
   bucket_count: number
 }
+interface Versions {
+  id: string
+  version: string
+  version_last: string
+}
 /**
  * 实例
  */
@@ -75,7 +90,7 @@ const configStore = useConfigStore()
 /**
  * 变量
  */
-const list: ListInter<BucketInter, Stats> = reactive({
+const list: ListInter<BucketInter, Stats, Versions> = reactive({
   total: 0,
   filters: {
     name: '',
@@ -83,7 +98,8 @@ const list: ListInter<BucketInter, Stats> = reactive({
     order: 'desc'
   },
   data: [],
-  stats: []
+  stats: [],
+  versions: []
 })
 // 当前被操作项
 let item = reactive({
@@ -102,12 +118,13 @@ const bucketIcons = ref({})
 const listGet = () => {
   bucket.find({
     ...list.filters
-  }).then((res: PageResponse<BucketInter, Stats>) => {
+  }).then((res: PageResponse<BucketInter, Stats, Versions>) => {
     list.total = res.total
     list.stats = res.stats.map(item => {
       item.bucket_storage = (parseInt(item.bucket_storage) / 1021 / 1024).toFixed(2)
       return item
     })
+    list.versions = res.versions
     list.data = res.items.map(item => {
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
@@ -129,13 +146,17 @@ getBucketIcon()
 const getStats = (item: BucketInter) => {
   return list.stats.find(el => el.id === item.id)
 }
+// 获取版本
+const getVersion = (item: BucketInter) => {
+  return list.versions.find(el => el.id === item.id)
+}
 
 // 操作
 const itemOperate = (data: BucketInter, type) => {
   item.data = data
   visible[type] = true
   if (type === 'delete') {
-    useDeleteConfirm().then(() => {
+    useDeleteConfirm('确定要删除存储桶吗？删除后关联的图片将无法访问。').then(() => {
       bucket.delete(data.id, data.uid)
       .then(res => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
@@ -178,7 +199,7 @@ $text-color-active: #32cfaa;
     overflow: auto;
   }
   .bucket-item {
-    height: 182px;
+    height: 209px;
     @include border;
     position: relative;
     @include flex-layout(column);
@@ -240,10 +261,18 @@ $text-color-active: #32cfaa;
         }
       }
       .bucket-content-time {
-        line-height: 20px;
+        // line-height: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
         font-size: 14px;
         margin-top: 10px;
         color: rgba(0,0,0,.45);
+        .el-tag {
+          margin-right: 5px;
+          background-color: red !important;
+          border-color: red !important;
+        }
       }
     }
     .bucket-item-action {

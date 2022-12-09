@@ -4,20 +4,27 @@
     :title="'存储源预览'"
     :width="'600px'"
     :before-close="handleClose">
-    <el-form ref="formRef" :model="form" label-width="130px" :label-position="'left'" class="dict-form">
-      <template v-for="(item, index) in form" :key="'form-item' + index">
+    <el-form ref="formRef" :model="bucketConfigs" label-width="auto" :label-position="'left'" class="dict-form">
+      <template v-for="(item, index) in bucketConfigs" :key="'form-item' + index">
         <el-form-item
           v-if="!item.hidden"
           :label="item.label"
-          :prop="form[index].value"
+          :prop="bucketConfigs[index].field"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.listOptions" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
+          <el-select v-if="item.type === 'option'" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
-              v-for="(option, index) in item.listOptions_arr"
+              v-for="(option, index) in item.options"
               :key="'item-' + index"
               :label="option.label"
               :value="option.value"/>
           </el-select>
+          <el-input
+            v-else-if="item.type === 'password'"
+            v-model="item.default"
+            size="large"
+            :placeholder="item.placeholder"
+            :disabled="item.disabled"
+            show-password />
           <el-input v-else v-model="item.default" :disabled="item.disabled" size="large" :placeholder="item.placeholder" />
         </el-form-item>
       </template>
@@ -31,7 +38,7 @@
 
 <script lang="ts" setup>
 import Dict from '@/types/Dict';
-import { BucketSourceConfig, BucketSourceInter } from '@/typings/interface';
+import { BucketSourceConfig, BucketSourceInter, MyPlugin } from '@/typings/interface';
 import { computed, Ref, ref, watch } from 'vue'
 import { FormInstance } from 'element-plus';
 
@@ -47,8 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   detail: () => ({
     name :'',
     code: '',
-    config: [],
-    config_str: JSON.stringify([], null, '\t')
+    config: ''
   } as BucketSourceInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
@@ -65,8 +71,9 @@ const dialogVisible = computed({
     emit('update:modelValue', val)
   }
 })
-const form: Ref<Array<BucketSourceConfig>> = ref([])
 const formRef: Ref<FormInstance> = ref()
+// 存储源配置
+const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
 
 
 
@@ -78,11 +85,6 @@ const handleClose = () => {
   dialogVisible.value = false
 }
 const submit = () => {
-  // let obj = {}
-  // form.value.forEach(item => {
-  //   obj[item.value] = item.default
-  // })
-  // console.log(obj)
   formRef.value.validate(valid => {
     if (valid) {
       console.log(123)
@@ -92,7 +94,7 @@ const submit = () => {
 // 校验表单项
 const validateForItem = (data, rule, value, callback) => {
   if (!data.default) {
-   return callback(`请输入${data.value}`)
+   return callback(`请输入${data.field}`)
   }
   return callback()
 }
@@ -127,18 +129,23 @@ watch(() => props.detail, (val) => {
   //   console.log(res)
   // })
 
-  // 方式二
-  let promise = config.map(async item => {
-    if (item.listOptions) {
-      const res: any = await dict.detailByPro('code', item.listOptions)
-      item.listOptions_arr = res.values
-      return item
-    }
+  const plugin: MyPlugin = new Function('return ' + config)()
+  bucketConfigs.value = plugin.config.map(item => {
     return item
   })
-  Promise.all(promise).then(res => {
-    form.value = res
-  })
+
+  // 方式二
+  // let promise = config.map(async item => {
+  //   if (item.listOptions) {
+  //     const res: any = await dict.detailByPro('code', item.listOptions)
+  //     item.listOptions_arr = res.values
+  //     return item
+  //   }
+  //   return item
+  // })
+  // Promise.all(promise).then(res => {
+  //   form.value = res
+  // })
 
   // config.forEach((item, index) => {
   //   item.sort = index

@@ -26,8 +26,9 @@ export interface BasicResponse<T> {
 }
 
 
-export interface PageResponse<T, D = any> {
+export interface PageResponse<T, D = any, G = any> {
   total: number
   items: Array<T>
   stats?: Array<D>
+  versions?: Array<G>
 }

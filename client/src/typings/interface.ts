@@ -10,7 +10,7 @@ export interface TableColumnConfig {
 }
 
 // 通用表格列表list数据
-export interface ListInter<T, D = any> {
+export interface ListInter<T, D = any, G = any> {
   page?: number // 页码
   size?: number // 每页显示数量
   total?: number // 总计条数
@@ -21,6 +21,7 @@ export interface ListInter<T, D = any> {
   data: Array<T>
   config?: Array<TableColumnConfig>
   stats?: Array<D>
+  versions?: Array<G>
 }
 
 
@@ -72,6 +73,31 @@ export interface BucketSourceInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 备注说明
+  remark?: string
+  // 版本
+  version?: string
+}
+// 存储桶的存储源历史记录：即存储桶源更新时自动记录更新版本
+export interface BucketSourceHistoryInter {
+  // 存储源版本id
+  id?: string
+  // 存储源id
+  bs_id?: string
+  // 存储源配置，界面上需要提供可以拖拽调整顺序
+  config?: string
+  // 存储桶配置老数据
+  config_old?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+  // 最新版本号
+  version?: string
+  // 旧版本号
+  version_old?: string
+  // 备注说明
+  remark?: string
 }
 
 /**
@@ -212,6 +238,8 @@ export interface BucketInter {
   uid?: string
   // 插件代码
   plugin?: string
+  // 版本号
+  version?: string
 }
 
 
@@ -313,6 +341,10 @@ export interface SettingInter {
     copyright_miitbeian?: string // 工信部备案号
     // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
     copyright_miiturl?: string
+  }
+  // 插件配置
+  plugin?: {
+    default: string // 插件默认格式
   }
   // 更新日志
   uplog?: string // 更新日志url

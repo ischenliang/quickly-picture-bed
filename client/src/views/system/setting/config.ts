@@ -39,5 +39,8 @@ export default {
     copyright_miiturl: 'https://beian.miit.gov.cn/',
   },
   uplog: '',
+  plugin: {
+    default: ''
+  },
   bucket_service: ''
 }

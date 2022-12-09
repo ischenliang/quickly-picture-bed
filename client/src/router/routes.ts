@@ -142,10 +142,22 @@ const routes: RouteRecordRaw[] = [
             meta: { title: '系统设置', icon: 'Tools' }
           },
           {
-            path: '/system/bucketSourceDetail',
-            name: 'SystemBucketSourceDetail',
+            path: '/system/bucketSourceEdit',
+            name: 'SystemBucketSourceEdit',
             component: () => import('@/views/system/bucket-source/edit.vue'),
             meta: { title: '存储桶插件配置', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
+          },
+          {
+            path: '/system/bucketSource/history',
+            name: 'SystemBucketSourceHistory',
+            component: () => import('@/views/system/bucket-source/history.vue'),
+            meta: { title: '存储桶插件历史版本', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
+          },
+          {
+            path: '/system/bucketSource/historyDetail',
+            name: 'SystemBucketSourceHistoryDetail',
+            component: () => import('@/views/system/bucket-source/history-detail.vue'),
+            meta: { title: '存储桶插件历史版本', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
           },
         ]
       }

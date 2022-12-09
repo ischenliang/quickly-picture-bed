@@ -38,6 +38,7 @@ const editorValue = computed({
  * 生命周期
  */
 let editor = null
+const init = ref(false)
 onMounted(() => {
   // editor.value = 
   editor = monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
@@ -58,23 +59,20 @@ onMounted(() => {
     overviewRulerBorder: false, // 不要滚动条的边框
     tabSize: 2
   })
-  editor.setValue(editorValue.value)
+  editor.setValue(props.modelValue)
   // 监听值的变化
   editor.onDidChangeModelContent((event) => {
     editorValue.value = editor.getValue()
-    // if (editorValue.value.length === 1) {
-    //   console.log(123)
-    //   editor.setPosition({ lineNumber: 1, column: 2 })
-    // }
   });
 })
 
 watch(() => props.modelValue, (val, old) => {
   nextTick(() => {
-    if (!old && val && val !== old) {
+    if (val && val !== old && !init.value) {
       editor && editor.setValue(val)
+      init.value = true
     }
-  })  
+  })
 }, {
   immediate: true
 })

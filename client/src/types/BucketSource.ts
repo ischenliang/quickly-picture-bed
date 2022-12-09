@@ -38,4 +38,12 @@ export default class BucketSource {
   switch (id: string) {
     return http('/bucketSource/switch', { id })
   }
+  // 版本回滚
+  // hid: 历史记录id  bid：存储桶id
+  rollback (hid: string, bid: string) {
+    return http('/bucketSource/rollback', {
+      hid,
+      bid
+    })
+  }
 }

@@ -26,6 +26,7 @@ import WebsiteConfig from './websiteConfig.vue'
 import AboutConfig from './aboutConfig.vue'
 import SystemConfig from './systemConfig.vue'
 import UplogConfig from './uplogConfig.vue'
+import PluginConfig from './pluginConfig.vue'
 import { SettingInter } from '@/typings/interface'
 import config from './config'
 import Setting from '@/types/Setting'
@@ -51,7 +52,8 @@ const tabs = ref([
   { label: '网站配置', name: 'website', component: toRaw(WebsiteConfig) },
   { label: '关于我们', name: 'about', component: toRaw(AboutConfig) },
   { label: '系统配置', name: 'system', component: toRaw(SystemConfig) },
-  { label: '更新日志', name: 'uplog', component: toRaw(UplogConfig) }
+  { label: '更新日志', name: 'uplog', component: toRaw(UplogConfig) },
+  { label: '插件配置', name: 'plugin', component: toRaw(PluginConfig) }
 ])
 const form: Ref<SettingInter> = ref({
   ...config
@@ -64,6 +66,9 @@ const getData = () => {
   setting.find().then((res: PageResponse<SettingInter>) => {
     if (res.items && res.items.length) {
       form.value = res.items[0]
+      if (!res.items[0].plugin) {
+        form.value.plugin = config.plugin
+      }
     }
   })
 }

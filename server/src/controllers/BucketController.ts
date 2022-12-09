@@ -1,8 +1,9 @@
 import ImageModel from '../models/Image'
-import { Bucket, Dict, Page, User } from '@/types'
+import { Bucket, BucketSource, Dict, Page, User } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
 import { Op } from 'sequelize'
 import BucketModel from '../models/Bucket'
+import BucketSourceModel from '../models/BucketSource'
 
 interface Filter extends Page {
   name?: string
@@ -53,12 +54,28 @@ class BucketController {
         bucket_count: await ImageModel.count(filter)
       }
     })
+
+    // 拿到当前类型的最新版本
+    const versions = data.items.map(async (item: any) => {
+      return {
+        id: item.id,
+        version: item.version,
+        version_last: (await BucketSourceModel.findOne({
+          attributes: ['version'],
+          where: {
+            type: item.type
+          }
+        }) as BucketSource).version
+      }
+    })
+
     return {
       code: 200,
       message: '成功',
       data: {
         ...data,
-        stats: await Promise.all(promise)
+        stats: await Promise.all(promise),
+        versions: await Promise.all(versions)
       }
     }
   }

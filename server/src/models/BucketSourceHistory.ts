@@ -8,43 +8,49 @@ import seq from '../utils/seq'
  * createdAt：创建时间
  * updatedAt：更新时间
  */
-const BucketSourceModel = seq.define('bucketSource', {
+const BucketSourceHistoryModel = seq.define('bucketSourceHistory', {
   id: {
     type: DataTypes.UUID,
     allowNull: false,
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
-    comment: 'uuid'
+    comment: 'uuid:历史记录id'
   },
-  name: {
+  bs_id: {
     type: DataTypes.STRING,
     allowNull: false,
-    comment: '存储源名称'
-  },
-  type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: '存储源类型'
-  },
-  status: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    comment: '存储源状态',
-    defaultValue: true
-  },
-  version: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    comment: '存储源版本',
-    defaultValue: '1.0.0'
+    comment: '存储源id'
   },
   config: {
     type: DataTypes.TEXT,
     allowNull: false,
-    comment: '存储源配置'
+    comment: '当前最新存储源配置'
+  },
+  config_old: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    comment: '旧版本存储源配置'
+  },
+  version: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '最新版本号',
+    defaultValue: '1.0.0'
+  },
+  version_old: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '旧版本号',
+    defaultValue: '1.0.0'
+  },
+  remark: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '备注',
+    defaultValue: ''
   }
 }, {
   freezeTableName: true
 })
 
-export default BucketSourceModel
+export default BucketSourceHistoryModel

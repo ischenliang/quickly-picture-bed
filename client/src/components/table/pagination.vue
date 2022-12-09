@@ -48,6 +48,7 @@ const props = defineProps({
     type: Number,
     default: 5
   },
+  // 当只有一页是是否隐藏页码
   singleHide: {
     type: Boolean,
     default: true
