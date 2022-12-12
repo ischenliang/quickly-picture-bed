@@ -55,7 +55,6 @@
             :placeholder="item.placeholder"
             :disabled="item.disabled"
             show-password />
-          <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
           <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
           <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
         </el-form-item>
