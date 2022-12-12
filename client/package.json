@@ -28,7 +28,6 @@
     "axios": "^1.0.0",
     "bytemd": "^1.17.2",
     "clipboard": "^2.0.11",
-    "crypto": "^1.0.1",
     "element-plus": "^2.2.17",
     "js-cookie": "^3.0.1",
     "juejin-markdown-themes": "^1.29.3",
@@ -50,6 +49,8 @@
     "vue3-calendar-heatmap": "^2.0.0"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/mime-types": "^2.1.1",
     "typescript": "^4.8.4"
   }
 }

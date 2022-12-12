@@ -180,19 +180,31 @@ const getBuckets = () => {
       { id: '', name: '全部' },
       ...res.items.map(item => {
         const obj = JSON.parse(item.config)
-        const { baseUrl } = obj
+        // const { baseUrl } = obj
+        // 第一版本
         // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
         // obj.baseUrl = eval('`' + tmp + '`')
         // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
         //   return obj[key]
         // })
         
-        obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
-          const keys = key.split('.')
-          if (keys[0] === 'config') {
-            return obj[keys[1]]
-          }
-        })
+        // 第二版本
+        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
+        //   const keys = key.split('.')
+        //   if (keys[0] === 'config') {
+        //     return obj[keys[1]]
+        //   }
+        // })
+
+        // 第三版本
+        for (let key in obj) {
+          obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
+            const keys = key.split('.')
+            if (keys[0] === 'config') {
+              return obj[keys[1]]
+            }
+          })
+        }
         return {
           id: item.id,
           name: item.name,

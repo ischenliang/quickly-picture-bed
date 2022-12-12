@@ -366,6 +366,42 @@ export interface QiniuUploadConfig {
   expires?: number
 }
 
+// 阿里上传配置
+export interface AliUploadConfig {
+  // 	accessKeyId
+  accessKeyId: string
+  // accessKeySecret
+  accessKeySecret: string
+  // 空间名称
+  bucket: string
+  // 路径
+  path?: string
+  // 区域
+  area?: string
+  // 文件名称
+  filename?: string
+}
+
+// 腾讯上传配置
+export interface TencentUploadConfig {
+  // 版本
+  version?: string
+  // 	secretId
+  secretId: string
+  // secretKey
+  secretKey: string
+  // appId
+  appId: string
+  // 空间名称
+  bucket: string
+  // 区域
+  area?: string
+  // 路径
+  path?: string
+  // 文件名称
+  filename?: string
+}
+
 
 // 七牛云文件管理
 export interface QiniuFileManager extends QiniuUploadConfig {

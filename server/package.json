@@ -31,6 +31,7 @@
     "ts-loader": "^9.4.1"
   },
   "devDependencies": {
+    "@types/ali-oss": "^6.16.7",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",

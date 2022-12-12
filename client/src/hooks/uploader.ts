@@ -49,13 +49,17 @@ export default class UploadManager {
       // 4、返回结果
       Promise.all(promise).then(res => {
         resolve(res.map((item, index) => {
+          const tmp = maps[index]
           return {
             img_width: maps[index].width,
             img_height: maps[index].height,
             img_size: maps[index].size,
             mine_type: maps[index].mine_type,
             img_name: maps[index].filename,
-            ...plugin.uploader.response(item)
+            ...plugin.uploader.response(item, {
+              file: tmp.file,
+              filename: tmp.filename
+            })
           }
         }))
       }).catch(error => {

@@ -55,6 +55,15 @@
             :placeholder="item.placeholder"
             :disabled="item.disabled"
             show-password />
+          <!-- 开关类型 -->
+          <el-switch
+            v-else-if="item.type === 'choice'"
+            v-model="item.default"
+            size="large"
+            :active-text="item.choices.active.label"
+            :active-value="item.choices.active.value"
+            :inactive-text="item.choices.inactive.label"
+            :inactive-value="item.choices.inactive.value" />
           <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
           <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
         </el-form-item>

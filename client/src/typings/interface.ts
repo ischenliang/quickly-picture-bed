@@ -45,6 +45,13 @@ export interface BucketSourceConfig {
     label: string
     value: any
   }>
+  // 当type等于choice时需配置该选项
+  choices?: {
+    [key in 'active' | 'inactive']: {
+      label: string
+      value: string | boolean | number
+    }
+  }
   // 用户输入时的说明
   placeholder?: string
   // 默认值
@@ -467,6 +474,6 @@ export interface MyPlugin {
     // 返回请求配置
     request: (params: RequestParam) => AxiosRequestConfig
     // 响应格式配置
-    response: (res?: AxiosResponse) => any
+    response: (res?: AxiosResponse, file?: any) => any
   }
 }

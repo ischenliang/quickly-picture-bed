@@ -27,7 +27,6 @@ import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
 import useUserStore from '@/store/user';
 import axios from 'axios';
-import crypto from 'node:crypto'
 import mime from 'mime-types'
 interface Props {
   userHabits: HabitsInter
@@ -67,15 +66,20 @@ const listGet = () => {
     buckets.value = res.items.map(item => {
       const obj = JSON.parse(item.config)
       const { baseUrl } = obj
+      // 第一版本
       // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
       //   return obj[key]
       // })
-      obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
+
+      // 第三版本
+      for (let key in obj) {
+        obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
           const keys = key.split('.')
           if (keys[0] === 'config') {
             return obj[keys[1]]
           }
         })
+      }
       // 此处还需注册插件
       if (item.plugin) {
         // 第一步：将定义好的插件中的${config.xxx}替换成真实的数据(即全局config中的数据)
@@ -94,7 +98,6 @@ const listGet = () => {
         pluginManager.register(plugin)
         // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
         plugin.uploader.axios = axios
-        plugin.uploader.crypto = crypto
         plugin.uploader.mime = mime
       }
       return {
@@ -103,7 +106,8 @@ const listGet = () => {
         type: item.type,
         tag: item.tag,
         config_baseUrl: obj.baseUrl,
-        plugin: item.plugin
+        plugin: item.plugin,
+        config: item.config
       }
     })
     // 将插件管理器存放到pinia中
