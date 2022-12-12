@@ -460,6 +460,8 @@ export interface MyPlugin {
   }>
   uploader: { // 插件上传配置
     axios?: AxiosStatic
+    crypto?: any
+    mime?: any
     // 前置操作：获取数据或者数据处理
     beforeEach: (file?: File) => any
     // 返回请求配置

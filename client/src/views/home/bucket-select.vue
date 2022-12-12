@@ -6,7 +6,7 @@
       :key="'bucket-' + index"
       size="large"
       type="info"
-      :effect="item.id === habits.current.id ? 'dark' : ''"
+      :effect="item.id === habits.current.id ? 'dark' : 'light'"
       @click="toggleCurrentBucket(item)">
       {{ item.name }}
     </el-tag>
@@ -27,6 +27,8 @@ import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
 import useUserStore from '@/store/user';
 import axios from 'axios';
+import crypto from 'node:crypto'
+import mime from 'mime-types'
 interface Props {
   userHabits: HabitsInter
 }
@@ -92,6 +94,8 @@ const listGet = () => {
         pluginManager.register(plugin)
         // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
         plugin.uploader.axios = axios
+        plugin.uploader.crypto = crypto
+        plugin.uploader.mime = mime
       }
       return {
         id: item.id,
