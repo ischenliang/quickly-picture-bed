@@ -28,6 +28,7 @@ import { computed, Ref, ref } from 'vue';
 import useUserStore from '@/store/user';
 import axios from 'axios';
 import mime from 'mime-types'
+import SparkMD5 from 'spark-md5'
 interface Props {
   userHabits: HabitsInter
 }
@@ -99,6 +100,7 @@ const listGet = () => {
         // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
         plugin.uploader.axios = axios
         plugin.uploader.mime = mime
+        plugin.uploader.sparkMd5 = SparkMD5
       }
       return {
         id: item.id,

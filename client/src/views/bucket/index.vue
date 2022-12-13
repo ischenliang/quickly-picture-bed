@@ -18,7 +18,11 @@
         <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
           <div class="bucket-item">
             <div class="bucket-item-square">
-            <span :class="[configStore.systemConfig.system.icon_font, bucketIcons[item.type]]"></span>
+            <span
+              :class="[configStore.systemConfig.system.icon_font, bucketIcons[item.type].value]"
+              :style="{
+                color: bucketIcons[item.type].color
+              }"></span>
             </div>
             <div class="bucket-item-tags">
               <el-tag size="small" type="success">{{ item.tag }}</el-tag>
@@ -136,7 +140,10 @@ const listGet = () => {
 const getBucketIcon = () => {
   dict.detailByPro('code', 'bucket_source_icon').then((res: DictInter) => {
     res.values.forEach(item => {
-      bucketIcons.value[item.label] = item.value
+      bucketIcons.value[item.label] = {
+        value: item.value,
+        color: item.color
+      }
     })
     listGet()
   })

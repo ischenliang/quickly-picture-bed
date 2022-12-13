@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
-import { QiniuUploadConfig, QiniuFileManager, VerifyCode, AliUploadConfig, TencentUploadConfig } from '@/types'
+import { QiniuUploadConfig, QiniuFileManager, VerifyCode, AliUploadConfig, TencentUploadConfig, UpyunUploadConfig } from '@/types'
 import { getUploadToken, deleteFile } from '../utils/qiniu'
 import useSendMail, { useGenerateCode } from '../utils/nodemailer'
 import { generateVerifyCode } from '../utils/svg-captcha'
@@ -8,7 +8,7 @@ import SmsCodeModel from '../models/SmsCode'
 import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
-import { getCosSignature, getSingnature } from '../utils/aliyun'
+import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
 
 @Controller('/tool')
 class ToolController {
@@ -43,6 +43,19 @@ class ToolController {
   @Post('/tencentSign')
   async tencentSign(@Body() config: TencentUploadConfig) {
     const res = getCosSignature(config)
+    return {
+      code: 200,
+      msg: '成功',
+      data: {
+        ...res
+      }
+    }
+  }
+
+  // 获取又拍云USS的上传凭证
+  @Post('/upyunSign')
+  async upyunSign(@Body() config: UpyunUploadConfig) {
+    const res = getUpyunSignature(config)
     return {
       code: 200,
       msg: '成功',

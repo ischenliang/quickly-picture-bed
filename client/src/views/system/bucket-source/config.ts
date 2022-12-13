@@ -2,6 +2,13 @@ import { TableColumnConfig } from '@/typings/interface'
 export const config: Array<TableColumnConfig> = [
   {
     align: 'center',
+    label: '插件类型',
+    width: '',
+    prop: 'type',
+    slot: 'type'
+  },
+  {
+    align: 'center',
     label: '插件名称',
     width: '',
     prop: 'name'

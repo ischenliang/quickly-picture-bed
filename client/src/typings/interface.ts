@@ -264,6 +264,7 @@ export interface DictInter {
   values?: Array<{
     label: string
     value: string | number | boolean
+    color?: string
   }>
   // 字典内容字符串
   values_str?: string
@@ -469,6 +470,7 @@ export interface MyPlugin {
     axios?: AxiosStatic
     crypto?: any
     mime?: any
+    sparkMd5?: any
     // 前置操作：获取数据或者数据处理
     beforeEach: (file?: File) => any
     // 返回请求配置

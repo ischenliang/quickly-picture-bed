@@ -402,6 +402,26 @@ export interface TencentUploadConfig {
   filename?: string
 }
 
+// 腾讯上传配置
+export interface UpyunUploadConfig {
+  // 	操作者
+  operator: string
+  // 密码
+  password: string
+  // 空间名称
+  bucket: string
+  // 加速域名
+  domain?: string
+  // 路径
+  path?: string
+  // 后缀
+  suffix?: string
+  // 文件名称
+  filename?: string
+  // 文件md5
+  md5?: string
+}
+
 
 // 七牛云文件管理
 export interface QiniuFileManager extends QiniuUploadConfig {

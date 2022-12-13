@@ -1,6 +1,7 @@
-import { AliUploadConfig, TencentUploadConfig } from '@/types'
+import { AliUploadConfig, TencentUploadConfig, UpyunUploadConfig } from '@/types'
 import { useGetSuffix } from './global'
-const crypto = require('crypto')
+import crypto from 'crypto'
+import MD5 from 'md5'
 
 export function getSingnature (config: AliUploadConfig) {
   // const date = new Date((new Date().getTime() + 300000)).toUTCString()
@@ -41,5 +42,37 @@ export function getCosSignature (config: TencentUploadConfig) {
   return {
     signature,
     signTime
+  }
+}
+
+
+// export function getUpyunSignature (config: UpyunUploadConfig) {
+//   const operator = config.operator
+//   const password = MD5(config.password)
+//   const date = new Date().toUTCString()
+//   const uri = `/${config.bucket}/${config.path}${config.filename}`
+//   const value = `PUT&${uri}&${date}`
+//   const sign = crypto.createHmac('sha1', password).update(value).digest('base64')
+//   return {
+//     signature: `UPYUN ${operator}:${sign}`
+//   }
+// }
+
+export function getUpyunSignature (config: UpyunUploadConfig) {
+  const today = new Date()
+  const policyString = JSON.stringify({
+    bucket: config.bucket,
+    'save-key': config.path + config.filename,
+    expiration: new Date(today.getTime() + 86400).toUTCString(),
+    date: today.toUTCString(),
+    'content-md5': config.md5
+  })
+  const policy = Buffer.from(policyString).toString('base64')
+  const uri = `/${config.bucket}/${config.path}${config.filename}`
+  const value = `PUT&${uri}&${today}&${policy}`
+  const password = MD5(config.password)
+  const signature = crypto.createHmac('sha1', password).update(value).digest("base64")
+  return {
+    signature: `UPYUN ${config.operator}:${signature}`
   }
 }

@@ -17,6 +17,13 @@
       <template #action>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
+      <template #type="data">
+        <span
+          :class="['plugin-icon', configStore.systemConfig.system.icon_font, icons[data.type].value]"
+          :style="{
+            color: icons[data.type].color
+          }"></span>
+      </template>
       <template #status="data">
         <el-tag :type="data.status ? 'success' : 'error'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
       </template>
@@ -46,21 +53,25 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref, Ref } from 'vue'
 import { config } from './config'
-import { BucketSourceInter, ListInter, UserInter } from '@/typings/interface'
+import { BucketSourceInter, DictInter, ListInter, UserInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
 import DetailDialog from './DetailDialog.vue'
 import BucketSource from '@/types/BucketSource'
 import { useFormat } from '@/hooks/date-time'
 import { useRouter } from 'vue-router'
+import Dict from '@/types/Dict'
+import useConfigStore from '@/store/config'
 /**
  * 实例
  */
 const ctx = useCtxInstance()
 const bucketSource = new BucketSource()
+const dict = new Dict()
 const router = useRouter()
+const configStore = useConfigStore()
 
 /**
  * 变量
@@ -83,10 +94,24 @@ const visible = reactive({
   edit: false,
   detail: false
 })
+// 存储源图标
+const icons: Ref<object> = ref({})
 
 /**
  * 逻辑处理
  */
+// 获取图标
+const getIcons = () => {
+  dict.detailByPro('code', 'bucket_source_icon').then((res: DictInter) => {
+    res.values.forEach(el => {
+      icons.value[el.label] = {
+        value: el.value,
+        color: el.color
+      }
+    })
+  })
+}
+getIcons()
 // 获取数据
 const listGet = () => {
   bucketSource.find({
@@ -197,6 +222,9 @@ const restFilters = () => {
         font-weight: bold;
       }
     }
+  }
+  .plugin-icon {
+    font-size: 22px;
   }
 }
 </style>

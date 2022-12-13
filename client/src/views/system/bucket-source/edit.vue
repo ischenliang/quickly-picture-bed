@@ -1,5 +1,6 @@
 <template>
   <div class="bucket-source-plugin">
+    <div class="plugin-header">
     <el-page-header @back="handleClose">
       <template #content>
         <span class="page-title">{{ form.id ? '编辑存储桶插件' : '创建存储桶插件' }}</span>
@@ -8,18 +9,19 @@
         你可以在这里更新存储桶插件内容.....
       </div>
       <template #extra>
-        <div class="page-action">
+        <div class="plugin-page-action">
           <el-button @click="handleClose">取 消</el-button>
           <el-button type="primary" @click="submit">确 定</el-button>
         </div>
       </template>
     </el-page-header>
+    </div>
     <el-form v-loading="loading" ref="formRef" :model="form" :rules="rules" label-width="auto" :label-position="'left'" class="dict-form">
       <el-form-item label="插件名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入插件名称" size="large" />
       </el-form-item>
       <el-row>
-        <el-col :xl="12">
+        <el-col :xl="12" :lg="12" :md="12">
           <el-form-item label="存储源类别" prop="type">
             <el-select v-model="form.type" size="large" filterable style="width: 100%">
               <el-option
@@ -30,7 +32,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :xl="12">
+        <el-col :xl="12" :lg="12" :md="12">
           <el-form-item label="插件版本" prop="name">
             <el-input v-model="form.version" placeholder="请输入版本号" size="large" />
           </el-form-item>
@@ -176,6 +178,7 @@ const handleClose = () => {
   flex-direction: column;
   overflow: auto;
   .el-page-header {
+    width: 100%;
     margin-bottom: 20px;
     flex-shrink: 0;
     .el-page-header__main {
@@ -189,7 +192,7 @@ const handleClose = () => {
         color: rgb(95, 99, 104);
       }
     }
-    .page-title {
+    .plugin-page-action {
       font-weight: 600;
     }
   }
@@ -218,6 +221,11 @@ const handleClose = () => {
     }
   }
   .el-row {
+    @media only screen and (max-width: 992px) {
+      .el-col-24 {
+        padding: 0px !important;
+      }
+    }
     .el-col {
       &:last-child {
         padding-left: 15px;
