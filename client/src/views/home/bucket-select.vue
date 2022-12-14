@@ -27,8 +27,11 @@ import { BasicResponse, PageResponse } from '@/typings/req-res';
 import { computed, Ref, ref } from 'vue';
 import useUserStore from '@/store/user';
 import axios from 'axios';
-import mime from 'mime-types'
 import SparkMD5 from 'spark-md5'
+import hmacsha1 from 'hmacsha1'
+import md5 from 'md5'
+import crypto from 'crypto-js'
+
 interface Props {
   userHabits: HabitsInter
 }
@@ -99,8 +102,10 @@ const listGet = () => {
         pluginManager.register(plugin)
         // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
         plugin.uploader.axios = axios
-        plugin.uploader.mime = mime
         plugin.uploader.sparkMd5 = SparkMD5
+        plugin.uploader.hmacsha1 = hmacsha1
+        plugin.uploader.crypto = crypto
+        plugin.uploader.md5 = md5
       }
       return {
         id: item.id,

@@ -467,10 +467,11 @@ export interface MyPlugin {
     }>
   }>
   uploader: { // 插件上传配置
-    axios?: AxiosStatic
+    axios?: AxiosStatic // 上传
+    sparkMd5?: any // 文件md5加密
+    md5?: any // md5加密
+    hmacsha1?: any // macsha1加密，用于通用的siganature
     crypto?: any
-    mime?: any
-    sparkMd5?: any
     // 前置操作：获取数据或者数据处理
     beforeEach: (file?: File) => any
     // 返回请求配置
