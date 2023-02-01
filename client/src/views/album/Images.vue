@@ -13,7 +13,7 @@
         <div class="album-meta-line">
           <span>
             <el-icon><Calendar /></el-icon>
-            创建于 {{ detail.createdAt }}  {{ list.page }}  {{ list.size }}
+            创建于 {{ detail.createdAt }}
           </span>
           <span class="divider">|</span>
           <span>

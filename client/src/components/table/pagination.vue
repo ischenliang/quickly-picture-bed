@@ -51,7 +51,7 @@ const props = defineProps({
   // 当只有一页是是否隐藏页码
   singleHide: {
     type: Boolean,
-    default: true
+    default: false
   },
   pageSizes: {
     type: Array,

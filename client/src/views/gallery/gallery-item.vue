@@ -204,6 +204,7 @@ const actions = {
       align-items: center;
       border-radius: 0 4px 0 4px;
       color: #fff;
+      display: none;
     }
 
     .el-image {
@@ -258,6 +259,9 @@ const actions = {
     transform: translateY(-5px);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
     border-color: #fff;
+    .gallery-item-edit {
+      display: flex;
+    }
   }
 }
 </style>

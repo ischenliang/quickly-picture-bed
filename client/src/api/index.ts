@@ -43,7 +43,12 @@ function http (url, data) {
       } else {
         ElMessage({ message: error.data || error.message, type: 'error' })
         if ([401].includes(error.code)) {
+          // 为了避免由于登录失效后到登录页还需重新输入数据
+          const email = localStorage.getItem('email')
+          const password = localStorage.getItem('password')
           localStorage.clear()
+          localStorage.setItem('email', email)
+          localStorage.setItem('password', password)
           useUserStore().updateUserInfo(null)
           router.push({
             path: '/login'
