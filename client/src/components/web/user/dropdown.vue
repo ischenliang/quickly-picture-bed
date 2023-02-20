@@ -189,7 +189,11 @@ const goView = (item) => {
 }
 
 const logout = () => {
+  const email = localStorage.getItem('email')
+  const password = localStorage.getItem('password')
   localStorage.clear()
+  localStorage.setItem('email', email)
+  localStorage.setItem('password', password)
   window.location.reload()
 }
 </script>

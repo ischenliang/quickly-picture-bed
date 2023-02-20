@@ -52,7 +52,7 @@ const form = reactive({
   password: Cookies.get('password') || '',
   verify_code: '',
   verify_id: '',
-  remember: true // 记住密码
+  remember: JSON.parse(Cookies.get('remember') || 'true') // 记住密码
 })
 const formRef: Ref<FormInstance | null> = ref()
 const rules = reactive({
