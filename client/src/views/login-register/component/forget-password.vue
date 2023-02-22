@@ -1,7 +1,13 @@
 <template>
   <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
-    <el-form-item prop="email">
-      <el-input v-model="form.email" :prefix-icon="'User'" placeholder="请输入邮箱地址" size="large"></el-input>
+    <el-form-item prop="username">
+      <el-input v-model="form.username" :prefix-icon="'User'" placeholder="邮箱账号" size="large">
+        <template #append>
+          <el-select v-model="form.username_suffix" placeholder="请选择邮箱类型" style="width: 120px" size="large">
+            <email-options></email-options>
+          </el-select>
+        </template>
+      </el-input>
     </el-form-item>
     <el-form-item class="verify-code" prop="verify_code">
       <el-input v-model="form.verify_code" placeholder="请输入图形验证码" size="large"></el-input>
@@ -37,9 +43,10 @@ import { useCtxInstance } from '@/hooks/global';
 import Users from '@/types/User';
 import { VerifyCodeInter } from '@/typings/interface'
 import VerifyCode from '@/types/VerifyCode';
-import { reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormInstance } from 'element-plus';
+import EmailOptions from './email-options.vue'
 
 /**
  * 实例
@@ -55,7 +62,8 @@ const ctx = useCtxInstance()
  */
 const loading = ref(false)
 const form = reactive({
-  email: '',
+  username: '',
+  username_suffix: '@163.com',
   password: '',
   rpassword: '',
   verify_code: '',
@@ -65,16 +73,16 @@ const form = reactive({
 })
 const formRef: Ref<FormInstance | null> = ref()
 const rules = reactive({
-  email: [
+  username: [
     { required: true, message: '请输入邮箱', trigger: ['blur'] },
-    {
-      validator: (rule, value, callback) => {
-        if (!/^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/.test(value)) {
-          return callback('邮箱格式不正确')
-        }
-        callback()
-      }
-    }
+    // {
+    //   validator: (rule, value, callback) => {
+    //     if (!/^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/.test(value)) {
+    //       return callback('邮箱格式不正确')
+    //     }
+    //     callback()
+    //   }
+    // }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: ['blur'] },
@@ -118,6 +126,10 @@ const imgCode = reactive({
   msg: '获取验证码',
   counter: 60
 })
+// 计算出实际邮箱地址
+const email = computed(() => {
+  return form.username + form.username_suffix
+})
 
 
 /**
@@ -127,7 +139,7 @@ const forget = () => {
   formRef.value.validate(valid => {
     if (valid) {
       user.forget({
-        account: form.email,
+        account: email.value,
         password: form.password,
         sms_code: form.sms_code
       }).then((res: any) => {
@@ -156,12 +168,12 @@ const getSmsCode = () => {
   formRef.value.validateField(['email', 'verify_code'], (valid) => {
     if (valid) {
       verifyCode.smsSend({
-        account: form.email,
+        account: email.value,
         verify_id: form.verify_id,
         verify_code: form.verify_code,
         type: 'email'
       }).then(res => {
-        ctx.$message({ message: '验证码发送成功', duration: 100, type: 'success' })
+        ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
         let timer = setInterval(() => {
           if (imgCode.counter <= 0) {
@@ -185,6 +197,16 @@ const getSmsCode = () => {
   .el-input__inner{
     background-color: rgba(255,255,255,0.8);
     // font-size: 17px !important;
+  }
+  .el-select {
+    .el-input--suffix {
+      .el-input__wrapper {
+        padding: 1px 8px !important;
+      }
+      .el-input__inner {
+        background-color: transparent !important;
+      }
+    }
   }
   .register-enter {
     margin: 10px 0;

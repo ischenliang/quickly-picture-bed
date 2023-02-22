@@ -7,12 +7,16 @@ import nodemailer from 'nodemailer'
  */
 export default async function useSendMail (text: string, to: string, subject: string = 'LightFastPicture') {
   var user = '1825956830@qq.com' // 自己的邮箱
-  var pass = 'pmjcgrpplkwociaf' // 邮箱授权码
+  // var pass = 'rdnfaehugmzmdbdb' // 邮箱授权码
+  var pass = 'stjflvegjjumbbfa' // 邮箱授权码
+  // xhnpuleztadqdjib
   // var to = 'itchenliang@163.com' // 对方邮箱
   let transporter = nodemailer.createTransport({
     host: "smtp.qq.com",
     port: 587,
     secure: false,
+    //配置发送者的邮箱服务器和登录信息
+    // service:'qq', // 163、qq等
     auth: {
       user: user, // 用户账号
       pass: pass, //授权码,通过QQ获取

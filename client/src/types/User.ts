@@ -15,6 +15,8 @@ interface Filter extends PageReq {
 interface Params extends UserInter {
   verify_code?: string
   verify_id?: string
+  type?: string
+  sms_code?: string
 }
 
 /**

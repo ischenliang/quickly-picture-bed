@@ -1,7 +1,13 @@
 <template>
   <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
     <el-form-item prop="username">
-      <el-input v-model="form.username" :prefix-icon="'User'" placeholder="账号或邮箱" size="large"></el-input>
+      <el-input v-model="form.username" :prefix-icon="'User'" placeholder="邮箱账号" size="large">
+        <template #append>
+          <el-select v-model="form.username_suffix" placeholder="请选择邮箱类型" style="width: 120px" size="large">
+            <email-options></email-options>
+          </el-select>
+        </template>
+      </el-input>
     </el-form-item>
     <el-form-item prop="password">
       <el-input v-model="form.password" :prefix-icon="'Lock'" show-password placeholder="密码" size="large"></el-input>
@@ -33,6 +39,7 @@ import { useRouter } from 'vue-router';
 import { FormInstance } from 'element-plus';
 import Cookies from 'js-cookie'
 import key from 'keymaster'
+import EmailOptions from './email-options.vue'
 
 /**
  * 实例
@@ -47,17 +54,24 @@ const ctx = useCtxInstance()
  * 变量
  */
 const loading = ref(false)
+const email = Cookies.get('email')
 const form = reactive({
-  username: Cookies.get('email') || '',
+  username: email || '',
+  username_suffix: '@163.com',
   password: Cookies.get('password') || '',
   verify_code: '',
   verify_id: '',
   remember: JSON.parse(Cookies.get('remember') || 'true') // 记住密码
 })
+if (email) {
+  const lastIndex = email.lastIndexOf('@')
+  form.username = email.slice(0, lastIndex)
+  form.username_suffix = email.slice(lastIndex, email.length)
+}
 const formRef: Ref<FormInstance | null> = ref()
 const rules = reactive({
   username: [
-    { required: true, message: '请输入用户名', trigger: ['blur'] }
+    { required: true, message: '请输入邮箱账号', trigger: ['blur'] }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: ['blur'] }
@@ -80,13 +94,13 @@ const login = () => {
   formRef.value.validate(valid => {
     if (valid) {
       user.login({
-        email: form.username,
+        email: form.username + form.username_suffix,
         password: form.password,
         verify_id: form.verify_id,
         verify_code: form.verify_code
       }).then((res: any) => {
         if (form.remember) {
-          Cookies.set('email', form.username)
+          Cookies.set('email', form.username + form.username_suffix)
           Cookies.set('password', form.password)
         }
         localStorage.setItem('token', res.token)
@@ -132,6 +146,16 @@ onMounted(() => {
   .el-input__inner{
     background-color: rgba(255,255,255,0.8);
     // font-size: 17px !important;
+  }
+  .el-select {
+    .el-input--suffix {
+      .el-input__wrapper {
+        padding: 1px 8px !important;
+      }
+      .el-input__inner {
+        background-color: transparent !important;
+      }
+    }
   }
   .register-enter {
     margin: 10px 0;
