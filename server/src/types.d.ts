@@ -230,6 +230,14 @@ export interface Log {
   createdAt?: string
   // 操作人，用户id
   uid?: string
+  // 客户端信息
+  client_info?: {
+    province: string // 省份
+    city: string // 城市
+    adcode: string // 城市代码
+    rectangle: string // 经纬度
+    ip: string // ip地址
+  }
 }
 
 

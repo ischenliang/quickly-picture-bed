@@ -34,6 +34,12 @@ const LogModel = seq.define('log', {
     type: DataTypes.STRING,
     allowNull: false,
     comment: '操作人，用户id'
+  },
+  client_info: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    comment: '客户端信息',
+    defaultValue: ''
   }
 }, {
   freezeTableName: true

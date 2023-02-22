@@ -1,9 +1,10 @@
 import { Bucket, Dict, Log, Page, User } from '@/types'
-import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
+import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header, Ctx } from 'koa-ts-controllers'
 import seq from '../utils/seq'
 import LogModel from '../models/Log'
 import sequelize from 'sequelize'
 import { Op } from 'sequelize'
+import { Context } from 'koa'
 
 interface Filter extends Page {
   name?: string
@@ -145,8 +146,9 @@ class LogController {
    * @returns 
    */
   @Post('/create')
-  async create (@Body() params: Log, @CurrentUser() user: User) {
+  async create (@Body() params: Log, @CurrentUser() user: User, @Ctx() ctx: Context) {
     params.uid = user.id
+    // params.client_info = ctx.req_ip
     return {
       code: 200,
       message: '成功',

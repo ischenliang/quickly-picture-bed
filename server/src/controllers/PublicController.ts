@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
+import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header, Ctx } from 'koa-ts-controllers'
 import { Role, User, VerifyCode, SmsCode } from '../types'
 import UserModel from '../models/User'
 import LogModel from '../models/Log'
@@ -9,6 +9,8 @@ import { default_habits } from '../global.config'
 import VerifyCodeModel from '../models/VerifyCode'
 import SmsCodeModel from '../models/SmsCode'
 import { useDiffTime, useFormatTime } from '../utils/time'
+import { Context } from 'koa'
+import { useGetClientInfoByIp } from '../utils/global'
 
 interface LoginParams extends User {
   verify_code?: string
@@ -24,7 +26,7 @@ interface RegisterParams extends User {
 class PublicController {
   // 登录:还需要验证图形验证码是否正确
   @Post('/login')
-  async login(@Body({ required: true }) params: LoginParams, @Header() header: any) {
+  async login(@Body({ required: true }) params: LoginParams, @Header() header: any, @Ctx() ctx: Context) {
     const tmp: User = {}
     if (params.phone) tmp.phone = params.phone
     if (params.email) tmp.email = params.email
@@ -73,12 +75,20 @@ class PublicController {
         })
         user.token = token
         // 记录登录日志
+        const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
         await LogModel.create({
           type: LogEnum.Login,
           operate_id: params.email || params.phone,
           operate_cont: tmp.email || tmp.phone,
           content: '登录成功',
-          uid: user.id
+          uid: user.id,
+          client_info: {
+            province,
+            city,
+            adcode,
+            rectangle,
+            ip: ctx.req_ip
+          }
         })
         return {
           code: 200,

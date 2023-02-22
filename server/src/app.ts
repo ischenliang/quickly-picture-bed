@@ -37,7 +37,9 @@ function getClientIP(req: any) {
 // 处理404不存在的
 app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   ctx.set('Content-Type', 'application/json; charset=utf-8')
-  // console.log(getClientIP(ctx.req))
+  ctx.req_ip = getClientIP(ctx.req)
+  // 本地开发时需要启用该参数
+  // ctx.req_ip = '218.88.53.236'
   // 这里还需要区分是哪些接口需要单独处理：例如登录、注册不需要传入token
   if (ctx.headers['authorization']) {
     try {
