@@ -6,6 +6,7 @@
       :selection="true"
       :border="true"
       :actionWidth="100"
+      :is-action="false"
       @pageChange="listGet"
       @select-change="hanleSelectChange">
       <template #type="data">
@@ -27,14 +28,15 @@
           <el-button type="danger" :disabled="selected.length === 0" @click="batchDelete">删除</el-button>
         </el-tooltip>
       </template>
-      <template #tableAction="{ row }">
+      <!-- 禁止用户删除日志 -->
+      <!-- <template #tableAction="{ row }">
         <el-tooltip
           effect="dark"
           content="删除日志数据将直接影响使用分析里的数据"
           placement="left-start">
           <el-button type="danger" size="small" @click="itemDelete(row)">删除</el-button>
         </el-tooltip>
-      </template>
+      </template> -->
     </table-page>
   </div>
 </template>
