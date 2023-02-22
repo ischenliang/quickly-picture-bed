@@ -94,17 +94,24 @@ class ImageController {
    */
   @Post('/update')
   async update (@Body() params: Image, @CurrentUser() user: User) {
+    // 先更新数据
+    await ImageModel.update({
+      ...params
+    }, {
+      where: {
+        id: params.id,
+        uid: user.id
+      },
+      silent: params.slient
+    })
     return {
       code: 200,
       message: '成功',
-      data: await ImageModel.update({
-        ...params
-      }, {
+      data: await ImageModel.findOne({
         where: {
           id: params.id,
           uid: user.id
-        },
-        silent: params.slient
+        }
       })
     }
   }
