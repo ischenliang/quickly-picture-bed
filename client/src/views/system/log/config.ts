@@ -30,5 +30,19 @@ export const config: Array<TableColumnConfig> = [
     label: '操作时间',
     width: '',
     prop: 'createdAt'
+  },
+  {
+    align: 'center',
+    label: '访问来源',
+    width: '',
+    prop: 'client_info',
+    slot: 'address'
+  },
+  {
+    align: 'center',
+    label: '访问ip',
+    width: '',
+    prop: 'client_info',
+    slot: 'ip'
   }
 ]

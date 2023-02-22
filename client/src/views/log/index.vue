@@ -14,10 +14,10 @@
           :text="types_status[data.type].text"/>
       </template>
       <template #address="data">
-        {{ data.client_info && (data.client_info.province + data.client_info.city) }}
+        {{ data.client_info ? (data.client_info.province + data.client_info.city) : '-' }}
       </template>
       <template #ip="data">
-        {{ data.client_info && data.client_info.ip }}
+        {{ data.client_info ? data.client_info.ip : '-' }}
       </template>
       <template #action>
         <el-tooltip
