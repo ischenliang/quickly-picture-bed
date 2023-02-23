@@ -461,6 +461,7 @@ export interface MyPlugin {
   name: string // 名称，对应存储桶的类别
   id?: string // 存储桶id，对应存储桶的id
   version: string // 版本
+  doc?: string // 文档地址
   config: Array<{ // 表单定义
     type: string // 字段类型
     label: string // 表单提示文字

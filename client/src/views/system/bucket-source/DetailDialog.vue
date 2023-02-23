@@ -184,4 +184,33 @@ watch(() => props.detail, (val) => {
 </script>
 
 <style lang="scss">
+.inline-item {
+  flex-direction: column;
+  .el-form-item__content {
+    margin-left: 0 !important;
+  }
+}
+.dict-form {
+  overflow: hidden;
+  .bucket-tips {
+    font-size: 12px;
+    color: #898989;
+    line-height: 18px;
+    .doc_link {
+      line-height: 22px;
+    }
+  }
+}
+.bucket-warning {
+  margin-bottom: 15px;
+  font-size: 14px;
+  p {
+    line-height: 22px;
+  }
+  .bucket-warning-tips {
+    // padding-left: 28px;
+    // color: #898989;
+    line-height: 20px;
+  }
+}
 </style>

@@ -6,9 +6,6 @@
     :before-close="handleClose">
     <div class="bucket-warning">
       <p>请不要随意更改存储桶配置的必填属性(除存储桶名称外)，修改后会自动同步到所有关联的图片，进而可能会导致图片加载失败。</p>
-      <div class="bucket-warning-tips">
-        存储桶说明1<br/>
-      </div>
     </div>
     <el-form ref="formRef" :model="form" label-width="auto" :label-position="'left'" class="dict-form">
       <el-form-item
@@ -26,6 +23,9 @@
             :value="item.type"
             />
         </el-select>
+        <p class="bucket-tips" v-if="doc_url">
+          <a :href="doc_url" class="doc_link" target="_blank">配置文档</a>
+        </p>
       </el-form-item>
       <el-form-item
         label="存储桶名称"
@@ -134,6 +134,8 @@ const formRef = ref(null)
 const bucketSources: Ref<BucketSourceInter[]> = ref([])
 // 存储源配置
 const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
+// 文档地址
+const doc_url = ref('')
 
 /**
  * 数据获取
@@ -229,6 +231,7 @@ const handleData = (type: string) => {
   form.plugin = pluginConfig
   // 处理config，判断是否有默认值，有默认值则自动填充
   const plugin: MyPlugin = new Function('return ' + pluginConfig)()
+  doc_url.value = plugin.doc
   bucketConfigs.value = plugin.config.map(item => {
     if (form.config) {
       const config = JSON.parse(form.config)
@@ -290,6 +293,9 @@ watch(() => props.detail, (val) => {
     font-size: 12px;
     color: #898989;
     line-height: 18px;
+    .doc_link {
+      line-height: 22px;
+    }
   }
 }
 .bucket-warning {
