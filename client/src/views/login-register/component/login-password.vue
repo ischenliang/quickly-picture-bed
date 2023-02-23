@@ -93,12 +93,14 @@ const imgCode = reactive({
 const login = () => {
   formRef.value.validate(valid => {
     if (valid) {
+      loading.value = true
       user.login({
         email: form.username + form.username_suffix,
         password: form.password,
         verify_id: form.verify_id,
         verify_code: form.verify_code
       }).then((res: any) => {
+        loading.value = false
         if (form.remember) {
           Cookies.set('email', form.username + form.username_suffix)
           Cookies.set('password', form.password)

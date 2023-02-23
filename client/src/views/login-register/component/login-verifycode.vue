@@ -16,7 +16,7 @@
     <el-form-item class="email-code" prop="sms_code">
       <el-input v-model="form.sms_code" placeholder="请输入邮箱验证码" size="large">
         <template #suffix>
-          <el-button text type="primary" @click="getSmsCode" :disabled="imgCode.counter !== 60">
+          <el-button text type="primary" @click="getSmsCode" v-loading="sms_loading" :disabled="imgCode.counter !== 60">
             {{ imgCode.msg }}
           </el-button>
         </template>
@@ -59,6 +59,7 @@ const verifyCode = new VerifyCode()
  * 变量
  */
 const loading = ref(false)
+const sms_loading = ref(false)
 const co_email = Cookies.get('email')
 const form = reactive({
   username: co_email || '',
@@ -103,15 +104,21 @@ const email = computed(() => {
  * 回调函数
  */
 const login = () => {
-  user.login({
-    email: email.value,
-    sms_code: form.sms_code,
-    type: 'verify_code'
-  }).then((res: any) => {
-    localStorage.setItem('email', email.value)
-    localStorage.setItem('token', res.token)
-    ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
-    router.push({ path: '/' })
+  formRef.value.validate(valid => {
+    if (valid) {
+      loading.value = true
+      user.login({
+        email: email.value,
+        sms_code: form.sms_code,
+        type: 'verify_code'
+      }).then((res: any) => {
+        loading.value = false
+        localStorage.setItem('email', email.value)
+        localStorage.setItem('token', res.token)
+        ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
+        router.push({ path: '/' })
+      })
+    }
   })
 }
 // 获取图形验证码
@@ -129,12 +136,14 @@ getImgCode()
 const getSmsCode = () => {
   formRef.value.validateField(['email', 'verify_code'], (valid) => {
     if (valid) {
+      sms_loading.value = true
       verifyCode.smsSend({
         account: email.value,
         verify_id: form.verify_id,
         verify_code: form.verify_code,
         type: 'email'
       }).then(res => {
+        sms_loading.value = false
         ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
         let timer = setInterval(() => {
