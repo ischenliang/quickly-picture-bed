@@ -1,4 +1,5 @@
 import axios from 'axios'
+import md5 from 'md5'
 /**
  * 获取后缀
  * @param filePath 文件路径|文件名称
@@ -30,4 +31,17 @@ export function useGetClientInfoByIp (ip: string) {
       console.log('错误信息：' + error)
     })
   })
+}
+
+
+
+
+/**
+ * 密码md5加密
+ * @param pwd 密码
+ * @param suffix 秘钥
+ * @returns 
+ */
+export function useMd5 (pwd: string, suffix: string = 'a1b2c3') {
+  return md5(pwd + suffix)
 }

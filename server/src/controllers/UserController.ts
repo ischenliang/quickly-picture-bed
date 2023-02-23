@@ -8,6 +8,7 @@ import ImageModel from '../models/Image'
 import HabitsModel from '../models/Habits'
 import { useRoleAuthorization } from '../middlewares/authorization'
 import { default_habits } from '../global.config'
+import { useMd5 } from '../utils/global'
 
 interface Filter extends Page {
   username?: string
@@ -127,7 +128,7 @@ class UserController {
       code: 200,
       message: '成功',
       data: await UserModel.update({
-        password: '000000'
+        password: useMd5('000000')
       }, {
         where: {
           id: params.id

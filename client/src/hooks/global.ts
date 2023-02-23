@@ -6,6 +6,7 @@ import { useClipboard } from '@vueuse/core';
 import { useFileName } from './date-time';
 import { mimeTypes } from '@/global.config';
 import useUserStore from '@/store/user';
+import md5 from 'md5'
 
 
 interface Ctx {
@@ -371,4 +372,15 @@ export function useUrlToImageFile (url: string, imageName: string, accept: strin
       callBack()
     }
   }
+}
+
+
+/**
+ * 密码md5加密
+ * @param pwd 密码
+ * @param suffix 秘钥
+ * @returns 
+ */
+export function useMd5 (pwd: string, suffix: string = 'a1b2c3') {
+  return md5(pwd + suffix)
 }

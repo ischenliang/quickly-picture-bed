@@ -117,6 +117,10 @@ const login = () => {
         localStorage.setItem('token', res.token)
         ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
         router.push({ path: '/' })
+      }).catch((error) => {
+        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
+        getImgCode()
+        loading.value = false
       })
     }
   })
@@ -143,7 +147,6 @@ const getSmsCode = () => {
         verify_code: form.verify_code,
         type: 'email'
       }).then(res => {
-        sms_loading.value = false
         ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
         let timer = setInterval(() => {
@@ -156,6 +159,8 @@ const getSmsCode = () => {
             imgCode.msg = `${imgCode.counter}秒后可重发`
           }
         }, 1000)
+      }).catch(() => {
+        sms_loading.value = true
       })
     }
   })

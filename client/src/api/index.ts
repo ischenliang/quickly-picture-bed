@@ -38,8 +38,8 @@ function http (url, data) {
       resolve(res)
     }).catch(error => {
       console.log('报错了: ', error)
-      if ([201].includes(error.code)) {
-        reject(error)
+      if (['/login', '/register', '/forget', '/tool/smsSend'].includes(url) || [201].includes(error.code)) {
+        reject({ message: error.data || error.message, type: 'error' })
       } else {
         ElMessage({ message: error.data || error.message, type: 'error' })
         if ([401].includes(error.code)) {

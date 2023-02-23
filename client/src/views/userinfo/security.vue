@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance } from '@/hooks/global';
+import { useCtxInstance, useMd5 } from '@/hooks/global';
 import Users from '@/types/User';
 import { FormInstance } from 'element-plus';
 import { reactive, Ref, ref } from 'vue';
@@ -80,8 +80,8 @@ const submit = () => {
   formRef.value.validate(valid => {
     if (valid) {
       user.changePwd({
-        password: form.password,
-        old_password: form.old_password
+        password: useMd5(form.password),
+        old_password: useMd5(form.old_password)
       }).then(res => {
         ctx.$message({
           message: '密码修改成功',

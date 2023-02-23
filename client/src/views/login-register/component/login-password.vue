@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance } from '@/hooks/global';
+import { useCtxInstance, useMd5 } from '@/hooks/global';
 import Users from '@/types/User';
 import { VerifyCodeInter } from '@/typings/interface'
 import VerifyCode from '@/types/VerifyCode';
@@ -96,11 +96,10 @@ const login = () => {
       loading.value = true
       user.login({
         email: form.username + form.username_suffix,
-        password: form.password,
+        password: useMd5(form.password),
         verify_id: form.verify_id,
         verify_code: form.verify_code
       }).then((res: any) => {
-        loading.value = false
         if (form.remember) {
           Cookies.set('email', form.username + form.username_suffix)
           Cookies.set('password', form.password)
@@ -111,6 +110,7 @@ const login = () => {
       }).catch(error => {
         ctx.$message({ message: error.message, type: 'error', duration: 1000 })
         getImgCode()
+        loading.value = false
       })
     }
   })

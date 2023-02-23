@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance } from '@/hooks/global';
+import { useCtxInstance, useMd5 } from '@/hooks/global';
 import Users from '@/types/User';
 import { VerifyCodeInter } from '@/typings/interface'
 import VerifyCode from '@/types/VerifyCode';
@@ -139,18 +139,17 @@ const email = computed(() => {
 const forget = () => {
   formRef.value.validate(valid => {
     if (valid) {
-      loading.value = true
       user.forget({
         account: email.value,
-        password: form.password,
+        password: useMd5(form.password),
         sms_code: form.sms_code
       }).then((res: any) => {
-        loading.value = false
         ctx.$message({ message: '密码重置成功，去登录', type: 'success', duration: 1000 })
         router.push({ path: '/login' })
       }).catch(error => {
         ctx.$message({ message: error.message, type: 'error', duration: 1000 })
         getImgCode()
+        loading.value = false
       })
     }
   })
@@ -177,7 +176,6 @@ const getSmsCode = () => {
         verify_code: form.verify_code,
         type: 'email'
       }).then(res => {
-        sms_loading.value = false
         ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
         let timer = setInterval(() => {
@@ -190,6 +188,8 @@ const getSmsCode = () => {
             imgCode.msg = `${imgCode.counter}秒后可重发`
           }
         }, 1000)
+      }).catch(() => {
+        sms_loading.value = false
       })
     }
   })
