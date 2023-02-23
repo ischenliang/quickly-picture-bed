@@ -119,7 +119,9 @@ const login = () => {
         router.push({ path: '/' })
       }).catch((error) => {
         ctx.$message({ message: error.message, type: 'error', duration: 1000 })
-        getImgCode()
+        if (error.message !== '验证码不正确') {
+          getImgCode()
+        }
         loading.value = false
       })
     }
@@ -149,6 +151,7 @@ const getSmsCode = () => {
       }).then(res => {
         ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
+        sms_loading.value = false
         let timer = setInterval(() => {
           if (imgCode.counter <= 0) {
             clearInterval(timer)
@@ -159,8 +162,9 @@ const getSmsCode = () => {
             imgCode.msg = `${imgCode.counter}秒后可重发`
           }
         }, 1000)
-      }).catch(() => {
-        sms_loading.value = true
+      }).catch((error) => {
+        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
+        sms_loading.value = false
       })
     }
   })

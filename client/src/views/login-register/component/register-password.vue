@@ -156,7 +156,9 @@ const register = () => {
         router.push({ path: '/login' })
       }).catch(error => {
         ctx.$message({ message: error.message, type: 'error', duration: 1000 })
-        getImgCode()
+        if (error.message !== '验证码不正确') {
+          getImgCode()
+        }
         loading.value = false
       })
     }
@@ -197,7 +199,8 @@ const getSmsCode = () => {
             imgCode.msg = `${imgCode.counter}秒后可重发`
           }
         }, 1000)
-      }).catch(() => {
+      }).catch((error) => {
+        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
         sms_loading.value = false
       })
     }
