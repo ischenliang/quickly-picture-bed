@@ -31,7 +31,8 @@
     <el-form-item prop="remember" class="register-enter">
       <span>
         <el-checkbox v-model="form.remember" /> 我同意
-        <router-link :to="'/login'">《用户协议》</router-link><router-link :to="'/login'">《隐私协议》</router-link>
+        <a href="javascript:;">《用户协议》</a><a href="javascript:;">《隐私协议》</a>
+        <!-- <router-link :to="'/login'">《用户协议》</router-link><router-link :to="'/login'">《隐私协议》</router-link> -->
       </span>
       <span>已有账号，去 <router-link :to="'/login'">登录</router-link></span>
     </el-form-item>
@@ -174,7 +175,7 @@ const getImgCode = () => {
 getImgCode()
 // 获取短信验证码
 const getSmsCode = () => {
-  formRef.value.validateField(['email', 'verify_code'], (valid) => {
+  formRef.value.validateField(['username', 'verify_code'], (valid) => {
     if (valid) {
       sms_loading.value = true
       verifyCode.smsSend({
@@ -183,6 +184,7 @@ const getSmsCode = () => {
         verify_code: form.verify_code,
         type: 'email'
       }).then(res => {
+        sms_loading.value = false
         ctx.$message({ message: '验证码发送成功', duration: 1000, type: 'success' })
         imgCode.msg = '验证码发送成功'
         let timer = setInterval(() => {

@@ -138,7 +138,7 @@ const getImgCode = () => {
 getImgCode()
 // 获取短信验证码
 const getSmsCode = () => {
-  formRef.value.validateField(['email', 'verify_code'], (valid) => {
+  formRef.value.validateField(['username', 'verify_code'], (valid) => {
     if (valid) {
       sms_loading.value = true
       verifyCode.smsSend({
