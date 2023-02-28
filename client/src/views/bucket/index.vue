@@ -163,7 +163,7 @@ const itemOperate = (data: BucketInter, type) => {
   item.data = data
   visible[type] = true
   if (type === 'delete') {
-    useDeleteConfirm('确定要删除存储桶吗？删除后关联的图片将无法访问。').then(() => {
+    useDeleteConfirm('确定要删除本存储桶吗？(删除后关联的图片将无法访问)').then(() => {
       bucket.delete(data.id, data.uid)
       .then(res => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
