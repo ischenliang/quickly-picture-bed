@@ -9,6 +9,7 @@ import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
+import { useGetClientInfoByIp } from '../utils/global'
 
 @Controller('/tool')
 class ToolController {
@@ -226,4 +227,16 @@ class ToolController {
       data: '图形验证码已过期，请重新生成'
     }
   }
+
+  
+  // @Get('/test')
+  // async test(@Query('ip') ip: string) {
+  //   const res = await useGetClientInfoByIp(ip)
+  //   console.log(res)
+  //   return {
+  //     code: 500,
+  //     message: '验证码已过期，请重新生成',
+  //     data: '图形验证码已过期，请重新生成'
+  //   }
+  // }
 }

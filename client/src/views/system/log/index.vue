@@ -5,7 +5,7 @@
       :is-index="true"
       :selection="true"
       :border="true"
-      :actionWidth="100"
+      :actionWidth="150"
       @pageChange="listGet"
       @select-change="hanleSelectChange">
       <template #type="data">
@@ -35,6 +35,7 @@
           placement="left-start">
           <el-button type="danger" size="small" @click="itemDelete(row)">删除</el-button>
         </el-tooltip>
+        <el-button type="primary" size="small" @click="itemLocate(row)">定位</el-button>
       </template>
     </table-page>
   </div>
@@ -126,6 +127,17 @@ const itemDelete = (data: LogInter) => {
       })
       listGet()
     })
+  })
+}
+// 重新定位
+const itemLocate = (data: LogInter) => {
+  log.reLocate(data.id).then(res => {
+    ctx.$message({
+      message: '重新定位成功',
+      duration: 1000,
+      type: 'success'
+    })
+    listGet()
   })
 }
 // 批量删除

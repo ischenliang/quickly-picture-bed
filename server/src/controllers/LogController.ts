@@ -2,9 +2,10 @@ import { Bucket, Dict, Log, Page, User } from '@/types'
 import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header, Ctx } from 'koa-ts-controllers'
 import seq from '../utils/seq'
 import LogModel from '../models/Log'
-import sequelize from 'sequelize'
 import { Op } from 'sequelize'
 import { Context } from 'koa'
+import { useRoleAuthorization } from '../middlewares/authorization'
+import { useGetClientInfoByIp } from '../utils/global';
 
 interface Filter extends Page {
   name?: string
@@ -196,6 +197,41 @@ class LogController {
       message: '成功',
       data: await LogModel.destroy({
         where: where
+      })
+    }
+  }
+
+
+  /**
+   * 重新定位: 需要根据角色来判断
+   * @param params Log日志
+   * @returns 
+   */
+  @Post('/reLocate')
+  @Flow([useRoleAuthorization])
+  async reLocate (@Body() params: { id: string }, @CurrentUser() user: User) {
+    // 先从数据库中获取到ip
+    const log = await LogModel.findOne({
+      where: {
+        id: params.id
+      }
+    }) as Log
+    // 重新获取客户端信息
+    const client_info = await useGetClientInfoByIp(log.client_info.ip) as any
+
+    // 更新数据
+    return {
+      code: 200,
+      message: '成功',
+      data: await LogModel.update({
+        client_info: {
+          ...client_info
+        }
+      }, {
+        where: {
+          id: params.id
+        },
+        silent: true
       })
     }
   }

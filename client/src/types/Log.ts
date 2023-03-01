@@ -38,4 +38,7 @@ export default class Log {
   today () {
     return http('/log/listByDay', {})
   }
+  reLocate (id: string) {
+    return http('/log/reLocate', { id })
+  }
 }
