@@ -183,28 +183,36 @@ class ToolController {
       if (flag) {
         const code = useGenerateCode()
         if (params.type === 'email') {
-          const flag = await useSendMail(code, params.account)
-          if (flag) {
-            // 清除已经过期的数据
-            await SmsCodeModel.destroy({
-              where: {
-                expire_at: {
-                  [Op.lt]: new Date()
+          try {
+            const flag = await useSendMail(code, params.account)
+            if (flag) {
+              // 清除已经过期的数据
+              await SmsCodeModel.destroy({
+                where: {
+                  expire_at: {
+                    [Op.lt]: new Date()
+                  }
                 }
+              })
+              // 删除和用户account相关的数据
+              await SmsCodeModel.destroy({ where: { account: params.account } })
+              await SmsCodeModel.create({
+                account: params.account,
+                type: params.type,
+                code: code,
+                expire_at: useFormatTime(moment().add(3, 'm'))
+              })
+              return {
+                code: 200,
+                message: '验证码发送成功',
+                data: '验证码发送成功'
               }
-            })
-            // 删除和用户account相关的数据
-            await SmsCodeModel.destroy({ where: { account: params.account } })
-            await SmsCodeModel.create({
-              account: params.account,
-              type: params.type,
-              code: code,
-              expire_at: useFormatTime(moment().add(3, 'm'))
-            })
+            }
+          } catch (error) {
             return {
-              code: 200,
-              message: '验证码发送成功',
-              data: '验证码发送成功'
+              code: 500,
+              message: error.message || error.msg,
+              data: error.message || error.msg
             }
           }
         } else {

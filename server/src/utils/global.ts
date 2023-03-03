@@ -44,7 +44,7 @@ export function useGetClientInfoByIp (ip: string) {
       url: `https://api.map.baidu.com/location/ip?ak=NRjNKoTLotrpA6bH4hUanMUbTyID1upT&ip=${ip}&coor=bd09ll`
     }).then(res => {
       const content = res.data.content
-      const { province, city, adcode } = content.address_detail
+      const { province, city, adcode } = content && content.address_detail
       resolve({
         ip: ip,
         province: province && province.length ? unistrToCnstr(province) : '未知',
@@ -54,6 +54,13 @@ export function useGetClientInfoByIp (ip: string) {
       })
     }).catch(error => {
       console.log('错误信息：' + error)
+      resolve({
+        ip: ip,
+        province: '未知',
+        city: '未知',
+        adcode: '未知',
+        rectangle: '未知'
+      })
     })
   })
 }

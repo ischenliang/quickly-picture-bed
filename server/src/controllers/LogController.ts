@@ -185,6 +185,7 @@ class LogController {
    * @returns 
    */
   @Post('/delete')
+  @Flow([useRoleAuthorization])
   async delete (@Body() params: { id: string }, @CurrentUser() user: User) {
     const where: any = {
       id: params.id,
