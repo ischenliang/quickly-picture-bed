@@ -223,7 +223,7 @@ const handleClick = (index: number) => {
 const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
   switch (e.type) {
     case 'delete':
-      useDeleteConfirm().then(() => {
+      useDeleteConfirm('确定删除吗?(由于对象存储几乎不要钱，故此处只是删除本条记录，不会删除对象存储上的原数据，所以删除后仍然能正常访问)').then(() => {
         image.delete(e.data.id).then(res => {
           ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
           listGet()

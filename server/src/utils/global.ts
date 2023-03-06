@@ -65,6 +65,7 @@ export function useGaodeService (ip: string, key: string) {
 // 百度地图方式
 export function useBaiduService (ip: string, key: string) {
   return new Promise((resolve, reject) => {
+    // 百度地图方式
     axios({
       method: 'GET',
       url: `https://api.map.baidu.com/location/ip?ak=${key}&ip=${ip}&coor=bd09ll`
@@ -91,14 +92,14 @@ export function useBaiduService (ip: string, key: string) {
   })
 }
 
-
 /**
  * unicode字符串转中文字符串
  * @param uni_str 
  */
- export function unistrToCnstr (uni_str: string) {
+export function unistrToCnstr (uni_str: string) {
   return unescape(uni_str.replace(/\\u/g, '%u'))
 }
+
 
 
 

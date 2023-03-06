@@ -9,6 +9,7 @@ import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
+import { useGetClientInfoByIp } from '../utils/global'
 
 @Controller('/tool')
 class ToolController {
@@ -182,28 +183,36 @@ class ToolController {
       if (flag) {
         const code = useGenerateCode()
         if (params.type === 'email') {
-          const flag = await useSendMail(code, params.account)
-          if (flag) {
-            // 清除已经过期的数据
-            await SmsCodeModel.destroy({
-              where: {
-                expire_at: {
-                  [Op.lt]: new Date()
+          try {
+            const flag = await useSendMail(code, params.account)
+            if (flag) {
+              // 清除已经过期的数据
+              await SmsCodeModel.destroy({
+                where: {
+                  expire_at: {
+                    [Op.lt]: new Date()
+                  }
                 }
+              })
+              // 删除和用户account相关的数据
+              await SmsCodeModel.destroy({ where: { account: params.account } })
+              await SmsCodeModel.create({
+                account: params.account,
+                type: params.type,
+                code: code,
+                expire_at: useFormatTime(moment().add(3, 'm'))
+              })
+              return {
+                code: 200,
+                message: '验证码发送成功',
+                data: '验证码发送成功'
               }
-            })
-            // 删除和用户account相关的数据
-            await SmsCodeModel.destroy({ where: { account: params.account } })
-            await SmsCodeModel.create({
-              account: params.account,
-              type: params.type,
-              code: code,
-              expire_at: useFormatTime(moment().add(3, 'm'))
-            })
+            }
+          } catch (error) {
             return {
-              code: 200,
-              message: '验证码发送成功',
-              data: '验证码发送成功'
+              code: 500,
+              message: error.message || error.msg,
+              data: error.message || error.msg
             }
           }
         } else {
@@ -226,4 +235,16 @@ class ToolController {
       data: '图形验证码已过期，请重新生成'
     }
   }
+
+  
+  // @Get('/test')
+  // async test(@Query('ip') ip: string) {
+  //   const res = await useGetClientInfoByIp(ip)
+  //   console.log(res)
+  //   return {
+  //     code: 500,
+  //     message: '验证码已过期，请重新生成',
+  //     data: '图形验证码已过期，请重新生成'
+  //   }
+  // }
 }
