@@ -127,7 +127,11 @@ npm install ts-node -g
 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压
 
 **5. 执行sql文件**<br>
-系统提供默认初始化数据库`sql`文件，打开并复制`sql/picture-bed-backup.sql`，在`navicat`或者其他工具中执行该sql文件。
+系统提供默认初始化数据库`sql`文件，打开并复制`sql/picture-bed-backup.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录
+```js
+管理员账号: admin@163.com
+管理员密码: 000000
+```
 
 **6. 修改数据库连接**<br>
 打开`server/src/utils/seq.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
@@ -157,7 +161,7 @@ cd server
 npm install
 ```
 
-**8. 项目启动**
+**8. 项目启动**<br>
 首先将后端服务启动
 ```shell
 # 服务端启动
