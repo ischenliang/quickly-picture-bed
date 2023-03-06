@@ -20,7 +20,7 @@ export default defineConfig({
   assetsInclude: ['**/*.gif'],
   plugins: [
     vue(),
-    monacoEditorPlugin()
+    monacoEditorPlugin({})
   ],
   publicDir: 'public',
   resolve: {

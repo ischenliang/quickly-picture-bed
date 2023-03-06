@@ -40,7 +40,7 @@
       </el-row>
     </c-card>
 
-    <c-card :title="'图标配置'">
+    <c-card :title="'图标配置(存储桶类型等图标)'">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="name" label="图标url">
@@ -55,6 +55,39 @@
         <el-col :xl="6" :lg="8" :md="12">
           <el-form-item prop="name" label="图标字体Font Family">
             <el-input v-model="myForm.system.icon_font" placeholder="请输入网站名称" size="large" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </c-card>
+
+    <c-card :title="'ip定位服务配置'">
+      <el-row>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="map_type" label="启用服务类型">
+            <el-select v-model="myForm.system.map_type" placeholder="请选择服务类型" size="large">
+              <el-option :label="'高德地图'" :value="'gaode'"></el-option>
+              <el-option :label="'百度地图'" :value="'baidu'"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="map_key" label="开发者密钥">
+            <el-input v-model="myForm.system.map_key" placeholder="请输入开放者秘钥" size="large" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </c-card>
+
+    <c-card :title="'邮件服务配置'">
+      <el-row>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="mail_user" label="收件人邮箱">
+            <el-input v-model="myForm.system.mail_user" placeholder="请输入收件人邮箱" size="large" />
+          </el-form-item>
+        </el-col>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="mail_pass" label="邮箱授权码">
+            <el-input v-model="myForm.system.mail_pass" placeholder="请输入邮箱授权码" size="large" />
           </el-form-item>
         </el-col>
       </el-row>

@@ -11,7 +11,7 @@ const conf = {
     // console.log(sql)
   }
 }
-const seq = new Sequelize('picture-bed', 'root', '100259', conf)
+const seq = new Sequelize('picture-bed-backup', 'root', '100259', conf)
 
 // 测试连接是否成功
 // seq.authenticate().then(() => {

@@ -357,6 +357,14 @@ export interface SettingInter {
     copyright_miitbeian?: string // 工信部备案号
     // 工信部备案地址(即工信部官网地址https://beian.miit.gov.cn/)
     copyright_miiturl?: string
+
+    // 地图配置
+    map_type?: string // 地图类型
+    map_key?: string // 对应的秘钥
+
+    // 邮件服务配置
+    mail_user?: string // 发件人
+    mail_pass?: string // 授权码
   }
   // 插件配置
   plugin?: {

@@ -1,3 +1,5 @@
+import { Setting } from '../types';
+import SettingModel from '../models/Setting';
 import nodemailer from 'nodemailer'
 
 /**
@@ -6,11 +8,10 @@ import nodemailer from 'nodemailer'
  * @param to 收件人邮箱
  */
 export default async function useSendMail (text: string, to: string, subject: string = 'LightFastPicture') {
-  var user = '1825956830@qq.com' // 自己的邮箱
-  // var pass = 'rdnfaehugmzmdbdb' // 邮箱授权码
-  var pass = 'stjflvegjjumbbfa' // 邮箱授权码
-  // xhnpuleztadqdjib
-  // var to = 'itchenliang@163.com' // 对方邮箱
+  const res = await SettingModel.findOne() as Setting
+  const { mail_user, mail_pass } = res.system
+  var user = mail_user // 自己的邮箱
+  var pass = mail_pass // 邮箱授权码
   let transporter = nodemailer.createTransport({
     host: "smtp.qq.com",
     port: 587,
@@ -23,18 +24,21 @@ export default async function useSendMail (text: string, to: string, subject: st
     },
   })
   return new Promise((resolve, reject) => {
-    transporter.sendMail({
-      from: `<${user}>`,
-      to: `<${to}>`,
-      subject: subject,
-      html: `【LightFastPicture】验证码：<span style="color: #409eff;text-decoration: underline;">${text}</span>，有效期3分钟，如非本人操作，请忽略此消息。`,
-    }).then(() => {
-      resolve(true)
-    }).catch(error => {
-      reject(error)
-    })
+    if (pass && user) {
+      transporter.sendMail({
+        from: `<${user}>`,
+        to: `<${to}>`,
+        subject: subject,
+        html: `【LightFastPicture】验证码：<span style="color: #409eff;text-decoration: underline;">${text}</span>，有效期3分钟，如非本人操作，请忽略此消息。`,
+      }).then(() => {
+        resolve(true)
+      }).catch(error => {
+        reject(error)
+      })
+    } else {
+      reject(new Error('为配置邮件服务'))
+    }
   })
-  console.log("发送成功")
 }
 
 

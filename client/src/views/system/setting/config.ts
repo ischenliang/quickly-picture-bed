@@ -37,6 +37,12 @@ export default {
     copyright_time: '',
     copyright_miitbeian: '',
     copyright_miiturl: 'https://beian.miit.gov.cn/',
+
+    map_type: 'baidu',
+    map_key: '',
+
+    mail_user: '',
+    mail_pass: ''
   },
   uplog: '',
   plugin: {
