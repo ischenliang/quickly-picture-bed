@@ -126,7 +126,27 @@ npm install ts-node -g
 **4. 克隆代码**<br/>
 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压
 
-**5. 依赖安装**
+**5. 执行sql文件**<br>
+系统提供默认初始化数据库`sql`文件，打开并复制`sql/picture-bed-backup.sql`，在`navicat`或者其他工具中执行该sql文件。
+
+**6. 修改数据库连接**<br>
+打开`server/src/utils/seq.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
+```js
+const conf = {
+  host: '你的数据库ip',
+  port: 3306, // 默认端口一般是3306
+  // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
+  dialect: 'mysql' as Dialect,
+  define: {},
+  // 不让sql语句在命令行终端输出
+  logging: (sql: any) => {
+    // console.log(sql)
+  }
+}
+const seq = new Sequelize('你的数据库名称', '数据库用户名', '数据库密码', conf)
+```
+
+**7. 依赖安装**
 ```shell
 # 前端依赖安装
 cd client
@@ -137,21 +157,29 @@ cd server
 npm install
 ```
 
-**6. 项目启动**
+**8. 项目启动**
+首先将后端服务启动
+```shell
+# 服务端启动
+cd server
+npm run start
+```
+在运行前端代码前还需要做一步操作，打开`client/src/global.config.ts`文件，修改`baseURL`，将下面的`locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
+```ts
+// 124.222.54.192
+export const baseURL = 'http://locahost:3002/api/v1'
+```
+然后执行下面命令运行前端代码
 ```shell
 # 前端项目启动
 cd client
 npm run dev
-
-# 服务端启动
-cd server
-npm run start
 ```
 控制台出现如下如所示即代表启动成功
 ![202211101711526.png](https://imgs.itchenliang.club/img/202211101711526.png)<br/>
 ![202211101712519.png](https://imgs.itchenliang.club/img/202211101712519.png)
 
-**7. 项目打包部署**<br/>
+**9. 项目打包部署**<br/>
 koa项目可以不用打包部署，直接将`server`目录下的内容所有内容拷贝到服务器上然后执行上述的安装步骤。
 ```shell
 # 前端项目打包部署
