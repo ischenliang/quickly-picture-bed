@@ -1,7 +1,7 @@
 import { Sequelize, Dialect } from 'sequelize'
 
 const conf = {
-  host: '124.222.54.192',
+  host: 'locahost',
   port: 3306, // 默认端口一般是3306
   // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
   dialect: 'mysql' as Dialect,
