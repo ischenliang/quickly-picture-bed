@@ -32,6 +32,14 @@ export  async function useGetClientInfoByIp (ip: string) {
       case 'gaode':
         return useGaodeService(ip, map_key)
     }
+  } else {
+    return Promise.resolve({
+      ip: ip,
+      province: '未知',
+      city: '未知',
+      adcode: '未知',
+      rectangle: '未知'
+    })
   }
 }
 
