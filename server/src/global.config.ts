@@ -41,3 +41,39 @@ export const default_habits: Habits = {
   link_format: '![${filename}](${url})',
   pasteStyle: 'url'
 }
+
+
+export const mimeTypes = {
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  jpg: 'image/jpeg',
+  jp2: 'image/jp2',
+  jpe: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+  ico: 'image/x-icon',
+  tif: 'image/tiff',
+  tiff: 'image/tiff',
+  wbmp: 'image/vnd.wap.wbmp',
+  jng: 'image/x-jng',
+  bmp: 'image/x-ms-bmp',
+  svg: 'image/svg+xml',
+  svgz: 'image/svg+xml',
+  cgm: 'image/cgm',
+  djv: 'image/vnd.djvu',
+  djvu: 'image/vnd.djvu',
+  ief: 'image/ief',
+  mac: 'image/x-macpaint',
+  pct: 'image/pict',
+}
+
+/**
+ * mysql数据库配置
+ */
+export const databaseConfig = {
+  host: 'localhost', // 数据库ip，默认是localhost
+  port: 3306, // 数据库端口，默认3306
+  database: 'picture-bed-backup', // 数据库
+  username: 'root', // mysql用户名，默认是root
+  password: 'xxxx' // mysql密码
+}

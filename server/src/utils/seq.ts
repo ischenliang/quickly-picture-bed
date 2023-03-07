@@ -1,8 +1,9 @@
 import { Sequelize, Dialect } from 'sequelize'
+import { databaseConfig } from '../global.config'
 
 const conf = {
-  host: 'locahost',
-  port: 3306, // 默认端口一般是3306
+  host: databaseConfig.host,
+  port: databaseConfig.port,
   // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
   dialect: 'mysql' as Dialect,
   define: {},
@@ -11,7 +12,7 @@ const conf = {
     // console.log(sql)
   }
 }
-const seq = new Sequelize('picture-bed-backup', 'root', '100259', conf)
+const seq = new Sequelize(databaseConfig.database, databaseConfig.username, databaseConfig.password, conf)
 
 // 测试连接是否成功
 // seq.authenticate().then(() => {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header } from 'koa-ts-controllers'
+import { Controller, Get, Post, Put, Params, Body, Query, CurrentUser, Flow, Delete, State, Header, Ctx } from 'koa-ts-controllers'
 import { QiniuUploadConfig, QiniuFileManager, VerifyCode, AliUploadConfig, TencentUploadConfig, UpyunUploadConfig } from '@/types'
 import { getUploadToken, deleteFile } from '../utils/qiniu'
 import useSendMail, { useGenerateCode } from '../utils/nodemailer'
@@ -9,7 +9,10 @@ import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
-import { useGetClientInfoByIp } from '../utils/global'
+import { Context } from 'koa'
+import path from 'path'
+import fs from 'fs'
+import fse from 'fs-extra'
 
 @Controller('/tool')
 class ToolController {
@@ -237,14 +240,28 @@ class ToolController {
   }
 
   
-  // @Get('/test')
-  // async test(@Query('ip') ip: string) {
-  //   const res = await useGetClientInfoByIp(ip)
-  //   console.log(res)
-  //   return {
-  //     code: 500,
-  //     message: '验证码已过期，请重新生成',
-  //     data: '图形验证码已过期，请重新生成'
-  //   }
-  // }
+  @Post('/upload')
+  async test(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
+    const file: any = ctx.request.files.file
+    if (!file) {
+      return {
+        code: 500,
+        message: '未选择上传图片',
+        data: '未选择上传图片'
+      }
+    }
+    const { name, path: filePath } = file
+    // 目标目录，没有这个文件夹会自动创建
+    const dest = path.join(__dirname, '../public/', params.path)
+    await fse.move(filePath, dest) // 移动文件
+    return {
+      code: 200,
+      message: '成功',
+      data: {
+        name: name,
+        img_url: '/' + params.path.replace(/^\//g, ''),
+        hash: ''
+      }
+    }
+  }
 }
