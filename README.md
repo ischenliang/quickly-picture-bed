@@ -134,20 +134,18 @@ npm install ts-node -g
 ```
 
 **6. 修改数据库连接**<br>
-打开`server/src/utils/seq.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
+打开`server/src/global.config.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
 ```js
-const conf = {
-  host: '你的数据库ip',
-  port: 3306, // 默认端口一般是3306
-  // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
-  dialect: 'mysql' as Dialect,
-  define: {},
-  // 不让sql语句在命令行终端输出
-  logging: (sql: any) => {
-    // console.log(sql)
-  }
+/**
+ * mysql数据库配置
+ */
+export const databaseConfig = {
+  host: 'localhost', // 数据库ip，默认是localhost
+  port: 3306, // 数据库端口，默认3306
+  database: 'picture-bed-backup', // 数据库
+  username: 'root', // mysql用户名，默认是root
+  password: 'xxxx' // mysql密码
 }
-const seq = new Sequelize('你的数据库名称', '数据库用户名', '数据库密码', conf)
 ```
 
 **7. 依赖安装**
