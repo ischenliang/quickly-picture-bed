@@ -79,6 +79,9 @@ export function useBaiduService (ip: string, key: string) {
       url: `https://api.map.baidu.com/location/ip?ak=${key}&ip=${ip}&coor=bd09ll`
     }).then(res => {
       const content = res.data.content
+      if (!content) {
+        throw new Error(`content：${content}`) 
+      }
       const { province, city, adcode } = content && content.address_detail
       resolve({
         ip: ip,
