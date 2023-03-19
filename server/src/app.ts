@@ -1,3 +1,4 @@
+import { mimeTypes } from './global.config';
 import Koa, { Context, Next } from 'koa'
 import KoaRouter from 'koa-router'
 import koaBody from 'koa-body'// 解析请求体
@@ -5,6 +6,9 @@ import { bootstrapControllers as KoaControllers } from 'koa-ts-controllers'
 import * as Colors from 'colors.ts'
 import cors from 'koa2-cors'
 import webtoken from 'jsonwebtoken'
+import koaStatic from 'koa-static'
+import path from 'path'
+import { useGetSuffix } from './utils/global'
 
 
 // 实例化koa
@@ -73,6 +77,15 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
       code: 404,
       message: '404 NotFound'
     }
+  } else {
+    // 处理图片访问乱码问题
+    ctx.status = 200
+    const url = ctx.request.url
+    const suffixs = Object.keys(mimeTypes)
+    const suffix = useGetSuffix(url)
+    if (suffixs.includes(suffix)) {
+      ctx.type = suffix
+    }
   }
 })
 
@@ -103,6 +116,9 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
       maxFileSize: 200 * 1024 * 1024 // 文件最大支持的大小
     }
   }))
+
+  // 处理静态目录，为了能够直接在外部访问
+  app.use(koaStatic(path.join(__dirname, './public/')))
 
   // 注册路由
   app.use(router.routes())

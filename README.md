@@ -134,20 +134,18 @@ npm install ts-node -g
 ```
 
 **6. 修改数据库连接**<br>
-打开`server/src/utils/seq.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
+打开`server/src/global.config.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
 ```js
-const conf = {
-  host: '你的数据库ip',
-  port: 3306, // 默认端口一般是3306
-  // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
-  dialect: 'mysql' as Dialect,
-  define: {},
-  // 不让sql语句在命令行终端输出
-  logging: (sql: any) => {
-    // console.log(sql)
-  }
+/**
+ * mysql数据库配置
+ */
+export const databaseConfig = {
+  host: 'localhost', // 数据库ip，默认是localhost
+  port: 3306, // 数据库端口，默认3306
+  database: 'picture-bed-backup', // 数据库
+  username: 'root', // mysql用户名，默认是root
+  password: 'xxxx' // mysql密码
 }
-const seq = new Sequelize('你的数据库名称', '数据库用户名', '数据库密码', conf)
 ```
 
 **7. 依赖安装**
@@ -168,10 +166,9 @@ npm install
 cd server
 npm run start
 ```
-在运行前端代码前还需要做一步操作，打开`client/src/global.config.ts`文件，修改`baseURL`，将下面的`locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
+在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
 ```ts
-// 124.222.54.192
-export const baseURL = 'http://locahost:3002/api/v1'
+window.uploader_ip = 'localhost:3002'
 ```
 然后执行下面命令运行前端代码
 ```shell
@@ -182,6 +179,22 @@ npm run dev
 控制台出现如下如所示即代表启动成功
 ![202211101711526.png](https://imgs.itchenliang.club/img/202211101711526.png)<br/>
 ![202211101712519.png](https://imgs.itchenliang.club/img/202211101712519.png)
+
+**9. 配置邮箱服务和ip定位服务**
+使用系统提供的默认管理员账号`admin@163.com`登录系统，点击左侧菜单栏上的`系统配置`菜单，进入系统配置页面，然后点击顶部的`系统配置`tab栏，找到`ip定位服务配置`以及`邮件服务配置`填写相关数据即可。
+![202303070911541.png](https://imgs.itchenliang.club/img/202303070911541.png)
+注意：
+  - 本系统预设了两种`ip定位服务`
+    - 百度地图：获取开发者秘钥的前提需要登录[百度地图开放平台](https://lbsyun.baidu.com/)注册账号，并入驻成为开发者，创建`服务端`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
+    ![202303070914444.png](https://imgs.itchenliang.club/img/202303070914444.png)
+    - 高德地图：获取开发者秘钥的前提需要登录[高德地图开放平台](https://lbs.amap.com/)注册账号，并入驻成为开发者，创建`web服务`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
+    ![202303070916513.png](https://imgs.itchenliang.club/img/202303070916513.png)
+  - 本系统为了方便用户使用，提供了使用邮箱注册账号、邮箱找回密码等功能，默认使用的是`qq邮件服务`，故需要配置`qq邮件服务`的相关数据
+    - 首先登录`QQ邮箱`，点击`设置 -> 账号`，找到`POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务`
+      ![202303070920131.png](https://imgs.itchenliang.club/img/202303070920131.png)
+      在`POP3/SMTP服务`一栏，必须是上图所示的，已开启状态，开启后会拿到对应的授权码，将授权码填写到`邮件服务配置`一栏中的`邮件授权码`输入框中，并且填写发件人邮箱地址(即您启用授权码的qq邮箱)
+      ![2023030709221710.png](https://imgs.itchenliang.club/img/2023030709221710.png)
+
 
 **9. 项目打包部署**<br/>
 koa项目可以不用打包部署，直接将`server`目录下的内容所有内容拷贝到服务器上然后执行上述的安装步骤。
@@ -257,6 +270,7 @@ npm run build
 
 ### 更新日志
 ![202211101726356.png](https://imgs.itchenliang.club/img/202211101726356.png)
+
 
 ## 联系我
 Email: <a href="mailto:itchenliang@163.com">itchenliang@163.com</a>
