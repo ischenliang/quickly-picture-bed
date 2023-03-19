@@ -20,6 +20,7 @@
 
 <script lang="ts" setup>
 import { useCtxInstance, useMd5 } from '@/hooks/global';
+import useUserStore from '@/store/user';
 import Users from '@/types/User';
 import { FormInstance } from 'element-plus';
 import { reactive, Ref, ref } from 'vue';
@@ -29,6 +30,7 @@ import { reactive, Ref, ref } from 'vue';
  */
 const user = new Users()
 const ctx = useCtxInstance()
+const userStore = useUserStore()
 
 /**
  * 变量
@@ -48,8 +50,13 @@ const rules = reactive({
     {
       trigger: ['blur', 'change'],
       validator: (rule, value, callback) => {
-        if (!/^(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/.test(value)) {
-          callback(new Error('8~20位字母、数字或字符，至少包含两种'))
+        // if (!/^(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/.test(value)) {
+        //   callback(new Error('8~20位字母、数字或字符，至少包含两种'))
+        // } else {
+        //   callback()
+        // }
+        if (value && value.trim().length < 5) {
+          callback(new Error('密码长度不能少于5位'))
         } else {
           callback()
         }
@@ -79,6 +86,13 @@ const rules = reactive({
 const submit = () => {
   formRef.value.validate(valid => {
     if (valid) {
+      if (userStore.userInfo.email.toLocaleLowerCase() === 'guest@163.com') {
+        return ctx.$message({
+          message: '演示账号，为了确保其他人能正常访问，禁止修改密码',
+          duration: 1000,
+          type: 'warning'
+        })
+      }
       user.changePwd({
         password: useMd5(form.password),
         old_password: useMd5(form.old_password)

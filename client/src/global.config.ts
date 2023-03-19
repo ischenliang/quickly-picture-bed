@@ -63,4 +63,4 @@ export const mimeTypes = {
 
 
 // 124.222.54.192
-export const baseURL = 'http://locahost:3002/api/v1'
+export const baseURL = 'http://124.222.54.192:3002/api/v1'
