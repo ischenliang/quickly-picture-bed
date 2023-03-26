@@ -33,7 +33,8 @@
   <el-dialog
     :title="title"
     :draggable="false"
-    v-model="modelValue"
+    :model-value="modelValue"
+    @update:model-value="$emit('modelValue', false)"
     align-center
     :close-on-click-modal="false"
     :close-on-press-escape="false"

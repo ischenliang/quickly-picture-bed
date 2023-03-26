@@ -15,7 +15,7 @@ router.beforeEach(async (to, from, next) => {
   const userInfo = userStore.userInfo
   if (token) {
     if (userInfo) {
-      next()
+      ['/login', '/register', '/forget'].includes(to.path) ? next('/') : next()
     } else {
       const data: UserInter = await user.current()
       userStore.updateUserInfo(data)
@@ -42,7 +42,7 @@ router.beforeEach(async (to, from, next) => {
       if (!flag || !habit) {
         next({ ...to, replace: true })
       }
-      next()
+      ['/login', '/register', '/forget'].includes(to.path) ? next('/') : next()
     }
   } else {
     if (['/login', '/register', '/forget'].includes(to.path)) {

@@ -10,6 +10,12 @@
       <span class="app-name">{{ website.name || '默认名称' }}</span>
     </div> -->
     <div class="app-rightmenu">
+      <div class="app-features">
+        <div class="feature-item" v-for="(item, index) in features" :key="'feature-item-' + index" @click="handleClick(item)">
+          {{ item.text }}
+          <div class="feature-item-icon" :style="{ backgroundImage: `url('${item.bg}')` }"></div>
+        </div>
+      </div>
       <div class="app-links">
         <!-- <div class="link-item">文档</div>
         <div class="link-item">Github</div> -->
@@ -34,6 +40,7 @@ import UserDropdown from '@/components/web/user/dropdown.vue'
 import useUserStore from '@/store/user';
 import Dict from '@/types/Dict';
 import { DictInter } from '@/typings/interface';
+import { useRouter } from 'vue-router';
 
 /**
  * 实例
@@ -41,6 +48,7 @@ import { DictInter } from '@/typings/interface';
 const configStore = useConfigStore()
 const userStore = useUserStore()
 const dict = new Dict()
+const router = useRouter()
 
 const website = computed(() => {
   return configStore.systemConfig.website
@@ -49,8 +57,15 @@ const userInfo = computed(() => {
   return userStore.userInfo
 })
 const roles = ref({})
+// 功能区
+const features = ref([
+  { text: 'ChatGPT', path: '/chatgpt', bg: new URL('./images/jhot.svg', import.meta.url).href }
+])
 
 
+/**
+ * 逻辑处理
+ */
 const getRoles = () => {
   dict.detailByPro('code', 'user_role').then((res: DictInter) => {
     const tmp: any = {}
@@ -61,6 +76,13 @@ const getRoles = () => {
   })
 }
 getRoles()
+// 功能区跳转
+function handleClick (item) {
+  router.push({
+    path: item.path
+  })
+}
+
 </script>
 
 <style lang="scss">
@@ -114,6 +136,41 @@ getRoles()
         }
       }
     }
+    .app-features {
+      display: flex;
+      align-items: center;
+      .feature-item {
+        position: relative;
+        cursor: pointer;
+        margin-right: 10px;
+        text-decoration: none;
+        font-weight: 550;
+        // color: #606266;
+        // color: #e95d29;
+        color: #ff4d4d;
+        padding: 0 10px;
+        .feature-item-icon {
+          // background-image: url('http://img.itchenliang.club/img/202303261456294.svg');
+          width: 40px;
+          height: 30px;
+          background-size: 100%;
+          position: absolute;
+          top: -26px;
+          animation: updown 1s infinite;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+    }
+  }
+}
+
+@keyframes updown {
+  0% {
+    transform: translate(-50%, -3px);
+  }
+  100% {
+    transform: translateY(-50%, 0px);
   }
 }
 </style>
