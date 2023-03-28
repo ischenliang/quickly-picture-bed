@@ -62,7 +62,7 @@ class ImageController {
   @Post('/create')
   async create (@Body() params: Image, @CurrentUser() user: User, @Ctx() ctx: Context) {
     params.uid = user.id
-    const data = (await ImageModel.create(params) as Image)
+    const data = (await ImageModel.create(params as any) as Image)
     // 记录登录日志
     const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
     await LogModel.create({

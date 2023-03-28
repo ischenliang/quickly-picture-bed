@@ -55,7 +55,7 @@ class DictController {
     return {
       code: 200,
       message: '成功',
-      data: await DictModel.create(params)
+      data: await DictModel.create(params as any)
     }
   }
 
