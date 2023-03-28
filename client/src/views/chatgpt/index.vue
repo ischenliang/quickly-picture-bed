@@ -41,7 +41,7 @@ const message = ref('')
 
 const chatRecords = ref([
   {
-    id: 1679798895614,
+    id: Date.now(),
     title: 'vue3 ref实现原理',
     isEdit: false,
     data: []
@@ -82,52 +82,58 @@ function handleClick () {
     }
   })
   scrollToBottom()
-  // sendMessage()
-  axios({
-    url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
-    method: 'POST',
-    data: {
-      "prompt": message.value,
-      "userId": "#/chat/" + chatRecords.value[0].id,
-      "network": true
-    },
-    onDownloadProgress: ({ event }: any) => {
-      const responseText = event.target.responseText
-      let chunk = responseText
-      chatRecords.value[0].data.forEach(el => {
-        if (el.requestOptions.reqId === chatId.value) {
+
+  const eventSource = new EventSource('http://localhost:3002/')
+  eventSource.onopen = () => {
+    console.log('连接成功')
+  }
+  eventSource.onerror = () => {
+    console.log('报错了')
+  }
+  eventSource.addEventListener('test', (e) => {
+    chatRecords.value[0].data.forEach(el => {
+      if (el.requestOptions.reqId === chatId.value) {
+        const chunk = e.data.replace(/^"/, '').replace(/"$/, '')
+        if (chunk === 'done') {
+          console.log('结束了')
+        } else {
           el.text = chunk
           el.loading = false
         }
-      })
-      scrollToBottom()
-    }
-  }).then(() => {
+      }
+    })
+    scrollToBottom()
+  });
 
-  }).catch(error => {
+  // sendMessage()
+  // axios({
+  //   url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
+  //   method: 'POST',
+  //   data: {
+  //     "prompt": message.value,
+  //     "userId": "#/chat/" + chatRecords.value[0].id,
+  //     "network": true
+  //   },
+  //   onDownloadProgress: ({ event }: any) => {
+  //     const responseText = event.target.responseText
+  //     let chunk = responseText
+  //     chatRecords.value[0].data.forEach(el => {
+  //       if (el.requestOptions.reqId === chatId.value) {
+  //         console.log(chunk)
+  //         el.text = chunk
+  //         el.loading = false
+  //       }
+  //     })
+  //     scrollToBottom()
+  //   }
+  // }).then(() => {
 
-  }).finally(() => {
-    message.value = ''
-    chatId.value++
-  })
-}
-// 发送数据
-function sendMessage () {
-  axios({
-    url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
-    method: 'POST',
-    data: {
-      "prompt": message.value,
-      "userId": "#/chat/" + Date.now(),
-      "network": true
-    },
-    onDownloadProgress: (event) => {
-      console.log(event)
-      // const responseText = event.target.responseText
-      // let chunk = responseText
-      // text.value = chunk
-    }
-  })
+  // }).catch(error => {
+
+  // }).finally(() => {
+  //   message.value = ''
+  //   chatId.value++
+  // })
 }
 
 

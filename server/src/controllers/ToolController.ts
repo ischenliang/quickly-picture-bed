@@ -11,8 +11,19 @@ import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
 import { Context } from 'koa'
 import path from 'path'
-import fs from 'fs'
 import fse from 'fs-extra'
+import { PassThrough, Readable } from 'stream'
+
+function EventStream() { 
+  Readable.call(this,arguments);
+  return ''
+}
+EventStream.prototype = new Readable();
+EventStream.prototype._read = function(data){
+}
+const sse = (stream: any, event : any, data: any) => {
+  return stream.push(`event:${ event }\ndata: ${ JSON.stringify(data) }\n\n`)
+}
 
 @Controller('/tool')
 class ToolController {
@@ -239,9 +250,12 @@ class ToolController {
     }
   }
 
-  
+  /**
+   * 本地存储桶图片上传
+   */
   @Post('/upload')
   async test(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
+    EventStream
     const file: any = ctx.request.files.file
     if (!file) {
       return {
@@ -263,5 +277,26 @@ class ToolController {
         hash: ''
       }
     }
+  }
+
+  /**
+   * 连天测试
+   * @param ctx 
+   * @param params 
+   */
+  @Get('/es')
+  async es(@Ctx() ctx: Context) {
+    // // @ts-ignore
+    // const stream = new EventStream()
+    // sse(stream, 'test', { a: 'yango', b: 'tango' })
+    // ctx.set({
+    //   'Content-Type':'text/event-stream',
+    //   'Cache-Control':'no-cache',
+    //   Connection: 'keep-alive'
+    // });
+    // ctx.body = stream;
+    // setInterval(()=>{
+    //   sse(stream,'test',{a: "yango",b: Date.now()});
+    // },3000); 
   }
 }

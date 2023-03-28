@@ -21,6 +21,7 @@ import MarkdownIt from 'markdown-it'
 import mdKatex from '@traptitech/markdown-it-katex'
 import hljs from 'highlight.js'
 import { computed } from '@vue/reactivity';
+import { watch } from 'vue';
 interface Props {
   reverse?: boolean
   text: string
@@ -52,7 +53,11 @@ const mdi = new MarkdownIt({
 mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
 // 生成后的内容
 const renderText = computed(() => {
-  return mdi.render(props.text ?? '')
+  return mdi.render(props.text)
+})
+
+watch(() => props.text, (val) => {
+  console.log(val)
 })
 
 
