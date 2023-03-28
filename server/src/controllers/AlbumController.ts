@@ -74,7 +74,7 @@ class AlbumController {
     return {
       code: 200,
       message: '成功',
-      data: await AlbumModel.create(params)
+      data: await AlbumModel.create(params as any)
     }
   }
 

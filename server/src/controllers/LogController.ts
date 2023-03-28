@@ -153,7 +153,7 @@ class LogController {
     return {
       code: 200,
       message: '成功',
-      data: await LogModel.create(params)
+      data: await LogModel.create(params as any)
     }
   }
 

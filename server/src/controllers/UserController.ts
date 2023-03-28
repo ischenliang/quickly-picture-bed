@@ -9,6 +9,7 @@ import HabitsModel from '../models/Habits'
 import { useRoleAuthorization } from '../middlewares/authorization'
 import { default_habits } from '../global.config'
 import { useMd5 } from '../utils/global'
+import axios from 'axios'
 
 interface Filter extends Page {
   username?: string
@@ -79,7 +80,7 @@ class UserController {
         data: '账号已存在'
       }
     }
-    const data = await UserModel.create(params) as User
+    const data = await UserModel.create(params as any) as User
     await HabitsModel.create({
       ...default_habits,
       uid: data.id
@@ -263,6 +264,29 @@ class UserController {
         },
         silent: true
       })
+    }
+  }
+
+
+  @Post('/chatgpt')
+  async chatgpt (@Body({ required: true }) params: { prompt: string, userId: string, network: boolean }) {
+    try {
+      return {
+        code: 200,
+        msg: '成功',
+        data: await axios({
+          url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
+          method: 'POST',
+          data: {
+            "prompt": params.prompt,
+            "userId": "#/chat/" + params.userId,
+            "network": params.network
+          },
+          onDownloadProgress: ({ event }: any) => {}
+        })
+      }
+    } catch (error) {
+      
     }
   }
 }

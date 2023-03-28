@@ -61,7 +61,7 @@ class BucketsourceController {
     return {
       code: 200,
       message: '成功',
-      data: await BucketSourceModel.create(params)
+      data: await BucketSourceModel.create(params as any)
     }
   }
 

@@ -51,7 +51,7 @@ class SettingController {
     return {
       code: 200,
       message: '成功',
-      data: await SettingModel.create(params)
+      data: await SettingModel.create(params as any)
     }
   }
 

@@ -92,7 +92,7 @@ class BucketController {
     return {
       code: 200,
       message: '成功',
-      data: await BucketModel.create(params)
+      data: await BucketModel.create(params as any)
     }
   }
 

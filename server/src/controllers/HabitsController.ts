@@ -22,7 +22,7 @@ class HabitsController {
     return {
       code: 200,
       message: '成功',
-      data: await HabitsModel.create(params)
+      data: await HabitsModel.create(params as any)
     }
   }
 
