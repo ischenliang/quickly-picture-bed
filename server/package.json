@@ -46,5 +46,9 @@
     "@types/node": "^16.18.3",
     "@types/nodemailer": "^6.4.6",
     "@types/sequelize": "^4.28.10"
+  },
+  "engines": {
+    "node": ">=14.18.2",
+    "npm": ">=6.14.15"
   }
 }
