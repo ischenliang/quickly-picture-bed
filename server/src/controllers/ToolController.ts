@@ -9,10 +9,12 @@ import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
+// @ts-ignore
 import { Context } from 'koa'
 import path from 'path'
 import fse from 'fs-extra'
 import { PassThrough, Readable } from 'stream'
+import proxy from "https-proxy-agent";
 
 function EventStream() { 
   Readable.call(this,arguments);
@@ -298,5 +300,36 @@ class ToolController {
     // setInterval(()=>{
     //   sse(stream,'test',{a: "yango",b: Date.now()});
     // },3000); 
+  }
+
+
+  
+
+  // 1.1版本
+  @Post('/chatgpt')
+  async chatgpt (@Body({ required: true }) params: { prompt: string, userId: string, network: boolean }) {
+    const importDynamic = new Function('modulePath', 'return import(modulePath)');
+    const { ChatGPTUnofficialProxyAPI, ChatGPTAPI } = await importDynamic("chatgpt");
+    const nodeFetch = await importDynamic('node-fetch')
+    const api = new ChatGPTAPI({
+      apiKey: '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',
+      // apiBaseUrl: 'https://service-isex76rq-1257144987.jp.apigw.tencentcs.com/'
+      fetch: (url: string, options = {}) => {
+        const defaultOptions = {
+          agent: proxy("http://127.0.0.1:3002"),
+        };
+        const mergedOptions = {
+          ...defaultOptions,
+          ...options,
+        };
+        return nodeFetch.default(url, mergedOptions);
+      },
+    })
+    let res = await api.sendMessage('东北锅包肉的家常做法')
+    return {
+      code: 200,
+      msg: '',
+      data: res
+    }
   }
 }

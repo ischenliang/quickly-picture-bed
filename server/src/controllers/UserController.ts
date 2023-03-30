@@ -267,26 +267,41 @@ class UserController {
     }
   }
 
+  // 1.0版本
+  // @Post('/chatgpt')
+  // async chatgpt (@Body({ required: true }) params: { prompt: string, userId: string, network: boolean }) {
+  //   try {
+  //     return {
+  //       code: 200,
+  //       msg: '成功',
+  //       data: await axios({
+  //         url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
+  //         method: 'POST',
+  //         data: {
+  //           "prompt": params.prompt,
+  //           "userId": "#/chat/" + params.userId,
+  //           "network": params.network
+  //         },
+  //         onDownloadProgress: ({ event }: any) => {}
+  //       })
+  //     }
+  //   } catch (error) {
+      
+  //   }
+  // }
 
+  // 1.1版本
   @Post('/chatgpt')
   async chatgpt (@Body({ required: true }) params: { prompt: string, userId: string, network: boolean }) {
-    try {
-      return {
-        code: 200,
-        msg: '成功',
-        data: await axios({
-          url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
-          method: 'POST',
-          data: {
-            "prompt": params.prompt,
-            "userId": "#/chat/" + params.userId,
-            "network": params.network
-          },
-          onDownloadProgress: ({ event }: any) => {}
-        })
-      }
-    } catch (error) {
-      
+    // const api = new ChatGPTAPI({
+    //   apiKey: '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',
+    //   apiBaseUrl: 'https://service-isex76rq-1257144987.jp.apigw.tencentcs.com/'
+    // })
+    // const res = await api.sendMessage('东北锅包肉的家常做法')
+    return {
+      code: 200,
+      msg: '',
+      data: 'res'
     }
   }
 }
