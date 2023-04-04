@@ -22,11 +22,18 @@
             :key="item.id"
             :reverse="item.reverse"
             :loading="item.loading"
+            :time="item.time"
             :text="item.text"></message-item>
         </div>
         <div class="chatgpt-message-operate">
-          <el-input v-model="message" placeholder="请输入内容"></el-input>
-          <el-button @click="handleClick">发送</el-button>
+          <div class="chatgpt-input">
+            <div class="msg-input">
+              <el-input type="textarea" resize="none" placeholder="说点什么吧..." v-model="message"></el-input>
+            </div>
+            <div class="msg-toolbar">
+              <el-button size="mini" type="primary" @click="sendData" :disabled="loading">发送</el-button>
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -37,53 +44,63 @@
 import { ref, nextTick } from 'vue';
 import messageItem from './message-item.vue';
 import axios from 'axios';
-const message = ref('')
+import moment from 'moment';
 
+// 发送数据
+const message = ref('')
+// 状态列表
 const chatRecords = ref([
   {
     id: Date.now(),
     title: 'vue3 ref实现原理',
     isEdit: false,
     data: []
+  },
+  {
+    id: Date.now() + 1,
+    title: 'vue3 ref实现原理',
+    isEdit: false,
+    data: []
   }
 ])
-
-const text = ref('')
+// 消息id
+const id = ref(1)
+// 全局loading状态
+const loading = ref(false)
 
 
 /**
  * 逻辑处理
  */
 // 点击发送
-let chatId = ref(1)
-function handleClick () {
-  chatRecords.value[0].data.push({
-    id: chatId.value,
-    time: '2023/3/26 17:43:24',
+function sendData () {
+  const chatData = chatRecords.value[0]
+  chatData.data.push({
+    id: id.value++,
+    time: getDateTime(),
     text: message.value,
     reverse: true, // 询问时为true，回答时为false
     error: false, // 是否报错
     loading: false, // 请求中
-    requestOptions: {
-      prompt: '', // 咨询的问题
-      reqId: 0
-    }
   })
-  chatRecords.value[0].data.push({
-    id: chatId.value + 1,
-    time: '2023/3/26 17:43:24',
+  const key = id.value++
+  chatData.data.push({
+    id: key,
+    time: getDateTime(),
     text: '',
     reverse: false, // 询问时为true，回答时为false
     error: false, // 是否报错
     loading: true, // 请求中
-    requestOptions: {
-      prompt: message.value, // 咨询的问题
-      reqId: chatId.value
-    }
   })
   scrollToBottom()
+  useEventSource(key, message.value)
+  message.value = ''
+}
 
-  const eventSource = new EventSource('http://localhost:3002/')
+// 获取数据
+function useEventSource (key, message) {
+  const chatData = chatRecords.value[0]
+  const eventSource = new EventSource('http://localhost:3002/?msg=' + message)
   eventSource.onopen = () => {
     console.log('连接成功')
   }
@@ -91,58 +108,35 @@ function handleClick () {
     console.log('报错了')
   }
   eventSource.addEventListener('test', (e) => {
-    chatRecords.value[0].data.forEach(el => {
-      if (el.requestOptions.reqId === chatId.value) {
-        const chunk = e.data.replace(/^"/, '').replace(/"$/, '')
-        if (chunk === 'done') {
-          console.log('结束了')
-        } else {
-          el.text = chunk
+    chatData.data.forEach(el => {
+      if (el.id === key) {
+        const data = JSON.parse(e.data)
+        if (data.done) {
+          loading.value = false
           el.loading = false
+          el.time = getDateTime()
+          eventSource.close()
+        } else {
+          if (data.data.choices[0].delta.content) {
+            el.text += data.data.choices[0].delta.content
+          }
         }
       }
+      scrollToBottom()
     })
-    scrollToBottom()
   });
-
-  // sendMessage()
-  // axios({
-  //   url: 'https://cbjtestapi.binjie.site:7777/api/generateStream',
-  //   method: 'POST',
-  //   data: {
-  //     "prompt": message.value,
-  //     "userId": "#/chat/" + chatRecords.value[0].id,
-  //     "network": true
-  //   },
-  //   onDownloadProgress: ({ event }: any) => {
-  //     const responseText = event.target.responseText
-  //     let chunk = responseText
-  //     chatRecords.value[0].data.forEach(el => {
-  //       if (el.requestOptions.reqId === chatId.value) {
-  //         console.log(chunk)
-  //         el.text = chunk
-  //         el.loading = false
-  //       }
-  //     })
-  //     scrollToBottom()
-  //   }
-  // }).then(() => {
-
-  // }).catch(error => {
-
-  // }).finally(() => {
-  //   message.value = ''
-  //   chatId.value++
-  // })
 }
-
 
 const scrollRef = ref(null)
 const scrollToBottom = async () => {
   nextTick(() => {
     scrollRef.value.scrollTop = scrollRef.value.scrollHeight
   })
-  
+}
+
+// 获取当前日期时间
+function getDateTime () {
+  return moment().format('YYYY/MM/DD HH:mm:ss')
 }
 </script>
 
@@ -222,12 +216,45 @@ $border: 1px solid $border-color;
         overflow: auto;
       }
       &-operate {
-        height: 73px;
+        // height: 73px;
         flex-shrink: 0;
         border-top: $border;
-        box-shadow: 0px -2px 12px 0 rgba(0, 0, 0, 0.1);
-        padding: 15px;
+        // box-shadow: 0px -2px 12px 0 rgba(0, 0, 0, 0.1);
+        // padding: 15px;
       }
+    }
+  }
+}
+
+.chatgpt-input {
+  height: 100px;
+  // border-top: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding-bottom: 10px;
+  .msg-input {
+    flex: 1;
+    .el-textarea {
+      height: 100%;
+      .el-textarea__inner {
+        height: 100%;
+        border: none !important;
+        padding: 5px 8px !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+  .msg-toolbar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    .el-button {
+      // padding: 5px 10px !important;
+      // font-size: 12px !important;
+      // height: auto !important;
     }
   }
 }

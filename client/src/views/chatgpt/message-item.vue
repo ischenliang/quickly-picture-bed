@@ -1,13 +1,14 @@
 <template>
   <div :class="['message-item', { reverse: reverse }]">
     <div class="message-item-avatar">
-      <el-image src="https://chatgpt.quxuetrip.com/slices/chatgpt/ai_dark.webp"></el-image>
+      <el-image src="https://www.quxuetrip.com/slices/chatgpt/ai_dark.webp"></el-image>
     </div>
     <div class="message-item-info">
       <div class="info-main">
-        <div class="info-time">2023/3/26 15:26:05</div>
+        <div class="info-time">{{ time }}</div>
         <div class="info-text">
-          <div class="markdown-body" v-html="renderText"></div>
+          <div class="progress-4" v-if="loading"></div>
+          <div v-else class="markdown-body" v-html="renderText"></div>
           <div class="info-actions"></div>
         </div>
       </div>
@@ -18,20 +19,24 @@
 <script lang="ts" setup>
 import 'juejin-markdown-themes/dist/devui-blue.css'
 import MarkdownIt from 'markdown-it'
-import mdKatex from '@traptitech/markdown-it-katex'
+// import mdKatex from '@traptitech/markdown-it-katex'
 import hljs from 'highlight.js'
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import { watch } from 'vue';
 interface Props {
   reverse?: boolean
   text: string
+  time?: string
+  loading?: boolean
 }
 /**
  * 实例
  */
 const props = withDefaults(defineProps<Props>(), {
   reverse: false,
-  text: ''
+  text: '',
+  time: '',
+  loading: true
 })
 
 /**
@@ -50,14 +55,18 @@ const mdi = new MarkdownIt({
   },
 })
 // 使用插件
-mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
+// mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
 // 生成后的内容
 const renderText = computed(() => {
-  return mdi.render(props.text)
+  if (props.reverse) {
+    return props.text
+  } else {
+    return mdi.render(props.text)
+  }
 })
 
 watch(() => props.text, (val) => {
-  console.log(val)
+  // console.log(val)
 })
 
 
@@ -66,7 +75,8 @@ watch(() => props.text, (val) => {
  */
 // 高亮代码
 function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+  // return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+  return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
 }
 </script>
 
@@ -78,25 +88,30 @@ function highlightBlock(str: string, lang?: string) {
   &-avatar {
     width: 50px;
     margin-right: 10px;
+    flex-shrink: 0;
   }
   &-info {
     flex: 1;
     display: flex;
+    overflow: hidden;
     .info-main {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      overflow: hidden;
       .info-time {
         color: rgb(180 187 196);
       }
       .info-text {
         max-width: 90%;
-        margin-top: 10px;
-        background: rgb(244 246 248);
-        padding: 10px 15px;
-        border-radius: 8px;
+        margin-top: 5px;
+        background: #feffff;
+        border: 1px solid #e5e6e7;
+        padding: 10px 10px;
+        border-radius: 3px;
         position: relative;
+        overflow: hidden;
         .info-actions {
           position: absolute;
           bottom: 0;
@@ -128,7 +143,8 @@ function highlightBlock(str: string, lang?: string) {
           left: -25px;
         }
         .info-text {
-          background-color: rgb(75 158 95);
+          // background-color: rgb(75 158 95);
+          background-color:#fff;
         }
       }
     }
@@ -154,5 +170,15 @@ function highlightBlock(str: string, lang?: string) {
     list-style-type: decimal;
     padding-left: 2em;
   }
+}
+.progress-4 {
+  width:120px;
+  height:20px;
+  -webkit-mask:linear-gradient(90deg,#000 70%,#0000 0) 0/20%;
+  background: linear-gradient(#000 0 0) 0/0% no-repeat #ddd;
+  animation:p4 2s infinite steps(6);
+}
+@keyframes p4 {
+  100% {background-size:120%}
 }
 </style>
