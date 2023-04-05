@@ -1,7 +1,7 @@
 <template>
   <div :class="['message-item', { reverse: reverse }]">
     <div class="message-item-avatar">
-      <el-image src="https://www.quxuetrip.com/slices/chatgpt/ai_dark.webp"></el-image>
+      <el-image :src="userAvatar"></el-image>
     </div>
     <div class="message-item-info">
       <div class="info-main">
@@ -28,6 +28,7 @@ interface Props {
   text: string
   time?: string
   loading?: boolean
+  avatar?: string
 }
 /**
  * 实例
@@ -36,12 +37,17 @@ const props = withDefaults(defineProps<Props>(), {
   reverse: false,
   text: '',
   time: '',
-  loading: true
+  loading: true,
+  avatar: ''
 })
 
 /**
  * 变量
  */
+// 头像
+const userAvatar = computed(() => {
+  return props.reverse ? props.avatar : new URL(`./ai_dark.webp`, import.meta.url).href
+})
 // 初始化markdown-it
 const mdi = new MarkdownIt({
   linkify: true,
@@ -89,6 +95,9 @@ function highlightBlock(str: string, lang?: string) {
     width: 50px;
     margin-right: 10px;
     flex-shrink: 0;
+    .el-image {
+      border-radius: 50% !important;
+    }
   }
   &-info {
     flex: 1;

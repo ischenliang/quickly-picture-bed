@@ -2,7 +2,7 @@
   <div class="chatgpt-page">
     <div class="chatgpt-container">
       <!-- 左侧聊天列表区域 -->
-      <aside class="chatgpt-store">
+      <!-- <aside class="chatgpt-store">
         <div class="chatgpt-store-list">
           <div class="store-add">New Chat</div>
           <div class="store-list">
@@ -13,25 +13,40 @@
           </div>
         </div>
         <div class="chatgpt-store-user"></div>
-      </aside>
+      </aside> -->
       <!-- 右侧消息区域 -->
       <main class="chatgpt-message">
-        <div class="chatgpt-message-list" ref="scrollRef">
+        <div class="chatgpt-message-list" ref="scrollRef" v-if="chatRecords[0].data.length">
           <message-item
             v-for="(item, index) in chatRecords[0].data"
             :key="item.id"
             :reverse="item.reverse"
             :loading="item.loading"
             :time="item.time"
-            :text="item.text"></message-item>
+            :text="item.text"
+            :avatar="avatar"></message-item>
+        </div>
+        <div class="chatgpt-message-empty" v-else>
+          <p>永久免费用于学习和测试，支持上下文。</p>
+          <p>服务器昂贵，接口昂贵,但网站免费！！</p>
+          <p>如果你觉得做的好，可以给我买一瓶冰阔落</p>
+          <el-image :src="alipay"></el-image>
         </div>
         <div class="chatgpt-message-operate">
           <div class="chatgpt-input">
             <div class="msg-input">
-              <el-input type="textarea" resize="none" placeholder="说点什么吧..." v-model="message"></el-input>
+              <el-input type="textarea" resize="none" placeholder="说点什么吧..." v-model="message" @keydown.enter.prevent="sendData"></el-input>
             </div>
             <div class="msg-toolbar">
-              <el-button size="mini" type="primary" @click="sendData" :disabled="loading">发送</el-button>
+              <div class="msg-toolbar-left">
+                <div class="msg-toolbar-item" title="清空历史记录" @click="toolbarOperate('delete')">
+                  <el-icon :size="18"><Delete /></el-icon>
+                </div>
+                <div class="msg-toolbar-item" title="下载历史记录" @click="toolbarOperate('download')">
+                  <el-icon :size="18"><Download /></el-icon>
+                </div>
+              </div>
+              <el-button type="primary" @click="sendData" :disabled="loading">发送</el-button>
             </div>
           </div>
         </div>
@@ -41,81 +56,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted, computed, Ref } from 'vue';
 import messageItem from './message-item.vue';
-import axios from 'axios';
 import moment from 'moment';
-
-// 发送数据
-const message = ref('')
-// 状态列表
-const chatRecords = ref([
-  {
-    id: Date.now(),
-    title: 'vue3 ref实现原理',
-    isEdit: false,
-    data: []
-  },
-  {
-    id: Date.now() + 1,
-    title: 'vue3 ref实现原理',
-    isEdit: false,
-    data: []
-  }
-])
-// 消息id
-const id = ref(1)
-// 全局loading状态
-const loading = ref(false)
-
+import useWebSocket from '@/hooks/useWebscoket';
+import { useDeleteConfirm } from '@/hooks/global';
+import useUserStore from '@/store/user';
 
 /**
- * 逻辑处理
+ * 实例
  */
-// 点击发送
-function sendData () {
-  const chatData = chatRecords.value[0]
-  chatData.data.push({
-    id: id.value++,
-    time: getDateTime(),
-    text: message.value,
-    reverse: true, // 询问时为true，回答时为false
-    error: false, // 是否报错
-    loading: false, // 请求中
-  })
-  const key = id.value++
-  chatData.data.push({
-    id: key,
-    time: getDateTime(),
-    text: '',
-    reverse: false, // 询问时为true，回答时为false
-    error: false, // 是否报错
-    loading: true, // 请求中
-  })
-  scrollToBottom()
-  useEventSource(key, message.value)
-  message.value = ''
-}
-
-// 获取数据
-function useEventSource (key, message) {
-  const chatData = chatRecords.value[0]
-  const eventSource = new EventSource('http://localhost:3002/?msg=' + message)
-  eventSource.onopen = () => {
-    console.log('连接成功')
-  }
-  eventSource.onerror = () => {
-    console.log('报错了')
-  }
-  eventSource.addEventListener('test', (e) => {
+const webscoket = useWebSocket('ws://localhost:3003', {
+  onMessage: (event) => {
+    const chatData = chatRecords.value[0]
     chatData.data.forEach(el => {
-      if (el.id === key) {
-        const data = JSON.parse(e.data)
+      if (el.id === activeMessageId.value) {
+        if (el.loading) {
+          el.time = getDateTime()
+        }
+        el.loading = false
+        const data = JSON.parse(event.data)
         if (data.done) {
           loading.value = false
-          el.loading = false
-          el.time = getDateTime()
-          eventSource.close()
+          saveData()
         } else {
           if (data.data.choices[0].delta.content) {
             el.text += data.data.choices[0].delta.content
@@ -124,9 +87,115 @@ function useEventSource (key, message) {
       }
       scrollToBottom()
     })
-  });
+  }
+})
+const userStore = useUserStore()
+
+
+const avatar = computed(() => {
+  const tmp = userStore.userInfo.avatar
+  return new URL(`../userinfo/images/${tmp}.png`, import.meta.url).href
+})
+
+/**
+ * 变量
+ */
+const activeChatId = ref(0)
+const activeMessageId = ref(0)
+// 发送数据
+const message = ref('')
+// 消息id
+const id = ref(1)
+// 状态列表
+const chatRecords = ref([
+  {
+    id: Date.now(),
+    title: 'vue3 ref实现原理',
+    isEdit: false,
+    data: [
+      ...getData()
+    ]
+  }
+])
+// 全局loading状态
+const loading = ref(false)
+// alipay_url
+const alipay = new URL('./alipay.jpg', import.meta.url).href
+
+
+/**
+ * 逻辑处理
+ */
+// 点击发送
+function sendData () {
+  if (message.value.trim() === '' || loading.value) {
+    return
+  }
+  const chatData = chatRecords.value[0]
+  chatData.data.push({
+    id: id.value++,
+    time: getDateTime(),
+    text: message.value,
+    reverse: true, // 询问时为true，回答时为false
+    error: false, // 是否报错
+    loading: false, // 请求中
+    role: 'user'
+  })
+  activeMessageId.value = id.value++
+  chatData.data.push({
+    id: activeMessageId.value,
+    time: getDateTime(),
+    text: '',
+    reverse: false, // 询问时为true，回答时为false
+    error: false, // 是否报错
+    loading: true, // 请求中
+    role: 'assistant'
+  })
+  loading.value = true
+  scrollToBottom()
+  saveData()
+  useEventSource()
+  message.value = ''
+}
+// 获取数据
+function useEventSource () {
+  const { data } = chatRecords.value[0]
+  const sendData = data.slice(0, data.length - 1).map(el => {
+    return {
+      role: el.role,
+      content: el.text
+    }
+  })
+  webscoket.send(JSON.stringify(sendData))
+}
+// 工具栏操作
+function toolbarOperate (type) {
+  switch (type) {
+    case 'delete':
+      const data = chatRecords.value[0].data
+      data.length && useDeleteConfirm('确定要删除数据吗?').then(() => {
+        chatRecords.value[0].data.splice(0, data.length)
+        localStorage.removeItem('chatData')
+      })
+      break
+    case 'download':
+      const json = chatRecords.value[0].data;
+      const blob = new Blob([JSON.stringify(json)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'chat-records.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      break
+  }
 }
 
+/**
+ * 页面始终滚动到最底部
+ */
 const scrollRef = ref(null)
 const scrollToBottom = async () => {
   nextTick(() => {
@@ -138,6 +207,28 @@ const scrollToBottom = async () => {
 function getDateTime () {
   return moment().format('YYYY/MM/DD HH:mm:ss')
 }
+// 存储数据
+function saveData () {
+  localStorage.setItem('chatData', JSON.stringify(chatRecords.value[0].data))
+}
+// 获取数据
+function getData () {
+  const data = localStorage.getItem('chatData')
+  const res = data ? JSON.parse(data) : []
+  if (res.length) {
+    id.value = res.length
+  }
+  console.log(res.length)
+  return res
+}
+
+
+/**
+ * 生命周期监听
+ */
+onMounted(() => {
+  scrollToBottom()
+})
 </script>
 
 <style lang="scss">
@@ -158,7 +249,7 @@ $border: 1px solid $border-color;
     height: 100%;
     border: $border;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    // border-radius: 4px;
     display: flex;
     overflow: hidden;
     .chatgpt-store {
@@ -215,6 +306,21 @@ $border: 1px solid $border-color;
         padding: 20px;
         overflow: auto;
       }
+      &-empty {
+        flex: 1;
+        padding: 20px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        p {
+          line-height: 24px;
+          color: rgb(51, 54, 57);
+        }
+        .el-image {
+          width: 200px !important;
+        }
+      }
       &-operate {
         // height: 73px;
         flex-shrink: 0;
@@ -227,7 +333,7 @@ $border: 1px solid $border-color;
 }
 
 .chatgpt-input {
-  height: 100px;
+  height: 110px;
   // border-top: 1px solid #ddd;
   display: flex;
   flex-direction: column;
@@ -240,17 +346,35 @@ $border: 1px solid $border-color;
       .el-textarea__inner {
         height: 100%;
         border: none !important;
-        padding: 5px 8px !important;
+        padding: 5px 15px !important;
         box-shadow: none !important;
       }
     }
   }
   .msg-toolbar {
-    height: 30px;
+    height: 40px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
+    justify-content: space-between;
+    padding: 0 10px;
+    .msg-toolbar-left {
+      display: flex;
+      .msg-toolbar-item {
+        width: 36px;
+        height: 36px;
+        margin-left: 5px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: rgb(75 158 95);
+        font-weight: bold;
+        &:hover {
+          background: rgb(245 245 245);
+        }
+      }
+    }
     .el-button {
       // padding: 5px 10px !important;
       // font-size: 12px !important;
