@@ -9,7 +9,32 @@
         <div class="info-text">
           <div class="progress-4" v-if="loading"></div>
           <div v-else class="markdown-body" v-html="renderText"></div>
-          <div class="info-actions"></div>
+          <div class="info-actions">
+            <!-- <span class="info-action-item" title="重新回答">
+              <i class="iconfont icon-refresh"></i>
+            </span> -->
+            <el-popover
+              :placement="reverse ? 'left' : 'right'"
+              :width="100"
+              :popper-class="{ 'chatgpt-popover': true, reverse: reverse }"
+              trigger="hover">
+              <template #reference>
+                <span class="info-action-item">
+                  <i class="iconfont icon-More"></i>
+                </span>
+              </template>
+              <div class="chatgpt-dropdown">
+                <div class="chatgpt-dropdown-option" @click="handleCommand('copy')">
+                  <i class="iconfont icon-copy"></i>
+                  <span>复制</span>
+                </div>
+                <div class="chatgpt-dropdown-option" @click="handleCommand('delete')">
+                  <i class="iconfont icon-delete"></i>
+                  <span>删除</span>
+                </div>
+              </div>
+            </el-popover>
+          </div>
         </div>
       </div>
     </div>
@@ -40,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: true,
   avatar: ''
 })
+const emits = defineEmits(['command'])
 
 /**
  * 变量
@@ -81,8 +107,12 @@ watch(() => props.text, (val) => {
  */
 // 高亮代码
 function highlightBlock(str: string, lang?: string) {
-  // return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-  return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+  // return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+}
+// 命令回调
+function handleCommand (type) {
+  emits('command', type)
 }
 </script>
 
@@ -120,15 +150,27 @@ function highlightBlock(str: string, lang?: string) {
         padding: 10px 10px;
         border-radius: 3px;
         position: relative;
-        overflow: hidden;
+        // overflow: hidden;
         .info-actions {
           position: absolute;
           bottom: 0;
           right: -25px;
           width: 20px;
-          height: 50px;
-          background: #ccc;
-          display: none;
+          // height: 50px;
+          // background: #ccc;
+          // display: none;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: center;
+          .info-action-item {
+            font-size: 12px;
+            cursor: pointer;
+            color: rgb(212 212 212);
+            + .info-action-item {
+              margin-top: 5px;
+            }
+          }
         }
       }
     }
@@ -179,6 +221,22 @@ function highlightBlock(str: string, lang?: string) {
     list-style-type: decimal;
     padding-left: 2em;
   }
+  .code-block-wrapper {
+    position: relative;
+    .code-block-header {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      color: #b3b3b3;
+      span {
+        margin-right: 10px;
+        cursor: pointer;
+        &.code-block-header__copy:hover {
+          color: #18a058;
+        }
+      }
+    }
+  }
 }
 .progress-4 {
   width:120px;
@@ -189,5 +247,32 @@ function highlightBlock(str: string, lang?: string) {
 }
 @keyframes p4 {
   100% {background-size:120%}
+}
+
+.el-popper.chatgpt-popover {
+  padding: 0px !important;
+  min-width: 0px !important;
+  margin: 0 0 0 -8px;
+  &.reverse {
+    margin: 0 -8px 0 0;
+  }
+  .chatgpt-dropdown {
+    padding: 5px;
+    .chatgpt-dropdown-option {
+      height: 35px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #000;
+      cursor: pointer;
+      span {
+        margin-left: 10px;
+      }
+      &:hover {
+        background-color: rgb(244 246 248);
+        border-radius: 4px;
+      }
+    }
+  }
 }
 </style>

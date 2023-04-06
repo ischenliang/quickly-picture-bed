@@ -24,12 +24,15 @@
             :loading="item.loading"
             :time="item.time"
             :text="item.text"
-            :avatar="avatar"></message-item>
+            :avatar="avatar"
+            @command="handleCommand($event, index)"></message-item>
         </div>
         <div class="chatgpt-message-empty" v-else>
           <p>永久免费用于学习和测试，支持上下文。</p>
-          <p>服务器昂贵，接口昂贵,但网站免费！！</p>
-          <p>如果你觉得做的好，可以给我买一瓶冰阔落</p>
+          <p>由于chatgpt限制，故本系统最大支持6条上下文记录。</p>
+          <p>赶快在下面输入框中输入你的内容测试测试吧！！</p>
+          <p>服务器昂贵，接口昂贵，但网站免费！！</p>
+          <p style="font-weight: bold;">如果你觉得做的好，可以给我买一瓶冰阔落</p>
           <el-image :src="alipay"></el-image>
         </div>
         <div class="chatgpt-message-operate">
@@ -60,8 +63,9 @@ import { ref, nextTick, onMounted, computed, Ref } from 'vue';
 import messageItem from './message-item.vue';
 import moment from 'moment';
 import useWebSocket from '@/hooks/useWebscoket';
-import { useDeleteConfirm } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import useUserStore from '@/store/user';
+import { useCopyCode } from './useCopyCode'
 
 /**
  * 实例
@@ -90,6 +94,7 @@ const webscoket = useWebSocket('ws://localhost:3003', {
   }
 })
 const userStore = useUserStore()
+const ctx = useCtxInstance()
 
 
 const avatar = computed(() => {
@@ -154,11 +159,11 @@ function sendData () {
   loading.value = true
   scrollToBottom()
   saveData()
-  useEventSource()
+  useSendData()
   message.value = ''
 }
 // 获取数据
-function useEventSource () {
+function useSendData () {
   const { data } = chatRecords.value[0]
   const sendData = data.slice(0, data.length - 1).map(el => {
     return {
@@ -166,7 +171,7 @@ function useEventSource () {
       content: el.text
     }
   })
-  webscoket.send(JSON.stringify(sendData))
+  webscoket.send(JSON.stringify(sendData.slice(-6)))
 }
 // 工具栏操作
 function toolbarOperate (type) {
@@ -192,6 +197,20 @@ function toolbarOperate (type) {
       break
   }
 }
+// 处理命令
+function handleCommand (type, index) {
+  const chatData = chatRecords.value[0].data
+  switch (type) {
+    case 'copy':
+      useCopyText(ctx, chatData[index].text)
+      break
+    case 'delete':
+      chatData.splice(index, 1)
+      break
+  }
+  saveData()
+}
+useCopyCode(ctx)
 
 /**
  * 页面始终滚动到最底部
@@ -214,11 +233,16 @@ function saveData () {
 // 获取数据
 function getData () {
   const data = localStorage.getItem('chatData')
-  const res = data ? JSON.parse(data) : []
+  const res = data ? JSON.parse(data).map(el => {
+    return {
+      ...el,
+      loading: false,
+      text: el.text ? el.text : '发生错误了...'
+    }
+  }) : []
   if (res.length) {
     id.value = res.length
   }
-  console.log(res.length)
   return res
 }
 
@@ -314,11 +338,13 @@ $border: 1px solid $border-color;
         flex-direction: column;
         align-items: center;
         p {
-          line-height: 24px;
+          line-height: 25px;
           color: rgb(51, 54, 57);
+          flex-shrink: 0;
         }
         .el-image {
           width: 200px !important;
+          flex-shrink: 0;
         }
       }
       &-operate {
