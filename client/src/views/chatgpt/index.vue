@@ -70,7 +70,7 @@ import { useCopyCode } from './useCopyCode'
 /**
  * 实例
  */
-const webscoket = useWebSocket('ws://localhost:3003', {
+const webscoket = useWebSocket('ws://124.222.54.192:3003', {
   onMessage: (event) => {
     const chatData = chatRecords.value[0]
     chatData.data.forEach(el => {
@@ -241,7 +241,7 @@ function getData () {
     }
   }) : []
   if (res.length) {
-    id.value = res.length
+    id.value = res[res.length - 1].id
   }
   return res
 }

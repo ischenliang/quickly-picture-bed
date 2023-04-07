@@ -44,6 +44,7 @@
 <script lang="ts" setup>
 import 'juejin-markdown-themes/dist/devui-blue.css'
 import MarkdownIt from 'markdown-it'
+import MarkdownLinkAttributes from 'markdown-it-link-attributes'
 // import mdKatex from '@traptitech/markdown-it-katex'
 import hljs from 'highlight.js'
 import { computed } from 'vue';
@@ -85,6 +86,13 @@ const mdi = new MarkdownIt({
     }
     return highlightBlock(hljs.highlightAuto(code).value, '')
   },
+})
+mdi.use(MarkdownLinkAttributes, {
+  pattern: /^https?:/,
+  attrs: {
+    target: '_blank',
+    rel: 'noopener'
+  }
 })
 // 使用插件
 // mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
@@ -214,6 +222,9 @@ function handleCommand (type) {
     margin-bottom: 16px;
     margin-top: 0 !important;
   }
+  pre>code {
+    padding: 20px 12px 15px !important;
+  }
   > *:last-child {
     margin-bottom: 0!important;
   }
@@ -225,11 +236,13 @@ function handleCommand (type) {
     position: relative;
     .code-block-header {
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 0px;
+      right: 0px;
       color: #b3b3b3;
+      font-size: 12px;
+      user-select: none;
       span {
-        margin-right: 10px;
+        margin-right: 8px;
         cursor: pointer;
         &.code-block-header__copy:hover {
           color: #18a058;

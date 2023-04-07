@@ -37,6 +37,7 @@
     "keymaster": "^1.6.2",
     "leancloud-storage": "^4.13.2",
     "markdown-it": "^13.0.1",
+    "markdown-it-link-attributes": "^4.0.1",
     "md5": "^2.3.0",
     "moment": "^2.29.4",
     "monaco-editor": "^0.34.0",
