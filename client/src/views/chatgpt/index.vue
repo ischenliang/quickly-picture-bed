@@ -325,6 +325,7 @@ $border: 1px solid $border-color;
       flex: 1;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       &-list {
         flex: 1;
         padding: 20px;
