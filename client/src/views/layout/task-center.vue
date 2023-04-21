@@ -2,7 +2,7 @@
   <el-drawer
     v-model="myVisible"
     :size="600"
-    custom-class="task-center"
+    class="task-center"
     :close-on-press-escape="true"
     :show-close="true"
     :before-close="handleClose">

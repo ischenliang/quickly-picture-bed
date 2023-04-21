@@ -17,13 +17,14 @@ export function useFormat (datetime: string | Date, pattern: string = 'YYYY-MM-D
  *  @returns 
  */
 export function useFileName (type = 'random') {
+  const randomNum = Math.floor(Math.random() * 900) + 100 // 生成一个3位随机数
   if (type === 'random') {
-    return moment().format('YYYYMMDDHHmmss') + Math.floor(Math.random() * 10 + 1)
+    return moment().format('YYYYMMDDHHmmss') + randomNum + Math.floor(Math.random() * 10)
   }
   if (type === 'timestamp') {
     return moment().format('YYYYMMDDHHmmss') + moment().format('x')
   }
   if (type === 'timestampr') {
-    return moment().format('x') + Math.floor(Math.random() * 10 + 1)
+    return moment().format('x') + randomNum + Math.floor(Math.random() * 10)
   }
 }

@@ -153,6 +153,8 @@ export interface ImageInter {
   top?: boolean | number
   // 标签
   tags?: string[]
+  // 原始名称
+  origin_name?: string
 }
 
 

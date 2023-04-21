@@ -5,18 +5,6 @@ import { user_habits as defaultHabits } from '@/global.config'
 import { RouteRecordRaw } from 'vue-router'
 import PluginManager from '@/typings/PluginManager'
 
-// const useUserStore = defineStore('user', {
-//   state: () => ({
-//     userInfo: null
-//   }),
-//   actions: {
-//     updateUserInfo () {
-
-//     }
-//   }
-// })
-
-
 const useUserStore = defineStore('user', () => {
   /**
    * 变量
@@ -29,14 +17,14 @@ const useUserStore = defineStore('user', () => {
   const list_filter = ref({})
 
   // 当前图片
-  const currentImage: Ref<ImageInter> = ref({
+  const currentImages: Ref<ImageInter[]> = ref([{
     id: '',
     img_url: '',
     img_size: 0,
     img_height: 0,
     img_width: 0,
     img_name: ''
-  })
+  }])
 
   // 今日操作记录
   const user_logs: Ref<LogInter[]> = ref([])
@@ -85,7 +73,7 @@ const useUserStore = defineStore('user', () => {
   return {
     userInfo,
     user_habits,
-    currentImage,
+    currentImages,
     user_logs,
     user_menus,
     list_filter,

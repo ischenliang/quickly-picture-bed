@@ -33,7 +33,7 @@
   <el-dialog
     :title="title"
     :draggable="false"
-    v-model="modelValue"
+    v-model="visible"
     align-center
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -53,7 +53,7 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { StyleValue } from 'vue';
+import { StyleValue, computed } from 'vue';
 
 interface Props {
   modelValue: boolean
@@ -65,7 +65,7 @@ interface Props {
   footerBorder: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   title: '提示',
   width: '50%',
@@ -78,6 +78,12 @@ withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+
+const visible = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 
 const handleClose = () => {
   emit('update:modelValue', false)

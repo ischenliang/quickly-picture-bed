@@ -13,7 +13,7 @@
       点击上传图片，支持拖拽上传
     </div>
     <template #tip>
-      <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件，<span style="color: red;">支持直接 Ctrl + V 上传</span></div>
+      <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件，允许同时上传 {{ systemConfig.system.maxcount }} 张，<span style="color: red;">支持直接 Ctrl + V 上传</span>。</div>
     </template>
   </c-upload>
   <div class="quick-entry">
@@ -76,9 +76,8 @@ const habits = computed({
   set: (val) =>  emit('update:userHabits', val)
 })
 // 当前上传图片
-const current = computed({
-  get: () => userStore.currentImage,
-  set: (val) => userStore.currentImage = val
+const current = computed(() => {
+  return userStore.currentImages
 })
 // 系统配置
 const systemConfig = computed(() => {
@@ -139,6 +138,7 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     totalProgress.progress[index].total = total
   }).then((res: Array<ImageInter>) => {
     totalProgress.percent = 0
+    userStore.currentImages.splice(0, userStore.currentImages.length)
     res.forEach((item, index) => {
       const album_id = ctx.$route.query.album_id
       let tmp = {
@@ -157,10 +157,14 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           ...tmp,
           slient: true
         }).then((result: ImageInter) => {
+          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+          userStore.currentImages.push({
+            ...result,
+            sort: item.sort,
+            origin_name: item.origin_name
+          })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-            result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
-            current.value = result
             emit('success')
           }
         })
@@ -168,12 +172,15 @@ const upload = (fileList: File[], errorList: File[] = []) => {
         image.create({
           ...tmp
         }).then((result: ImageInter) => {
+          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
+          userStore.currentImages.push({
+            ...result,
+            sort: item.sort,
+            origin_name: item.origin_name
+          })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-            result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
-            current.value = result
             emit('success')
-            // totalProgress.progress = {}
           }
         })
       }
