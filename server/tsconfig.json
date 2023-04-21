@@ -18,11 +18,13 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     // 允许any类型
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["node"]
+    "types": ["node"],
+    "skipLibCheck": false,
+    "declaration": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js"],
   "exclude": ["node_modules", "dist"],

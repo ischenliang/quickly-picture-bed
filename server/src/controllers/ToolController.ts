@@ -256,8 +256,7 @@ class ToolController {
    * 本地存储桶图片上传
    */
   @Post('/upload')
-  async test(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
-    EventStream
+  async upload(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
     const file: any = ctx.request.files.file
     if (!file) {
       return {
@@ -286,19 +285,12 @@ class ToolController {
    * @param ctx 
    * @param params 
    */
-  @Get('/es')
-  async es(@Ctx() ctx: Context) {
-    // // @ts-ignore
-    // const stream = new EventStream()
-    // sse(stream, 'test', { a: 'yango', b: 'tango' })
-    // ctx.set({
-    //   'Content-Type':'text/event-stream',
-    //   'Cache-Control':'no-cache',
-    //   Connection: 'keep-alive'
-    // });
-    // ctx.body = stream;
-    // setInterval(()=>{
-    //   sse(stream,'test',{a: "yango",b: Date.now()});
-    // },3000); 
+  @Get('/test')
+  async test() {
+    return {
+      code: 200,
+      message: '成功',
+      data: '成功啦'
+    }
   }
 }

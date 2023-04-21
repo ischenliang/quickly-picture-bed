@@ -3,7 +3,7 @@ import Koa, { Context, Next } from 'koa'
 import KoaRouter from 'koa-router'
 import koaBody from 'koa-body'// 解析请求体
 import { bootstrapControllers as KoaControllers } from 'koa-ts-controllers'
-import * as Colors from 'colors.ts'
+import * as Colors from 'colors'
 import cors from 'koa2-cors'
 import webtoken from 'jsonwebtoken'
 import koaStatic from 'koa-static'
@@ -125,7 +125,7 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
 
   // 监听端口
   app.listen(3002, () => {
-    console.log(' DONE '.bg_green, 'Compiled successfully in 10ms'.green);
+    console.log(' DONE '.bgGreen, 'Compiled successfully in 10ms'.green);
     console.log(`访问启动成功：`, 'http://localhost:3002'.green);
   })
 })()

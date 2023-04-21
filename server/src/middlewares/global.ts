@@ -28,7 +28,7 @@ function loadMiddlewares (app: Koa, router: KoaRouter, callback: Function) {
 
     // 监听端口
     app.listen(3002, () => {
-      console.log(' DONE '.bg_green, 'Compiled successfully in 10ms'.green);
+      console.log(' DONE '.bgGreen, 'Compiled successfully in 10ms'.green);
       console.log(`访问启动成功：`, 'http://localhost:3002'.green);
     })
   })();

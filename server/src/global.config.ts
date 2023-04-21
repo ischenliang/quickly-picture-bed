@@ -71,9 +71,9 @@ export const mimeTypes = {
  * mysql数据库配置
  */
 export const databaseConfig = {
-  host: 'localhost', // 数据库ip，默认是localhost
+  host: '124.222.54.192', // 数据库ip，默认是localhost
   port: 3306, // 数据库端口，默认3306
-  database: 'picture-bed-ped', // 数据库
+  database: 'picture-bed', // 数据库
   username: 'root', // mysql用户名，默认是root
-  password: 'xxxxx' // mysql密码
+  password: '100259b' // mysql密码
 }
