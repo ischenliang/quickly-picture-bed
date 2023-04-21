@@ -44,6 +44,7 @@
     "sass": "^1.55.0",
     "spark-md5": "^3.0.2",
     "swiper": "^8.4.4",
+    "v-lazy-image": "^2.1.1",
     "v-viewer": "^3.0.10",
     "vite": "^3.1.4",
     "vite-plugin-monaco-editor": "^1.0.10",

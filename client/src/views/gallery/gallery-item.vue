@@ -8,7 +8,9 @@
           <el-icon :size="16"><Sunset /></el-icon>
         </span>
       </el-tooltip>
-      <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" />
+      <!-- <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" /> -->
+      <!-- <img :src="data.img_preview_url" /> -->
+      <v-lazy-image :src="data.img_preview_url" :src-placeholder="placeholder" :key="data.id"></v-lazy-image>
     </div>
     <div class="gallery-item-name" :title="data.img_name">
       {{ data.img_name }}
@@ -30,6 +32,7 @@
 import { ImageInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
+import VLazyImage from 'v-lazy-image';
 
 interface Props {
   data: ImageInter
@@ -52,6 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:data', 'reload', 'submit'])
 const ctx = useCtxInstance()
 
+const placeholder = new URL('./loading.gif', import.meta.url).href
 
 /**
  * 变量

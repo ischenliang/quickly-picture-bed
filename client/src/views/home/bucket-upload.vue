@@ -13,7 +13,7 @@
       点击上传图片，支持拖拽上传
     </div>
     <template #tip>
-      <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件，允许同时上传 {{ systemConfig.system.maxcount }} 张，<span style="color: red;">支持直接 Ctrl + V 上传</span>。</div>
+      <div class="el-upload__tip">最大可上传 {{ systemConfig.system.maxsize }}MB 的 {{ systemConfig.system.accept.join(', ') }} 图片，允许同时上传 {{ systemConfig.system.maxcount }} 张，<span style="color: red;">支持直接 Ctrl + V 上传</span>。</div>
     </template>
   </c-upload>
   <div class="quick-entry">
