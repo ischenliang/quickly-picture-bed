@@ -155,7 +155,7 @@ const handleTabChange = async (name) => {
             }
           }
           p:not(:last-child) {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
           }
         }
         // &::-webkit-scrollbar {
