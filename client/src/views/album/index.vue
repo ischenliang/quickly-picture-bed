@@ -79,8 +79,8 @@ const listGet = () => {
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.cover_preview = configStore.systemConfig.website.baseUrl + item.cover
-      item.background_preview = configStore.systemConfig.website.baseUrl + item.background
+      item.cover_preview = window.uploader_ip + item.cover
+      item.background_preview = window.uploader_ip + item.background
       item.count = res.stats.find(stat => stat.id === item.id).count
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
@@ -102,6 +102,14 @@ const itemOperate = (data: AlbumInter, type) => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
         listGet()
       })
+    })
+  }
+  if (type === 'upload') {
+    router.push({
+      path: '/',
+      query: {
+        album_id: data.id
+      }
     })
   }
 }

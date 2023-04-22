@@ -7,6 +7,7 @@
       <div class="album-item-desc">{{ album.desc }}</div>
     </div>
     <div class="album-item-action">
+      <el-button type="success" @click.stop="handleClick('upload')">去上传</el-button>
       <el-button type="primary" @click.stop="handleClick('edit')">编辑</el-button>
       <el-button type="danger" @click.stop="handleClick('delete')">删除</el-button>
     </div>

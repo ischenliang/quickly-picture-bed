@@ -50,6 +50,7 @@
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'toggle')">{{ item.visible ? '禁用' : '启用' }}</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'delete')">删除</div>
+              <div class="bucket-action-item" @click="itemOperate(item, 'delete')">数据迁移</div>
             </div>
           </div>
         </el-col>

@@ -42,18 +42,20 @@
         <div class="footer-inline">
           <span>联系我们</span>|
           <span>关于系统</span>|
-          <span>官方文档</span>|
-          <span>官方博客</span>|
-          <span>Github</span>|
-          <span>Gitee</span>
+          <!-- <span>官方博客</span>| -->
+          <a href="https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller/doc" target="_blank">官方文档</a>|
+          <a href="https://github.com/ischenliang/quickly-picture-bed" target="_blank">Github</a>|
+          <a href="https://gitee.com/itchenliang/quickly-picture-bed" target="_blank">Gitee</a>
         </div>
         <div class="footer-inline">
           <span>商务联系： itchenliang@163.com</span>|
           <span>技术支持： itchenliang@163.com</span>
         </div>
         <div class="footer-inline">
-          <span>Copyright © 2019 - 2022 itchenliang All Rights Reserved.</span>
-          <span>蜀ICP备19023554号-2</span>
+          <span>Copyright © 2019 - {{ year }} itchenliang All Rights Reserved.</span>
+          <a :href="copyright.miiturl">
+            <span>{{ copyright.miitbeian }}</span>
+          </a>
         </div>
       </div>
       <slot name="content"></slot>
@@ -62,16 +64,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useSlots } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import { Pagination, Autoplay } from 'Swiper'
 import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/css'
 import 'swiper/css/pagination'
+import useConfigStore from '@/store/config';
 
 /**
  * 实例
  */
 const slots = useSlots()
+const configStore = useConfigStore()
 
 /**
  * 变量
@@ -92,6 +96,14 @@ const swipers = ref([
   { label: '使用习惯配置', desc: '考虑到每个用户的使用习惯不同，系统提供了使用习惯配置中心，可以配置自定义链接格式、复制链接的类型以及常用快捷键。', url: new URL('./images/habits.png', import.meta.url).href },
   { label: '数据统计', desc: '系统提供了美观的数据统计功能，使得用户很清晰的看到图片数量、存储桶数量、占用总存储量、近一年的贡献度以及存储桶的使用情况。', url: new URL('./images/habits.png', import.meta.url).href }
 ])
+const year = new Date().getFullYear()
+const copyright = computed(() => {
+  const system = configStore.systemConfig.system
+  return {
+    miitbeian: system.copyright_miitbeian,
+    miiturl: system.copyright_miiturl
+  }
+})
 
 
 /**
@@ -175,6 +187,7 @@ const swipers = ref([
       background-size: 100% 100%;
       background-position: 0 bottom;
       z-index: 3;
+      pointer-events: none;
     }
     .login-footer {
       width: 100%;
@@ -194,6 +207,16 @@ const swipers = ref([
         span {
           margin: 0 5px;
         }
+        a {
+          margin: 0 5px;
+          &:link, &:visited, &:active {
+            color: inherit;
+            text-decoration: none;
+          }
+          &:hover {
+            color: #409eff;
+          }
+        }
         + .footer-inline {
           margin-top: 5px;
         }
@@ -208,8 +231,8 @@ const swipers = ref([
     min-height: 300px;
     padding: 0 50px 0px 50px;
     box-sizing: border-box;
-    z-index: 1;
     box-sizing: 0 0 20px 8px #6336ee0d;
+    z-index: 9999;
   }
   .login-swiper {
     display: flex;

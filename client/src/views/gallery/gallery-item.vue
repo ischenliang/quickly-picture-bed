@@ -66,8 +66,8 @@ const myData = computed({
 })
 const defaultBtns = [
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
-  props.remove ? 
-  { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
+  // props.remove ? 
+  // { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
   // { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },

@@ -76,10 +76,11 @@ import { AlbumInter, BucketInter } from '@/typings/interface';
 import { computed, reactive, ref, watch } from 'vue';
 import WebUpload from '@/components/web/upload/index.vue'
 import { useCtxInstance, useGetSuffix } from '@/hooks/global';
-import { uploadImg } from '@/types/av';
+import { uploadImg, uploadImgLocal } from '@/types/av';
 import { useFileName } from '@/hooks/date-time';
 import { FormRules } from 'element-plus';
 import Album from '@/types/Album';
+import { baseURL } from '@/global.config';
 
 /**
  * 实例
@@ -158,10 +159,10 @@ const beforeUpload = (e: { files: FileList, error: string }, property) => {
   }
   const suffix = useGetSuffix(file.name, '.')
   loading[property] = true
-  uploadImg(useFileName() + '.' + suffix, file).then((res: any) => {
-    const img_url = res.attributes.url.replace(new RegExp(props.baseUrl, 'g'), '')
+  uploadImgLocal(useFileName() + '.' + suffix, file).then(res => {
+    const img_url = res.data.data.img_url
     form[property] = img_url
-    form[property + '_preview'] = props.baseUrl + img_url
+    form[property + '_preview'] = window.uploader_ip + img_url
     loading[property] = false
   })
 }
