@@ -3,7 +3,7 @@
   <el-tabs v-model="habits.pasteStyle" type="border-card" class="bucket-copy-tabs" @tab-change="handleTabChange">
     <el-tab-pane v-for="(item, index) in linkTypesComputed" :key="'linkType-' + index" :label="item.label" :name="item.id">
       <div class="links-copy" @click="copyLink(item)">
-        {{ getLinkValue(item) }}
+        <span v-html="getRenderText(getLinkValue(item))"></span>
         <span class="link-copy-btn">
           <el-icon><CopyDocument /></el-icon>
         </span>
@@ -46,7 +46,7 @@ const habits = computed({
 
 // 当前上传图片
 const current = computed(() => {
-  return userStore.currentImage
+  return userStore.currentImages
 })
 const linkTypesComputed = computed(() => {
   return linkTypes.value.map(item => {
@@ -63,17 +63,21 @@ const linkTypesComputed = computed(() => {
  */
 // 获取指定类型的链接地址
 const getLinkValue = (item: Link) => {
-  const url =  current.value.img_preview_url
-  const obj = {
-    url: url ? url : '',
-    filename: current.value.img_name
-  }
-  // const tmp = item.value.replace(/\$\{/g, '${obj.')
-  // return eval('`' + tmp + '`')
-
-  return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
-    return obj[key]
-  })
+  const images = current.value
+  return images.sort((a, b) => a.sort - b.sort).map(el => {
+    const url =  el.img_preview_url
+    const obj = {
+      url: url ? url : '',
+      filename: el.img_name
+    }
+    return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+      return obj[key]
+    })
+  }).join('\n')
+}
+// 获取渲染内容
+function getRenderText (data) {
+  return data.split('\n').map(el => `<p>${el}</p>`).join('')
 }
 // 复制链接
 const copyLink = (item: Link) => {
@@ -116,15 +120,17 @@ const handleTabChange = async (name) => {
     .el-tabs__content {
       flex: 1;
       overflow: hidden;
+      padding: 0;
       .el-tab-pane {
         width: 100%;
         height: 100%;
         overflow: auto;
+        padding: 15px;
         .links-copy {
           width: 100%;
           // min-height: 100%;
           min-height: 80px;
-          height: 100%;
+          // height: 100%;
           background: rgba(204,232,255,.5);
           border: 1px solid rgba(153,209,255,.57);
           border-radius: 4px;
@@ -148,10 +154,13 @@ const handleTabChange = async (name) => {
               display: block;
             }
           }
+          p:not(:last-child) {
+            margin-bottom: 10px;
+          }
         }
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        // &::-webkit-scrollbar {
+        //   display: none;
+        // }
       }
     }
     .el-tabs__item {

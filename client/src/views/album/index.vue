@@ -1,10 +1,10 @@
 <template>
   <div class="album-container">
-    <c-card :title="'我的相册(' + list.total + ')'">
+    <c-card :title="'我的相册(' + list.total + ')'" v-loading="list.loading">
       <template #cardAction>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
-      <el-row v-loading="list.loading">
+      <el-row>
         <el-col
           v-for="(item, index) in list.data"
           :key="index"
@@ -108,7 +108,8 @@ const itemOperate = (data: AlbumInter, type) => {
     router.push({
       path: '/',
       query: {
-        album_id: data.id
+        album_id: data.id,
+        from: 'album'
       }
     })
   }

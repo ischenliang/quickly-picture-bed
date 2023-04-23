@@ -21,6 +21,7 @@
           </el-select>
         </div>
         <div>
+          <el-button type="primary" v-if="list.data.filter(el => el.checked).length" @click="copySelectLink">复制链接</el-button>
           <el-button type="primary" :icon="'Checked'" @click="handleToggleSelectAll">全选</el-button>
           <el-button
             :type="disabled ? 'default' : 'danger'"
@@ -35,6 +36,7 @@
             <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
               <gallery-item
                 :data="item"
+                :key="item.id"
                 :images="list.data.map(item => item.img_preview_url)"
                 @reload="listGet"
                 @submit="handleItemSubmit"
@@ -64,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
@@ -120,6 +122,7 @@ const item = reactive({
  */
 // 获取存储桶列表
 const getBuckets = () => {
+  list.loading = true
   bucket.find({
     ...list.filters
   }).then((res: PageResponse<BucketInter>) => {
@@ -180,7 +183,6 @@ const getBuckets = () => {
 }
 // 获取图片列表
 const listGet = () => {
-  list.loading = true
   image.find({
     page: list.page,
     size: list.size,
@@ -208,6 +210,11 @@ const handleToggleSelectAll = () => {
   list.data.forEach(item => {
     item.checked = selectAll.value
   })
+}
+// 复制已选的图片链接
+function copySelectLink () {
+  const coptxt = list.data.filter(el => el.checked).map(el => el.img_preview_url).join('\n')
+  useCopyText(ctx, coptxt)
 }
 // 点击
 const handleClick = (index: number) => {

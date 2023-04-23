@@ -30,6 +30,7 @@ export const linkTypes: Ref<Link[]> = ref([
   { label: 'HTML', value: '<img src="${url}" alt="${filename}">', id: 'html' },
   { label: 'CSS', value: 'background: url("${url}") no-repeat;background-size: 100% 100%;', id: 'css' },
   { label: 'Markdown', value: '![${filename}](${url})', id: 'markdown' },
+  { label: 'MD-Link', value: '[![${filename}](${url})](${url})', id: 'md-link' },
   { label: 'BBCode', value: '[img]${url}[/img]', id: 'bbcode' },
   { label: 'UBB', value: '[IMG]${url}[/IMG]', id: 'ubb' },
   { label: 'Custom', value: '[${filename}](${url})', id: 'custom' }

@@ -53,7 +53,7 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { computed, StyleValue } from 'vue';
+import { StyleValue, computed } from 'vue';
 
 interface Props {
   modelValue: boolean
@@ -79,13 +79,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:modelValue'])
 
+
 const visible = computed({
-  get () {
-    return props.modelValue
-  },
-  set (val) {
-    emit('update:modelValue', val)
-  }
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
 })
 
 const handleClose = () => {

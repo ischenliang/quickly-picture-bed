@@ -3,16 +3,17 @@ import useUserStore from "@/store/user";
 import axios from "axios";
 import { useFileName } from "./date-time";
 import { useFileToBase64, useGetImageSize, useGetSuffix } from "./global";
+import { MyPlugin } from "@/typings/interface";
 
 /**
  * 上传管理器
  */
 export default class UploadManager {
   // 上传文件
-  uploadFile (id: string, files: File[], progressFn: Function) {
+  uploadFile (id: string | MyPlugin, files: File[], progressFn: Function) {
     return new Promise(async (resolve, reject) => {
       const userStore = useUserStore()
-      const plugin = userStore.pluginManager.load(id)
+      const plugin = typeof id === 'string' ? userStore.pluginManager.load(id) : id
 
       // 2、构建接口地址和formData
       const maps = []
@@ -25,7 +26,9 @@ export default class UploadManager {
           size: files[i].size,
           width: imageWH.width,
           height: imageWH.height,
-          mine_type: mimeTypes[suffix]
+          mine_type: mimeTypes[suffix],
+          sort: i,
+          origin_name: files[i].name
         })
       }
 
@@ -51,11 +54,13 @@ export default class UploadManager {
         resolve(res.map((item, index) => {
           const tmp = maps[index]
           return {
-            img_width: maps[index].width,
-            img_height: maps[index].height,
-            img_size: maps[index].size,
-            mine_type: maps[index].mine_type,
-            img_name: maps[index].filename,
+            img_width: tmp.width,
+            img_height: tmp.height,
+            img_size: tmp.size,
+            mine_type: tmp.mine_type,
+            img_name: tmp.filename,
+            sort: tmp.sort,
+            origin_name: tmp.origin_name,
             ...plugin.uploader.response(item, {
               file: tmp.file,
               filename: tmp.filename
