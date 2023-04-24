@@ -76,6 +76,8 @@ import md5 from 'md5'
 import crypto from 'crypto-js'
 import UploadManager from '@/hooks/uploader';
 import useConfigStore from '@/store/config';
+import { useJudgeImageNormal } from './useImageHook'
+import { blob } from 'stream/consumers';
 
 interface ChangeEvent<T = any> extends Event {
   target: EventTarget & T;
@@ -166,7 +168,7 @@ function exportZip () {
       zip.file(image.img_name, data, { binary:true })
       count--;
       if (count === 0) {
-        zip.generateAsync({type:'blob'}).then(function(content) {
+        zip.generateAsync({type:'blob'}).then((content) => {
           saveAs(content, zipFilename)
           loading.export_zip = false
         })
@@ -191,7 +193,6 @@ function exportExcel () {
 const zipRef: Ref<HTMLInputElement> = ref()
 // 导入图片zip
 function importZip () {
-  loading.import_zip = true
   zipRef.value.click()
 }
 function handleZipChange (e: ChangeEvent<HTMLInputElement>) {
@@ -200,30 +201,26 @@ function handleZipChange (e: ChangeEvent<HTMLInputElement>) {
     loading.import_zip = false
     return
   }
+  loading.import_zip = true
   // 创建FileReader对象读取文件内容
   var reader = new FileReader()
   reader.onload = function() {
     var zip = new JSZip()
     // 解析zip文件
     zip.loadAsync(reader.result).then((zip) => {
-      // 遍历zip文件内所有文件
+      // 第一步、遍历zip文件内所有文件
       var filenames = Object.keys(zip.files).filter(el => {
         // 判断是否为图片文件
         const system = systemConfig.value.system
         return el && system.accept.includes(useGetSuffix(el))
       })
+      // 第二步、处理图片
       const maps = filenames.map((filename) => {
         // 获取图片内容
         return zip.file(filename).async('blob')
       })
-      // 将blob处理成file
-      Promise.all(maps).then(blobs => {
-        const files = blobs.map((blob, index) => {
-          const filename = filenames[index]
-          return new File([blob], filename, {type: mimeTypes[useGetSuffix(filename)]});
-        })
-        uploadImages(files, 'import_zip')
-      })
+      // 第三步、将blob处理成file
+      handleData(maps, filenames, 'import_zip')
     })
   }
   reader.readAsArrayBuffer(file)
@@ -231,7 +228,6 @@ function handleZipChange (e: ChangeEvent<HTMLInputElement>) {
 // 导出图片excel
 const excelRef: Ref<HTMLInputElement> = ref()
 function importExcel () {
-  loading.import_excel = true
   excelRef.value.click()
 }
 function handleExcelChange (e: ChangeEvent<HTMLInputElement>) {
@@ -240,11 +236,11 @@ function handleExcelChange (e: ChangeEvent<HTMLInputElement>) {
     loading.import_excel = false
     return
   }
+  loading.import_excel = true
   var fileReader = new FileReader();
   fileReader.onload = (event: any) =>  {
     var data = new Uint8Array(event.target.result);
     var workbook = read(data, { type: 'array' });
-    // console.log(workbook.SheetNames);
     const excel_data: ImageInter[] = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]).filter((el: ImageInter) => {
       // 判断是否是支持的文件类型
       const system = systemConfig.value.system
@@ -254,14 +250,7 @@ function handleExcelChange (e: ChangeEvent<HTMLInputElement>) {
       // 获取图片内容
       return fetch(el.img_preview_url).then(res => res.blob())
     })
-    // 将blob处理成file
-    Promise.all(maps).then(blobs => {
-      const files = blobs.map((blob, index) => {
-        const filename = excel_data[index].img_name
-        return new File([blob], filename, {type: mimeTypes[useGetSuffix(filename)]});
-      })
-      uploadImages(files, 'import_excel')
-    })
+    handleData(maps, excel_data.map(el => el.img_name), 'import_excel')
   };
   fileReader.readAsArrayBuffer(file);
 }
@@ -279,7 +268,7 @@ function uploadImages (files, key: string) {
       }
       image.create({ ...tmp }).then((result: ImageInter) => {
         if (index === res.length - 1) {
-          ctx.$message({ message: '导入成功', duration: 1000, type: 'success' })
+          ctx.$message({ message: `导入成功，成功导入${res.length}张图片`, duration: 1000, type: 'success' })
           loading[key] = false
           if (key === 'import_zip') {
             zipRef.value.value = ''
@@ -289,6 +278,34 @@ function uploadImages (files, key: string) {
           }
         }
       })
+    })
+  })
+}
+// 处理数据
+function handleData (maps, filenames, key: 'import_excel' | 'import_zip') {
+  // 将blob处理成file
+  Promise.all(maps).then(blobs => {
+    // 判断图片是否损坏
+    const judges = blobs.map((blob, index) => {
+      return useJudgeImageNormal(blob, useGetSuffix(filenames[index]))
+    })
+    Promise.all(judges).then(res => {
+      const finalImages = []
+      // 去除有损图片
+      res.forEach((el, index) => {
+        if (el) {
+          finalImages.push({
+            blob: blobs[index],
+            filename: filenames[index]
+          })
+        }
+      })
+      // 处理正确的图片
+      const files = finalImages.map((fileImage, index) => {
+        const filename = fileImage.filename
+        return new File([fileImage.blob], filename, {type: mimeTypes[useGetSuffix(filename)]})
+      })
+      uploadImages(files, key)
     })
   })
 }
