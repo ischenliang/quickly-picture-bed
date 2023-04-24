@@ -287,7 +287,7 @@ function handleData (maps, filenames, key: 'import_excel' | 'import_zip') {
   Promise.all(maps).then(blobs => {
     // 判断图片是否损坏
     const judges = blobs.map((blob, index) => {
-      return useJudgeImageNormal(blob, useGetSuffix(filenames[index]))
+      return Object.values(mimeTypes).includes(blob.type) || blob.type === ''  ? useJudgeImageNormal(blob, useGetSuffix(filenames[index])) : false
     })
     Promise.all(judges).then(res => {
       const finalImages = []
@@ -300,12 +300,19 @@ function handleData (maps, filenames, key: 'import_excel' | 'import_zip') {
           })
         }
       })
-      // 处理正确的图片
-      const files = finalImages.map((fileImage, index) => {
-        const filename = fileImage.filename
-        return new File([fileImage.blob], filename, {type: mimeTypes[useGetSuffix(filename)]})
-      })
-      uploadImages(files, key)
+      if (finalImages.length) {
+        // 处理正确的图片
+        const files = finalImages.map((fileImage, index) => {
+          const filename = fileImage.filename
+          return new File([fileImage.blob], filename, {type: mimeTypes[useGetSuffix(filename)]})
+        })
+        uploadImages(files, key)
+      } else {
+        loading[key] = false
+        if (judges.length) {
+          ctx.$message({ message: '出问题啦，请检查上传的文件内的图片能正常访问', type: 'error', duration: 1000 })
+        }
+      }
     })
   })
 }

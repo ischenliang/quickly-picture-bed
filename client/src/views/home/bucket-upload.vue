@@ -152,7 +152,9 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
   const { id, type } = habits.value.current
-  if (!id || !type || type === '' || id === '') {
+  // @ts-ignore
+  const plugins = userStore.pluginManager.plugins
+  if (!id || !type || type === '' || id === '' || !plugins[id]) {
     return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
   }
   showError(errorList)
