@@ -55,12 +55,13 @@ withDefaults(defineProps<{ logs: LogInter[] }>(), {
 @import '@/styles/flex-layout.scss';
 .bucket-title {
   font-size: 18px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 .history-list {
   overflow: auto;
   flex: 1;
+  max-height: 300px;
   .empty {
     width: 100%;
     height: 100%;

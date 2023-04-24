@@ -8,7 +8,7 @@
     </div>
     <div class="home-tips">严禁上传包含反动、暴力、色情、违法、及侵权内容的文件。</div>
     <!-- 选择存储桶 -->
-    <el-card>
+    <el-card class="bucket-select-card">
       <bucket-select v-model:user-habits="userHabits"></bucket-select>
     </el-card>
 
@@ -99,7 +99,7 @@ const handleClick = () => {
   width: 100%;
   min-height: 100%;
   @include flex-layout(column);
-  padding: 0 10px 0;
+  padding: 0px;
   .home-title {
     font-size: 28px;
     margin-bottom: 10px;
@@ -110,12 +110,18 @@ const handleClick = () => {
   .home-tips {
     font-size: 16px;
     color: #fa8c16;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   .el-card {
     margin-bottom: 15px;
     box-shadow: 0px 0px 3px rgb(0 0 0 / 12%);
     border: 0;
+  }
+  .bucket-select-card {
+    .el-card__body {
+      padding: 20px 20px 10px;
+    }
   }
 
   .copy-history {

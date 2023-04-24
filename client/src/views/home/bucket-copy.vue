@@ -2,11 +2,23 @@
   <div class="bucket-title">链接格式</div>
   <el-tabs v-model="habits.pasteStyle" type="border-card" class="bucket-copy-tabs" @tab-change="handleTabChange">
     <el-tab-pane v-for="(item, index) in linkTypesComputed" :key="'linkType-' + index" :label="item.label" :name="item.id">
-      <div class="links-copy" @click="copyLink(item)">
-        <span v-html="getRenderText(getLinkValue(item))"></span>
-        <span class="link-copy-btn">
-          <el-icon><CopyDocument /></el-icon>
+      <div class="links-copy" @click="copyAllLink(item)">
+        <span>
+          <el-tooltip
+            v-for="(el, index) in getLinkValue(item).split('\n')"
+            :key="index"
+            content="复制该项链接"
+            placement="top">
+            <p @click.stop="copyItemLink(el)">
+              {{ el }}
+            </p>
+          </el-tooltip>
         </span>
+        <el-tooltip content="复制全部链接" placement="left">
+          <span class="link-copy-btn" @click.stop="copyAllLink(item)">
+            <el-icon size="18"><CopyDocument /></el-icon>
+          </span>
+        </el-tooltip>
       </div>
     </el-tab-pane>
   </el-tabs>
@@ -80,8 +92,12 @@ function getRenderText (data) {
   return data.split('\n').map(el => `<p>${el}</p>`).join('')
 }
 // 复制链接
-const copyLink = (item: Link) => {
+const copyAllLink = (item: Link) => {
   useCopyText(ctx, getLinkValue(item))
+}
+// 复制当前一项链接
+function copyItemLink (str) {
+  useCopyText(ctx, str)
 }
 
 const handleTabChange = async (name) => {
@@ -98,7 +114,7 @@ const handleTabChange = async (name) => {
 @import '@/styles/flex-layout.scss';
 .bucket-title {
   font-size: 18px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 .el-tabs {
@@ -128,39 +144,50 @@ const handleTabChange = async (name) => {
         padding: 15px;
         .links-copy {
           width: 100%;
-          // min-height: 100%;
           min-height: 80px;
-          // height: 100%;
           background: rgba(204,232,255,.5);
           border: 1px solid rgba(153,209,255,.57);
           border-radius: 4px;
-          padding: 10px 15px;
+          padding: 8px 40px 8px 10px;
           font-size: 14px;
           color: #747a80;
           cursor: pointer;
           word-break: break-all;
           position: relative;
           line-height: 20px;
-          padding-right: 30px;
           .link-copy-btn {
             position: absolute;
             top: 50%;
-            right: 15px;
+            right: 0;
             transform: translateY(-50%);
-            display: none;
+            height: 100%;
+            width: 40px;
+            // display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            display: flex;
           }
           &:hover {
             .link-copy-btn {
-              display: block;
+              display: flex;
             }
           }
-          p:not(:last-child) {
-            margin-bottom: 10px;
+          p {
+            padding: 2px 5px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            min-height: 26px;
+            &:not(:last-child) {
+              margin-bottom: 5px;
+            }
+            &:hover {
+              border: 1px solid rgba(153, 209, 255, 0.57);
+              background-color: #3a92eb;
+              color: #fff;
+            }
           }
         }
-        // &::-webkit-scrollbar {
-        //   display: none;
-        // }
       }
     }
     .el-tabs__item {

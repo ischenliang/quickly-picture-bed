@@ -11,10 +11,12 @@
       <img v-if="loadError" :src="'/error.png'" />
       <v-lazy-image
         v-else
+        :class="loaded ? 'loaded-cover' : 'loading-cover'"
         :src="data.img_preview_url"
         :src-placeholder="placeholder"
         :key="data.id"
-        @error="handleRenderError"></v-lazy-image>
+        @error="handleRenderError"
+        @load="hanldeLoad"></v-lazy-image>
     </div>
     <div class="gallery-item-name" :title="data.img_name">
       {{ data.img_name }}
@@ -61,14 +63,6 @@ const ctx = useCtxInstance()
 
 const placeholder = new URL('./loading.gif', import.meta.url).href
 
-
-const img_preview_url = computed({
-  get: () => props.data.img_preview_url,
-  set: () => {
-
-  }
-})
-
 /**
  * 变量
  */
@@ -100,8 +94,12 @@ const btns: Ref<Array<{
 
 
 const loadError = ref(false)
+const loaded = ref(false)
 function handleRenderError () {
   loadError.value = true
+}
+function hanldeLoad () {
+  loaded.value = true
 }
 
 
@@ -236,7 +234,10 @@ const actions = {
     img {
       width: 100%;
       height: 100%;
-      object-fit: scale-down;
+      object-fit: cover;
+      &.loading-cover {
+        object-fit: scale-down;
+      }
     }
   }
 
