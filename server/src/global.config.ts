@@ -77,3 +77,6 @@ export const databaseConfig = {
   username: 'root', // mysql用户名，默认是root
   password: 'xxxx' // mysql密码
 }
+
+// 程序占用端口
+export const PORT = 3000

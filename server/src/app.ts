@@ -1,4 +1,4 @@
-import { mimeTypes } from './global.config';
+import { mimeTypes, PORT } from './global.config';
 import Koa, { Context, Next } from 'koa'
 import KoaRouter from 'koa-router'
 import koaBody from 'koa-body'// 解析请求体
@@ -124,8 +124,8 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   app.use(router.routes())
 
   // 监听端口
-  app.listen(3002, () => {
+  app.listen(PORT, () => {
     console.log(' DONE '.bg_green, 'Compiled successfully in 10ms'.green);
-    console.log(`访问启动成功：`, 'http://localhost:3002'.green);
+    console.log(`访问启动成功：`, `http://localhost:${PORT}`.green);
   })
 })()
