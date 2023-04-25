@@ -1,0 +1,21 @@
+version: '3'
+services:
+  web:
+    container_name: pic-bed-client
+    build:
+      context: ./client
+    ports:
+      - "80:80"
+    networks:
+      - app_network
+  api:
+    container_name: pic-bed-server
+    build:
+      context: ./server
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+networks:
+  app_network:
+    driver: bridge

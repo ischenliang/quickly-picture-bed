@@ -210,6 +210,14 @@ npm run build
 ```
 将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
 
+### 打包部署
+在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
+```shell
+docker-compose up
+```
+上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
+
+
 ## 预览
 ### 登录
 ![202211101727165.png](https://imgs.itchenliang.club/img/202211101727165.png)
