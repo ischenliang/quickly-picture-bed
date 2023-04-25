@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-container">
+  <div class="sidebar-container v-scrollbar">
     <div class="logo-bannner">
       <img src="./images/banner.png" alt="">
     </div>
