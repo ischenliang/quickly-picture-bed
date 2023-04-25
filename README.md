@@ -134,18 +134,17 @@ npm install ts-node -g
 ```
 
 **6. 修改数据库连接**<br>
-打开`server/src/global.config.ts`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
-```js
-/**
- * mysql数据库配置
- */
-export const databaseConfig = {
-  host: 'localhost', // 数据库ip，默认是localhost
-  port: 3306, // 数据库端口，默认3306
-  database: 'picture-bed-backup', // 数据库
-  username: 'root', // mysql用户名，默认是root
-  password: 'xxxx' // mysql密码
-}
+打开`server/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
+```yml
+# mysql数据库配置
+DB_HOST=localhost # 数据库ip，默认是localhost
+DB_PORT=3306 # 数据库端口，默认3306
+DB_DATABASE=picture-bed-backup # 数据库
+DB_USERNAME=root # mysql用户名，默认是root
+DB_PASSWORD=xxxx # mysql密码
+
+# 后台配置: 程序占用端口
+APP_PORT=3002
 ```
 
 **7. 依赖安装**
@@ -210,12 +209,44 @@ npm run build
 ```
 将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
 
-### 打包部署
+### docker打包部署
 在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
 ```shell
 docker-compose up
 ```
 上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
+
+### Docker运行程序
+直接拉取[Docker Hub](https://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
+1. 运行server服务端
+  ```shell
+  docker run -p 3002:3002--env-file .env itchenliang/quickly-picture-bed-server:1.0
+  ```
+  上面的`--env-file`是指定环境变量文件，为了方便配置数据库连接，在运行时传入`.env`文件，配置内容如下
+  ```yml
+  # mysql数据库配置
+  DB_HOST=localhost # 数据库ip，默认是localhost
+  DB_PORT=3306 # 数据库端口，默认3306
+  DB_DATABASE=picture-bed-backup # 数据库
+  DB_USERNAME=root # mysql用户名，默认是root
+  DB_PASSWORD=xxxx # mysql密码
+
+  # 后台配置: 程序占用端口
+  APP_PORT=3002
+  ```
+  当该命令执行成功时，我们可以在浏览器中访问`http://localhost:3002`来预览我们的服务端应用程序。
+2. 运行client客户端
+  ```shell
+  docker run -p 80:80 --env-file .env itchenliang/quickly-picture-bed-client:1.1
+  ```
+  上面的`.env`文件是用于指定请求的后端接口地址
+  ```yml
+  # 需带上http|https协议，默认不加 "/"
+  # 注意vite中的环境变量需要以VITE开头
+  VITE_APP_BASE_URL=http://124.222.54.192:3002
+  ```
+  当该命令执行成功时，我们可以在浏览器中访问`http://localhost:80`来预览我们的客户端应用程序。
+
 
 
 ## 预览
