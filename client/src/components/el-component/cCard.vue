@@ -15,11 +15,11 @@
 </template>
 
 <script lang="ts" setup>
-import { EpPropMergeType } from 'element-plus/es/utils';
+// import { EpPropMergeType } from 'element-plus/es/utils';
 
 interface Props {
   title?: string
-  shadow?: EpPropMergeType<StringConstructor, "never" | "always" | "hover", unknown>
+  shadow?: "never" | "always" | "hover"
   headerPadding?: string
 }
 withDefaults(defineProps<Props>(), {
