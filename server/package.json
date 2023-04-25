@@ -17,6 +17,7 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.13.1",
     "colors.ts": "^1.0.20",
+    "dotenv": "^16.0.3",
     "fs-extra": "^11.1.0",
     "glob": "^7.1.7",
     "jsonwebtoken": "^8.5.1",

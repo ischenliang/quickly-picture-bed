@@ -1,3 +1,7 @@
+// 为了确保环境变量被加载，顾放在第一行
+import dotenv from 'dotenv'
+dotenv.config()
+
 import { mimeTypes } from './global.config';
 import Koa, { Context, Next } from 'koa'
 import KoaRouter from 'koa-router'
@@ -124,8 +128,9 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   app.use(router.routes())
 
   // 监听端口
-  app.listen(3002, () => {
+  const port = process.env.APP_PORT
+  app.listen(port, () => {
     console.log(' DONE '.bg_green, 'Compiled successfully in 10ms'.green);
-    console.log(`访问启动成功：`, 'http://localhost:3002'.green);
+    console.log(`访问启动成功：`, `http://localhost:${port}`.green);
   })
 })()

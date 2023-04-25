@@ -1,9 +1,14 @@
 import { Sequelize, Dialect } from 'sequelize'
-import { databaseConfig } from '../global.config'
+
+const host = process.env.DB_HOST
+const port = parseInt(process.env.DB_PORT)
+const database = process.env.DB_DATABASE
+const username = process.env.DB_USERNAME
+const password = process.env.DB_PASSWORD
 
 const conf = {
-  host: databaseConfig.host,
-  port: databaseConfig.port,
+  host: host,
+  port: port,
   // 使用什么数据库，使用类型转换将字符串转成Dialect，否则在严格模式下会报错
   dialect: 'mysql' as Dialect,
   define: {},
@@ -12,7 +17,7 @@ const conf = {
     // console.log(sql)
   }
 }
-const seq = new Sequelize(databaseConfig.database, databaseConfig.username, databaseConfig.password, conf)
+const seq = new Sequelize(database, username, password, conf)
 
 // 测试连接是否成功
 // seq.authenticate().then(() => {

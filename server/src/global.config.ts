@@ -66,14 +66,3 @@ export const mimeTypes = {
   mac: 'image/x-macpaint',
   pct: 'image/pict',
 }
-
-/**
- * mysql数据库配置
- */
-export const databaseConfig = {
-  host: 'localhost', // 数据库ip，默认是localhost
-  port: 3306, // 数据库端口，默认3306
-  database: 'picture-bed-backup', // 数据库
-  username: 'root', // mysql用户名，默认是root
-  password: 'xxxx' // mysql密码
-}
