@@ -64,5 +64,6 @@ export const mimeTypes = {
 
 
 // 124.222.54.192
-const ip = window.uploader_ip
+// @ts-ignore
+const ip = window.uploader_ip || import.meta.env.VITE_APP_BASE_URL
 export const baseURL = `${ip}/api/v1`

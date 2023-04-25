@@ -63,7 +63,7 @@
 
 <script lang="ts" setup>
 import { ref, useSlots } from 'vue';
-import { Pagination, Autoplay } from 'Swiper'
+import { Pagination, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/css'
 import 'swiper/css/pagination'

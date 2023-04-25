@@ -25,7 +25,6 @@ instance.interceptors.response.use((response: any) => {
     return Promise.reject(response.data)
   }
 }, (error) => {
-
 })
 
 function http (url, data) {
