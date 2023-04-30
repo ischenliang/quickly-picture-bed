@@ -137,8 +137,8 @@ npm install ts-node -g
 打开`server/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
 ```yml
 # mysql数据库配置
-# 数据库ip，默认是localhost
-DB_HOST=localhost
+# 数据库ip，不要使用localhost和127.0.0.1
+DB_HOST=xxx.xxx.xxx.xxx
 # 数据库端口，默认3306
 DB_PORT=3306
 # 数据库
@@ -230,8 +230,8 @@ docker-compose up
   上面的`--env-file`是指定环境变量文件，为了方便配置数据库连接，在运行时传入`.env`文件，配置内容如下
   ```yml
   # mysql数据库配置
-  # 数据库ip，默认是localhost
-  DB_HOST=localhost
+  # 数据库ip，不要使用localhost和127.0.0.1
+  DB_HOST=xxx.xxx.xxx.xxx
   # 数据库端口，默认3306
   DB_PORT=3306
   # 数据库
