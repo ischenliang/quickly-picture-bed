@@ -112,7 +112,7 @@ const swipers = ref([
     height: 100%;
     background-image: url('./images/login-left.png');
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: 100% 100%;
     background-position: center center;
     display: flex;
     flex-direction: column;
