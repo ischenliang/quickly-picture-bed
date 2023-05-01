@@ -3,16 +3,17 @@ import useUserStore from "@/store/user";
 import axios from "axios";
 import { useFileName } from "./date-time";
 import { useFileToBase64, useGetImageSize, useGetSuffix } from "./global";
+import { MyPlugin } from "@/typings/interface";
 
 /**
  * 上传管理器
  */
 export default class UploadManager {
   // 上传文件
-  uploadFile (id: string, files: File[], progressFn: Function) {
+  uploadFile (id: string | MyPlugin, files: File[], progressFn: Function) {
     return new Promise(async (resolve, reject) => {
       const userStore = useUserStore()
-      const plugin = userStore.pluginManager.load(id)
+      const plugin = typeof id === 'string' ? userStore.pluginManager.load(id) : id
 
       // 2、构建接口地址和formData
       const maps = []

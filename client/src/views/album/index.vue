@@ -1,10 +1,10 @@
 <template>
   <div class="album-container">
-    <c-card :title="'我的相册(' + list.total + ')'">
+    <c-card :title="'我的相册(' + list.total + ')'" v-loading="list.loading">
       <template #cardAction>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
-      <el-row v-loading="list.loading">
+      <el-row>
         <el-col
           v-for="(item, index) in list.data"
           :key="index"
@@ -79,8 +79,8 @@ const listGet = () => {
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.cover_preview = configStore.systemConfig.website.baseUrl + item.cover
-      item.background_preview = configStore.systemConfig.website.baseUrl + item.background
+      item.cover_preview = window.uploader_ip + item.cover
+      item.background_preview = window.uploader_ip + item.background
       item.count = res.stats.find(stat => stat.id === item.id).count
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
@@ -102,6 +102,15 @@ const itemOperate = (data: AlbumInter, type) => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
         listGet()
       })
+    })
+  }
+  if (type === 'upload') {
+    router.push({
+      path: '/',
+      query: {
+        album_id: data.id,
+        from: 'album'
+      }
     })
   }
 }

@@ -122,6 +122,7 @@ const item = reactive({
  */
 // 获取存储桶列表
 const getBuckets = () => {
+  list.loading = true
   bucket.find({
     ...list.filters
   }).then((res: PageResponse<BucketInter>) => {
@@ -182,7 +183,6 @@ const getBuckets = () => {
 }
 // 获取图片列表
 const listGet = () => {
-  list.loading = true
   image.find({
     page: list.page,
     size: list.size,
@@ -255,7 +255,7 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
 // 删除所有
 const deleteAll = () => {
   const ids = list.data.filter(item => item.checked).map(item => item.id)
-  useDeleteConfirm().then(() => {
+  useDeleteConfirm('确定删除吗?(由于对象存储几乎不要钱，故此处只是删除记录，不会删除对象存储上的原数据，所以删除后仍然能正常访问)').then(() => {
     ids.map((id, index) => {
       image.delete(id).then(res => {
         if (index === ids.length - 1) {

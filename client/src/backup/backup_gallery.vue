@@ -46,9 +46,9 @@
           :range-color="['#ebedf0', '#dae2ef', '#c0ddf9', '#73b3f3', '#3886e1', '#17459e']"
           @day-click="handlClick">
           <template #vch__legend-left>
-            <span>最近一年贡献：506 次</span>
-            <span>最长连续贡献：7 日</span>
-            <span>最近连续贡献：7 日</span>
+            <span>最近一年贡献：xxx 次</span>
+            <span>最长连续贡献：xx 日</span>
+            <span>最近连续贡献：xx 日</span>
           </template>
         </calendar-heatmap>
         <div class="vch__tips">贡献度的统计数据包括代码提交、创建任务 / Pull Request、合并 Pull Request，其中代码提交的次数需本地配置的 git 邮箱是 Gitee 帐号已确认绑定的才会被统计。</div>

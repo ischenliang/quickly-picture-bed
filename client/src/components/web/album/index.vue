@@ -1,12 +1,24 @@
 <template>
   <div class="album-item">
-    <img class="album-item-cover" :src="album.cover_preview" />
+    <!-- <img class="album-item-cover" :src="album.cover_preview" /> -->
+    <div class="album-item-cover">
+      <img v-if="loadError" :src="'/error.png'" />
+      <v-lazy-image
+        v-else
+        :class="[bindClass]"
+        :src="album.cover_preview"
+        :src-placeholder="placeholder"
+        :key="album.id"
+        @load="handleLoad"
+        @error="handleRenderError"></v-lazy-image>
+    </div>
     <div class="album-item__content">
       <div class="album-item-name">{{ album.name }}({{ album.count }})</div>
       <div class="album-item-divider"></div>
       <div class="album-item-desc">{{ album.desc }}</div>
     </div>
     <div class="album-item-action">
+      <el-button type="success" @click.stop="handleClick('upload')">去上传</el-button>
       <el-button type="primary" @click.stop="handleClick('edit')">编辑</el-button>
       <el-button type="danger" @click.stop="handleClick('delete')">删除</el-button>
     </div>
@@ -15,6 +27,9 @@
 
 <script lang="ts" setup>
 import { AlbumInter } from '@/typings/interface';
+import VLazyImage from 'v-lazy-image';
+import { ref } from 'vue';
+const placeholder = new URL('../../../views/gallery/loading.gif', import.meta.url).href
 
 interface Props {
   album: AlbumInter
@@ -31,9 +46,18 @@ withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['submit'])
 
+const bindClass = ref('')
 
 const handleClick = (type) => {
   emit('submit', type)
+}
+
+function handleLoad (e) {
+  bindClass.value = 'loaded'
+}
+const loadError = ref(false)
+function handleRenderError () {
+  loadError.value = true
 }
 </script>
 
@@ -47,12 +71,19 @@ const handleClick = (type) => {
   border-radius: 8px;
 
   .album-item-cover {
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: all 0.35s;
-    opacity: 0.8;
+    .loaded {
+      width: 100%;
+      height: 100%;
+      transition: all 0.35s;
+      opacity: 0.8;
+      object-fit: cover;
+    }
   }
 
   .album-item__content {
@@ -119,7 +150,7 @@ const handleClick = (type) => {
   }
 
   &:hover {
-    .album-item-cover {
+    .loaded {
       transform: scale(1.2);
       opacity: 0.60;
     }

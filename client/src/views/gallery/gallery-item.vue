@@ -8,9 +8,15 @@
           <el-icon :size="16"><Sunset /></el-icon>
         </span>
       </el-tooltip>
-      <!-- <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" /> -->
-      <!-- <img :src="data.img_preview_url" /> -->
-      <v-lazy-image :src="data.img_preview_url" :src-placeholder="placeholder" :key="data.id"></v-lazy-image>
+      <img v-if="loadError" :src="'/error.png'" />
+      <v-lazy-image
+        v-else
+        :class="loaded ? 'loaded-cover' : 'loading-cover'"
+        :src="data.img_preview_url"
+        :src-placeholder="placeholder"
+        :key="data.id"
+        @error="handleRenderError"
+        @load="hanldeLoad"></v-lazy-image>
     </div>
     <div class="gallery-item-name" :title="data.img_name">
       {{ data.img_name }}
@@ -70,8 +76,8 @@ const myData = computed({
 })
 const defaultBtns = [
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
-  props.remove ? 
-  { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
+  // props.remove ? 
+  // { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
   // { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
@@ -86,6 +92,15 @@ const btns: Ref<Array<{
   disabled?: boolean
 }>> = ref([...defaultBtns])
 
+
+const loadError = ref(false)
+const loaded = ref(false)
+function handleRenderError () {
+  loadError.value = true
+}
+function hanldeLoad () {
+  loaded.value = true
+}
 
 
 watch(() => props.data, () => {
@@ -219,7 +234,10 @@ const actions = {
     img {
       width: 100%;
       height: 100%;
-      object-fit: scale-down;
+      object-fit: cover;
+      &.loading-cover {
+        object-fit: scale-down;
+      }
     }
   }
 
