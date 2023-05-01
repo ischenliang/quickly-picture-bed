@@ -58,7 +58,7 @@ export function useGaodeService (ip: string, key: string) {
         rectangle: rectangle && rectangle.length ? rectangle : '未知'
       })
     }).catch(error => {
-      console.log('错误信息：' + error)
+      // console.log('错误信息：' + error)
       resolve({
         ip: ip,
         province: '未知',
@@ -91,7 +91,7 @@ export function useBaiduService (ip: string, key: string) {
         rectangle: content.point ? content.point : '未知'
       })
     }).catch(error => {
-      console.log('错误信息：' + error)
+      // console.log('错误信息：' + error)
       resolve({
         ip: ip,
         province: '未知',

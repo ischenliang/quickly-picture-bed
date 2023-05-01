@@ -32,8 +32,8 @@
               <div class="bucket-content-title">{{ item.name }}</div>
               <div class="bucket-content-count">
                 <el-tag type="primary" size="small">版本号: {{ item.version }}</el-tag>
-                <el-tag type="info" size="small">图片数量: {{ getStats(item).bucket_count }}</el-tag>
-                <el-tag type="info" size="small">占用存储: {{ getStats(item).bucket_storage }}MB</el-tag>
+                <el-tag type="info" size="small">图片数量: {{ getStats(item, 'bucket_count') }}</el-tag>
+                <el-tag type="info" size="small">占用存储: {{ getStats(item, 'bucket_storage') }}MB</el-tag>
               </div>
               <div class="bucket-content-time">
                 <el-tooltip
@@ -175,8 +175,12 @@ const getBucketIcon = () => {
 }
 getBucketIcon()
 // 获取统计数据
-const getStats = (item: BucketInter) => {
-  return list.stats.find(el => el.id === item.id)
+const getStats = (item: BucketInter, key) => {
+  const tmp = list.stats.find(el => el.id === item.id)
+  if (tmp[key] && tmp[key] !== 'NaN') {
+    return tmp[key]
+  }
+  return 0
 }
 // 获取版本
 const getVersion = (item: BucketInter) => {

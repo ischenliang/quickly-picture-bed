@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-card-album">
+  <!-- <div class="custom-card-album">
     <el-tooltip effect="dark" content="将图片上传到指定相册中" placement="right">
       <el-select v-model="albumData.active_id" placeholder="相册选择" style="width: 180px;">
         <el-option
@@ -9,11 +9,12 @@
           :value="item.id" />
       </el-select>
     </el-tooltip>
-  </div>
+  </div> -->
   <div class="custom-card-upload">
     <c-upload
       :accept="systemConfig.system.accept"
       :limit="systemConfig.system.maxcount"
+      :multiple="systemConfig.system.maxcount > 1"
       @upload="beforeUpload">
       <template #progress v-if="totalProgress.percent">
         <el-progress :percentage="totalProgress.percent" />
@@ -118,7 +119,7 @@ const albumData: {
   active_id: string
   data: AlbumInter[]
 } = reactive({
-  active_id: ctx.$route.query.album_id, // 当前勾选相册id
+  active_id: ctx.$route.query.album_id || habits.value.current_album, // 当前勾选相册id
   data: []
 })
 
@@ -164,7 +165,7 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     totalProgress.progress[index].total = total
   }).then((res: Array<ImageInter>) => {
     totalProgress.percent = 0
-    userStore.currentImages.splice(0, userStore.currentImages.length)
+    // userStore.currentImages.splice(0, userStore.currentImages.length)
     res.forEach((item, index) => {
       let tmp = {
         ...item,
@@ -185,8 +186,9 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           userStore.currentImages.push({
             ...result,
-            sort: item.sort,
-            origin_name: item.origin_name
+            sort: item.order,
+            img_origin_name: item.img_origin_name,
+            img_name: item.img_origin_name
           })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
@@ -200,8 +202,9 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           userStore.currentImages.push({
             ...result,
-            sort: item.sort,
-            origin_name: item.origin_name
+            sort: item.order,
+            img_origin_name: item.img_origin_name,
+            img_name: item.img_origin_name
           })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })

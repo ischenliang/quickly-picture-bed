@@ -40,7 +40,7 @@
                 :images="list.data.map(item => item.img_preview_url)"
                 @reload="listGet"
                 @submit="handleItemSubmit"
-                @click.native="handleClick(index)"></gallery-item>
+                @view="handleClick(index)"></gallery-item>
             </el-col>
           </template>
         </el-row>
@@ -99,6 +99,8 @@ const list: ListInter<ImageInter> = reactive({
     img_name: '',
     bucket_id: '', // 图床
     user_id: 0, // 全部
+    sort: 'sort',
+    order: 'desc'
   },
   data: []
 })

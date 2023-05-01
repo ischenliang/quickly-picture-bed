@@ -27,8 +27,8 @@ export default class UploadManager {
           width: imageWH.width,
           height: imageWH.height,
           mine_type: mimeTypes[suffix],
-          sort: i,
-          origin_name: files[i].name
+          order: i,
+          img_origin_name: files[i].name
         })
       }
 
@@ -59,8 +59,8 @@ export default class UploadManager {
             img_size: tmp.size,
             mine_type: tmp.mine_type,
             img_name: tmp.filename,
-            sort: tmp.sort,
-            origin_name: tmp.origin_name,
+            order: tmp.order,
+            img_origin_name: tmp.img_origin_name,
             ...plugin.uploader.response(item, {
               file: tmp.file,
               filename: tmp.filename

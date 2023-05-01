@@ -126,12 +126,12 @@ const form: AlbumInter = reactive({
   sort: 1,
 })
 const rules: FormRules = reactive({
-  background: [
-    { required: true, message: '请上传顶部背景图', trigger: ['blur', 'change'] }
-  ],
-  cover: [
-    { required: true, message: '请上传相册封面图', trigger: ['blur', 'change'] }
-  ],
+  // background: [
+  //   { required: true, message: '请上传顶部背景图', trigger: ['blur', 'change'] }
+  // ],
+  // cover: [
+  //   { required: true, message: '请上传相册封面图', trigger: ['blur', 'change'] }
+  // ],
   name: [
     { required: true, message: '请输入相册名称', trigger: ['blur'] }
   ]

@@ -1,6 +1,6 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
-    <div class="gallery-item-cover">
+    <div class="gallery-item-cover" @click="handleClick">
       <slot name="tags"></slot>
       <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
       <el-tooltip effect="dark" content="重新上传，覆盖图片" placement="top-end" >
@@ -18,8 +18,8 @@
         @error="handleRenderError"
         @load="hanldeLoad"></v-lazy-image>
     </div>
-    <div class="gallery-item-name" :title="data.img_name">
-      {{ data.img_name }}
+    <div class="gallery-item-name" :title="data.img_origin_name">
+      <span>{{ data.img_origin_name || data.img_name }}</span>
     </div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
     checked: false
   } as ImageInter)
 })
-const emit = defineEmits(['update:data', 'reload', 'submit'])
+const emit = defineEmits(['update:data', 'reload', 'submit', 'view'])
 const ctx = useCtxInstance()
 
 const placeholder = new URL('./loading.gif', import.meta.url).href
@@ -101,7 +101,9 @@ function handleRenderError () {
 function hanldeLoad () {
   loaded.value = true
 }
-
+function handleClick () {
+  emit('view')
+}
 
 watch(() => props.data, () => {
   if (props.remove) {
@@ -234,7 +236,7 @@ const actions = {
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: scale-down;
       &.loading-cover {
         object-fit: scale-down;
       }
@@ -250,10 +252,13 @@ const actions = {
     margin: 3px 0;
     line-height: 26px;
     padding: 0 10px;
-    @include line-text-ellipsis(1);
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    span {
+      @include line-text-ellipsis(1);
+    }
   }
 
   .gallery-item-action {

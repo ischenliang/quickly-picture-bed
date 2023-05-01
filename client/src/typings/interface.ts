@@ -154,7 +154,9 @@ export interface ImageInter {
   // 标签
   tags?: string[]
   // 原始名称
-  origin_name?: string
+  img_origin_name?: string
+  // 顺序
+  order?: number
 }
 
 
@@ -419,6 +421,8 @@ export interface HabitsInter {
   autoPaste?: boolean
   // 当前使用图床id
   current?: BucketInter
+  // 当前使用相册id
+  current_album?: string
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名

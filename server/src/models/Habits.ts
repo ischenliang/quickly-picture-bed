@@ -55,6 +55,12 @@ const HabitsModel = seq.define('habits', {
     comment: '当前使用图床',
     defaultValue: '{}'
   },
+  current_album: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: '当前使用相册',
+    defaultValue: ''
+  },
   link_format: {
     type: DataTypes.STRING,
     allowNull: false,
