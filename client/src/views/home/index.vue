@@ -2,6 +2,7 @@
   <div class="home-container">
     <div class="home-title">
       <span>让存储变得简单有效</span>
+      <span></span>
       <el-button type="success" v-if="route.query.from" @click="() => $router.back()">返回列表</el-button>
       <el-button type="success" @click="handleClick" v-if="route.query.album_id && !route.query.from">返回相册</el-button>
       <el-button type="success" @click="handleClick" v-if="!route.query.album_id && route.query.img_id">返回图库</el-button>
@@ -11,6 +12,11 @@
     <el-card class="bucket-select-card">
       <bucket-select v-model:user-habits="userHabits"></bucket-select>
     </el-card>
+
+    <!-- 选择相册 -->
+    <!-- <el-card class="bucket-select-card">
+      <bucket-album v-model:user-habits="userHabits"></bucket-album>
+    </el-card> -->
 
     <!-- 上传区域 -->
     <el-card class="custom-card">
@@ -37,6 +43,7 @@
 
 <script lang="ts" setup>
 import BucketSelect from './bucket-select.vue'
+import BucketAlbum from './bucket-album.vue'
 import BucketCopy from './bucket-copy.vue'
 import BucketHistory from './bucket-history.vue'
 import BucketUpload from './bucket-upload.vue'

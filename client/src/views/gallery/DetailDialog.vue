@@ -4,15 +4,25 @@
     :title="'图片ID:' + detail.id"
     :width="'600px'"
     :before-close="handleClose">
+    <p style="color: red">修改值后请点击"保存"按钮</p>
     <div class="c-list">
       <div class="c-list-item">
         <span class="item-label">文件名：</span>
-        <!-- <div>{{ detail.img_name }}</div> -->
-        <el-input v-model="image_name" placeholder="请输入文件名称，可不带后缀">
-          <template #append>
-            <el-button @click="saveName">保存</el-button>
-          </template>
-        </el-input>
+        <el-input v-model="image_name" placeholder="请输入文件名称，可不带后缀"></el-input>
+      </div>
+      <div class="c-list-item" style="flex-wrap: wrap;">
+        <div style="display: flex;width: 100%;align-items: center;">
+          <span class="item-label">排序值：</span>
+          <el-input-number
+            v-model="image_sort"
+            :min="0"
+            :precision="4"
+            :max="10000000"
+            controls-position="right"
+            style="width: 100%;">
+          </el-input-number>
+        </div>
+        <p style="width: 100%;margin-top: 5px;color: var(--el-text-color-secondary);padding-left: 60px;">排序值越大越靠前</p>
       </div>
       <div class="c-list-item">
         <span class="item-label">链&emsp;接：</span>
@@ -71,16 +81,23 @@
               <span style="font-size: 12px;margin-left: 10px;color: var(--el-text-color-secondary);">{{ item.desc }}</span>
             </el-option>
           </el-select>
-          <el-button type="primary" @click="addAlbum">确定</el-button>
+          <!-- <el-button type="primary" @click="addAlbum">确定</el-button> -->
         </div>
         <p style="width: 100%;margin-top: 5px;color: var(--el-text-color-secondary);">选择相册后，点击加入相册按钮</p>
       </div>
     </div>
     <template #action>
-      <el-button type="default" @click="handleClose">取消</el-button>
-      <el-button type="primary" @click="copyLink">复制</el-button>
-      <!-- <el-button type="primary" @click="copyLink">设为头像</el-button> -->
-      <el-button type="success" @click="openLink">打开链接</el-button>
+      <div style="display: flex;justify-content: space-between;">
+        <span>
+          <el-button type="success" @click="saveName">保存</el-button>
+        </span>
+        <span>
+          <el-button type="default" @click="handleClose">取消</el-button>
+          <el-button type="primary" @click="copyLink">复制</el-button>
+          <!-- <el-button type="primary" @click="copyLink">设为头像</el-button> -->
+          <el-button type="success" @click="openLink">打开链接</el-button>
+        </span>
+      </div>
     </template>
   </com-dialog>
 </template>
@@ -125,7 +142,9 @@ const dialogVisible = computed({
 })
 const linkType = ref('URL')
 // 名称
-const image_name = ref(props.detail.img_name || '')
+const image_name = ref(props.detail.img_origin_name || '')
+// 排序值
+const image_sort = ref(props.detail.sort || 0)
 
 const link = computed({
   get () {
@@ -185,23 +204,25 @@ const getAlbums = () => {
 }
 getAlbums()
 // 相册下拉回调
-const addAlbum = () => {
-  image.update({
-    id: props.detail.id,
-    album_id: album_id.value,
-    slient: true
-  }).then(res => {
-    ctx.$message({ message: '加入相册成功', duration: 1000, type: 'success' })
-  })
-}
+// const addAlbum = () => {
+//   image.update({
+//     id: props.detail.id,
+//     album_id: album_id.value,
+//     slient: true
+//   }).then(res => {
+//     ctx.$message({ message: '加入相册成功', duration: 1000, type: 'success' })
+//   })
+// }
 // 保存名称
 const saveName = () => {
   image.update({
     id: props.detail.id,
-    img_name: image_name.value,
+    img_origin_name: image_name.value,
+    album_id: album_id.value,
+    sort: image_sort.value,
     slient: true
   }).then(res => {
-    ctx.$message({ message: '名称修改成功', duration: 1000, type: 'success' })
+    ctx.$message({ message: '修改成功', duration: 1000, type: 'success' })
   })
 }
 </script>
@@ -237,6 +258,9 @@ const saveName = () => {
       .el-input__wrapper {
         border-radius: 0 0 0 4px;
       }
+    }
+    .el-input__inner {
+      text-align: left;
     }
   }
 }

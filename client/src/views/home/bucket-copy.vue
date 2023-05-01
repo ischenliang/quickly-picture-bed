@@ -4,15 +4,17 @@
     <el-tab-pane v-for="(item, index) in linkTypesComputed" :key="'linkType-' + index" :label="item.label" :name="item.id">
       <div class="links-copy" @click="copyAllLink(item)">
         <span>
-          <el-tooltip
-            v-for="(el, index) in getLinkValue(item).split('\n')"
-            :key="index"
-            content="复制该项链接"
-            placement="top">
-            <p @click.stop="copyItemLink(el)">
-              {{ el }}
-            </p>
-          </el-tooltip>
+          <template v-if="current.length">
+            <el-tooltip
+              v-for="(el, index) in getLinkValue(item).split('\n')"
+              :key="index"
+              content="复制该项链接"
+              placement="top">
+              <p @click.stop="copyItemLink(el)">
+                {{ el }}
+              </p>
+            </el-tooltip>
+          </template>
         </span>
         <el-tooltip content="复制全部链接" placement="left">
           <span class="link-copy-btn" @click.stop="copyAllLink(item)">

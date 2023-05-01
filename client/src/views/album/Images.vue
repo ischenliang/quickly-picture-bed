@@ -1,7 +1,7 @@
 <template>
   <div class="album-images">
     <div class="album-image-header" :style="{
-      'background-image': `url('${detail.background_preview}')`
+      'background-image': `url('${detail.background ? detail.background_preview : '/default.jpg'}')`
     }">
       <div class="album-actions">
         <el-button type="primary" icon="Back" @click="() => $router.back()">返回</el-button>
@@ -65,7 +65,7 @@
                 @reload="listGet"
                 :key="list.page + '-' + index"
                 @submit="handleItemSubmit"
-                @click.native="handleClick(index)">
+                @view="handleClick(index)">
                 <template #tags>
                   <div class="album-tags">
                     <el-tag

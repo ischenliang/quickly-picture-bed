@@ -11,6 +11,8 @@ interface Filter extends Page {
   img_name?: string
   bucket_id?: string
   album_id?: string
+  sort?: string
+  order?: string
   [prop: string]: any
 }
 
@@ -24,7 +26,8 @@ class ImageController {
   async list(@Body() params: Filter, @CurrentUser() user: User) {
     const tmp: any = {
       order: [
-        ['updatedAt', 'desc']
+        [params.sort ? params.sort : 'createdAt', params.order ? params.order : 'desc'],
+        ['createdAt', 'desc']
       ],
       where: {
         img_name: {

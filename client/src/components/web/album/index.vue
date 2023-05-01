@@ -2,15 +2,20 @@
   <div class="album-item">
     <!-- <img class="album-item-cover" :src="album.cover_preview" /> -->
     <div class="album-item-cover">
-      <img v-if="loadError" :src="'/error.png'" />
-      <v-lazy-image
-        v-else
-        :class="[bindClass]"
-        :src="album.cover_preview"
-        :src-placeholder="placeholder"
-        :key="album.id"
-        @load="handleLoad"
-        @error="handleRenderError"></v-lazy-image>
+      <template v-if="album.cover">
+        <img v-if="loadError" :src="'/error.png'" />
+        <v-lazy-image
+          v-else
+          :class="[bindClass]"
+          :src="album.cover_preview"
+          :src-placeholder="placeholder"
+          :key="album.id"
+          @load="handleLoad"
+          @error="handleRenderError"></v-lazy-image>
+      </template>
+      <template v-else>
+        <img src="/default.jpg" alt="">
+      </template>
     </div>
     <div class="album-item__content">
       <div class="album-item-name">{{ album.name }}({{ album.count }})</div>
@@ -67,7 +72,8 @@ function handleRenderError () {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  background: #000;
+  // background: #000;
+  background: #009688;
   border-radius: 8px;
 
   .album-item-cover {
