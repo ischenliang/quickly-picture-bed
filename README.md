@@ -137,11 +137,16 @@ npm install ts-node -g
 打开`server/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
 ```yml
 # mysql数据库配置
-DB_HOST=localhost # 数据库ip，默认是localhost
-DB_PORT=3306 # 数据库端口，默认3306
-DB_DATABASE=picture-bed-backup # 数据库
-DB_USERNAME=root # mysql用户名，默认是root
-DB_PASSWORD=xxxx # mysql密码
+# 数据库ip，不要使用localhost和127.0.0.1
+DB_HOST=xxx.xxx.xxx.xxx
+# 数据库端口，默认3306
+DB_PORT=3306
+# 数据库
+DB_DATABASE=picture-bed-backup
+# mysql用户名，默认是root
+DB_USERNAME=root
+# mysql密码
+DB_PASSWORD=xxxx
 
 # 后台配置: 程序占用端口
 APP_PORT=3002
@@ -225,11 +230,16 @@ docker-compose up
   上面的`--env-file`是指定环境变量文件，为了方便配置数据库连接，在运行时传入`.env`文件，配置内容如下
   ```yml
   # mysql数据库配置
-  DB_HOST=localhost # 数据库ip，默认是localhost
-  DB_PORT=3306 # 数据库端口，默认3306
-  DB_DATABASE=picture-bed-backup # 数据库
-  DB_USERNAME=root # mysql用户名，默认是root
-  DB_PASSWORD=xxxx # mysql密码
+  # 数据库ip，不要使用localhost和127.0.0.1
+  DB_HOST=xxx.xxx.xxx.xxx
+  # 数据库端口，默认3306
+  DB_PORT=3306
+  # 数据库
+  DB_DATABASE=picture-bed-backup
+  # mysql用户名，默认是root
+  DB_USERNAME=root
+  # mysql密码
+  DB_PASSWORD=xxxx
 
   # 后台配置: 程序占用端口
   APP_PORT=3002
