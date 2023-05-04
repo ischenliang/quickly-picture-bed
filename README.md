@@ -214,7 +214,7 @@ npm run build
 ```shell
 docker-compose up
 ```
-上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
+上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:3002`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
 
 ### Docker运行程序
 直接拉取[Docker Hub](https://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
