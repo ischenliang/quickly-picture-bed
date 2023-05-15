@@ -66,6 +66,14 @@ import useWebSocket from '@/hooks/useWebscoket';
 import { useCopyText, useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import useUserStore from '@/store/user';
 import { useCopyCode } from './useCopyCode'
+import { ChatData } from '@/typings/interface';
+
+interface ChatRecord {
+  id: number
+  title: string
+  isEdit: boolean
+  data: ChatData[]
+}
 
 /**
  * 实例
@@ -84,9 +92,13 @@ const webscoket = useWebSocket('ws://124.222.54.192:3003', {
           loading.value = false
           saveData()
         } else {
-          if (data.data.choices[0].delta.content) {
-            el.text += data.data.choices[0].delta.content
-          }
+          // 老版本
+          // if (data.data.choices[0].delta.content) {
+          //   el.text += data.data.choices[0].delta.content
+          // }
+
+          // 新版本
+          el.text += data.data.content
         }
       }
       scrollToBottom()
@@ -112,7 +124,7 @@ const message = ref('')
 // 消息id
 const id = ref(1)
 // 状态列表
-const chatRecords = ref([
+const chatRecords: Ref<ChatRecord[]> = ref([
   {
     id: Date.now(),
     title: 'vue3 ref实现原理',
@@ -126,6 +138,8 @@ const chatRecords = ref([
 const loading = ref(false)
 // alipay_url
 const alipay = new URL('./alipay.jpg', import.meta.url).href
+// 生成客户端id
+const clientId = getClientId()
 
 
 /**
@@ -144,7 +158,8 @@ function sendData () {
     reverse: true, // 询问时为true，回答时为false
     error: false, // 是否报错
     loading: false, // 请求中
-    role: 'user'
+    role: 'user',
+    clientId: clientId
   })
   activeMessageId.value = id.value++
   chatData.data.push({
@@ -154,7 +169,8 @@ function sendData () {
     reverse: false, // 询问时为true，回答时为false
     error: false, // 是否报错
     loading: true, // 请求中
-    role: 'assistant'
+    role: 'assistant',
+    clientId: clientId
   })
   loading.value = true
   scrollToBottom()
@@ -168,10 +184,11 @@ function useSendData () {
   const sendData = data.slice(0, data.length - 1).map(el => {
     return {
       role: el.role,
-      content: el.text
+      content: el.text,
+      clientId: el.clientId
     }
   })
-  webscoket.send(JSON.stringify(sendData.slice(-6)))
+  webscoket.send(JSON.stringify(sendData.slice(-1)[0]))
 }
 // 工具栏操作
 function toolbarOperate (type) {
@@ -211,6 +228,30 @@ function handleCommand (type, index) {
   saveData()
 }
 useCopyCode(ctx)
+/**
+ * 获取客户端id： 根据时间戳生成客户端id
+ *    考虑到时效和聊天token长度问题，故每天生成客户端id
+ *   生成规则：
+ *      1. 每天生成一个客户端id
+ *      2. 如果是当天第一次获取则生成
+ *      3. 如果是当天第n次则从缓存中获取
+ */
+function getClientId () {
+  // 时间
+  const chatClient = localStorage.getItem('client_id')
+  if (chatClient) {
+    const chatClienDate = new Date(chatClient)
+    const today = new Date()
+    if (chatClienDate.toDateString() === today.toDateString()) {
+      return chatClienDate.getTime()
+    } else {
+      return today.getTime()
+    }
+  }
+  const today = new Date()
+  localStorage.setItem('client_id', today.getTime().toString())
+  return today.getTime()
+}
 
 /**
  * 页面始终滚动到最底部
@@ -218,7 +259,9 @@ useCopyCode(ctx)
 const scrollRef = ref(null)
 const scrollToBottom = async () => {
   nextTick(() => {
-    scrollRef.value.scrollTop = scrollRef.value.scrollHeight
+    if (scrollRef.value) {
+      scrollRef.value.scrollTop = scrollRef.value.scrollHeight
+    }
   })
 }
 
