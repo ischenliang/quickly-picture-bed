@@ -135,6 +135,7 @@ function handleCommand (type) {
     flex-shrink: 0;
     .el-image {
       border-radius: 50% !important;
+      border: 1px solid #ddd;
     }
   }
   &-info {

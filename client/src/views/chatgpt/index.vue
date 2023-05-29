@@ -42,12 +42,27 @@
             </div>
             <div class="msg-toolbar">
               <div class="msg-toolbar-left">
-                <div class="msg-toolbar-item" title="清空历史记录" @click="toolbarOperate('delete')">
-                  <el-icon :size="18"><Delete /></el-icon>
-                </div>
-                <div class="msg-toolbar-item" title="下载历史记录" @click="toolbarOperate('download')">
-                  <el-icon :size="18"><Download /></el-icon>
-                </div>
+                <el-tooltip content="支持作者" placement="top">
+                  <div class="msg-toolbar-item" @click="toolbarOperate('reward')">
+                    <el-icon :size="18"><Box /></el-icon>
+                  </div>
+                </el-tooltip>
+                <el-tooltip content="清空历史记录" placement="top">
+                  <div class="msg-toolbar-item" @click="toolbarOperate('delete')">
+                    <el-icon :size="18"><Delete /></el-icon>
+                  </div>
+                </el-tooltip>
+                <el-tooltip content="导出聊天记录" placement="top">
+                  <div class="msg-toolbar-item" @click="toolbarOperate('download')">
+                    <el-icon :size="18"><Download /></el-icon>
+                  </div>
+                </el-tooltip>
+                <el-tooltip content="导入聊天记录" placement="top">
+                  <div class="msg-toolbar-item" @click="toolbarOperate('upload')">
+                    <el-icon :size="18"><Upload /></el-icon>
+                    <input type="file" ref="uploadRef" accept=".json" @change="uploadChange" style="display: none;">
+                  </div>
+                </el-tooltip>
               </div>
               <el-button type="primary" @click="sendData" :disabled="loading">发送</el-button>
             </div>
@@ -55,11 +70,16 @@
         </div>
       </main>
     </div>
+    <!-- 打赏弹窗 -->
+    <reward-dialog
+      v-if="visible.reward"
+      v-model="visible.reward">
+    </reward-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick, onMounted, computed, Ref } from 'vue';
+import { ref, nextTick, onMounted, computed, Ref, reactive } from 'vue';
 import messageItem from './message-item.vue';
 import moment from 'moment';
 import useWebSocket from '@/hooks/useWebscoket';
@@ -67,6 +87,12 @@ import { useCopyText, useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import useUserStore from '@/store/user';
 import { useCopyCode } from './useCopyCode'
 import { ChatData } from '@/typings/interface';
+import rewardDialog from './reward-dialog.vue';
+import { ElMessage, ElMessageBox } from 'element-plus'
+
+interface ChangeEvent<T = Element> extends Event {
+  target: EventTarget & T
+}
 
 interface ChatRecord {
   id: number
@@ -140,6 +166,12 @@ const loading = ref(false)
 const alipay = new URL('./alipay.jpg', import.meta.url).href
 // 生成客户端id
 const clientId = getClientId()
+// 弹窗
+const visible = reactive({
+  reward: false
+})
+// 上传ref
+const uploadRef: Ref<HTMLInputElement> = ref(null)
 
 
 /**
@@ -212,7 +244,37 @@ function toolbarOperate (type) {
       a.remove();
       URL.revokeObjectURL(url);
       break
+    case 'reward':
+      visible.reward = true
+      break
+    case 'upload':
+      uploadRef.value.click()
+      break
   }
+}
+// 上传聊天记录
+function uploadChange (e: ChangeEvent<HTMLInputElement>) {
+  const file: File = e.target.files[0]
+  ElMessageBox.confirm('上传聊天记录将覆盖当前聊天记录，是否确定上传？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(() => {
+    console.log(file)
+    const fileReader = new FileReader()
+    fileReader.onload = () => {
+      const res: any = fileReader.result
+      try {
+        const jsonObj = JSON.parse(res)
+        chatRecords.value[0].data = jsonObj
+        saveData()
+        scrollToBottom()
+      } catch (error) {
+        ctx.$message({ message: 'json文件内容不符合要求', duration: 1000, type: 'error' })
+      }
+    }
+    fileReader.readAsText(file)
+  }).catch(() => {})
 }
 // 处理命令
 function handleCommand (type, index) {
