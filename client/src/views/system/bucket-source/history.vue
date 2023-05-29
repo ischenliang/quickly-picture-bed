@@ -7,8 +7,10 @@
       :is-index="true"
       :border="true"
       :actionWidth="220"
+      :selection="true"
       :enable-filter-btn="false"
-      @pageChange="listGet">
+      @pageChange="listGet"
+      @select-change="hanleSelectChange">
       <template #filter>
         <filter-item :text="''">
           <el-button type="default" icon="Back" @click="goBack">返回</el-button>
@@ -22,6 +24,9 @@
             <span class="history-desc">更新时间: {{ detail.updatedAt }}</span>
           </div>
         </filter-item>
+      </template>
+      <template #action>
+        <el-button type="danger" :disabled="selected.length === 0" @click="batchDelete">删除</el-button>
       </template>
       <template #version="data">
         <el-tag type="success" effect="dark" size="small">{{ data.version }}</el-tag>
@@ -39,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { history_config } from './config'
 import { BucketSourceInter, ListInter, BucketSourceHistoryInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
@@ -77,6 +82,8 @@ const detail: BucketSourceInter = reactive({
   name: '',
   updatedAt: ''
 })
+// 已勾选的
+const selected = ref([])
 
 /**
  * 逻辑处理
@@ -161,6 +168,23 @@ const restFilters = () => {
     list.filters[key] = typeof list.filters[key] === 'number' ? 0 : ''
   }
   listGet()
+}
+// 表格数据变化
+const hanleSelectChange = (data: BucketSourceHistoryInter[]) => {
+  selected.value = data.map(item => item.id)
+}
+// 批量删除
+const batchDelete = () => {
+  useDeleteConfirm().then(() => {
+    const promise = selected.value.map(async item => {
+      return await bucketSourceHistory.delete(item)
+    })
+    Promise.all(promise).then(res => {
+      selected.value = []
+      ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
+      listGet()
+    })
+  })
 }
 </script>
 

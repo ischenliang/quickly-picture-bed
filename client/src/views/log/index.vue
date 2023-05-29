@@ -22,12 +22,12 @@
         {{ data.client_info ? data.client_info.ip : '-' }}
       </template>
       <template #action>
-        <el-tooltip
+        <!-- <el-tooltip
           effect="dark"
           content="删除日志数据将直接影响使用分析里的数据"
           placement="left-start">
           <el-button type="danger" :disabled="selected.length === 0" @click="batchDelete">删除</el-button>
-        </el-tooltip>
+        </el-tooltip> -->
       </template>
       <!-- 禁止用户删除日志 -->
       <!-- <template #tableAction="{ row }">
