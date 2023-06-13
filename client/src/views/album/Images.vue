@@ -403,6 +403,7 @@ onActivated(() => {
     justify-content: flex-end;
     position: relative;
     color: #fff;
+    box-shadow: 0px 1px 10px #0000001a;
     .album-actions {
       position: absolute;
       top: 0;
