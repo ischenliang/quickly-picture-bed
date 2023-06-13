@@ -196,6 +196,10 @@ export interface UserInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 配置
+  config?: {
+    chatgpt: boolean // 是否可以使用chatgpt
+  }
 }
 
 /**

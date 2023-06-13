@@ -10,9 +10,7 @@ function useWebsocket (url, options) {
   webSocket.onerror = () => {
     console.log('报错了')
   }
-  webSocket.onclose = () => {
-    console.log('连接关闭了')
-  }
+  webSocket.onclose = options.onClose
   return webSocket
 }
 

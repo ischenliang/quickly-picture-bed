@@ -83,6 +83,14 @@ const UserModel = seq.define('user', {
     type: DataTypes.STRING,
     allowNull: true,
     comment: '登录token'
+  },
+  config: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    comment: '用户配置',
+    defaultValue: {
+      "chatgpt": false
+    }
   }
 }, {
   freezeTableName: true

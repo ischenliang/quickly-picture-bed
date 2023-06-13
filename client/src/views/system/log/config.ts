@@ -7,7 +7,7 @@ export const config: Array<TableColumnConfig> = [
     prop: 'operate_id'
   },
   {
-    align: 'center',
+    align: 'left',
     label: '操作类别',
     width: '',
     prop: 'type',

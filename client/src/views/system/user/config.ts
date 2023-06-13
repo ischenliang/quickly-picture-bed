@@ -2,6 +2,13 @@ import { TableColumnConfig } from '@/typings/interface'
 export const config: Array<TableColumnConfig> = [
   {
     align: 'center',
+    label: 'chatgpt',
+    width: '',
+    prop: 'config',
+    slot: 'chatgpt'
+  },
+  {
+    align: 'center',
     label: '用户名',
     width: '',
     prop: 'username'

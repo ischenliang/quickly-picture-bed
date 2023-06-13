@@ -16,7 +16,7 @@
       </aside> -->
       <!-- 右侧消息区域 -->
       <main class="chatgpt-message">
-        <div class="chatgpt-message-list" ref="scrollRef" v-if="chatRecords[0].data.length">
+        <div class="chatgpt-message-list" ref="scrollRef" v-if="chatRecords[0].data.length && chatgpt">
           <message-item
             v-for="(item, index) in chatRecords[0].data"
             :key="item.id"
@@ -33,12 +33,14 @@
           <p>赶快在下面输入框中输入你的内容测试测试吧！！</p>
           <p>服务器昂贵，接口昂贵，但网站免费！！</p>
           <p style="font-weight: bold;">如果你觉得做的好，可以给我买一瓶冰阔落</p>
+          <p v-if="!chatgpt" style="color: red;font-weight: bold;">您未被授权使用chatgpt功能，如需使用请联系管理员授权！</p>
+          <p v-if="!chatgpt" style="color: red;font-weight: bold;">联系邮箱: itchenliang@163.com</p>
           <el-image :src="alipay"></el-image>
         </div>
         <div class="chatgpt-message-operate">
           <div class="chatgpt-input">
             <div class="msg-input">
-              <el-input type="textarea" resize="none" placeholder="说点什么吧..." v-model="message" @keydown.enter.prevent="sendData"></el-input>
+              <el-input type="textarea" :disabled="!chatgpt" resize="none" placeholder="说点什么吧..." v-model="message" @keydown.enter.prevent="sendData"></el-input>
             </div>
             <div class="msg-toolbar">
               <div class="msg-toolbar-left">
@@ -47,24 +49,24 @@
                     <el-icon :size="18"><Box /></el-icon>
                   </div>
                 </el-tooltip>
-                <el-tooltip content="清空历史记录" placement="top">
+                <el-tooltip v-if="chatgpt" content="清空历史记录" placement="top">
                   <div class="msg-toolbar-item" @click="toolbarOperate('delete')">
                     <el-icon :size="18"><Delete /></el-icon>
                   </div>
                 </el-tooltip>
-                <el-tooltip content="导出聊天记录" placement="top">
+                <el-tooltip v-if="chatgpt" content="导出聊天记录" placement="top">
                   <div class="msg-toolbar-item" @click="toolbarOperate('download')">
                     <el-icon :size="18"><Download /></el-icon>
                   </div>
                 </el-tooltip>
-                <el-tooltip content="导入聊天记录" placement="top">
+                <el-tooltip v-if="chatgpt" content="导入聊天记录" placement="top">
                   <div class="msg-toolbar-item" @click="toolbarOperate('upload')">
                     <el-icon :size="18"><Upload /></el-icon>
                     <input type="file" ref="uploadRef" accept=".json" @change="uploadChange" style="display: none;">
                   </div>
                 </el-tooltip>
               </div>
-              <el-button type="primary" @click="sendData" :disabled="loading">发送</el-button>
+              <el-button type="primary" @click="sendData" :disabled="loading || !chatgpt">发送</el-button>
             </div>
           </div>
         </div>
@@ -79,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick, onMounted, computed, Ref, reactive } from 'vue';
+import { ref, nextTick, onMounted, computed, Ref, reactive, watch } from 'vue';
 import messageItem from './message-item.vue';
 import moment from 'moment';
 import useWebSocket from '@/hooks/useWebscoket';
@@ -89,6 +91,7 @@ import { useCopyCode } from './useCopyCode'
 import { ChatData } from '@/typings/interface';
 import rewardDialog from './reward-dialog.vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import Log from '@/types/Log';
 
 interface ChangeEvent<T = Element> extends Event {
   target: EventTarget & T
@@ -101,38 +104,18 @@ interface ChatRecord {
   data: ChatData[]
 }
 
+// 是否允许使用chatgpt
+const chatgpt = computed(() => {
+  return userStore.userInfo.config.chatgpt
+})
+
 /**
  * 实例
  */
-const webscoket = useWebSocket('ws://124.222.54.192:3003', {
-  onMessage: (event) => {
-    const chatData = chatRecords.value[0]
-    chatData.data.forEach(el => {
-      if (el.id === activeMessageId.value) {
-        if (el.loading) {
-          el.time = getDateTime()
-        }
-        el.loading = false
-        const data = JSON.parse(event.data)
-        if (data.done) {
-          loading.value = false
-          saveData()
-        } else {
-          // 老版本
-          // if (data.data.choices[0].delta.content) {
-          //   el.text += data.data.choices[0].delta.content
-          // }
-
-          // 新版本
-          el.text += data.data.content
-        }
-      }
-      scrollToBottom()
-    })
-  }
-})
+let webscoket: WebSocket = null
 const userStore = useUserStore()
 const ctx = useCtxInstance()
+const log = new Log()
 
 
 const avatar = computed(() => {
@@ -182,6 +165,12 @@ function sendData () {
   if (message.value.trim() === '' || loading.value) {
     return
   }
+
+  if (webscoket.readyState !== webscoket.OPEN) {
+    ElMessage({ message: '连接已经关闭，请刷新后重试', type: 'warning', duration: 1000 })
+    return
+  }
+  
   const chatData = chatRecords.value[0]
   chatData.data.push({
     id: id.value++,
@@ -221,6 +210,12 @@ function useSendData () {
     }
   })
   webscoket.send(JSON.stringify(sendData.slice(-1)[0]))
+  log.create({
+    type: 5,
+    operate_id: userStore.userInfo.email,
+    operate_cont: userStore.userInfo.email,
+    content: '使用了chatgpt'
+  })
 }
 // 工具栏操作
 function toolbarOperate (type) {
@@ -357,6 +352,48 @@ function getData () {
  */
 onMounted(() => {
   scrollToBottom()
+})
+
+
+/**
+ * 侦听器
+ */
+watch(() => chatgpt.value, (val, old) => {
+  if (val) {
+    webscoket = useWebSocket('ws://124.222.54.192:3003', {
+      onMessage: (event) => {
+        const chatData = chatRecords.value[0]
+        chatData.data.forEach(el => {
+          if (el.id === activeMessageId.value) {
+            if (el.loading) {
+              el.time = getDateTime()
+            }
+            el.loading = false
+            const data = JSON.parse(event.data)
+            if (data.done) {
+              loading.value = false
+              saveData()
+            } else {
+              // 老版本
+              // if (data.data.choices[0].delta.content) {
+              //   el.text += data.data.choices[0].delta.content
+              // }
+
+              // 新版本
+              el.text += data.data.content
+            }
+          }
+          scrollToBottom()
+        })
+      },
+      onClose: () => {
+        console.log('连接关闭了')
+        ElMessage({ message: '连接已经关闭，请刷新后重试，此时无法使用chatgpt', type: 'warning', duration: 1000 })
+      }
+    })
+  }
+}, {
+  immediate: true
 })
 </script>
 

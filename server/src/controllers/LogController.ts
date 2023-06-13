@@ -6,6 +6,7 @@ import { Op } from 'sequelize'
 import { Context } from 'koa'
 import { useRoleAuthorization } from '../middlewares/authorization'
 import { useGetClientInfoByIp } from '../utils/global';
+import UserModel from '../models/User'
 
 interface Filter extends Page {
   name?: string
@@ -149,11 +150,21 @@ class LogController {
   @Post('/create')
   async create (@Body() params: Log, @CurrentUser() user: User, @Ctx() ctx: Context) {
     params.uid = user.id
-    // params.client_info = ctx.req_ip
+    // 记录登录日志
+    const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
     return {
       code: 200,
       message: '成功',
-      data: await LogModel.create(params as any)
+      data: await LogModel.create({
+        ...params,
+        client_info: {
+          province,
+          city,
+          adcode,
+          rectangle,
+          ip: ctx.req_ip
+        }
+      })
     }
   }
 
