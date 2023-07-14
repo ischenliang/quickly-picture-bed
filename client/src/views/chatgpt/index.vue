@@ -202,14 +202,25 @@ function sendData () {
 // 获取数据
 function useSendData () {
   const { data } = chatRecords.value[0]
+  // 新版本
+  // const sendData = data.slice(0, data.length - 1).map(el => {
+  //   return {
+  //     role: el.role,
+  //     content: el.text,
+  //     clientId: el.clientId
+  //   }
+  // })
+  // webscoket.send(JSON.stringify(sendData.slice(-1)[0]))
+
+
+  // 老版本
   const sendData = data.slice(0, data.length - 1).map(el => {
     return {
       role: el.role,
-      content: el.text,
-      clientId: el.clientId
+      content: el.text
     }
   })
-  webscoket.send(JSON.stringify(sendData.slice(-1)[0]))
+  webscoket.send(JSON.stringify(sendData.slice(-6)))
   log.create({
     type: 5,
     operate_id: userStore.userInfo.email,
@@ -375,12 +386,12 @@ watch(() => chatgpt.value, (val, old) => {
               saveData()
             } else {
               // 老版本
-              // if (data.data.choices[0].delta.content) {
-              //   el.text += data.data.choices[0].delta.content
-              // }
+              if (data.data.choices[0].delta.content) {
+                el.text += data.data.choices[0].delta.content
+              }
 
               // 新版本
-              el.text += data.data.content
+              // el.text += data.data.content
             }
           }
           scrollToBottom()
