@@ -253,7 +253,7 @@ docker-compose up
   ```yml
   # 需带上http|https协议，默认不加 "/"
   # 注意vite中的环境变量需要以VITE开头
-  VITE_APP_BASE_URL=http://124.222.54.192:3002
+  VITE_APP_BASE_URL=http://127.0.0.1:3002
   ```
   当该命令执行成功时，我们可以在浏览器中访问`http://localhost:80`来预览我们的客户端应用程序。
 
