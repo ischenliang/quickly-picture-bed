@@ -13,6 +13,8 @@ import webtoken from 'jsonwebtoken'
 import koaStatic from 'koa-static'
 import path from 'path'
 import { useGetSuffix } from './utils/global'
+import UserModel from './models/User';
+import { User } from './types';
 
 
 // 实例化koa
@@ -52,14 +54,27 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   if (ctx.headers['authorization']) {
     try {
       const res: any = webtoken.verify(ctx.headers['authorization'], 'a1b2c3')
-      ctx.state = {
-        user: {
-          id: res.data,
-          role: res.role
-        },
-        code: 200,
+      // 这里鉴权当前用户是否存在于数据库中，否则可以直接访问管理端
+      const curUser = await UserModel.findOne({
+        where: {
+          id: res.data
+        }
+      }) as User
+      if (curUser && curUser.email) {
+        ctx.state = {
+          user: {
+            id: res.data,
+            role: res.role
+          },
+          code: 200,
+        }
+        await next()
+      } else {
+        ctx.body = {
+          code: 401,
+          message: '登录状态已失效，请重新登录'
+        }
       }
-      await next()
     } catch (error) {
       if (['jwt expired', 'jwt malformed'].includes(error.message)) {
         ctx.body = {
