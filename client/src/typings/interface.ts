@@ -200,6 +200,10 @@ export interface UserInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 配置
+  config?: {
+    chatgpt: boolean // 是否可以使用chatgpt
+  }
 }
 
 /**
@@ -502,4 +506,19 @@ export interface MyPlugin {
     // 响应格式配置
     response: (res?: AxiosResponse, file?: any) => any
   }
+}
+
+
+/**
+ * 聊天时间
+ */
+export interface ChatData {
+  id: number
+  time: string // 时间
+  text: string // 内容
+  reverse: boolean // 是否翻转，询问时为true，回答时为false
+  error: boolean // 是否报错
+  loading: boolean // 请求中
+  role: string // 角色
+  clientId?: number // 客户端id，每天生成一个
 }

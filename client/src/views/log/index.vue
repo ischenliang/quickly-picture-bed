@@ -51,6 +51,7 @@ import { PageResponse } from '@/typings/req-res';
 import { reactive, ref } from 'vue';
 import { config } from './config'
 import cStatus from '@/components/web/status/index.vue'
+import types_status from '@/hooks/useLogType';
 
 
 
@@ -76,25 +77,6 @@ const list: ListInter<LogInter> = reactive({
 })
 // 已勾选的
 const selected = ref([])
-// 1: 登录系统 2：上传图片 3：删除图片 4：更新图片
-const types_status = reactive({
-  1: {
-    text: '登录系统',
-    status: 'primary'
-  },
-  2: {
-    text: '上传图片',
-    status: 'success'
-  },
-  3: {
-    text: '删除图片',
-    status: 'danger'
-  },
-  4: {
-    text: '更新图片',
-    status: 'warning'
-  }
-})
 
 /**
  * 数据获取

@@ -113,7 +113,7 @@ const login = () => {
         type: 'verify_code'
       }).then((res: any) => {
         loading.value = false
-        localStorage.setItem('email', email.value)
+        Cookies.set('email', email.value)
         localStorage.setItem('token', res.token)
         ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
         router.push({ path: '/' })

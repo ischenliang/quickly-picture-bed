@@ -86,6 +86,6 @@ const visible = computed({
 })
 
 const handleClose = () => {
-  emit('update:modelValue', false)
+  visible.value = false
 }
 </script>

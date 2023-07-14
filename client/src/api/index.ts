@@ -41,13 +41,9 @@ function http (url, data) {
         reject({ message: error.data || error.message, type: 'error' })
       } else {
         ElMessage({ message: error.data || error.message, type: 'error' })
-        if ([401].includes(error.code)) {
+        if ([401].includes(error.code) || (error.code === 500 && error.message === 'invalid token')) {
           // 为了避免由于登录失效后到登录页还需重新输入数据
-          const email = localStorage.getItem('email')
-          const password = localStorage.getItem('password')
-          localStorage.clear()
-          localStorage.setItem('email', email)
-          localStorage.setItem('password', password)
+          localStorage.removeItem('token')
           useUserStore().updateUserInfo(null)
           router.push({
             path: '/login'

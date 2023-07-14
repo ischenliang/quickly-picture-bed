@@ -5,6 +5,7 @@ import ImageModel from '../models/Image'
 import LogModel from '../models/Log'
 import { Context } from 'koa'
 import { useGetClientInfoByIp } from '../utils/global'
+import UserModel from '../models/User'
 
 
 interface Filter extends Page {
@@ -66,13 +67,18 @@ class ImageController {
   async create (@Body() params: Image, @CurrentUser() user: User, @Ctx() ctx: Context) {
     params.uid = user.id
     const data = (await ImageModel.create(params as any) as Image)
+    const userTmp = await UserModel.findOne({
+      where: {
+        id: user.id
+      }
+    }) as User
     // 记录登录日志
     const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
     await LogModel.create({
       type: 2,
       operate_id: `ID:${data.id}`,
-      operate_cont: data.img_name,
-      content: '上传了图片',
+      operate_cont: userTmp.email,
+      content: `上传了图片: ${data.img_name}`,
       uid: user.id,
       client_info: {
         province,
@@ -96,7 +102,7 @@ class ImageController {
    * @returns 
    */
   @Post('/update')
-  async update (@Body() params: Image, @CurrentUser() user: User) {
+  async update (@Body() params: Image, @CurrentUser() user: User, @Ctx() ctx: Context) {
     // 先更新数据
     await ImageModel.update({
       ...params
@@ -106,6 +112,27 @@ class ImageController {
         uid: user.id
       },
       silent: params.slient
+    })
+    // 记录登录日志
+    const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
+    const userTmp = await UserModel.findOne({
+      where: {
+        id: user.id
+      }
+    }) as User
+    await LogModel.create({
+      type: 4,
+      operate_id: `ID:${params.id}`,
+      operate_cont: userTmp.email,
+      content: `更新了图片: ${params.img_name}`,
+      uid: user.id,
+      client_info: {
+        province,
+        city,
+        adcode,
+        rectangle,
+        ip: ctx.req_ip
+      }
     })
     return {
       code: 200,
@@ -130,11 +157,16 @@ class ImageController {
     const tmp = (await ImageModel.findOne({ where: { id: params.id, uid: user.id } }) as Image)
     // 记录登录日志
     const { province, city, adcode, rectangle } = await useGetClientInfoByIp(ctx.req_ip) as any
+    const userTmp = await UserModel.findOne({
+      where: {
+        id: user.id
+      }
+    }) as User
     await LogModel.create({
       type: 3,
       operate_id: `ID:${params.id}`,
-      operate_cont: tmp.img_name,
-      content: '删除了图片',
+      operate_cont: userTmp.email,
+      content: `删除了图片: ${tmp.img_name}`,
       uid: user.id,
       client_info: {
         province,

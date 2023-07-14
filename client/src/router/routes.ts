@@ -46,6 +46,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '个人中心', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
+        path: '/chatgpt',
+        name: 'ChatGpt',
+        component: () => import('@/views/chatgpt/index.vue'),
+        meta: { title: 'ChatGpt', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
+      },
+      {
         path: '/habits',
         name: 'Habits',
         component: () => import('@/views/userinfo/habits.vue'),

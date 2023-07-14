@@ -23,6 +23,9 @@
       <el-form-item label="联系电话" prop="phone">
        <el-input v-model="form.phone" size="large" placeholder="请输入联系电话" />
       </el-form-item>
+      <el-form-item label="chatgpt授权" prop="config">
+       <el-switch v-model="form.config.chatgpt" size="large" active-text="启用" inactive-text="禁用"/>
+      </el-form-item>
       <el-form-item label="状态" prop="status">
        <el-switch v-model="form.status" size="large" active-text="启用" inactive-text="禁用"/>
       </el-form-item>
@@ -82,7 +85,10 @@ const form: UserInter = reactive({
   role: 1,
   phone: '',
   status: true,
-  avatar: '星座_白羊座'
+  avatar: '星座_白羊座',
+  config: {
+    chatgpt: false
+  }
 })
 const rules = reactive({
   email: [
@@ -156,7 +162,10 @@ watch(() => props.detail, (val) => {
   if (val) {
     form.id = props.detail.id
     for (let key in form) {
-      form[key] = props.detail[key]
+      if (props.detail[key] && props.detail[key] !== null) {
+        console.log(key)
+        form[key] = props.detail[key]
+      }
     }
   }
 }, {

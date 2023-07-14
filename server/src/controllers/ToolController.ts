@@ -9,10 +9,23 @@ import { useDiffTime, useFormatTime } from '../utils/time'
 import moment from 'moment'
 import { Op } from 'sequelize'
 import { getCosSignature, getSingnature, getUpyunSignature } from '../utils/aliyun'
+// @ts-ignore
 import { Context } from 'koa'
 import path from 'path'
-import fs from 'fs'
 import fse from 'fs-extra'
+import { PassThrough, Readable } from 'stream'
+import proxy from "https-proxy-agent";
+
+function EventStream() { 
+  Readable.call(this,arguments);
+  return ''
+}
+EventStream.prototype = new Readable();
+EventStream.prototype._read = function(data){
+}
+const sse = (stream: any, event : any, data: any) => {
+  return stream.push(`event:${ event }\ndata: ${ JSON.stringify(data) }\n\n`)
+}
 
 @Controller('/tool')
 class ToolController {
@@ -239,9 +252,11 @@ class ToolController {
     }
   }
 
-  
+  /**
+   * 本地存储桶图片上传
+   */
   @Post('/upload')
-  async test(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
+  async upload(@Ctx() ctx: Context, @Body({ required: true }) params: { path: string }) {
     const file: any = ctx.request.files.file
     if (!file) {
       return {
@@ -262,6 +277,20 @@ class ToolController {
         img_url: '/' + params.path.replace(/^\//g, ''),
         hash: ''
       }
+    }
+  }
+
+  /**
+   * 连天测试
+   * @param ctx 
+   * @param params 
+   */
+  @Get('/test')
+  async test() {
+    return {
+      code: 200,
+      message: '成功',
+      data: '成功啦'
     }
   }
 }

@@ -27,6 +27,14 @@
           </el-select>
         </filter-item>
       </template>
+      <template #chatgpt="row">
+        <div :class="row.config && row.config.chatgpt ? 'status-success' : 'status-danger'">
+          <span class="status-dot"></span>
+          <span class="status-text">
+            {{ row.config && row.config.chatgpt ? '启用' : '禁用' }}
+          </span>
+        </div>
+      </template>
       <template #action>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
@@ -197,6 +205,32 @@ const restFilters = () => {
         font-weight: bold;
       }
     }
+  }
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: red;
+    margin-right: 5px;
+  }
+  .status-success {
+    $color: #67c23a;
+    .status-dot {
+      background: $color;
+    }
+    // .status-text {
+    //   color: $color;
+    // }
+  }
+  .status-danger {
+    $color: #f56c6c;
+    .status-dot {
+      background: $color;
+    }
+    // .status-text {
+    //   color: $color;
+    // }
   }
 }
 </style>
