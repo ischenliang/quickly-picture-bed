@@ -8,7 +8,7 @@ import seq from '../utils/seq'
  * createdAt：创建时间
  * updatedAt：更新时间
  */
-const BucketSourceHistoryModel = seq.define('bucketSourceHistory', {
+const BucketSourceHistoryModel = seq.define('bucketsourcehistory', {
   id: {
     type: DataTypes.UUID,
     allowNull: false,
