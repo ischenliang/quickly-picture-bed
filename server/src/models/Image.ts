@@ -83,6 +83,11 @@ const ImageModel = seq.define('image', {
     comment: '标签',
     defaultValue: []
   },
+  img_origin_name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: '原图名称'
+  },
 }, {
   freezeTableName: true
 })

@@ -23,6 +23,6 @@
     },
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js", "src/**/*"],
   "exclude": ["node_modules", "dist"],
 }

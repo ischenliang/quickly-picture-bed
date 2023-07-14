@@ -17,14 +17,15 @@ const useUserStore = defineStore('user', () => {
   const list_filter = ref({})
 
   // 当前图片
-  const currentImages: Ref<ImageInter[]> = ref([{
-    id: '',
-    img_url: '',
-    img_size: 0,
-    img_height: 0,
-    img_width: 0,
-    img_name: ''
-  }])
+  const currentImages: Ref<ImageInter[]> = ref([])
+  // {
+  //   id: '',
+  //   img_url: '',
+  //   img_size: 0,
+  //   img_height: 0,
+  //   img_width: 0,
+  //   img_name: ''
+  // }
 
   // 今日操作记录
   const user_logs: Ref<LogInter[]> = ref([])

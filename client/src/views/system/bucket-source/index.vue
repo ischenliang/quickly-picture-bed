@@ -11,7 +11,7 @@
       :actionWidth="340">
       <template #filter>
         <filter-item :text="'插件名称:'">
-          <el-input v-model="list.filters.name" placeholder="请输入插件名称" />
+          <el-input v-model="list.filters.name" placeholder="请输入插件名称" @input="handleInput" />
         </filter-item>
       </template>
       <template #action>
@@ -172,6 +172,21 @@ const itemOperate = (data: any, type) => {
         id: data ? data.id : undefined
       }
     })
+  }
+}
+function handleInput (e) {
+  debounce(() => {
+    listGet()
+  }, 2000)()
+}
+// 防抖
+function debounce(callback, time) {
+  let timer = null
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      callback(args)
+    }, time)
   }
 }
 

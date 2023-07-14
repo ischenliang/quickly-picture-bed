@@ -69,4 +69,8 @@ html, body, #app {
   background: $bgcolor-main;
   // padding: 10px;
 }
+.user-info-popover {
+  top: 1px !important;
+  right: -5px !important;
+}
 </style>

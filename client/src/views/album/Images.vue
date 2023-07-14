@@ -1,11 +1,16 @@
 <template>
   <div class="album-images">
     <div class="album-image-header" :style="{
-      'background-image': `url('${detail.background_preview}')`
+      'background-image': `url('${detail.background ? detail.background_preview : '/default.jpg'}')`
     }">
       <div class="album-actions">
         <el-button type="primary" icon="Back" @click="() => $router.back()">返回</el-button>
         <el-button type="success" icon="UploadFilled" @click="goUpload">去上传</el-button>
+      </div>
+      <div class="album-actions-footer">
+        <el-button v-if="showActionBar" type="primary" icon="DocumentCopy" size="small" @click="handleAction('copy')">复制链接</el-button>
+        <el-button v-if="showActionBar" type="primary" icon="Close" size="small" @click="handleAction('remove')">移出相册</el-button>
+        <el-button v-if="showActionBar" type="danger" icon="Delete" size="small" @click="handleAction('delete')">删除所选</el-button>
       </div>
       <div class="album-title">{{ detail.name }}</div>
       <div class="album-desc">{{ detail.desc }}</div>
@@ -60,7 +65,7 @@
                 @reload="listGet"
                 :key="list.page + '-' + index"
                 @submit="handleItemSubmit"
-                @click.native="handleClick(index)">
+                @view="handleClick(index)">
                 <template #tags>
                   <div class="album-tags">
                     <el-tag
@@ -109,13 +114,13 @@
 
 <script lang="ts" setup>
 import { useFormat } from '@/hooks/date-time';
-import { useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
 import Album from '@/types/Album';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { AlbumInter, BucketInter, ImageInter, ListInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { nextTick, onActivated, reactive, Ref, ref } from 'vue';
+import { computed, nextTick, onActivated, reactive, Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DetailDialog from '@/views/gallery/DetailDialog.vue'
 import TagDialog from './TagDialog.vue'
@@ -151,6 +156,10 @@ const list: ListInter<ImageInter> = reactive({
     img_name: ''
   },
   data: []
+})
+// 是否显示操作栏
+const showActionBar = computed(() => {
+  return list.data.filter(el => el.checked).length
 })
 // 存储桶列表
 const buckets: Ref<BucketInter[]> = ref([
@@ -238,7 +247,7 @@ const getDetail = () => {
     album.detail(id).then((res: AlbumInter) => {
       res.createdAt = useFormat(res.createdAt, 'YYYY-MM-DD')
       res.updatedAt = useFormat(res.updatedAt, 'YYYY-MM-DD')
-      res.background_preview = configStore.systemConfig.website.baseUrl + res.background
+      res.background_preview = window.uploader_ip + res.background
       detail.value = res
     })
   }
@@ -272,6 +281,47 @@ const listGet = () => {
     })
     list.loading = false
   })
+}
+// 操作栏回调
+function handleAction (type) {
+  let ids = []
+  switch (type) {
+    case 'remove':
+      ids = list.data.filter(item => item.checked).map(item => item.id)
+      useDeleteConfirm('确定将图片移出该相册吗？').then(() => {
+        ids.map((id, index) => {
+          image.update({
+            id: id,
+            album_id: '',
+            sort: 0,
+            slient: true
+          }).then(async (res) => {
+            if (index === ids.length - 1) {
+              ctx.$message({ message: '移除成功', duration: 1000, type: 'success' })
+              listGet()
+            }
+          })
+        })
+      })
+      break
+    case 'copy':
+      const copyText = list.data.filter(item => item.checked).map(item => item.img_preview_url).join('\n')
+      useCopyText(ctx, copyText)
+      break
+    case 'delete':
+      ids = list.data.filter(item => item.checked).map(item => item.id)
+      useDeleteConfirm().then(() => {
+        ids.map((id, index) => {
+          image.delete(id).then(res => {
+            if (index === ids.length - 1) {
+              ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
+              listGet()
+            }
+          })
+        })
+      })
+      break
+  }
 }
 
 /**
@@ -392,7 +442,7 @@ onActivated(() => {
     width: calc(100% + 19px + 19px);
     height: 250px;
     flex-shrink: 0;
-    background-image: url('http://lc-DZNcsGI3.cn-n1.lcfile.com/Dy9tIIgJPRTmHbCGfUuc2k4p0BcDO3qE/202211081037249.jpg');
+    background-color: #009688;
     background-size: 100% auto;
     background-position: center center;
     margin-top: -19px;
@@ -412,6 +462,19 @@ onActivated(() => {
       justify-content: space-between;
       width: 100%;
       padding: 10px 20px;
+    }
+    .album-actions-footer {
+      position: absolute;
+      bottom: -35px;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      padding: 0 5px;
+      .el-button {
+        height: 30px;
+      }
     }
     .album-title {
       font-size: 28px;
@@ -454,7 +517,7 @@ onActivated(() => {
     flex-direction: column;
     .album-image-filter {
       flex-shrink: 0;
-      margin: 30px 0 0px;
+      margin: 40px 0 0px;
       display: flex;
       flex-direction: column;
       align-items: center;

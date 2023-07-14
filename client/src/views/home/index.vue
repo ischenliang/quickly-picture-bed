@@ -2,14 +2,21 @@
   <div class="home-container">
     <div class="home-title">
       <span>让存储变得简单有效</span>
-      <el-button type="success" @click="handleClick" v-if="route.query.album_id">返回相册</el-button>
+      <span></span>
+      <el-button type="success" v-if="route.query.from" @click="() => $router.back()">返回列表</el-button>
+      <el-button type="success" @click="handleClick" v-if="route.query.album_id && !route.query.from">返回相册</el-button>
       <el-button type="success" @click="handleClick" v-if="!route.query.album_id && route.query.img_id">返回图库</el-button>
     </div>
     <div class="home-tips">严禁上传包含反动、暴力、色情、违法、及侵权内容的文件。</div>
     <!-- 选择存储桶 -->
-    <el-card>
+    <el-card class="bucket-select-card">
       <bucket-select v-model:user-habits="userHabits"></bucket-select>
     </el-card>
+
+    <!-- 选择相册 -->
+    <!-- <el-card class="bucket-select-card">
+      <bucket-album v-model:user-habits="userHabits"></bucket-album>
+    </el-card> -->
 
     <!-- 上传区域 -->
     <el-card class="custom-card">
@@ -36,6 +43,7 @@
 
 <script lang="ts" setup>
 import BucketSelect from './bucket-select.vue'
+import BucketAlbum from './bucket-album.vue'
 import BucketCopy from './bucket-copy.vue'
 import BucketHistory from './bucket-history.vue'
 import BucketUpload from './bucket-upload.vue'
@@ -98,7 +106,7 @@ const handleClick = () => {
   width: 100%;
   min-height: 100%;
   @include flex-layout(column);
-  padding: 0 10px 0;
+  padding: 0px;
   .home-title {
     font-size: 28px;
     margin-bottom: 10px;
@@ -109,12 +117,18 @@ const handleClick = () => {
   .home-tips {
     font-size: 16px;
     color: #fa8c16;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   .el-card {
     margin-bottom: 15px;
     box-shadow: 0px 0px 3px rgb(0 0 0 / 12%);
     border: 0;
+  }
+  .bucket-select-card {
+    .el-card__body {
+      padding: 20px 20px 10px;
+    }
   }
 
   .copy-history {

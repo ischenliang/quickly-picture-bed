@@ -68,9 +68,9 @@
             :range-color="['#ebedf0', '#dae2ef', '#c0ddf9', '#73b3f3', '#3886e1', '#17459e']"
             @day-click="handlClick">
             <template #vch__legend-left>
-              <span>最近一年贡献：506 次</span>
-              <span>最长连续贡献：7 日</span>
-              <span>最近连续贡献：7 日</span>
+              <span>最近一年贡献：xxx 次</span>
+              <span>最长连续贡献：xx 日</span>
+              <span>最近连续贡献：xx 日</span>
             </template>
           </calendar-heatmap>
           <div class="vch__tips">贡献度的统计数据包括上传图片、删除图片、更新图片、登录记录，其中批量上传的图片会根据实际成功上传的图片数量来记录次数。</div>

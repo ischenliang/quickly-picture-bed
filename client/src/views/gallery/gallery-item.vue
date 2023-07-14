@@ -1,6 +1,6 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
-    <div class="gallery-item-cover">
+    <div class="gallery-item-cover" @click="handleClick">
       <slot name="tags"></slot>
       <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
       <el-tooltip effect="dark" content="重新上传，覆盖图片" placement="top-end" >
@@ -8,12 +8,18 @@
           <el-icon :size="16"><Sunset /></el-icon>
         </span>
       </el-tooltip>
-      <!-- <el-image :src="data.img_preview_url" :fit="'cover'" :lazy="true" /> -->
-      <!-- <img :src="data.img_preview_url" /> -->
-      <v-lazy-image :src="data.img_preview_url" :src-placeholder="placeholder" :key="data.id"></v-lazy-image>
+      <img v-if="loadError" :src="'/error.png'" />
+      <v-lazy-image
+        v-else
+        :class="loaded ? 'loaded-cover' : 'loading-cover'"
+        :src="data.img_preview_url"
+        :src-placeholder="placeholder"
+        :key="data.id"
+        @error="handleRenderError"
+        @load="hanldeLoad"></v-lazy-image>
     </div>
-    <div class="gallery-item-name" :title="data.img_name">
-      {{ data.img_name }}
+    <div class="gallery-item-name" :title="data.img_origin_name">
+      <span>{{ data.img_origin_name || data.img_name }}</span>
     </div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
@@ -52,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
     checked: false
   } as ImageInter)
 })
-const emit = defineEmits(['update:data', 'reload', 'submit'])
+const emit = defineEmits(['update:data', 'reload', 'submit', 'view'])
 const ctx = useCtxInstance()
 
 const placeholder = new URL('./loading.gif', import.meta.url).href
@@ -70,8 +76,8 @@ const myData = computed({
 })
 const defaultBtns = [
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
-  props.remove ? 
-  { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
+  // props.remove ? 
+  // { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
   { icon: 'Select', type: 'success', title: '选择图片', action: 'select' },
   // { icon: 'Crop', type: 'warning', title: '裁剪图片', action: 'crop', disabled: true },
   { icon: 'InfoFilled', type: 'info', title: '图片详情', action: 'detail' },
@@ -87,6 +93,17 @@ const btns: Ref<Array<{
 }>> = ref([...defaultBtns])
 
 
+const loadError = ref(false)
+const loaded = ref(false)
+function handleRenderError () {
+  loadError.value = true
+}
+function hanldeLoad () {
+  loaded.value = true
+}
+function handleClick () {
+  emit('view')
+}
 
 watch(() => props.data, () => {
   if (props.remove) {
@@ -220,6 +237,9 @@ const actions = {
       width: 100%;
       height: 100%;
       object-fit: scale-down;
+      &.loading-cover {
+        object-fit: scale-down;
+      }
     }
   }
 
@@ -232,10 +252,13 @@ const actions = {
     margin: 3px 0;
     line-height: 26px;
     padding: 0 10px;
-    @include line-text-ellipsis(1);
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    span {
+      @include line-text-ellipsis(1);
+    }
   }
 
   .gallery-item-action {

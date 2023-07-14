@@ -1,6 +1,6 @@
 <template>
   <div class="bucket-container">
-    <c-card :title="'存储桶'">
+    <c-card :title="'存储桶'" v-loading="list.loading">
       <el-row>
         <!-- 新建 -->
         <el-col :xl="6" :lg="8" :md="12">
@@ -32,8 +32,8 @@
               <div class="bucket-content-title">{{ item.name }}</div>
               <div class="bucket-content-count">
                 <el-tag type="primary" size="small">版本号: {{ item.version }}</el-tag>
-                <el-tag type="info" size="small">图片数量: {{ getStats(item).bucket_count }}</el-tag>
-                <el-tag type="info" size="small">占用存储: {{ getStats(item).bucket_storage }}MB</el-tag>
+                <el-tag type="info" size="small">图片数量: {{ getStats(item, 'bucket_count') }}</el-tag>
+                <el-tag type="info" size="small">占用存储: {{ getStats(item, 'bucket_storage') }}MB</el-tag>
               </div>
               <div class="bucket-content-time">
                 <el-tooltip
@@ -50,15 +50,23 @@
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'toggle')">{{ item.visible ? '禁用' : '启用' }}</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'delete')">删除</div>
+              <div class="bucket-action-item" @click="itemOperate(item, 'migrate')">数据迁移</div>
             </div>
           </div>
         </el-col>
       </el-row>
     </c-card>
 
+    <!-- 编辑弹窗 -->
     <edit-dialog
       v-if="visible.edit"
       v-model="visible.edit"
+      :detail="item.data"
+      @submit="listGet"/>
+    <!-- 数据迁移弹窗 -->
+    <migrate-dialog
+      v-if="visible.migrate"
+      v-model="visible.migrate"
       :detail="item.data"
       @submit="listGet"/>
   </div>
@@ -71,6 +79,7 @@ import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import Dict from '@/types/Dict'
 import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
+import MigrateDialog from './MigrateDialog.vue'
 import Bucket from '@/types/Bucket'
 import useConfigStore from '@/store/config'
 import { useFormat } from '@/hooks/date-time'
@@ -103,14 +112,16 @@ const list: ListInter<BucketInter, Stats, Versions> = reactive({
   },
   data: [],
   stats: [],
-  versions: []
+  versions: [],
+  loading: false
 })
 // 当前被操作项
 let item = reactive({
   data: null
 })
 const visible = reactive({
-  edit: false
+  edit: false,
+  migrate: false
 })
 // 存储桶图标
 const bucketIcons = ref({})
@@ -120,6 +131,7 @@ const bucketIcons = ref({})
  */
 // 获取数据
 const listGet = () => {
+  list.loading = true
   bucket.find({
     ...list.filters
   }).then((res: PageResponse<BucketInter, Stats, Versions>) => {
@@ -132,8 +144,21 @@ const listGet = () => {
     list.data = res.items.map(item => {
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
-      return item
+      const obj = JSON.parse(item.config)
+      for (let key in obj) {
+        obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
+          const keys = key.split('.')
+          if (keys[0] === 'config') {
+            return obj[keys[1]]
+          }
+        })
+      }
+      return {
+        ...item,
+        config_baseUrl: obj.baseUrl
+      }
     })
+    list.loading = false
   })
 }
 // 获取字典中的图标
@@ -150,8 +175,12 @@ const getBucketIcon = () => {
 }
 getBucketIcon()
 // 获取统计数据
-const getStats = (item: BucketInter) => {
-  return list.stats.find(el => el.id === item.id)
+const getStats = (item: BucketInter, key) => {
+  const tmp = list.stats.find(el => el.id === item.id)
+  if (tmp[key] && tmp[key] !== 'NaN') {
+    return tmp[key]
+  }
+  return 0
 }
 // 获取版本
 const getVersion = (item: BucketInter) => {
@@ -179,6 +208,9 @@ const itemOperate = (data: BucketInter, type) => {
       })
     })
   }
+  // if (type === 'migrate') {
+  //   console.log('数据迁移')
+  // }
 }
 </script>
 

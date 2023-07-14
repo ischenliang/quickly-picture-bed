@@ -96,6 +96,12 @@ watch(() => route, (val: any) => {
       }
       .el-tabs__nav-wrap {
         margin-right: 0px !important;
+        .el-tabs__nav {
+          width: 100%;
+          .el-tabs__item {
+            justify-content: flex-start;
+          }
+        }
       }
     }
     .el-tabs__content {

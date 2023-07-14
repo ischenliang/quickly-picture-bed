@@ -41,7 +41,7 @@
           :label="item.label"
           :prop="item.field"
           :rules="[generateRules(item)]">
-          <el-select v-if="item.type === 'option'" v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
+          <el-select v-if="item.type === 'option'" filterable v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
             <el-option
               v-for="(option, index) in item.options"
               :key="'item-' + index"
@@ -85,6 +85,8 @@ import { BasicResponse, PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
 import { useCtxInstance} from '@/hooks/global';
 import axios from 'axios'
+import useUserStore from '@/store/user';
+import Habits from '@/types/Habits';
 
 /**
  * 实例
@@ -104,6 +106,8 @@ const dict = new Dict()
 const bucketSource = new BucketSource()
 const bucket = new Bucket()
 const ctx = useCtxInstance()
+const userStore = useUserStore()
+const habit = new Habits()
 
 
 /**
@@ -214,11 +218,19 @@ const itemCreate = (data) => {
   })
 }
 // 更新
-const itemUpdate = (data) => {
-  bucket.update(data).then(res => {
+const itemUpdate = (data: BucketInter) => {
+  bucket.update(data).then(async res => {
     handleClose()
     emit('submit')
     ctx.$message({ message: '更新成功', duration: 1000, type: 'success' })
+    // 更新完存储桶同时更新当前高亮存储桶
+    if (userStore.user_habits.data.id === data.id) {
+      userStore.updateUserHabits(data)
+      await habit.save({
+        id: data.id,
+        current: data
+      })
+    }
   })
 }
 // 处理数据

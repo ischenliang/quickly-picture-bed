@@ -212,6 +212,8 @@ export interface Image {
   top?: boolean
   // 标签
   tags?: string[]
+  // 原名称
+  img_origin_name?: string
 }
 
 // 日志

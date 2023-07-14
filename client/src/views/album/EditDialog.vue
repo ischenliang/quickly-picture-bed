@@ -76,10 +76,11 @@ import { AlbumInter, BucketInter } from '@/typings/interface';
 import { computed, reactive, ref, watch } from 'vue';
 import WebUpload from '@/components/web/upload/index.vue'
 import { useCtxInstance, useGetSuffix } from '@/hooks/global';
-import { uploadImg } from '@/types/av';
+import { uploadImg, uploadImgLocal } from '@/types/av';
 import { useFileName } from '@/hooks/date-time';
 import { FormRules } from 'element-plus';
 import Album from '@/types/Album';
+import { baseURL } from '@/global.config';
 
 /**
  * 实例
@@ -125,12 +126,12 @@ const form: AlbumInter = reactive({
   sort: 1,
 })
 const rules: FormRules = reactive({
-  background: [
-    { required: true, message: '请上传顶部背景图', trigger: ['blur', 'change'] }
-  ],
-  cover: [
-    { required: true, message: '请上传相册封面图', trigger: ['blur', 'change'] }
-  ],
+  // background: [
+  //   { required: true, message: '请上传顶部背景图', trigger: ['blur', 'change'] }
+  // ],
+  // cover: [
+  //   { required: true, message: '请上传相册封面图', trigger: ['blur', 'change'] }
+  // ],
   name: [
     { required: true, message: '请输入相册名称', trigger: ['blur'] }
   ]
@@ -158,10 +159,10 @@ const beforeUpload = (e: { files: FileList, error: string }, property) => {
   }
   const suffix = useGetSuffix(file.name, '.')
   loading[property] = true
-  uploadImg(useFileName() + '.' + suffix, file).then((res: any) => {
-    const img_url = res.attributes.url.replace(new RegExp(props.baseUrl, 'g'), '')
+  uploadImgLocal(useFileName() + '.' + suffix, file).then(res => {
+    const img_url = res.data.data.img_url
     form[property] = img_url
-    form[property + '_preview'] = props.baseUrl + img_url
+    form[property + '_preview'] = window.uploader_ip + img_url
     loading[property] = false
   })
 }

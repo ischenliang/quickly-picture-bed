@@ -142,13 +142,15 @@ const itemLocate = (data: LogInter) => {
 }
 // 批量删除
 const batchDelete = () => {
-  const promise = selected.value.map(async item => {
-    return await log.delete(item)
-  })
-  Promise.all(promise).then(res => {
-    selected.value = []
-    ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
-    listGet()
+  useDeleteConfirm().then(() => {
+    const promise = selected.value.map(async item => {
+      return await log.delete(item)
+    })
+    Promise.all(promise).then(res => {
+      selected.value = []
+      ctx.$message({ message: '删除成功', duration: 1000, type: 'success' })
+      listGet()
+    })
   })
 }
 // 表格数据变化

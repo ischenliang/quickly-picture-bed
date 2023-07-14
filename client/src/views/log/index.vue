@@ -8,7 +8,8 @@
       :actionWidth="100"
       :is-action="false"
       @pageChange="listGet"
-      @select-change="hanleSelectChange">
+      @select-change="hanleSelectChange"
+      v-loading="list.loading">
       <template #type="data">
         <c-status
           :type="types_status[data.type].status"
@@ -21,12 +22,12 @@
         {{ data.client_info ? data.client_info.ip : '-' }}
       </template>
       <template #action>
-        <el-tooltip
+        <!-- <el-tooltip
           effect="dark"
           content="删除日志数据将直接影响使用分析里的数据"
           placement="left-start">
           <el-button type="danger" :disabled="selected.length === 0" @click="batchDelete">删除</el-button>
-        </el-tooltip>
+        </el-tooltip> -->
       </template>
       <!-- 禁止用户删除日志 -->
       <!-- <template #tableAction="{ row }">
@@ -70,7 +71,8 @@ const list: ListInter<LogInter> = reactive({
   filters: {
     name: ''
   },
-  data: []
+  data: [],
+  loading: false
 })
 // 已勾选的
 const selected = ref([])
@@ -98,6 +100,7 @@ const types_status = reactive({
  * 数据获取
  */
 const listGet = () => {
+  list.loading = true
   log.find({
     page: list.page,
     size: list.size,
@@ -108,6 +111,7 @@ const listGet = () => {
       item.createdAt = useFormat(item.createdAt)
       return item
     })
+    list.loading = false
   })
 }
 listGet()

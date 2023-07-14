@@ -1,48 +1,69 @@
 <template>
-  <c-upload
-    :accept="systemConfig.system.accept"
-    :limit="systemConfig.system.maxcount"
-    @upload="beforeUpload">
-    <template #progress v-if="totalProgress.percent">
-      <el-progress :percentage="totalProgress.percent" />
-    </template>
-    <el-icon class="el-icon--upload">
-      <upload-filled />
-    </el-icon>
-    <div class="el-upload__text">
-      点击上传图片，支持拖拽上传
-    </div>
-    <template #tip>
-      <div class="el-upload__tip">最大可上传 {{ systemConfig.system.maxsize }}MB 的 {{ systemConfig.system.accept.join(', ') }} 图片，允许同时上传 {{ systemConfig.system.maxcount }} 张，<span style="color: red;">支持直接 Ctrl + V 上传</span>。</div>
-    </template>
-  </c-upload>
-  <div class="quick-entry">
-    <div class="entry-title">快捷上传</div>
-    <div class="entry-list">
-      <el-tooltip effect="dark" content="'如果不支持，可以尝试直接按Ctrl + V'" placement="bottom">
-        <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
-      </el-tooltip>
-      <!--  :disabled="true" -->
-      <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
+  <div class="custom-card-album">
+    <el-tooltip effect="dark" content="将图片上传到指定相册中" placement="right">
+      <el-select
+        v-model="albumData.active_id"
+        placeholder="相册选择"
+        style="width: 180px;"
+        @change="toggleCurrentBucket(albumData.active_id)">
+        <el-option
+          v-for="(item, index) in albumData.data"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id" />
+      </el-select>
+    </el-tooltip>
+  </div>
+  <div class="custom-card-upload">
+    <c-upload
+      :accept="systemConfig.system.accept"
+      :limit="systemConfig.system.maxcount"
+      :multiple="systemConfig.system.maxcount > 1"
+      @upload="beforeUpload">
+      <template #progress v-if="totalProgress.percent">
+        <el-progress :percentage="totalProgress.percent" />
+      </template>
+      <el-icon class="el-icon--upload">
+        <upload-filled />
+      </el-icon>
+      <div class="el-upload__text">
+        点击上传图片，支持拖拽上传
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件，<span style="color: red;">支持直接 Ctrl + V 上传</span></div>
+      </template>
+    </c-upload>
+    <div class="quick-entry">
+      <div class="entry-title">快捷上传</div>
+      <div class="entry-list">
+        <el-tooltip effect="dark" content="如果不支持，可以尝试直接按Ctrl + V" placement="left">
+          <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="将网络图片保存到系统中" placement="left">
+          <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
+        </el-tooltip>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useCopyText, useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard, useUrlToImageFile } from '@/hooks/global';
-import { HabitsInter, ImageInter } from '@/typings/interface';
+import { AlbumInter, HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from 'vue';
 import { linkTypes, Link } from '@/global.config'
 import useConfigStore from '@/store/config'
 import cUpload from '@/components/web/upload/index.vue'
 import bucketUpload from '@/hooks/bucket/index';
 import Image from '@/types/Image';
-import { JsonResponse } from '@/typings/req-res';
+import { JsonResponse, PageResponse } from '@/typings/req-res';
 import useUserStore from '@/store/user';
 import { useRoute } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
 import { useFileName } from '@/hooks/date-time';
 import UploadManager from '@/hooks/uploader';
+import Album from '@/types/Album';
+import Habits from '@/types/Habits';
 interface Props {
   userHabits: HabitsInter
 }
@@ -67,6 +88,8 @@ const userStore = useUserStore()
 const image = new Image()
 const route = useRoute()
 const uploader = new UploadManager()
+const album = new Album()
+const habit = new Habits()
 
 /**
  * 变量
@@ -96,6 +119,14 @@ const totalProgress: {
   percent: 0,
   total: 0,
   loaded: 0
+})
+// 相册列表
+const albumData: {
+  active_id: string
+  data: AlbumInter[]
+} = reactive({
+  active_id: ctx.$route.query.album_id || habits.value.current_album, // 当前勾选相册id
+  data: []
 })
 
 /**
@@ -128,7 +159,9 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
   const { id, type } = habits.value.current
-  if (!id || !type || type === '' || id === '') {
+  // @ts-ignore
+  const plugins = userStore.pluginManager.plugins
+  if (!id || !type || type === '' || id === '' || !plugins[id]) {
     return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
   }
   showError(errorList)
@@ -138,16 +171,15 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     totalProgress.progress[index].total = total
   }).then((res: Array<ImageInter>) => {
     totalProgress.percent = 0
-    userStore.currentImages.splice(0, userStore.currentImages.length)
+    // userStore.currentImages.splice(0, userStore.currentImages.length)
     res.forEach((item, index) => {
-      const album_id = ctx.$route.query.album_id
       let tmp = {
         ...item,
         bucket_id: id,
         bucket_type: type
       }
-      if (album_id) {
-        tmp.album_id = album_id
+      if (albumData.active_id) {
+        tmp.album_id = albumData.active_id
       }
       // 判断是否传img_id，传了代表更新数据
       if (route.query.img_id) {
@@ -160,8 +192,9 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           userStore.currentImages.push({
             ...result,
-            sort: item.sort,
-            origin_name: item.origin_name
+            sort: item.order,
+            img_origin_name: item.img_origin_name,
+            img_name: item.img_origin_name
           })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
@@ -175,8 +208,9 @@ const upload = (fileList: File[], errorList: File[] = []) => {
           result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
           userStore.currentImages.push({
             ...result,
-            sort: item.sort,
-            origin_name: item.origin_name
+            sort: item.order,
+            img_origin_name: item.img_origin_name,
+            img_name: item.img_origin_name
           })
           if (index === res.length - 1) {
             ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
@@ -253,6 +287,31 @@ const showError = (errList: File[]) => {
     }, 0)
   })
 }
+// 获取相册列表
+function getAlbums () {
+  album.find({
+    sort: 'sort',
+    order: 'desc'
+  }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
+    albumData.data = [
+      {
+        id: '',
+        name: '图库'
+      },
+      ...res.items
+    ]
+  })
+}
+getAlbums()
+// 切换当前图床
+const toggleCurrentBucket = async (item: string) => {
+  habits.value.current_album = item
+  await habit.save({
+    id: habits.value.id,
+    current_album: item
+  })
+}
+
 
 /**
  * 生命周期
@@ -287,7 +346,14 @@ watch(() => totalProgress.progress, (val) => {
 @import '@/styles/flex-layout.scss';
 .custom-card {
   .el-card__body {
-    @include flex-layout(row);
+    display: flex;
+    flex-direction: column;
+    .custom-card-album {
+      margin-bottom: 8px;
+    }
+    .custom-card-upload {
+      @include flex-layout(row);
+    }
   }
   .c-upload {
     height: 300px;
