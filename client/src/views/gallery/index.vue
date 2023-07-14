@@ -99,7 +99,7 @@ const list: ListInter<ImageInter> = reactive({
     img_name: '',
     bucket_id: '', // 图床
     user_id: 0, // 全部
-    sort: 'sort',
+    sort: 'updatedAt',
     order: 'desc'
   },
   data: []
