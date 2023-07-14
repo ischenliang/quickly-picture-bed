@@ -39,12 +39,21 @@ import { ImageInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import VLazyImage from 'v-lazy-image';
+import { EpPropMergeType } from 'element-plus/es/utils';
 
 interface Props {
   data: ImageInter
   fit?: string
   images?: Array<string>
   remove?: boolean
+}
+
+interface BtnProps {
+  icon?: string
+  type?: "success" | "warning" | "info" | "text" | "primary" | "danger"
+  title?: string
+  action?: string
+  disabled?: boolean
 }
 /**
  * 实例
@@ -74,7 +83,7 @@ const myData = computed({
     emit('update:data', val)
   }
 })
-const defaultBtns = [
+const defaultBtns: BtnProps[] = [
   { icon: 'CopyDocument', type: 'primary', title: '复制图片地址', action: 'copy' },
   // props.remove ? 
   // { icon: 'Close', type: 'success', title: '移除图片', action: 'remove' } : 
@@ -84,13 +93,7 @@ const defaultBtns = [
   { icon: 'Delete', type: 'danger', title: '删除图片', action: 'delete' }
 ]
 // 按钮组
-const btns: Ref<Array<{
-  icon?: string
-  type?: string
-  title?: string
-  action?: string
-  disabled?: boolean
-}>> = ref([...defaultBtns])
+const btns: Ref<Array<BtnProps>> = ref([...defaultBtns])
 
 
 const loadError = ref(false)
