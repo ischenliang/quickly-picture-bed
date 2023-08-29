@@ -18,41 +18,34 @@
       <bucket-album v-model:user-habits="userHabits"></bucket-album>
     </el-card> -->
 
-    <!-- 上传区域 -->
-    <el-card class="custom-card">
-      <bucket-upload
-        v-model:user-habits="userHabits"
-        @success="getTodayLog"></bucket-upload>
-    </el-card>
-
     <!-- 复制和历史记录 -->
     <div class="copy-history">
-      <!-- 复制链接 -->
-      <el-card>
-        <bucket-copy
-          v-model:user-habits="userHabits"></bucket-copy>
+      <!-- 上传区域 -->
+      <el-card class="custom-card upload-card">
+        <bucket-upload v-model:user-habits="userHabits"></bucket-upload>
       </el-card>
 
-      <!-- 上传历史记录 -->
-      <el-card>
-        <bucket-history :logs="userStore.user_logs"></bucket-history>
+      <!-- 复制链接 -->
+      <el-card class="drag-card">
+        <bucket-drag v-model:user-habits="userHabits"></bucket-drag>
       </el-card>
     </div>
+    
+    <!-- 复制链接 -->
+    <el-card class="copy-card" style="margin-top: 15px;">
+      <bucket-copy v-model:user-habits="userHabits"></bucket-copy>
+    </el-card>
   </div>
 </template>
 
 <script lang="ts" setup>
 import BucketSelect from './bucket-select.vue'
-import BucketAlbum from './bucket-album.vue'
 import BucketCopy from './bucket-copy.vue'
-import BucketHistory from './bucket-history.vue'
+import BucketDrag from './image-drag.vue'
 import BucketUpload from './bucket-upload.vue'
 import useUserStore from '@/store/user';
 import { computed } from 'vue';
 import Log from '@/types/Log';
-import { PageResponse } from '@/typings/req-res';
-import { LogInter } from '@/typings/interface';
-import { useFormat } from '@/hooks/date-time';
 import { useRoute, useRouter } from 'vue-router';
 /**
  * 实例
@@ -69,19 +62,6 @@ const route = useRoute()
 const userHabits = computed(() => {
   return userStore.user_habits.data
 })
-
-/**
- * 逻辑处理
- */
-const getTodayLog = () => {
-  log.today().then((res: PageResponse<LogInter>) => {
-    userStore.updateUserLogs(res.items.map(item => {
-      item.createdAt = useFormat(item.createdAt)
-      return item
-    }))
-  })
-}
-getTodayLog()
 
 // 返回
 const handleClick = () => {
@@ -113,10 +93,12 @@ const handleClick = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    // color: #0db3a6;
   }
   .home-tips {
     font-size: 16px;
-    color: #fa8c16;
+    // color: #0db3a6;
+    color: #ff4a83;
     // margin-bottom: 15px;
     margin-bottom: 10px;
   }
@@ -124,10 +106,9 @@ const handleClick = () => {
     margin-bottom: 15px;
     box-shadow: 0px 0px 3px rgb(0 0 0 / 12%);
     border: 0;
-  }
-  .bucket-select-card {
     .el-card__body {
-      padding: 20px 20px 10px;
+      padding: 15px 15px 10px;
+      position: relative;
     }
   }
 
@@ -135,8 +116,7 @@ const handleClick = () => {
     width: 100%;
     @include flex-layout-align(row, space-between, flex-start);
     .el-card {
-      flex: 1;
-      height: 230px;
+      height: 365px;
       margin-bottom: 0;
       + .el-card {
         margin-left: 15px;
@@ -145,6 +125,13 @@ const handleClick = () => {
         @include flex-layout(column);
         height: 100%;
       }
+    }
+    .drag-card {
+      width: 35%;
+      flex-shrink: 0;
+    }
+    .upload-card {
+      flex: 1;
     }
   }
 }

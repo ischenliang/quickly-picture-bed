@@ -258,6 +258,7 @@ const changeMajor = (item) => {
 // 获取性别字典
 const getGender = () => {
   dict.detailByPro('code', 'user_gender').then((res: DictInter) => {
+    console.log(res)
     genders.value = res.values
   })
 }

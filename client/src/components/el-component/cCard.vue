@@ -15,8 +15,6 @@
 </template>
 
 <script lang="ts" setup>
-// import { EpPropMergeType } from 'element-plus/es/utils';
-
 interface Props {
   title?: string
   shadow?: "never" | "always" | "hover"

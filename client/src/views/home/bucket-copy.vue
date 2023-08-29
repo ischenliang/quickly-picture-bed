@@ -146,7 +146,7 @@ const handleTabChange = async (name) => {
         padding: 15px;
         .links-copy {
           width: 100%;
-          min-height: 80px;
+          min-height: 100px;
           background: rgba(204,232,255,.5);
           border: 1px solid rgba(153,209,255,.57);
           border-radius: 4px;

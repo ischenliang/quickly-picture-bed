@@ -8,13 +8,13 @@ import http from '@/api';
  */
 export default class Habits {
   async create (params: HabitsInter) {
-    return http('/habits/create', params)
+    return http('/user/habits/create', params)
   }
   update (params: HabitsInter) {
-    return http('/habits/update', params)
+    return http('/user/habits/update', params)
   }
   detail () {
-    return http('/habits/detail', {})
+    return http('/user/habits/detail', {})
   }
   save (params: HabitsInter) {
     delete params.createdAt

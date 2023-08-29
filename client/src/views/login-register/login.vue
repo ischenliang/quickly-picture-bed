@@ -10,10 +10,10 @@
     </div>
     <el-tabs class="type-tabs" v-model="activeTab">
       <el-tab-pane label="账号密码登录" name="first">
-        <login-password :key="'first-' + activeTab"></login-password>
+        <login-password v-if="activeTab === 'first'" :key="'first-' + activeTab"></login-password>
       </el-tab-pane>
       <el-tab-pane label="验证码登录" name="second">
-        <login-verifycode :key="'second-' + activeTab"></login-verifycode>
+        <login-verifycode v-if="activeTab === 'second'" :key="'second-' + activeTab"></login-verifycode>
       </el-tab-pane>
     </el-tabs>
   </layout>

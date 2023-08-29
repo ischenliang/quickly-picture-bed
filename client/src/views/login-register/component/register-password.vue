@@ -170,7 +170,7 @@ const getImgCode = () => {
     last_id: imgCode.id ? imgCode.id : '-'
   }).then((res: VerifyCodeInter) => {
     imgCode.id = res.id
-    imgCode.code = res.code
+    imgCode.code = res.data
     form.verify_id = res.id
   })
 }

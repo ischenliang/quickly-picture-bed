@@ -21,7 +21,7 @@ export default class Bucket {
     return http('/bucket/create', params)
   }
   // 删除
-  delete (id: string, uid: string) {
+  delete (id: number, uid: number) {
     return http('/bucket/delete', { id })
   }
   // 更新
@@ -29,7 +29,7 @@ export default class Bucket {
     return http('/bucket/update', params)
   }
   // 切换状态
-  toggle (id: string) {
+  toggle (id: number) {
     return http('/bucket/toggle', {
       id
     })

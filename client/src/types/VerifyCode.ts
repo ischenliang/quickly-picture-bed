@@ -8,11 +8,11 @@ import http from '@/api'
  */
 export default class VerifyCode {
   // 图形验证码
-  async create (params: { last_id: string }) {
+  create (params: { last_id: string }) {
     return http('/tool/imgCreate', params)
   }
   // 邮箱或者手机验证码
-  async smsSend (params: { account: string, verify_code: string, verify_id: string, type: string }) {
+  smsSend (params: { account: string, verify_code: string, verify_id: string, type: string }) {
     return http('/tool/smsSend', params)
   }
 }

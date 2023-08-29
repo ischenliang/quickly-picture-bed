@@ -2,30 +2,23 @@
   <com-dialog
     v-model="dialogVisible"
     :title="detail && detail.id ? '编辑存储桶' : '新建存储桶'"
-    :width="'600px'"
+    :width="'700px'"
     :before-close="handleClose">
-    <div class="bucket-warning">
-      <p>请不要随意更改存储桶配置的必填属性(除存储桶名称外)，修改后会自动同步到所有关联的图片，进而可能会导致图片加载失败。</p>
-    </div>
     <el-form ref="formRef" :model="form" label-width="auto" :label-position="'left'" class="dict-form">
       <el-form-item
-        label="存储源"
-        prop="type"
+        label="存储桶插件"
+        prop="user_plugin_id"
         :rules="[
-          { required: true, message: '请选择存储源', trigger: ['blur', 'change'] }
+          { required: true, message: '请选择存储桶插件', trigger: ['blur', 'change'] }
         ]">
         <p class="bucket-tips" style="color: red;">* 添加成功后存储源不可修改</p>
-        <el-select v-model="form.type" style="width: 100%" filterable size="large" :disabled="form.id ? true : false">
+        <el-select v-model="form.user_plugin_id" style="width: 100%" filterable size="large" :disabled="form.id ? true : false">
           <el-option
-            v-for="(item, index) in bucketSources"
+            v-for="(item, index) in bucketPlugins"
             :key="index"
-            :label="item.name"
-            :value="item.type"
-            />
+            :label="item.plugin.title"
+            :value="item.id"/>
         </el-select>
-        <p class="bucket-tips" v-if="doc_url">
-          <a :href="doc_url" class="doc_link" target="_blank">配置文档</a>
-        </p>
       </el-form-item>
       <el-form-item
         label="存储桶名称"
@@ -33,41 +26,51 @@
         :rules="[
           { required: true, message: '请输入存储桶名称', trigger: ['blur', 'change'] }
         ]">
-       <el-input v-model="form.name" size="large" placeholder="请输入存储桶名称" />
+        <el-input v-model="form.name" size="large" placeholder="请输入存储桶名称" />
       </el-form-item>
-      <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.type + index">
-        <el-form-item
-          v-if="!item.hidden"
-          :label="item.label"
-          :prop="item.field"
-          :rules="[generateRules(item)]">
-          <el-select v-if="item.type === 'option'" filterable v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
-            <el-option
-              v-for="(option, index) in item.options"
-              :key="'item-' + index"
-              :label="option.label"
-              :value="option.value"/>
-          </el-select>
-          <el-input
-            v-else-if="item.type === 'password'"
-            v-model="item.default"
-            size="large"
-            :placeholder="item.placeholder"
-            :disabled="item.disabled"
-            show-password />
-          <!-- 开关类型 -->
-          <el-switch
-            v-else-if="item.type === 'choice'"
-            v-model="item.default"
-            size="large"
-            :active-text="item.choices.active.label"
-            :active-value="item.choices.active.value"
-            :inactive-text="item.choices.inactive.label"
-            :inactive-value="item.choices.inactive.value" />
-          <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
-          <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
-        </el-form-item>
-      </template>
+      <el-tabs v-if="form.user_plugin_id" v-model="activeName" class="bucket-tabs">
+        <el-tab-pane label="配置" name="config">
+          <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.type + index">
+            <el-form-item
+              v-if="!item.hidden"
+              :label="item.label"
+              :prop="item.field"
+              :rules="[generateRules(item)]">
+              <el-select v-if="item.type === 'option'" filterable v-model="item.default" size="large" style="width: 100%" :placeholder="item.placeholder" :disabled="item.disabled">
+                <el-option
+                  v-for="(option, index) in item.options"
+                  :key="'item-' + index"
+                  :label="option.label"
+                  :value="option.value"/>
+              </el-select>
+              <el-input
+                v-else-if="item.type === 'password'"
+                v-model="item.default"
+                size="large"
+                :placeholder="item.placeholder"
+                :disabled="item.disabled"
+                show-password />
+              <!-- 开关类型 -->
+              <el-switch
+                v-else-if="item.type === 'choice'"
+                v-model="item.default"
+                size="large"
+                :active-text="item.choices.active.label"
+                :active-value="item.choices.active.value"
+                :inactive-text="item.choices.inactive.label"
+                :inactive-value="item.choices.inactive.value" />
+              <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
+              <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
+            </el-form-item>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="插件介绍" name="intro">
+          <markdown-preview :value="doc_config.readme"></markdown-preview>
+        </el-tab-pane>
+        <el-tab-pane label="更新日志" name="uplog">
+          <markdown-preview :value="doc_config.changlog"></markdown-preview>
+        </el-tab-pane>
+      </el-tabs>
     </el-form>
     <template #action>
       <el-button @click="handleClose">取 消</el-button>
@@ -77,37 +80,38 @@
 </template>
 
 <script lang="ts" setup>
-import { BucketInter, BucketSourceConfig, BucketSourceInter, DictInter, MyPlugin } from '@/typings/interface';
+import { BucketInter, BucketSourceConfig, UserPluginInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
-import Dict from '@/types/Dict';
-import BucketSource from '@/types/BucketSource';
-import { BasicResponse, PageResponse } from '@/typings/req-res';
+import { PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
 import { useCtxInstance} from '@/hooks/global';
 import axios from 'axios'
 import useUserStore from '@/store/user';
 import Habits from '@/types/Habits';
+import Plugin from '@/types/Plugin';
+import { PluginLoadUrl } from '@/global.config'
+import markdownPreview from './markdown-preview.vue';
 
 /**
  * 实例
  */
 interface Props {
   modelValue: boolean
-  detail: DictInter
+  detail: BucketInter
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   detail: () => ({
-    id: ''
+    id: 0,
+    user_plugin_id: 0
   } as BucketInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
-const dict = new Dict()
-const bucketSource = new BucketSource()
 const bucket = new Bucket()
 const ctx = useCtxInstance()
 const userStore = useUserStore()
 const habit = new Habits()
+const plugin = new Plugin()
 
 
 /**
@@ -122,39 +126,35 @@ const dialogVisible = computed({
   }
 })
 const form: BucketInter = reactive({
-  id: '',
-  type: '',
-  tag: '',
+  id: 0,
   name: '',
-  config: '',
+  config: {},
   visible: true,
-  uid: '',
-  plugin: '',
-  version: ''
 })
 // 表单ref
 const formRef = ref(null)
 // 存储源
-const bucketSources: Ref<BucketSourceInter[]> = ref([])
+const bucketPlugins: Ref<UserPluginInter[]> = ref([])
 // 存储源配置
 const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
 // 文档地址
-const doc_url = ref('')
+const doc_config = ref({
+  readme: '', // README.md
+  changlog: '' // 更新日志
+})
+const activeName = ref('config')
+// 当前插件
+const current_plugin: Ref<UserPluginInter> = ref()
 
 /**
  * 数据获取
  */
-const getBucketSource = () => {
-  bucketSource.find({
-    status: true
-  }).then((res: PageResponse<BucketSourceInter>) => {
-    handleBucketData(res.items)
-    if (form.type) {
-      handleData(form.type)
-    }
+const getInstallPlugins = () => {
+  plugin.installed({ status: true }).then((res: PageResponse<UserPluginInter>) => {
+    bucketPlugins.value = res.items
   })
 }
-getBucketSource()
+getInstallPlugins()
 
 
 // 校验表单项
@@ -234,49 +234,47 @@ const itemUpdate = (data: BucketInter) => {
   })
 }
 // 处理数据
-const handleData = (type: string) => {
-  const { config: pluginConfig, name, version } = bucketSources.value.find(item => {
-    return item.type === type
-  })
-  form.tag = name
-  form.version = version
-  form.plugin = pluginConfig
-  // 处理config，判断是否有默认值，有默认值则自动填充
-  const plugin: MyPlugin = new Function('return ' + pluginConfig)()
-  doc_url.value = plugin.doc
-  bucketConfigs.value = plugin.config.map(item => {
-    if (form.config) {
-      const config = JSON.parse(form.config)
-      if (config[item.field] && !item.hidden) {
-        item.default = config[item.field]
-      }
-    }
-    return item
-  })
+const handleData = (user_plugin_id: number) => {
+  current_plugin.value = bucketPlugins.value.find(el => el.id === user_plugin_id)
+  if (current_plugin.value) {
+    // 这里需要使用用户安装的插件
+    const { plugin: {name}, version } = current_plugin.value
+    // 动态加载模块
+    const url = `${PluginLoadUrl}${name}@${version}`
+    import(/* @vite-ignore */url)
+      .then((res: { default }) => {
+        bucketConfigs.value = res.default.config.map((el: BucketSourceConfig) => {
+          if (form.config) {
+            if (form.config[el.field] && !el.hidden) {
+              el.default = form.config[el.field]
+            }
+          }
+          return el
+        })
+      })
+    
+    // 处理更新日志和READEME.md
+    fetch(`${url}/README.md`)
+      .then(res => res.text())
+      .then(res => {
+        doc_config.value.readme = res
+      })
+    fetch(`${url}/changlog.md`)
+      .then(res => res.text())
+      .then(res => {
+        doc_config.value.changlog = res
+      })
+  }
 }
 // 处理存储桶配置数据
 const handleBucketData = (data) => {
-  bucketSources.value = data.map(item => {
-    if (form.type === item.type) {
-      const plugin: MyPlugin = new Function('return ' + item.config)()
-      bucketConfigs.value = plugin.config.map(el => {
-        // 解决新增属性出现undefined问题
-        const config = JSON.parse(form.config)
-        if (config[el.field] && !el.hidden) {
-          el.default = config[el.field]
-        }
-        return el
-      })
-    }
-    return item
-  })
 }
 
 /**
  * 监听器
  */
-watch(() => form.type, (val) => {
-  if (bucketSources.value.length) {
+watch(() => form.user_plugin_id, (val) => {
+  if (bucketPlugins.value.length) {
     handleData(val)
   }
 })
@@ -310,16 +308,53 @@ watch(() => props.detail, (val) => {
     }
   }
 }
-.bucket-warning {
-  margin-bottom: 15px;
-  font-size: 14px;
-  p {
-    line-height: 22px;
+.bucket-tabs {
+  .el-tabs__nav-wrap {
+    display: flex;
+    justify-content: center;
   }
-  .bucket-warning-tips {
-    // padding-left: 28px;
-    // color: #898989;
-    line-height: 20px;
+  .markdown-body {
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    color: #24292f;
+    overflow: hidden !important;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    h1:first-of-type {
+      margin-top: 0;
+    }
+    p {
+      margin-bottom: 16px;
+      margin-top: 0 !important;
+    }
+    pre>code {
+      padding: 20px 12px 15px !important;
+    }
+    > *:last-child {
+      margin-bottom: 0!important;
+    }
+    ol {
+      list-style-type: decimal;
+      padding-left: 2em;
+    }
+    .code-block-wrapper {
+      position: relative;
+      .code-block-header {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        color: #b3b3b3;
+        font-size: 12px;
+        user-select: none;
+        span {
+          margin-right: 8px;
+          cursor: pointer;
+          &.code-block-header__copy:hover {
+            color: #18a058;
+          }
+        }
+      }
+    }
   }
 }
 </style>

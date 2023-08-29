@@ -6,7 +6,8 @@
     </div>
     <!-- 上传内容区 -->
     <div class="c-upload__content">
-      <div :class="['c-upload-dragger', dragging ? 'is-dragover' : '']"
+      <div
+        :class="['c-upload-dragger', dragging ? 'is-dragover' : '']"
         @drop="handleDrop"
         @dragover="handleDragover"
         @dragleave="handleDragleave"
@@ -22,8 +23,11 @@
         class="c-upload__input"
         @change="handleChange">
     </div>
+    <!-- 上传功能区 -->
+    <div class="c-upload__action">
+      <slot name="action"></slot>
+    </div>
     <!-- 上传提示 -->
-    <!-- <div class="c-upload__tip"></div> -->
     <slot name="tip"></slot>
   </div>
 </template>
@@ -121,7 +125,7 @@ const handleDragenter = (e: DragEvent) => {
     .c-upload-dragger {
       background-color: #fff;
       border: 1px dashed #d9d9d9;
-      border-radius: 6px;
+      border-radius: 6px 6px 0 0;
       box-sizing: border-box;
       cursor: pointer;
       position: relative;
@@ -157,6 +161,16 @@ const handleDragenter = (e: DragEvent) => {
       // opacity: 0;
       display: none;
     }
+  }
+  .c-upload__action {
+    height: 33px;
+    border-radius: 0 0 6px 6px;
+    border: 1px dashed #d9d9d9;
+    border-top: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 15px;
   }
   .c-upload__tip {
     font-size: 12px;

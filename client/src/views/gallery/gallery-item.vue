@@ -39,7 +39,6 @@ import { ImageInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import VLazyImage from 'v-lazy-image';
-import { EpPropMergeType } from 'element-plus/es/utils';
 
 interface Props {
   data: ImageInter

@@ -11,7 +11,7 @@ export const user_habits: HabitsInter = {
   autoRename: true,
   autoPaste: true,
   pasteStyle: 'markdown',
-  current: {},
+  current_bucket: 0,
   link_format: 'URL',
 }
 
@@ -26,14 +26,14 @@ export interface Link {
 // 占位符$url：表示图片的url地址
 // 占位符$filename：表示文件名
 export const linkTypes: Ref<Link[]> = ref([
-  { label: 'URL', value: '${url}', id: 'url' },
+  { label: '链接(URL)', value: '${url}', id: 'url' },
   { label: 'HTML', value: '<img src="${url}" alt="${filename}">', id: 'html' },
   { label: 'CSS', value: 'background: url("${url}") no-repeat;background-size: 100% 100%;', id: 'css' },
   { label: 'Markdown', value: '![${filename}](${url})', id: 'markdown' },
-  { label: 'MD-Link', value: '[![${filename}](${url})](${url})', id: 'md-link' },
-  { label: 'BBCode', value: '[img]${url}[/img]', id: 'bbcode' },
+  { label: '超链接图片', value: '[![${filename}](${url})](${url})', id: 'md-link' },
+  { label: '论坛代码', value: '[img]${url}[/img]', id: 'bbcode' },
   { label: 'UBB', value: '[IMG]${url}[/IMG]', id: 'ubb' },
-  { label: 'Custom', value: '[${filename}](${url})', id: 'custom' }
+  { label: '自定义', value: '[${filename}](${url})', id: 'custom' }
 ])
 
 
@@ -67,4 +67,7 @@ export const mimeTypes = {
 // @ts-ignore
 const ip = window.uploader_ip || import.meta.env.VITE_APP_BASE_URL
 window.uploader_ip = ip
-export const baseURL = `${ip}/api/v1`
+export const baseURL = `${ip}/v1`
+
+
+export const PluginLoadUrl = 'https://unpkg.com/'

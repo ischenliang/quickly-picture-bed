@@ -240,17 +240,13 @@ export interface LogInter {
  */
 export interface BucketInter {
   // 存储桶
-  id?: string
-  // 存储桶类别
-  type?: string
-  // 存储桶标签：从存储源获取
-  tag?: string
+  id?: number
   // 存储桶名称
   name?: string
   // 存储桶配置
-  config?: string
-  // 存储桶基地址：方便渲染时使用
-  config_baseUrl?: string
+  config?: object
+  // 存储桶权重
+  weight?: number
   // 是否在上传区域显示
   visible?: boolean
   // 创建时间
@@ -258,11 +254,65 @@ export interface BucketInter {
   // 更新时间
   updatedAt?: string
   // 操作人，用户id
-  uid?: string
-  // 插件代码
-  plugin?: string
-  // 版本号
+  uid?: number
+  // 用户安装插件id
+  user_plugin_id?: number
+  // 用户安装插件
+  user_plugin?: UserPluginInter
+}
+
+export interface PluginInter {
+  id?: number
+  // 插件名称
+  name?: string
+  // 插件别名
+  title?: string
+  // 插件描述
+  description?: string
+  // 插件版本
   version?: string
+  // 插件logo
+  logo?: string
+  // 插件作者
+  author?: string
+  // 插件类别
+  category?: string
+  // 插件运行平台
+  platform?: string
+  // 插件安装次数
+  downloadCounts?: number
+  // 插件状态
+  status?: boolean
+  // 插件权重
+  weight?: number
+  // 插件是否付费
+  payment?: boolean
+  // 插件付费版本
+  payment_type?: string
+  // 插件付费价格
+  price?: number
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt
+}
+
+export interface UserPluginInter {
+  id?: number
+  // 插件id
+  pid?: number
+  // 用户id
+  uid?: number
+  // 状态
+  status?: boolean
+  // 安装版本号
+  version?: string
+  // 创建时间
+  createdAt?: string
+  // 更新时间
+  updatedAt?: string
+  // 插件
+  plugin?: PluginInter
 }
 
 
@@ -381,12 +431,11 @@ export interface SettingInter {
   // 更新日志
   uplog?: string // 更新日志url
   // 存储桶后台服务配置
-  // Array<{
-  //   label: string
-  //   link: string
-  //   target: string
-  // }> | string
-  bucket_service?: string
+  bucket_service?: Array<{
+    label: string
+    link: string
+    target: string
+  }>
   // 创建时间
   createdAt?: string
   // 更新时间
@@ -424,9 +473,9 @@ export interface HabitsInter {
   // 上传后自动复制图片地址
   autoPaste?: boolean
   // 当前使用图床id
-  current?: BucketInter
+  current_bucket?: number
   // 当前使用相册id
-  current_album?: string
+  current_album?: number
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名
@@ -443,7 +492,7 @@ export interface HabitsInter {
  */
 export interface VerifyCodeInter {
   id?: string
-  code?: string
+  data?: string
   last_id?: string
 }
 
@@ -452,7 +501,7 @@ export interface VerifyCodeInter {
  * 相册
  */
 export interface AlbumInter {
-  id?: string // 验证码id
+  id?: number // 验证码id
   uid?: string // 相册拥有者
   name?: string // 相册名称
   desc?: string // 相册描述

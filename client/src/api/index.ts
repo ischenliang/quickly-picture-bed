@@ -8,10 +8,10 @@ const instance = axios.create({
   baseURL: baseURL
 })
 
-instance.interceptors.request.use((config: AxiosRequestConfig) => {
+instance.interceptors.request.use((config: any) => {
   const { notAuth = false } = config.headers
   if (!notAuth) {
-    config.headers['authorization'] = localStorage.getItem('token')
+    config.headers['authorization'] = 'Bearer ' + localStorage.getItem('token')
   }
   delete config.data.notAuth
   return config

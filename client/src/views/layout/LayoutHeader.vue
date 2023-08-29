@@ -1,14 +1,9 @@
 <template>
   <div class="app-header">
     <router-link :to="'/'" tag="div" class="app-logo">
-      <img v-if="website.logo" :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
-      <span class="app-name">{{ website.name || '默认名称' }}</span>
+      <img :src="website.logo_preview || '/logo.png'" alt="系统logo">
+      <span class="app-name">{{ website.name || '默认系统名称' }}</span>
     </router-link>
-    <!-- <div class="app-logo">
-      http://pic.xyaxw.cn/static/img/logo.cf036a4d.jpg
-      <img v-if="website.logo" :src="website.logo_preview || 'http://imgs.itchenliang.club/img/20221004104212.png'" alt="">
-      <span class="app-name">{{ website.name || '默认名称' }}</span>
-    </div> -->
     <div class="app-rightmenu">
       <div class="app-features">
         <div class="feature-item" v-for="(item, index) in features" :key="'feature-item-' + index" @click="handleClick(item)">
@@ -17,18 +12,16 @@
         </div>
       </div>
       <div class="app-links">
-        <!-- <div class="link-item">文档</div>
-        <div class="link-item">Github</div> -->
         <a
-          v-for="(item, index) in JSON.parse(configStore.systemConfig.bucket_service)"
+          v-for="(item, index) in links"
           :key="index"
           :href="item.link"
           class="link-item"
-          :target="item.target">{{ item.label }}</a>
+          :target="item.target">
+          {{ item.label }}
+        </a>
       </div>
-      <user-dropdown
-        :user-info="userInfo"
-        :roles="roles"></user-dropdown>
+      <user-dropdown :user-info="userInfo" :roles="roles"></user-dropdown>
     </div>
   </div>
 </template>
@@ -61,6 +54,10 @@ const roles = ref({})
 const features = ref([
   { text: 'ChatGPT', path: '/chatgpt', bg: new URL('./images/jhot.svg', import.meta.url).href }
 ])
+// 超链接
+const links = computed(() => {
+  return configStore.systemConfig.bucket_service
+})
 
 
 /**
@@ -82,7 +79,6 @@ function handleClick (item) {
     path: item.path
   })
 }
-
 </script>
 
 <style lang="scss">

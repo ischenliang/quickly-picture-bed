@@ -1,48 +1,66 @@
 <template>
-  <div class="custom-card-album">
-    <el-tooltip effect="dark" content="将图片上传到指定相册中" placement="right">
-      <el-select
-        v-model="albumData.active_id"
-        placeholder="相册选择"
-        style="width: 180px;"
-        @change="toggleCurrentBucket(albumData.active_id)">
-        <el-option
-          v-for="(item, index) in albumData.data"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id" />
-      </el-select>
-    </el-tooltip>
-  </div>
-  <div class="custom-card-upload">
-    <c-upload
-      :accept="systemConfig.system.accept"
-      :limit="systemConfig.system.maxcount"
-      :multiple="systemConfig.system.maxcount > 1"
-      @upload="beforeUpload">
-      <template #progress v-if="totalProgress.percent">
-        <el-progress :percentage="totalProgress.percent" />
-      </template>
-      <el-icon class="el-icon--upload">
-        <upload-filled />
-      </el-icon>
-      <div class="el-upload__text">
-        点击上传图片，支持拖拽上传
-      </div>
-      <template #tip>
-        <div class="el-upload__tip">大小不超过{{ systemConfig.system.maxsize }}MB的{{ systemConfig.system.accept.join(', ') }}文件，<span style="color: red;">支持直接 Ctrl + V 上传</span></div>
-      </template>
-    </c-upload>
-    <div class="quick-entry">
-      <div class="entry-title">快捷上传</div>
-      <div class="entry-list">
-        <el-tooltip effect="dark" content="如果不支持，可以尝试直接按Ctrl + V" placement="left">
-          <el-button type="primary" @click="entryUpload('clipboard')">剪切板图片</el-button>
-        </el-tooltip>
-        <el-tooltip effect="dark" content="将网络图片保存到系统中" placement="left">
-          <el-button type="primary" @click="entryUpload('url')">网络图URL</el-button>
-        </el-tooltip>
-      </div>
+  <div class="custom-card-box">
+    <div class="custom-card-album">
+      <el-tooltip effect="dark" content="将图片上传到指定相册中" placement="right">
+        <el-select
+          v-model="albumData.active_id"
+          placeholder="相册选择"
+          style="width: 180px;"
+          @change="toggleCurrentBucket(albumData.active_id)">
+          <el-option
+            v-for="(item, index) in albumData.data"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id" />
+        </el-select>
+      </el-tooltip>
+    </div>
+    <div class="custom-card-upload">
+      <!-- 上传区 -->
+      <c-upload
+        :accept="systemConfig.system.accept"
+        :limit="systemConfig.system.maxcount"
+        :multiple="systemConfig.system.maxcount > 1"
+        @upload="beforeUpload">
+        <template #progress v-if="totalProgress.percent">
+          <el-progress :percentage="totalProgress.percent" />
+        </template>
+        <el-icon class="el-icon--upload">
+          <upload-filled />
+        </el-icon>
+        <div class="el-upload__text">
+          <p>点击上传图片，支持拖拽上传</p>
+          <p>支持同时上传最多 {{ systemConfig.system.maxcount }} 张图片，单个文件最大 {{ systemConfig.system.maxsize }} MB</p>
+        </div>
+        <template #tip>
+          <div class="c-upload__tip">
+            大小不超过
+            <span>{{ systemConfig.system.maxsize }}MB</span>
+            的
+            <span>{{ systemConfig.system.accept.join(', ') }}</span>
+            文件,
+            <span>支持直接 Ctrl + V 上传</span>
+          </div>
+        </template>
+        <template #action>
+          <div class="entry-title">快捷上传: </div>
+          <el-tooltip effect="dark" content="如果不支持，可以尝试直接按Ctrl + V" placement="bottom">
+            <div class="btn-link btn-link-clip" @click="entryUpload('clipboard')">
+              <el-icon><Edit /></el-icon>剪切板上传
+            </div>
+          </el-tooltip>
+          <el-tooltip effect="dark" content="将网络图片保存到系统中" placement="bottom">
+            <div class="btn-link btn-link-network" @click="entryUpload('url')">
+              <el-icon><Connection /></el-icon>URL远程上传
+            </div>
+          </el-tooltip>
+          <el-tooltip effect="dark" content="将网络图片保存到系统中" placement="bottom">
+            <div class="btn-link btn-link-base64" @click="entryUpload('url')">
+              <el-icon><HelpFilled /></el-icon>Base64上传
+            </div>
+          </el-tooltip>
+        </template>
+      </c-upload>
     </div>
   </div>
 </template>
@@ -122,7 +140,7 @@ const totalProgress: {
 })
 // 相册列表
 const albumData: {
-  active_id: string
+  active_id: number
   data: AlbumInter[]
 } = reactive({
   active_id: ctx.$route.query.album_id || habits.value.current_album, // 当前勾选相册id
@@ -294,17 +312,14 @@ function getAlbums () {
     order: 'desc'
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     albumData.data = [
-      {
-        id: '',
-        name: '图库'
-      },
+      { id: 0, name: '图库' },
       ...res.items
     ]
   })
 }
 getAlbums()
 // 切换当前图床
-const toggleCurrentBucket = async (item: string) => {
+const toggleCurrentBucket = async (item: number) => {
   habits.value.current_album = item
   await habit.save({
     id: habits.value.id,
@@ -345,36 +360,69 @@ watch(() => totalProgress.progress, (val) => {
 <style lang="scss">
 @import '@/styles/flex-layout.scss';
 .custom-card {
-  .el-card__body {
+  .custom-card-box {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    .custom-card-album {
-      margin-bottom: 8px;
-    }
     .custom-card-upload {
-      @include flex-layout(row);
-    }
-  }
-  .c-upload {
-    height: 300px;
-  }
-  .quick-entry {
-    // margin-top: 15px;
-    flex-shrink: 0;
-    margin-left: 15px;
-    @include flex-layout-align(column, flex-start, center);
-    .entry-title {
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-    .entry-list {
-      @include flex-layout(column);
-      .el-button {
-        + .el-button {
-          margin-left: 0;
-          margin-top: 12px;
-        }
+      display: flex;
+      .c-upload {
+        flex: 1;
       }
+    }
+  }
+}
+.el-card__body {
+  display: flex;
+  flex-direction: column;
+  .custom-card-album {
+    margin-bottom: 8px;
+  }
+  .custom-card-upload {
+    @include flex-layout(row);
+  }
+}
+.c-upload {
+  height: 300px;
+  &__tip {
+    span {
+      color: #0db3a6;
+      font-weight: bold;
+    }
+  }
+}
+.entry-title {
+  font-size: 14px;
+  margin-right: 5px;
+}
+.btn-link {
+  height: 100%;
+  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  .el-icon {
+    margin-right: 3px;
+    font-size: 15px;
+  }
+  &-clip {
+    color: #0db3a6;
+    &:hover {
+      background: #e7f7f8;
+    }
+  }
+  &-network {
+    color: #E7826D;
+    &:hover {
+      background: #fdf6ec;
+    }
+  }
+  &-base64 {
+    color: #386af1;
+    &:hover {
+      background: #ecf5ff;
     }
   }
 }

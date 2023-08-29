@@ -96,7 +96,7 @@ const login = () => {
       loading.value = true
       user.login({
         email: form.username + form.username_suffix,
-        password: useMd5(form.password),
+        password: form.password,
         verify_id: form.verify_id,
         verify_code: form.verify_code
       }).then((res: any) => {
@@ -104,6 +104,7 @@ const login = () => {
           Cookies.set('email', form.username + form.username_suffix)
           Cookies.set('password', form.password)
         }
+        console.log(res)
         localStorage.setItem('token', res.token)
         ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
         router.push({ path: '/' })
@@ -121,7 +122,7 @@ const getImgCode = () => {
     last_id: imgCode.id ? imgCode.id : '-'
   }).then((res: VerifyCodeInter) => {
     imgCode.id = res.id
-    imgCode.code = res.code
+    imgCode.code = res.data
     form.verify_id = res.id
   })
 }
