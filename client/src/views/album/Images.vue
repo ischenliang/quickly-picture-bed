@@ -1,16 +1,20 @@
 <template>
   <div class="album-images">
-    <div class="album-image-header" :style="{
-      'background-image': `url('${detail.background ? detail.background_preview : '/default.jpg'}')`
-    }">
+    <div
+      class="album-image-header"
+      :style="{
+        'background-image': `url('${detail.background ? detail.background : '/default.jpg'}')`
+      }">
       <div class="album-actions">
         <el-button type="primary" icon="Back" @click="() => $router.back()">返回</el-button>
         <el-button type="success" icon="UploadFilled" @click="goUpload">去上传</el-button>
       </div>
       <div class="album-actions-footer">
-        <el-button v-if="showActionBar" type="primary" icon="DocumentCopy" size="small" @click="handleAction('copy')">复制链接</el-button>
-        <el-button v-if="showActionBar" type="primary" icon="Close" size="small" @click="handleAction('remove')">移出相册</el-button>
-        <el-button v-if="showActionBar" type="danger" icon="Delete" size="small" @click="handleAction('delete')">删除所选</el-button>
+        <el-button type="info" icon="Tools" size="small" @click="item.tags = true">默认标签管理</el-button>
+        <el-button type="primary" v-if="showActionBar" icon="DocumentCopy" size="small" @click="handleAction('copy')">复制链接</el-button>
+        <el-button type="warning" v-if="showActionBar" icon="Close" size="small" @click="handleAction('remove')">移出相册</el-button>
+        <el-button type="danger" v-if="showActionBar" icon="Delete" size="small" @click="handleAction('delete')">删除所选</el-button>
+        <el-button type="success" v-if="showActionBar" icon="Stamp" size="small">标签管理</el-button>
       </div>
       <div class="album-title">{{ detail.name }}</div>
       <div class="album-desc">{{ detail.desc }}</div>
@@ -45,13 +49,15 @@
             </template>
           </el-input>
         </div>
-        <div class="filter-tags" v-if="tags.length >= 2">
+        <div class="filter-tags" v-if="album_tag.tags.length >= 2">
           <span>标签搜索:</span>
           <span
-            v-for="(tag, index) in tags"
+            v-for="(tag, index) in album_tag.tags"
             :key="'filter-tag-' + index"
-            :class="['filter-tag-item', tag === list.filters.tag ? 'active' : '']"
-            @click="changeTag(tag)">{{ tag }}</span>
+            :class="['filter-tag-item', tag.value === list.filters.tag ? 'active' : '']"
+            @click="changeTag(tag.value)">
+            {{ tag.value }}
+          </span>
         </div>
       </div>
       <div class="album-image-list" v-loading="list.loading">
@@ -109,6 +115,12 @@
       v-model="item.edit"
       :detail="item.data"
       @submit="() => { getTags();listGet(); }" />
+    <!-- 默认标签 -->
+    <default-tags
+      v-if="item.tags"
+      v-model="item.tags"
+      :detail="album_tag"
+      @submit="getTags" />
   </div>
 </template>
 
@@ -116,16 +128,15 @@
 import { useFormat } from '@/hooks/date-time';
 import { useCopyText, useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
 import Album from '@/types/Album';
-import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
-import { AlbumInter, BucketInter, ImageInter, ListInter } from '@/typings/interface';
+import { AlbumInter, ImageInter, ListInter, AlbumTag } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { computed, nextTick, onActivated, reactive, Ref, ref } from 'vue';
+import { computed, onActivated, reactive, Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DetailDialog from '@/views/gallery/DetailDialog.vue'
 import TagDialog from './TagDialog.vue'
+import defaultTags from './default-tags.vue'
 import GalleryItem from '@/views/gallery/gallery-item.vue'
-import useConfigStore from '@/store/config';
 
 /**
  * 实例
@@ -134,9 +145,7 @@ const album = new Album()
 const route = useRoute()
 const router = useRouter()
 const image = new Image()
-const bucket = new Bucket()
 const ctx = useCtxInstance()
-const configStore = useConfigStore()
 
 
 /**
@@ -151,7 +160,7 @@ const list: ListInter<ImageInter> = reactive({
   total: 0,
   loading: false,
   filters: {
-    album_id: route.query.id || '',
+    album_id: +route.query.id || 0,
     tag: '全部',
     img_name: ''
   },
@@ -161,79 +170,26 @@ const list: ListInter<ImageInter> = reactive({
 const showActionBar = computed(() => {
   return list.data.filter(el => el.checked).length
 })
-// 存储桶列表
-const buckets: Ref<BucketInter[]> = ref([
-  { name: '全部', id: '' }
-])
 const item = reactive({
   detail: false,
   data: null,
-  edit: false
+  edit: false,
+  tags: false
 })
 // 置顶数量
 const tops = ref(0)
 // 所有标签
-const tags = ref(['全部'])
+const album_tag: Ref<AlbumTag> = ref(null)
 
 /**
  * 数据获取
  */
-// 获取存储桶列表
-const getBuckets = () => {
-  bucket.find({
-    ...list.filters
-  }).then((res: PageResponse<BucketInter>) => {
-    // 这个影响了分页的初始状态，切记切记切记......(排查了很久才发现是这里导致的问题)
-    // list.total = res.total
-    buckets.value = [
-      { id: '', name: '全部' },
-      ...res.items.map(item => {
-        const obj = JSON.parse(item.config)
-        // const { baseUrl } = obj
-        // 第一版本
-        // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-        // obj.baseUrl = eval('`' + tmp + '`')
-        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
-        //   return obj[key]
-        // })
-        
-        // 第二版本
-        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
-        //   const keys = key.split('.')
-        //   if (keys[0] === 'config') {
-        //     return obj[keys[1]]
-        //   }
-        // })
-
-        // 第三版本
-        for (let key in obj) {
-          obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
-            const keys = key.split('.')
-            if (keys[0] === 'config') {
-              return obj[keys[1]]
-            }
-          })
-        }
-        return {
-          id: item.id,
-          name: item.name,
-          type: item.type,
-          tag: item.tag,
-          config_baseUrl: obj.baseUrl
-        }
-      })
-    ]
-    listGet()
-  })
-}
 // 获取标签列表
-const getTags = (callback: Function = () => {}) => {
-  album.tags(route.query.id as string).then((res: string[]) => {
-    tags.value = [
-      '全部',
-      ...res
-    ]
-    if (!tags.value.includes(list.filters.tag)) {
+function getTags (callback: Function = () => {}) {
+  album.tags(+route.query.id).then((res: AlbumTag) => {
+    album_tag.value = res
+    album_tag.value.tags.unshift({ type: 'primary', value: '全部' })
+    if (!album_tag.value.tags.includes(list.filters.tag)) {
       list.filters.tag = '全部'
       callback()
     }
@@ -241,20 +197,19 @@ const getTags = (callback: Function = () => {}) => {
 }
 getTags()
 // 相册详情获取
-const getDetail = () => {
-  const id = route.query.id as string
+function getDetail () {
+  const id = route.query.id
   if (id) {
-    album.detail(id).then((res: AlbumInter) => {
+    album.detail(+id).then((res: AlbumInter) => {
       res.createdAt = useFormat(res.createdAt, 'YYYY-MM-DD')
       res.updatedAt = useFormat(res.updatedAt, 'YYYY-MM-DD')
-      res.background_preview = window.uploader_ip + res.background
       detail.value = res
     })
   }
 }
 getDetail()
 // 获取图片列表
-const listGet = () => {
+function listGet () {
   list.loading = true
   tops.value = 0
   album.images({
@@ -267,16 +222,6 @@ const listGet = () => {
     list.total = res.total
     list.data = res.items.map(item => {
       item.checked = false
-      const bk = buckets.value.find(bu => bu.id === item.bucket_id)
-      item.img_preview_url = bk ? bk.config_baseUrl + item.img_url : item.img_url
-      item.createdAt = useFormat(item.createdAt)
-      item.updatedAt = useFormat(item.updatedAt)
-      // item.top = item.sort === 0 ? false : true
-      if (item.sort > 0) {
-        if (tops.value < item.sort) {
-          tops.value = item.sort
-        }
-      }
       return item
     })
     list.loading = false
@@ -328,7 +273,7 @@ function handleAction (type) {
  * 回调函数
  */
 // 点击
-const handleClick = (index: number) => {
+function handleClick(index: number) {
   ctx.$viewerApi({
     options: {
       initialViewIndex: index
@@ -336,7 +281,7 @@ const handleClick = (index: number) => {
     images: list.data.map(item => item.img_preview_url)
   })
 }
-const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
+function handleItemSubmit (e: { type: string, data: ImageInter }) {
   switch (e.type) {
     case 'delete':
       useDeleteConfirm('确定删除吗?(由于对象存储几乎不要钱，故此处只是删除本条记录，不会删除对象存储上的原数据，所以删除后仍然能正常访问)').then(() => {
@@ -394,12 +339,12 @@ const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
   }
 }
 // 更新图片的标签
-const editItemTag = (data: ImageInter) => {
+function editItemTag (data: ImageInter) {
   item.edit = true
   item.data = data
 }
 // 根据tag名称渲染类别
-const getTagType = (tag) => {
+function getTagType (tag) {
   if (tag === '已完结') {
     return 'danger'
   }
@@ -409,12 +354,12 @@ const getTagType = (tag) => {
   return 'default'
 }
 // 切换标签
-const changeTag = (tag) => {
+function changeTag (tag) {
   list.filters.tag = tag
   listGet()
 }
 // 去上传
-const goUpload = () => {
+function goUpload () {
   useListFilter(list, route.name, 'set')
   router.push({
     path: '/',
@@ -427,7 +372,6 @@ const goUpload = () => {
 
 // 激活页
 onActivated(() => {
-  useListFilter(list, route.name, 'get', getBuckets)
 })
 </script>
 

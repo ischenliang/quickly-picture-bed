@@ -99,10 +99,10 @@ import Users from '@/types/User';
 import { DictInter, UserInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, toRefs, unref } from 'vue'
 import AvatarDialog from './avatar-dialog.vue'
-// import citys from '@/assets/city.json'
-// console.log(citys.list)
 import citys from '@/assets/pca-code.json'
 import { useCtxInstance } from '@/hooks/global';
+import useConfigStore from '@/store/config';
+
 interface AvatarInter {
   name: string
   suffix: string
@@ -116,6 +116,7 @@ const dict = new Dict()
 const userStore = useUserStore()
 const user = new Users()
 const ctx = useCtxInstance()
+const configStore = useConfigStore()
 
 /**
  * 变量
@@ -133,11 +134,17 @@ const item = reactive({
   data: {}
 })
 // 性别列表
-const genders: Ref<Array<{ label: string, value: string | number | boolean }>> = ref([])
+const genders = computed(() => {
+  return configStore.dicts.find(el => el.code === 'user_gender').values || []
+})
 // 职业列表
-const majors: Ref<Array<{ label: string, value: string | number | boolean }>> = ref([])
+const majors = computed(() => {
+  return configStore.dicts.find(el => el.code === 'user_major').values || []
+})
 // 角色列表
-const roles: Ref<Array<{ label: string, value: string | number | boolean }>> = ref([])
+const roles = computed(() => {
+  return configStore.dicts.find(el => el.code === 'user_role').values || []
+})
 // 用户头像
 // 所有头像列表
 const avatars: Ref<AvatarInter[]> = ref([
@@ -255,28 +262,6 @@ const changeMajor = (item) => {
 /**
  * 数据获取
  */
-// 获取性别字典
-const getGender = () => {
-  dict.detailByPro('code', 'user_gender').then((res: DictInter) => {
-    console.log(res)
-    genders.value = res.values
-  })
-}
-getGender()
-// 获取性别字典
-const getMajor = () => {
-  dict.detailByPro('code', 'user_major').then((res: DictInter) => {
-    majors.value = res.values
-  })
-}
-getMajor()
-// 获取性别字典
-const getRole = () => {
-  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
-    roles.value = res.values
-  })
-}
-getRole()
 </script>
 
 <style lang="scss">

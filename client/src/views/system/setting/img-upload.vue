@@ -8,7 +8,6 @@
 
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
-import { uploadImg } from '@/types/av'
 import { useGetSuffix } from '@/hooks/global';
 
 interface Props {
@@ -34,14 +33,6 @@ const imgRef: Ref<HTMLInputElement | null> = ref(null)
 const handleChange = (e) => {
   const file: File = e.target.files[0]
   const suffix = useGetSuffix(file.name, '.')
-  uploadImg(props.name + '.' + suffix, file).then((res: any) => {
-    const img_url = res.attributes.url.replace(new RegExp(props.baseUrl, 'g'), '')
-    emit('submit', {
-      name: props.name,
-      url: img_url
-    })
-    imgRef.value.value = ''
-  })
 }
 const handleClick = () => {
   imgRef.value.click()

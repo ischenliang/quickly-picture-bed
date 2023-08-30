@@ -63,49 +63,6 @@ export interface BucketSourceConfig {
   // 是否可用
   disabled?: boolean
 }
-// 存储桶的存储源：即管理员对存储桶进行配置
-export interface BucketSourceInter {
-  // 存储源id
-  id?: string
-  // 存储源名称
-  name?: string
-  // 存储源类型: 存储源对应的类别,例如：qiniu、oss
-  type?: string
-  // 存储源配置，界面上需要提供可以拖拽调整顺序
-  // config?: Array<BucketSourceConfig>
-  config?: string
-  // 存储源配置字符串
-  config_str?: string
-  // 创建时间
-  createdAt?: string
-  // 更新时间
-  updatedAt?: string
-  // 备注说明
-  remark?: string
-  // 版本
-  version?: string
-}
-// 存储桶的存储源历史记录：即存储桶源更新时自动记录更新版本
-export interface BucketSourceHistoryInter {
-  // 存储源版本id
-  id?: string
-  // 存储源id
-  bs_id?: string
-  // 存储源配置，界面上需要提供可以拖拽调整顺序
-  config?: string
-  // 存储桶配置老数据
-  config_old?: string
-  // 创建时间
-  createdAt?: string
-  // 更新时间
-  updatedAt?: string
-  // 最新版本号
-  version?: string
-  // 旧版本号
-  version_old?: string
-  // 备注说明
-  remark?: string
-}
 
 /**
  * 图片实体
@@ -256,7 +213,7 @@ export interface BucketInter {
   // 操作人，用户id
   uid?: number
   // 用户安装插件id
-  user_plugin_id?: number
+  user_plugin_id?: number | string
   // 用户安装插件
   user_plugin?: UserPluginInter
 }
@@ -294,7 +251,7 @@ export interface PluginInter {
   // 创建时间
   createdAt?: string
   // 更新时间
-  updatedAt
+  updatedAt?: string
 }
 
 export interface UserPluginInter {
@@ -330,7 +287,6 @@ export interface DictInter {
   values?: Array<{
     label: string
     value: string | number | boolean
-    color?: string
   }>
   // 字典内容字符串
   values_str?: string
@@ -506,14 +462,21 @@ export interface AlbumInter {
   name?: string // 相册名称
   desc?: string // 相册描述
   cover?: string // 相册封面
-  cover_preview?: string // 相册封面预览
   background?: string // 相册背景
-  background_preview?: string // 相册背景预览
   count?: number // 关联图片数量
   sort?: number // 排序值
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
-  // tops?: Array<string> // 置顶的元素项
+}
+// 相册标签
+export interface AlbumTag {
+  id: number
+  album_id: number
+  tags: Array<TagInter>
+}
+export interface TagInter {
+  type: '' | 'primary' | 'success' | 'danger' | 'info' | 'warning'
+  value: string
 }
 
 

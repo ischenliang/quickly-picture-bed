@@ -88,6 +88,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '操作日志', icon: 'ChatDotRound', role: [1, 2, 10] }
       },
       {
+        path: '/plugin',
+        name: 'Plugin',
+        component: () => import('@/views/plugin/index.vue'),
+        meta: { title: '插件市场', icon: 'DataLine', role: [1, 2, 10] }
+      },
+      {
         path: '/uplog',
         name: 'Uplog',
         component: () => import('@/views/log/uplog.vue'),
@@ -124,10 +130,10 @@ const routes: RouteRecordRaw[] = [
             meta: { title: '用户管理', icon: 'UserFilled' }
           },
           {
-            path: '/system/bucketSource',
-            name: 'SystemBucketSource',
-            component: () => import('@/views/system/bucket-source/index.vue'),
-            meta: { title: '存储桶插件', icon: 'ScaleToOriginal' }
+            path: '/system/plugin',
+            name: 'SystemPlugin',
+            component: () => import('@/views/system/plugin/index.vue'),
+            meta: { title: '插件管理', icon: 'ScaleToOriginal' }
           },
           {
             path: '/system/dict',
@@ -146,25 +152,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SystemSetting',
             component: () => import('@/views/system/setting/index.vue'),
             meta: { title: '系统设置', icon: 'Tools' }
-          },
-          {
-            path: '/system/bucketSourceEdit',
-            name: 'SystemBucketSourceEdit',
-            component: () => import('@/views/system/bucket-source/edit.vue'),
-            meta: { title: '存储桶插件配置', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
-          },
-          {
-            path: '/system/bucketSource/history',
-            name: 'SystemBucketSourceHistory',
-            component: () => import('@/views/system/bucket-source/history.vue'),
-            meta: { title: '存储桶插件历史版本', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
-          },
-          {
-            path: '/system/bucketSource/historyDetail',
-            name: 'SystemBucketSourceHistoryDetail',
-            component: () => import('@/views/system/bucket-source/history-detail.vue'),
-            meta: { title: '存储桶插件历史版本', icon: 'ScaleToOriginal', hidden: true, active: '/system/bucketSource' }
-          },
+          }
         ]
       }
     ]

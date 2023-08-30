@@ -1,4 +1,4 @@
-import { SettingInter } from '@/typings/interface'
+import { DictInter, SettingInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
 import { reactive, Ref, ref, toRaw } from 'vue'
 
@@ -18,15 +18,25 @@ const useConfigStore = defineStore('config', () => {
   // 系统后台配置
   const systemConfig: Ref<SettingInter> = ref({})
 
+  // 字典列表
+  const dicts: Ref<DictInter[]> = ref([])
+
   // 更新数据
   const updateSystemConfig = (payload) => {
     systemConfig.value = toRaw(payload)
   }
 
+  // 更新字典
+  function updateDicts (payload: DictInter[]) {
+    dicts.value = payload
+  }
+
   return {
     config,
+    dicts,
     systemConfig,
-    updateSystemConfig
+    updateSystemConfig,
+    updateDicts
   }
 })
 

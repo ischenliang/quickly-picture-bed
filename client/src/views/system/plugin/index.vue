@@ -1,31 +1,34 @@
 <template>
-  <div class="backstage-account-user">
+  <div class="backstage-account-plugin">
     <table-page
       :table-data="list"
-      @filter="filterData"
-      @reset="restFilters"
       :is-index="true"
       :border="true"
       @pageChange="listGet"
-      @select-change="hanleSelectChange"
-      :actionWidth="340">
+      :actionWidth="260">
       <template #filter>
         <filter-item :text="'插件名称:'">
+          <el-input v-model="list.filters.name" placeholder="请输入插件名称" @input="handleInput" />
+        </filter-item>
+        <filter-item :text="'插件类别:'">
           <el-input v-model="list.filters.name" placeholder="请输入插件名称" @input="handleInput" />
         </filter-item>
       </template>
       <template #action>
         <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
       </template>
-      <template #type="data">
-        <span
-          :class="['plugin-icon', configStore.systemConfig.system.icon_font, icons[data.type].value]"
-          :style="{
-            color: icons[data.type].color
-          }"></span>
+      <template #logo="data">
+        <img :src="data.logo || 'http://localhost:5174/src/views/userinfo/images/%E6%98%9F%E5%BA%A7_%E7%99%BD%E7%BE%8A%E5%BA%A7.png'" alt="" class="plugin-logo">
       </template>
       <template #status="data">
-        <el-tag :type="data.status ? 'success' : 'error'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
+        <el-tag :type="data.status ? 'success' : 'danger'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
+      </template>
+      <template #payment="data">
+        {{ plugin_payment_type[data.payment_type] }}
+        <span v-if="data.payment">(<span style="color: red;">{{ data.price }}元</span>)</span>
+      </template>
+      <template #updatedAt="data">
+        {{ fromNow(data.updatedAt) }}
       </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">更新</el-button>
@@ -37,52 +40,48 @@
         </el-button>
         <el-button type="success" size="small" @click="itemOperate(row, 'detail')">预览</el-button>
         <el-button type="danger" size="small" @click="itemOperate(row, 'delete')">删除</el-button>
-        <el-button type="info" size="small" @click="itemOperate(row, 'history')">更新历史</el-button>
       </template>
     </table-page>
+    <edit-plugin
+      v-if="visible.edit"
+      v-model="visible.edit"
+      :detail="item.data"
+      @submit="listGet">
+    </edit-plugin>
   </div>
-  <!-- <edit-dialog
-    v-if="visible.edit"
-    v-model="visible.edit"
-    :detail="item.data"
-    @submit="listGet"/> -->
-  <detail-dialog
-    v-if="visible.detail"
-    v-model="visible.detail"
-    :detail="item.data"/>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, Ref } from 'vue'
+import { reactive, computed } from 'vue'
 import { config } from './config'
-import { BucketSourceInter, DictInter, ListInter, UserInter } from '@/typings/interface'
-import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
+import { ListInter, PluginInter } from '@/typings/interface'
+import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
-import DetailDialog from './DetailDialog.vue'
-import BucketSource from '@/types/BucketSource'
 import { useFormat } from '@/hooks/date-time'
-import { useRouter } from 'vue-router'
-import Dict from '@/types/Dict'
-import useConfigStore from '@/store/config'
+import Plugin from '@/types/Plugin'
+import editPlugin from './edit-plugin.vue'
+import useConfigStore from "@/store/config"
+import moment from 'moment'
+import 'moment/dist/locale/zh-cn'
+moment.locale('zh-cn')
 /**
  * 实例
  */
 const ctx = useCtxInstance()
-const bucketSource = new BucketSource()
-const dict = new Dict()
-const router = useRouter()
+const plugin = new Plugin()
 const configStore = useConfigStore()
 
 /**
  * 变量
  */
-const list: ListInter<BucketSourceInter> = reactive({
+const list: ListInter<PluginInter> = reactive({
   page: 1,
   size: 10,
   total: 0,
   config,
   filters: {
-    name: ''
+    search: '',
+    category: ''
   },
   data: []
 })
@@ -94,34 +93,27 @@ const visible = reactive({
   edit: false,
   detail: false
 })
-// 存储源图标
-const icons: Ref<object> = ref({})
+const plugin_payment_type = computed(() => {
+  const data = configStore.dicts.find(el => el.code === 'plugin_payment_type').values || []
+  let obj = {}
+  data.forEach(el => {
+    obj[el.value as string] = el.label
+  })
+  return obj
+})
 
 /**
  * 逻辑处理
  */
-// 获取图标
-const getIcons = () => {
-  dict.detailByPro('code', 'bucket_source_icon').then((res: DictInter) => {
-    res.values.forEach(el => {
-      icons.value[el.label] = {
-        value: el.value,
-        color: el.color
-      }
-    })
-  })
-}
-getIcons()
 // 获取数据
 const listGet = () => {
-  bucketSource.find({
+  plugin.find({
     page: list.page,
     size: list.size,
     ...list.filters
-  }).then((res: PageResponse<BucketSourceInter>) => {
+  }).then((res: PageResponse<PluginInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.config_str = item.config
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
@@ -135,42 +127,18 @@ const itemOperate = (data: any, type) => {
   visible[type] = true
   if (type === 'delete') {
     useDeleteConfirm().then(() => {
-      bucketSource.delete(data.id).then(res => {
-        ctx.$message({
-          type: 'success',
-          duration: 1000,
-          message: '删除成功'
-        })
+      plugin.delete(data.id).then(res => {
+        ctx.$message({ type: 'success', duration: 1000, message: '删除成功' })
         listGet()
       })
     })
   }
   if (type === 'switch') {
     useDeleteConfirm(`确定要${ data.status ? '禁用' : '启用' }该存储源插件吗？`).then(() => {
-      bucketSource.switch(data.id).then(res => {
-        ctx.$message({
-          type: 'success',
-          duration: 1000,
-          message: `${ data.status ? '禁用' : '启用' }成功`
-        })
+      plugin.toggle(data.id).then(res => {
+        ctx.$message({ type: 'success', duration: 1000, message: `${ data.status ? '禁用' : '启用' }成功` })
         listGet()
       })
-    })
-  }
-  if (type === 'edit') {
-    router.push({
-      name: 'SystemBucketSourceEdit',
-      query: {
-        id: data ? data.id : undefined
-      }
-    })
-  }
-  if (type === 'history') {
-    router.push({
-      name: 'SystemBucketSourceHistory',
-      query: {
-        id: data ? data.id : undefined
-      }
     })
   }
 }
@@ -189,35 +157,19 @@ function debounce(callback, time) {
     }, time)
   }
 }
+// 相对时间
+function fromNow (time: string) {
+  return moment(time).fromNow()
+}
 
 /**
  * 回调函数
  */
-// 筛选数据
-const filterData = () => {
-  useFilterData(list, listGet)
-}
-// 切换tab栏
-const changeTabs = (type: number) => {
-  list.filters.apply_status = type
-  listGet()
-}
-// 表格数据变化
-const hanleSelectChange = (data) => {
-  console.log(data)
-}
-// 重置筛选条件
-const restFilters = () => {
-  for (let key in list.filters) {
-    list.filters[key] = typeof list.filters[key] === 'number' ? 0 : ''
-  }
-  listGet()
-}
 </script>
 
 <style lang="scss">
 @import '@/styles/flex-layout.scss';
-.backstage-account-user {
+.backstage-account-plugin {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -240,6 +192,11 @@ const restFilters = () => {
   }
   .plugin-icon {
     font-size: 22px;
+  }
+  .plugin-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
   }
 }
 </style>

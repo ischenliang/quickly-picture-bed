@@ -42,8 +42,8 @@ import { computed, reactive, Ref, ref, watch } from 'vue';
 import Dict from '@/types/Dict';
 import { DictInter, UserInter } from '@/typings/interface';
 import Users from '@/types/User';
-import { JsonResponse } from '@/typings/req-res';
 import { useCtxInstance } from '@/hooks/global';
+import useConfigStore from "@/store/config"
 
 /**
  * 实例
@@ -65,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:modelValue', 'submit'])
 const user = new Users()
 const ctx = useCtxInstance()
+const configStore = useConfigStore()
 
 
 /**
@@ -107,19 +108,13 @@ const rules = reactive({
   ]
 })
 const formRef = ref(null)
-const roles = ref([])
-
+const roles = computed(() => {
+  return configStore.dicts.find(el => el.code === 'user_role').values || []
+})
 
 /**
  * 数据获取
  */
-const getRoleDict = () => {
-  const dict = new Dict()
-  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
-    roles.value = res.values
-  })
-}
-getRoleDict()
 
 /**
  * 回调函数
@@ -163,7 +158,6 @@ watch(() => props.detail, (val) => {
     form.id = props.detail.id
     for (let key in form) {
       if (props.detail[key] && props.detail[key] !== null) {
-        console.log(key)
         form[key] = props.detail[key]
       }
     }

@@ -21,7 +21,7 @@ export default class Bucket {
     return http('/bucket/create', params)
   }
   // 删除
-  delete (id: number, uid: number) {
+  delete (id: number) {
     return http('/bucket/delete', { id })
   }
   // 更新

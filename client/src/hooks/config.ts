@@ -1,13 +1,13 @@
 /**
  * 用于获取全局配置操作
  */
-
 import useConfigStore from "@/store/config"
 import useUserStore from "@/store/user"
+import Dict from "@/types/Dict"
 import Habits from "@/types/Habits"
 import Setting from "@/types/Setting"
-import { SettingInter, HabitsInter } from "@/typings/interface"
-import { BasicResponse, PageResponse } from "@/typings/req-res"
+import { SettingInter, HabitsInter, DictInter } from "@/typings/interface"
+import { PageResponse } from "@/typings/req-res"
 
 /**
  * 获取全局的url配置
@@ -22,6 +22,7 @@ export function useUploadUrlConfig () {
 
 
 const setting = new Setting()
+const dict = new Dict()
 export function useGetSystemConfig () {
   return new Promise((resolve) => {
     const configStore = useConfigStore()
@@ -48,7 +49,14 @@ export function useGetSystemConfig () {
         style.rel = 'stylesheet'
         style.href = icon_url
         headEl.appendChild(style)
-        resolve(true)
+        if (!configStore.dicts.length) {
+          dict.find({}).then((res: PageResponse<DictInter>) => {
+            configStore.updateDicts(res.items)
+            resolve(true)
+          })
+        } else {
+          resolve(true)
+        }
       })
     } else {
       resolve(true)

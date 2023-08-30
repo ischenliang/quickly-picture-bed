@@ -7,23 +7,15 @@
       :is-index="true"
       :border="true"
       @pageChange="listGet"
-      @select-change="hanleSelectChange"
       :actionWidth="260">
       <template #filter>
-        <filter-item :text="'用户名称:'">
-          <el-input v-model="list.filters.username" placeholder="请输入用户名称" />
-        </filter-item>
-        <filter-item :text="'手机号码:'">
-          <el-input v-model="list.filters.phone" placeholder="请输入手机号码" />
+        <filter-item :text="'搜索:'">
+          <el-input v-model="list.filters.search" placeholder="请输入搜索内容" @input="listGet" />
         </filter-item>
         <filter-item :text="'角色:'">
-          <el-select v-model="list.filters.role">
-            <el-option label="全部" :value="''"/>
-            <el-option
-              v-for="(value, key) in roles"
-              :key="key"
-              :label="value"
-              :value="parseInt(key)" />
+          <el-select v-model="list.filters.role" @change="listGet">
+            <el-option label="全部" :value="0"/>
+            <el-option v-for="(value, key) in roles" :key="key" :label="value" :value="parseInt(key)" />
           </el-select>
         </filter-item>
       </template>
@@ -63,22 +55,22 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { config } from './config'
-import { DictInter, ListInter, UserInter } from '@/typings/interface'
+import { ListInter, UserInter } from '@/typings/interface'
 import { useFilterData, useCtxInstance, useDeleteConfirm } from '@/hooks/global'
-import { BasicResponse, JsonResponse, PageResponse } from '@/typings/req-res'
+import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import DetailDialog from './detailDialog.vue'
 import Users from '@/types/User'
-import Dict from '@/types/Dict'
 import { useFormat } from '@/hooks/date-time'
+import useConfigStore from "@/store/config"
 /**
  * 实例
  */
 const ctx = useCtxInstance()
 const user = new Users()
-const dict = new Dict()
+const configStore = useConfigStore()
 
 /**
  * 变量
@@ -89,9 +81,8 @@ const list: ListInter<UserInter> = reactive({
   total: 0,
   config,
   filters: {
-    username: '',
-    phone: '',
-    role: ''
+    search: '',
+    role: 0
   },
   data: []
 })
@@ -104,20 +95,17 @@ const visible = reactive({
   detail: false
 })
 // 角色
-const roles = reactive({})
+const roles = computed(() => {
+  const tmp = configStore.dicts.find(el => el.code === 'user_role').values || []
+  return tmp.reduce((total, current, curIndex, array) => {
+    total[current.value as string] = current.label
+    return total
+  }, {})
+})
 
 /**
  * 逻辑处理
  */
-const getRoleDict = () => {
-  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
-    res.values.forEach(item => {
-      roles[item.value as string] = item.label
-    })
-    listGet()
-  })
-}
-getRoleDict()
 // 获取数据
 const listGet = () => {
   user.find({
@@ -127,13 +115,14 @@ const listGet = () => {
   }).then((res: PageResponse<UserInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.role_name = roles[item.role]
+      item.role_name = roles.value[item.role]
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
     })
   })
 }
+listGet()
 // 操作
 const itemOperate = (data: UserInter, type) => {
   item.data = data
@@ -160,15 +149,6 @@ const itemOperate = (data: UserInter, type) => {
 // 筛选数据
 const filterData = () => {
   useFilterData(list, listGet)
-}
-// 切换tab栏
-const changeTabs = (type: number) => {
-  list.filters.apply_status = type
-  listGet()
-}
-// 表格数据变化
-const hanleSelectChange = (data) => {
-  console.log(data)
 }
 // 重置筛选条件
 const restFilters = () => {

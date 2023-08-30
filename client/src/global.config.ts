@@ -71,3 +71,4 @@ export const baseURL = `${ip}/v1`
 
 
 export const PluginLoadUrl = 'https://unpkg.com/'
+export const npmRegistry = 'https://registry.npmjs.org'

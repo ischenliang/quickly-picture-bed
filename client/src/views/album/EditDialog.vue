@@ -9,7 +9,7 @@
       <el-form-item label="顶部背景图" prop="background">
         <div class="album-background" v-loading="loading.background">
           <div class="album-background-img">
-            <img v-if="form.background" :src="form.background_preview" alt="">
+            <img v-if="form.background" :src="form.background" alt="">
           </div>
           <web-upload
             :accept="['png', 'jpg', 'jpeg']"
@@ -35,15 +35,12 @@
           <el-form-item label="相册简介" prop="desc">
             <el-input v-model="form.desc" placeholder="介绍一下该相册..." type="textarea" :rows="4" size="large" />
           </el-form-item>
-          <el-form-item label="排序值" prop="sort">
-            <el-input-number v-model="form.sort" :min="0" :precision="2" />
-          </el-form-item>
         </div>
         <div class="inline-right">
           <el-form-item label="相册封面" prop="cover">
             <div class="album-cover" v-loading="loading.cover">
               <div class="album-cover-img">
-                <img v-if="form.cover" :src="form.cover_preview" alt="">
+                <img v-if="form.cover" :src="form.cover" alt="">
               </div>
               <web-upload
                 :accept="['png', 'jpg', 'jpeg']"
@@ -72,15 +69,13 @@
 </template>
 
 <script lang="ts" setup>
-import { AlbumInter, BucketInter } from '@/typings/interface';
+import { AlbumInter } from '@/typings/interface';
 import { computed, reactive, ref, watch } from 'vue';
 import WebUpload from '@/components/web/upload/index.vue'
 import { useCtxInstance, useGetSuffix } from '@/hooks/global';
-import { uploadImg, uploadImgLocal } from '@/types/av';
 import { useFileName } from '@/hooks/date-time';
 import { FormRules } from 'element-plus';
 import Album from '@/types/Album';
-import { baseURL } from '@/global.config';
 
 /**
  * 实例
@@ -93,9 +88,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   baseUrl: '',
-  detail: () => ({
-    id: ''
-  } as BucketInter)
+  detail: () => ({} as AlbumInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const ctx = useCtxInstance()
@@ -114,7 +107,7 @@ const dialogVisible = computed({
   }
 })
 const form: AlbumInter = reactive({
-  id: '',
+  id: 0,
   name: '',
   desc: '',
   cover: '',
@@ -122,16 +115,8 @@ const form: AlbumInter = reactive({
   background: '',
   background_preview: '',
   uid: '',
-  count: 0,
-  sort: 1,
 })
 const rules: FormRules = reactive({
-  // background: [
-  //   { required: true, message: '请上传顶部背景图', trigger: ['blur', 'change'] }
-  // ],
-  // cover: [
-  //   { required: true, message: '请上传相册封面图', trigger: ['blur', 'change'] }
-  // ],
   name: [
     { required: true, message: '请输入相册名称', trigger: ['blur'] }
   ]
@@ -159,12 +144,6 @@ const beforeUpload = (e: { files: FileList, error: string }, property) => {
   }
   const suffix = useGetSuffix(file.name, '.')
   loading[property] = true
-  uploadImgLocal(useFileName() + '.' + suffix, file).then(res => {
-    const img_url = res.data.data.img_url
-    form[property] = img_url
-    form[property + '_preview'] = window.uploader_ip + img_url
-    loading[property] = false
-  })
 }
 // 提交
 const submit = () => {

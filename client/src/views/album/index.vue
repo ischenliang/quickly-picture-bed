@@ -77,11 +77,8 @@ const listGet = () => {
   album.find({
     ...list.filters
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
-    list.total = res.total
     list.data = res.items.map(item => {
-      item.cover_preview = window.uploader_ip + item.cover
-      item.background_preview = window.uploader_ip + item.background
-      item.count = res.stats.find(stat => stat.id === item.id).count
+      // item.count = res.stats.find(stat => stat.id === item.id).count
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
@@ -97,8 +94,7 @@ const itemOperate = (data: AlbumInter, type) => {
   visible[type] = true
   if (type === 'delete') {
     useDeleteConfirm().then(() => {
-      album.delete(data.id)
-        .then(res => {
+      album.delete(data.id).then(res => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
         listGet()
       })

@@ -11,7 +11,7 @@
         :rules="[
           { required: true, message: '请选择存储桶插件', trigger: ['blur', 'change'] }
         ]">
-        <p class="bucket-tips" style="color: red;">* 添加成功后存储源不可修改</p>
+        <p class="bucket-tips" style="color: red;">* 添加成功后不可修改</p>
         <el-select v-model="form.user_plugin_id" style="width: 100%" filterable size="large" :disabled="form.id ? true : false">
           <el-option
             v-for="(item, index) in bucketPlugins"
@@ -29,8 +29,8 @@
         <el-input v-model="form.name" size="large" placeholder="请输入存储桶名称" />
       </el-form-item>
       <el-tabs v-if="form.user_plugin_id" v-model="activeName" class="bucket-tabs">
-        <el-tab-pane label="配置" name="config">
-          <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.type + index">
+        <el-tab-pane label="存储桶配置" name="config">
+          <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.user_plugin_id + index">
             <el-form-item
               v-if="!item.hidden"
               :label="item.label"
@@ -65,10 +65,18 @@
           </template>
         </el-tab-pane>
         <el-tab-pane label="插件介绍" name="intro">
-          <markdown-preview :value="doc_config.readme"></markdown-preview>
+          <plugin-readme
+            v-if="activeName === 'intro'"
+            :plugin_name="current_plugin.plugin.name"
+            :plugin_version="current_plugin.version">
+          </plugin-readme>
         </el-tab-pane>
         <el-tab-pane label="更新日志" name="uplog">
-          <markdown-preview :value="doc_config.changlog"></markdown-preview>
+          <plugin-uplog
+            v-if="activeName === 'uplog'"
+            :plugin_name="current_plugin.plugin.name"
+            :plugin_version="current_plugin.version">
+          </plugin-uplog>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -85,12 +93,10 @@ import { computed, reactive, Ref, ref, watch } from 'vue';
 import { PageResponse } from '@/typings/req-res';
 import Bucket from '@/types/Bucket';
 import { useCtxInstance} from '@/hooks/global';
-import axios from 'axios'
-import useUserStore from '@/store/user';
-import Habits from '@/types/Habits';
 import Plugin from '@/types/Plugin';
 import { PluginLoadUrl } from '@/global.config'
-import markdownPreview from './markdown-preview.vue';
+import pluginReadme from './plugin-readme.vue';
+import pluginUplog from './plugin-uplog.vue'
 
 /**
  * 实例
@@ -101,16 +107,11 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  detail: () => ({
-    id: 0,
-    user_plugin_id: 0
-  } as BucketInter)
+  detail: () => ({} as BucketInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const bucket = new Bucket()
 const ctx = useCtxInstance()
-const userStore = useUserStore()
-const habit = new Habits()
 const plugin = new Plugin()
 
 
@@ -126,10 +127,10 @@ const dialogVisible = computed({
   }
 })
 const form: BucketInter = reactive({
-  id: 0,
   name: '',
   config: {},
   visible: true,
+  user_plugin_id: ''
 })
 // 表单ref
 const formRef = ref(null)
@@ -137,11 +138,6 @@ const formRef = ref(null)
 const bucketPlugins: Ref<UserPluginInter[]> = ref([])
 // 存储源配置
 const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
-// 文档地址
-const doc_config = ref({
-  readme: '', // README.md
-  changlog: '' // 更新日志
-})
 const activeName = ref('config')
 // 当前插件
 const current_plugin: Ref<UserPluginInter> = ref()
@@ -152,6 +148,9 @@ const current_plugin: Ref<UserPluginInter> = ref()
 const getInstallPlugins = () => {
   plugin.installed({ status: true }).then((res: PageResponse<UserPluginInter>) => {
     bucketPlugins.value = res.items
+    if (form.user_plugin_id) {
+      handleData(form.user_plugin_id)
+    }
   })
 }
 getInstallPlugins()
@@ -194,12 +193,8 @@ const submit = () => {
       })
       const tmp = {
         name: form.name,
-        type: form.type,
-        tag: form.tag,
-        config: JSON.stringify(obj),
-        uid: form.uid,
-        plugin: form.plugin,
-        version: form.version
+        user_plugin_id: form.user_plugin_id,
+        config: obj
       }
       if (form.id) {
         itemUpdate({ id: form.id, ...tmp })
@@ -224,24 +219,17 @@ const itemUpdate = (data: BucketInter) => {
     emit('submit')
     ctx.$message({ message: '更新成功', duration: 1000, type: 'success' })
     // 更新完存储桶同时更新当前高亮存储桶
-    if (userStore.user_habits.data.id === data.id) {
-      userStore.updateUserHabits(data)
-      await habit.save({
-        id: data.id,
-        current: data
-      })
-    }
   })
 }
 // 处理数据
-const handleData = (user_plugin_id: number) => {
+const handleData = (user_plugin_id: number | string) => {
   current_plugin.value = bucketPlugins.value.find(el => el.id === user_plugin_id)
   if (current_plugin.value) {
     // 这里需要使用用户安装的插件
     const { plugin: {name}, version } = current_plugin.value
-    // 动态加载模块
+    // 动态加载模块：添加随机数，避免模块不重复加载
     const url = `${PluginLoadUrl}${name}@${version}`
-    import(/* @vite-ignore */url)
+    import(/* @vite-ignore */url + `?time=` + Math.random())
       .then((res: { default }) => {
         bucketConfigs.value = res.default.config.map((el: BucketSourceConfig) => {
           if (form.config) {
@@ -252,22 +240,7 @@ const handleData = (user_plugin_id: number) => {
           return el
         })
       })
-    
-    // 处理更新日志和READEME.md
-    fetch(`${url}/README.md`)
-      .then(res => res.text())
-      .then(res => {
-        doc_config.value.readme = res
-      })
-    fetch(`${url}/changlog.md`)
-      .then(res => res.text())
-      .then(res => {
-        doc_config.value.changlog = res
-      })
   }
-}
-// 处理存储桶配置数据
-const handleBucketData = (data) => {
 }
 
 /**
@@ -355,6 +328,9 @@ watch(() => props.detail, (val) => {
         }
       }
     }
+  }
+  .el-tabs__content {
+    padding: 0 30px;
   }
 }
 </style>

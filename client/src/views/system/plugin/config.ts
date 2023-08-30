@@ -2,47 +2,67 @@ import { TableColumnConfig } from '@/typings/interface'
 export const config: Array<TableColumnConfig> = [
   {
     align: 'center',
-    label: '插件类型',
-    width: '',
-    prop: 'type',
-    slot: 'type'
+    label: '插件logo',
+    width: '90',
+    prop: 'logo',
+    slot: 'logo'
   },
   {
     align: 'center',
     label: '插件名称',
-    width: '',
+    width: '200',
     prop: 'name'
   },
   {
     align: 'center',
-    label: '类别(唯一)',
-    width: '',
-    prop: 'type'
+    label: '插件别名',
+    width: '100',
+    prop: 'title'
   },
   {
     align: 'center',
     label: '版本号',
-    width: '',
+    width: '70',
     prop: 'version'
   },
   {
     align: 'center',
+    label: '类别',
+    width: '90',
+    prop: 'category'
+  },
+  {
+    align: 'center',
+    label: '运行平台',
+    width: '100',
+    prop: 'platform'
+  },
+  {
+    align: 'center',
+    label: '安装次数',
+    width: '100',
+    prop: 'downloadCounts'
+  },
+  {
+    align: 'center',
+    label: '是否付费',
+    width: '100',
+    prop: 'payment',
+    slot: 'payment'
+  },
+  {
+    align: 'center',
     label: '状态',
-    width: '',
+    width: '90',
     prop: 'status',
     slot: 'status'
   },
   {
     align: 'center',
-    label: '创建时间',
-    width: '',
-    prop: 'createdAt'
-  },
-  {
-    align: 'center',
     label: '更新时间',
-    width: '',
-    prop: 'updatedAt'
+    width: '100',
+    prop: 'updatedAt',
+    slot: 'updatedAt'
   }
 ]
 

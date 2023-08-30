@@ -6,9 +6,9 @@
         <el-col :xl="6" :lg="8" :md="12">
           <bucket-item :create="true" @click="itemOperate(null, 'edit')"></bucket-item>
         </el-col>
-        <!-- 循环 -->
+        <!-- 遍历存储桶列表 -->
         <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
-          <bucket-item>
+          <bucket-item :detail="item">
             <template #action>
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'toggle')">{{ item.visible ? '禁用' : '启用' }}</div>
@@ -104,12 +104,12 @@ listGet()
 
 // 操作
 const itemOperate = (data: BucketInter, type) => {
-  item.data = data
+  console.log(data, type)
+  item.data = data && JSON.parse(JSON.stringify(data))
   visible[type] = true
   if (type === 'delete') {
     useDeleteConfirm('确定要删除本存储桶吗？(删除后关联的图片将无法访问)').then(() => {
-      bucket.delete(data.id, data.uid)
-      .then(res => {
+      bucket.delete(data.id).then(res => {
         ctx.$message({ message: '删除成功', type: 'success', duration: 1000 })
         listGet()
       })
@@ -123,9 +123,6 @@ const itemOperate = (data: BucketInter, type) => {
       })
     })
   }
-  // if (type === 'migrate') {
-  //   console.log('数据迁移')
-  // }
 }
 </script>
 

@@ -2,7 +2,7 @@
   <div class="bucket-item">
     <div class="bucket-item-square">
       <span v-if="create" class="trialfont trial-bianji"></span>
-      <img v-else src="https://s2.wzznft.com/i/2023/08/29/pjeh2x.ico" alt="">
+      <img v-else :src="detail.user_plugin.plugin.logo" alt="">
     </div>
     <template v-if="create">
       <div class="bucket-item-tip">
@@ -11,18 +11,18 @@
     </template>
     <template v-else>
       <div class="bucket-item-tags">
-        <el-tag size="small" type="success">alist-uploader</el-tag>
-        <el-tag size="small" :type="''">已启用</el-tag>
+        <el-tag size="small" type="success">{{ detail.user_plugin.plugin.title }}</el-tag>
+        <el-tag size="small" :type="detail.visible ? '' : 'danger'">{{ detail.visible ? '已启用' : '已禁用' }}</el-tag>
       </div>
       <div class="bucket-item-content">
-        <div class="bucket-content-title">alist存储桶</div>
+        <div class="bucket-content-title">{{ detail.name }}</div>
         <div class="bucket-content-count">
-          <el-tag size="small">版本号: 1.0.0</el-tag>
+          <el-tag size="small">版本号: {{ detail.user_plugin.version }}</el-tag>
           <el-tag type="info" size="small">图片数量: 1</el-tag>
           <el-tag type="info" size="small">占用存储: 2MB</el-tag>
         </div>
         <div class="bucket-content-time">
-          更新于: 2023-05-16 09:30:50
+          更新于: {{ detail.updatedAt }}
         </div>
       </div>
       <div class="bucket-item-action">
@@ -32,11 +32,23 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { BucketInter } from '@/typings/interface';
+
 interface Props {
   create?: boolean
+  detail?: BucketInter
 }
 withDefaults(defineProps<Props>(), {
-  create: false
+  create: false,
+  detail: () => ({
+    id: 0,
+    name: '',
+    user_plugin: {
+      plugin: {
+        logo: ''
+      }
+    }
+  } as BucketInter)
 })
 </script>
 <style lang="scss">

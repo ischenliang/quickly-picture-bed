@@ -1,12 +1,12 @@
 
 import { PageReq } from '@/typings/req-res';
-import { AlbumInter } from '@/typings/interface'
+import { AlbumInter, TagInter } from '@/typings/interface'
 import http from '@/api'
 
 // 筛选条件
 interface Filter extends PageReq {
-  uid?: string
-  id?: string
+  uid?: number
+  id?: number
   desc?: string
   name?: string
   tag?: string
@@ -23,7 +23,7 @@ export default class Album {
     return http('/album/create', params)
   }
   // 删除
-  delete (id: string) {
+  delete (id: number) {
     return http('/album/delete', { id })
   }
   // 更新
@@ -35,7 +35,7 @@ export default class Album {
     return http('/album/list', params)
   }
   // 详情
-  detail (id: string) {
+  detail (id: number) {
     return http('/album/detail', { id })
   }
   // 图片列表
@@ -43,7 +43,14 @@ export default class Album {
     return http('/album/images', params)
   }
   // 标签列表
-  tags (id: string) {
-    return http('/album/tags', { id })
+  tags (id: number) {
+    return http('/album-tags/detail', { album_id: id })
+  }
+  // 更新标签
+  updateTags (album_id: number, tags: TagInter[]) {
+    return http('/album-tags/update', {
+      album_id,
+      tags
+    })
   }
 }

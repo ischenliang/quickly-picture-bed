@@ -32,7 +32,6 @@ import { computed, ref } from 'vue';
 import UserDropdown from '@/components/web/user/dropdown.vue'
 import useUserStore from '@/store/user';
 import Dict from '@/types/Dict';
-import { DictInter } from '@/typings/interface';
 import { useRouter } from 'vue-router';
 
 /**
@@ -40,16 +39,25 @@ import { useRouter } from 'vue-router';
  */
 const configStore = useConfigStore()
 const userStore = useUserStore()
-const dict = new Dict()
 const router = useRouter()
 
+
+/**
+ * 变量
+ */
 const website = computed(() => {
   return configStore.systemConfig.website
 })
 const userInfo = computed(() => {
   return userStore.userInfo
 })
-const roles = ref({})
+const roles = computed(() => {
+  const tmp = configStore.dicts.find(el => el.code === 'user_role').values || []
+  return tmp.reduce((total, current, curIndex, array) => {
+    total[current.value as string] = current.label
+    return total
+  }, {})
+})
 // 功能区
 const features = ref([
   { text: 'ChatGPT', path: '/chatgpt', bg: new URL('./images/jhot.svg', import.meta.url).href }
@@ -63,16 +71,6 @@ const links = computed(() => {
 /**
  * 逻辑处理
  */
-const getRoles = () => {
-  dict.detailByPro('code', 'user_role').then((res: DictInter) => {
-    const tmp: any = {}
-    res.values.forEach(el => {
-      tmp[el.value as string] = el.label
-    })
-    roles.value = tmp
-  })
-}
-getRoles()
 // 功能区跳转
 function handleClick (item) {
   router.push({
