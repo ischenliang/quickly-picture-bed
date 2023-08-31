@@ -53,5 +53,47 @@ function highlightBlock(str: string, lang?: string) {
 <style lang="scss">
 .markdown-body {
   min-height: 400px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  color: #24292f;
+  overflow: hidden !important;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  h1 {
+    text-align: left;
+    margin-top: 35px;
+  }
+  p {
+    margin-bottom: 16px;
+    margin-top: 0 !important;
+  }
+  pre>code {
+    padding: 20px 12px 15px !important;
+  }
+  > *:last-child {
+    margin-bottom: 0!important;
+  }
+  ol {
+    list-style-type: decimal;
+    padding-left: 2em;
+  }
+  .code-block-wrapper {
+    position: relative;
+    .code-block-header {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      color: #b3b3b3;
+      font-size: 12px;
+      user-select: none;
+      span {
+        margin-right: 8px;
+        cursor: pointer;
+        &.code-block-header__copy:hover {
+          color: #18a058;
+        }
+      }
+    }
+  }
 }
 </style>

@@ -72,11 +72,11 @@
           </plugin-readme>
         </el-tab-pane>
         <el-tab-pane label="更新日志" name="uplog">
-          <plugin-uplog
+          <uplog-md
             v-if="activeName === 'uplog'"
             :plugin_name="current_plugin.plugin.name"
             :plugin_version="current_plugin.version">
-          </plugin-uplog>
+          </uplog-md>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -96,7 +96,7 @@ import { useCtxInstance} from '@/hooks/global';
 import Plugin from '@/types/Plugin';
 import { PluginLoadUrl } from '@/global.config'
 import pluginReadme from './plugin-readme.vue';
-import pluginUplog from './plugin-uplog.vue'
+import uplogMd from '@/views/plugin/uplog-md.vue'
 
 /**
  * 实例

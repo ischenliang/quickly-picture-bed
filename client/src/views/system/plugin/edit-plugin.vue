@@ -124,7 +124,8 @@ const form: PluginInter = reactive({
   status: false,
   payment: false,
   payment_type: 'free',
-  price: 0
+  price: 0,
+  tags: []
 })
 const rules = reactive({
   name: [
@@ -202,6 +203,7 @@ function getInfoByVersion (version: string) {
   form.description = description
   form.version = version
   form.category = category || 'uploader'
+  form.tags = keywords && keywords.slice(0, 5)
   form.logo = logo || 'https://himg.bdimg.com/sys/portrait/item/public.1.1f2977ac.EaP-d0ojVIWjmGyxrZ326Q.jpg'
 }
 

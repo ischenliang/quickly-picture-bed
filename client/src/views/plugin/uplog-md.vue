@@ -1,11 +1,11 @@
 <template>
-  <div class="plugin-readme">
+  <div class="uplog-md">
     <md-preview :value="doc_md"></md-preview>
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import mdPreview from '@/views/plugin/md-preview.vue';
+import { computed, ref } from 'vue';
+import mdPreview from './md-preview.vue';
 import { PluginLoadUrl } from '@/global.config';
 
 interface Props {
@@ -34,21 +34,18 @@ const doc_md = ref('')
  */
 function loadData () {
   // 处理更新日志和READEME.md
-  fetch(`${url.value}/README.md`)
+  fetch(`${url.value}/changlog.md`)
     .then(res => res.text())
     .then(res => {
       doc_md.value = res
     })
 }
+loadData()
 
-watch(() => props.plugin_name, () => {
-  loadData()
-}, {
-  immediate: true,
-  deep: true
-})
 
 </script>
 <style lang="scss">
-.plugin-readme {}
+.uplog-md {
+  
+}
 </style>

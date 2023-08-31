@@ -252,6 +252,13 @@ export interface PluginInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 标签列表
+  tags?: string[]
+  user_plugin?: {
+    id: number
+    version: string
+    status: boolean
+  }
 }
 
 export interface UserPluginInter {

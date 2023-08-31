@@ -28,7 +28,7 @@
         <span v-if="data.payment">(<span style="color: red;">{{ data.price }}元</span>)</span>
       </template>
       <template #updatedAt="data">
-        {{ fromNow(data.updatedAt) }}
+        {{ useFromNow(data.updatedAt) }}
       </template>
       <template #tableAction="{ row }">
         <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">更新</el-button>
@@ -61,9 +61,7 @@ import { useFormat } from '@/hooks/date-time'
 import Plugin from '@/types/Plugin'
 import editPlugin from './edit-plugin.vue'
 import useConfigStore from "@/store/config"
-import moment from 'moment'
-import 'moment/dist/locale/zh-cn'
-moment.locale('zh-cn')
+import { useFromNow } from '@/hooks/date-time'
 /**
  * 实例
  */
@@ -156,10 +154,6 @@ function debounce(callback, time) {
       callback(args)
     }, time)
   }
-}
-// 相对时间
-function fromNow (time: string) {
-  return moment(time).fromNow()
 }
 
 /**

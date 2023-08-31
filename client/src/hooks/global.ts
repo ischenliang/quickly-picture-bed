@@ -55,7 +55,7 @@ export function useCurrentUser () {
  * @param list 传入list响应对象，否则会失去响应性
  * @param fn 重置后调用回调函数
  */
- export function useFilterData (list: ListInter<any>, fn: Function) {
+export function useFilterData (list: ListInter<any>, fn: Function) {
   list.page = 1
   fn()
 }

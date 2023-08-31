@@ -1,4 +1,6 @@
 import moment from 'moment'
+import 'moment/dist/locale/zh-cn'
+moment.locale('zh-cn')
 /**
  * 格式化日期和时间
  * @param pattern 格式规则
@@ -27,4 +29,13 @@ export function useFileName (type = 'random') {
   if (type === 'timestampr') {
     return moment().format('x') + randomNum + Math.floor(Math.random() * 10)
   }
+}
+
+/**
+ * 获取距离当前时间的相对时间
+ * @param time 
+ * @returns 
+ */
+export function useFromNow (time) {
+  return moment(time).fromNow()
 }

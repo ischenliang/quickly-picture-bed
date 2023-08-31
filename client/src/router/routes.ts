@@ -94,6 +94,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '插件市场', icon: 'DataLine', role: [1, 2, 10] }
       },
       {
+        path: '/plugin/detail',
+        name: 'PluginDetail',
+        component: () => import('@/views/plugin/detail.vue'),
+        meta: { title: '插件详情', hidden: true, active: '/plugin', icon: 'DataLine', role: [1, 2, 10] }
+      },
+      {
         path: '/uplog',
         name: 'Uplog',
         component: () => import('@/views/log/uplog.vue'),

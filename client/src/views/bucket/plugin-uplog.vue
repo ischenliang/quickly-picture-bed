@@ -1,11 +1,11 @@
 <template>
   <div class="plugin-uplog">
-    <markdown-preview :value="doc_md"></markdown-preview>
+    <md-preview :value="doc_md"></md-preview>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import markdownPreview from './markdown-preview.vue';
+import mdPreview from '@/views/plugin/md-preview.vue';
 import { PluginLoadUrl } from '@/global.config';
 
 interface Props {
