@@ -101,6 +101,7 @@ $text-color-active: #32cfaa;
       width: 30px;
       height: 30px;
       transform: rotate(-45deg);
+      border-radius: 4px;
     }
     span {
       font-size: 30px;

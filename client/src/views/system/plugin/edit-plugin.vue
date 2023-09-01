@@ -51,17 +51,14 @@
         </el-form-item>
       </template>
       <el-form-item label="是否付费" prop="payment">
-        <el-switch v-model="form.payment" />
+        <el-switch v-model="form.payment" @change="handleChange" />
       </el-form-item>
       <template v-if="form.payment">
         <el-form-item label="付费版本" prop="payment_type">
           <el-select v-model="form.payment_type" size="large" style="width: 100%;">
-            <el-option
-              v-for="(item, index) in plugin_types.plugin_payment_type"
-              :key="index"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+            <template v-for="(item, index) in plugin_types.plugin_payment_type" :key="index">
+              <el-option v-if="item.value !== 'free'" :label="item.label" :value="item.value"></el-option>
+            </template>
           </el-select>
         </el-form-item>
         <el-form-item label="价格(元)" prop="price">
@@ -145,7 +142,7 @@ const plugin_types = computed(() => {
   return {
     plugin_type: configStore.dicts.find(el => el.code === 'plugin_type').values || [],
     plugin_env: configStore.dicts.find(el => el.code === 'plugin_env').values || [],
-    plugin_payment_type: configStore.dicts.find(el => el.code === 'plugin_payment_type').values || []
+    plugin_payment_type: configStore.payment_types
   }
 })
 const loading = reactive({
@@ -206,12 +203,23 @@ function getInfoByVersion (version: string) {
   form.tags = keywords && keywords.slice(0, 5)
   form.logo = logo || 'https://himg.bdimg.com/sys/portrait/item/public.1.1f2977ac.EaP-d0ojVIWjmGyxrZ326Q.jpg'
 }
+function handleChange (val) {
+  if (val) {
+    form.payment_type = 'paid'
+  } else {
+    form.payment_type = 'free'
+    form.price = 0
+  }
+}
 
 watch(() => props.detail, (val) => {
   if (val) {
     form.id = props.detail.id
     for (let key in form) {
       form[key] = props.detail[key]
+      if (key === 'payment') {
+        form[key] = Boolean(props.detail[key])
+      }
     }
   }
 }, {

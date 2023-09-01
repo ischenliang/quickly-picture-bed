@@ -28,7 +28,7 @@
         ]">
         <el-input v-model="form.name" size="large" placeholder="请输入存储桶名称" />
       </el-form-item>
-      <el-tabs v-if="form.user_plugin_id" v-model="activeName" class="bucket-tabs">
+      <el-tabs v-loading="loading" v-if="form.user_plugin_id" v-model="activeName" class="bucket-tabs">
         <el-tab-pane label="存储桶配置" name="config">
           <template v-for="(item, index) in bucketConfigs" :key="'form-item' + form.user_plugin_id + index">
             <el-form-item
@@ -141,6 +141,8 @@ const bucketConfigs: Ref<BucketSourceConfig[]> = ref([])
 const activeName = ref('config')
 // 当前插件
 const current_plugin: Ref<UserPluginInter> = ref()
+// 加载状态
+const loading = ref(false)
 
 /**
  * 数据获取
@@ -229,6 +231,7 @@ const handleData = (user_plugin_id: number | string) => {
     const { plugin: {name}, version } = current_plugin.value
     // 动态加载模块：添加随机数，避免模块不重复加载
     const url = `${PluginLoadUrl}${name}@${version}`
+    loading.value = true
     import(/* @vite-ignore */url + `?time=` + Math.random())
       .then((res: { default }) => {
         bucketConfigs.value = res.default.config.map((el: BucketSourceConfig) => {
@@ -239,6 +242,9 @@ const handleData = (user_plugin_id: number | string) => {
           }
           return el
         })
+        loading.value = false
+      }).catch(error => {
+        loading.value = false
       })
   }
 }
@@ -330,6 +336,7 @@ watch(() => props.detail, (val) => {
     }
   }
   .el-tabs__content {
+    min-height: 400px;
     padding: 0 30px;
   }
 }

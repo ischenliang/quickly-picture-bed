@@ -100,6 +100,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '插件详情', hidden: true, active: '/plugin', icon: 'DataLine', role: [1, 2, 10] }
       },
       {
+        path: '/wiki',
+        name: 'Wki',
+        component: () => import('@/views/wiki/index.vue'),
+        meta: { title: '知识库管理', icon: 'Collection', role: [1, 2, 10] }
+      },
+      {
         path: '/uplog',
         name: 'Uplog',
         component: () => import('@/views/log/uplog.vue'),

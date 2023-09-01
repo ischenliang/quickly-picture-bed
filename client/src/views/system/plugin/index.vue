@@ -24,8 +24,13 @@
         <el-tag :type="data.status ? 'success' : 'danger'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
       </template>
       <template #payment="data">
-        {{ plugin_payment_type[data.payment_type] }}
-        <span v-if="data.payment">(<span style="color: red;">{{ data.price }}元</span>)</span>
+        {{ payment_types[data.payment_type] }}
+        <span v-if="data.payment">
+          (<span style="color: red;">
+            <template v-if="data.payment_type !== 'limited_free'">{{ data.price }}元</template>
+            <s v-else>{{ data.price }}元</s>
+          </span>)
+        </span>
       </template>
       <template #updatedAt="data">
         {{ useFromNow(data.updatedAt) }}
@@ -91,13 +96,11 @@ const visible = reactive({
   edit: false,
   detail: false
 })
-const plugin_payment_type = computed(() => {
-  const data = configStore.dicts.find(el => el.code === 'plugin_payment_type').values || []
-  let obj = {}
-  data.forEach(el => {
-    obj[el.value as string] = el.label
-  })
-  return obj
+const payment_types = computed(() => {
+  return configStore.payment_types.reduce((total, cur) => {
+    total[cur.value as string] = cur.label
+    return total
+  }, {})
 })
 
 /**

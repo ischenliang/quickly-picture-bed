@@ -104,7 +104,6 @@ listGet()
 
 // 操作
 const itemOperate = (data: BucketInter, type) => {
-  console.log(data, type)
   item.data = data && JSON.parse(JSON.stringify(data))
   visible[type] = true
   if (type === 'delete') {

@@ -31,7 +31,7 @@ const plugins: Ref<PluginInter[]> = ref([])
  */
 // 获取数据
 function listGet () {
-  plugin.find({}).then((res: PageResponse<PluginInter>) => {
+  plugin.find({ status: true }).then((res: PageResponse<PluginInter>) => {
     plugins.value = res.items
   })
 }
@@ -47,6 +47,8 @@ function handleClick (item: PluginInter) {
 </script>
 <style lang="scss">
 .plugin-container {
+  width: 100%;
+  height: 100%;
   .el-row {
     .el-col {
       padding: 10px;

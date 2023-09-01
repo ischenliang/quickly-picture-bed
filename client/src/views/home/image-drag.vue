@@ -106,12 +106,15 @@ onMounted(() => {
   &-main {
     width: 100%;
     height: 100%;
-    background: rgba(4, 193, 180, .1);
+    // background: rgba(4, 193, 180, .1);
+    // background: rgb(127 133 132 / 10%);
     // padding: 5px 5px 5px 0;
     padding: 0 5px;
     display: flex;
     color: #0db3a6;
     align-items: center;
+    border: 1px solid #f2f2f2;
+    border-radius: 4px;
   }
   &-icon {
     width: 15px;
@@ -143,9 +146,11 @@ onMounted(() => {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    color: #666;
   }
   &-filesize {
     font-size: 13px;
+    color: #7d7b7b;
   }
   &-action {
     flex-shrink: 0;

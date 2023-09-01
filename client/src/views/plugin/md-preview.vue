@@ -6,7 +6,8 @@ import 'juejin-markdown-themes/dist/devui-blue.css'
 import MarkdownIt from 'markdown-it'
 import MarkdownLinkAttributes from 'markdown-it-link-attributes'
 import hljs from 'highlight.js'
-import { computed } from 'vue'
+import { useCopyText, useCtxInstance } from '@/hooks/global'
+import { computed, onMounted, onUpdated } from 'vue'
 interface Props {
   value: string
 }
@@ -49,6 +50,26 @@ function highlightBlock(str: string, lang?: string) {
   return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
   // return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
 }
+
+function useCopyCode(ctx) {
+  function copyCodeBlock() {
+    const codeBlockWrapper = document.querySelectorAll('.code-block-wrapper')
+    codeBlockWrapper.forEach((wrapper) => {
+      const copyBtns = wrapper.querySelectorAll('.code-block-header__copy')
+      const codeBlocks = wrapper.querySelectorAll('.code-block-body')
+      copyBtns.forEach((copyBtn: HTMLElement, index) => {
+        if (copyBtn && codeBlocks[index]) {
+          copyBtn.onclick = () => {
+            useCopyText(ctx, codeBlocks[index].textContent ?? '')
+          }
+        }
+      })
+    })
+  }
+  onMounted(() => copyCodeBlock())
+  onUpdated(() => copyCodeBlock())
+}
+useCopyCode(useCtxInstance())
 </script>
 <style lang="scss">
 .markdown-body {

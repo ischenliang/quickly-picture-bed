@@ -4,6 +4,7 @@ import http from '@/api'
 
 // 筛选条件
 interface Filter extends PageReq {
+  status?: boolean
 }
 
 
@@ -38,8 +39,12 @@ export default class Plugin {
     return http('/plugin/installed', params)
   }
   // 安装插件
-  install (id: number) {
+  install (id: number, secret_key: string = '') {
     return http('/plugin/install', { id })
+  }
+  // 更新安装插件
+  updateInstall (id: number) {
+    return http('/plugin/updateInstall', { id })
   }
   // 卸载插件
   uninstall (id: number) {

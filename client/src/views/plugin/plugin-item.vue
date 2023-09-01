@@ -47,7 +47,12 @@
             <span>更新于 {{ useFromNow(detail.updatedAt) }}</span>
           </div>
         </div>
-        <div class="plugin-item-payment">{{ payment_types[detail.payment_type] }}</div>
+        <div :class="{
+          'plugin-item-payment': true,
+          'free': detail.payment_type === 'free',
+          'limited-free': detail.payment_type === 'limited_free',
+          'paid': detail.payment_type === 'paid'
+        }">{{ payment_types[detail.payment_type] }}</div>
       </div>
       <div class="plugin-item-main__content">
         <div class="plugin-item-desc">{{ detail.description }}</div>
@@ -85,8 +90,7 @@ const configStore = useConfigStore()
  * 变量
  */
 const payment_types = computed(() => {
-  const types = configStore.dicts.find(el => el.code === 'plugin_payment_type').values || []
-  return types.reduce((total, cur) => {
+  return configStore.payment_types.reduce((total, cur) => {
     total[cur.value as string] = cur.label
     return total
   }, {})
@@ -94,7 +98,8 @@ const payment_types = computed(() => {
 </script>
 <style lang="scss">
 .plugin-item {
-  border: 1px solid #00b8d4;
+  // border: 1px solid #00b8d4;
+  border: 1px solid #e9ecef;
   border-radius: 4px;
   box-shadow: 0 0.2rem 0.5rem #0000000d,0 0 0.05rem #0000001a;
   width: 100%;
@@ -104,9 +109,11 @@ const payment_types = computed(() => {
   overflow: hidden;
   cursor: pointer;
   transition: all .3s;
+  background: #fff;
   &-header {
     height: 36px;
-    background: #00b8d41a;
+    // background: #00b8d41a;
+    border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -223,8 +230,18 @@ const payment_types = computed(() => {
           position: absolute;
           top: 6px;
           right: 0px;
-          background: #e3eafd;
-          color: #1c3f94;
+          &.free {
+            background: #e3eafd;
+            color: #1c3f94;
+          }
+          &.limited-free {
+            background: #fbebd5;
+            color: #86511c;
+          }
+          &.paid {
+            background: #ff6728;
+            color: #fff;
+          }
         }
         &-info {
           flex: 1;

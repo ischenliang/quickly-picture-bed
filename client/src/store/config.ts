@@ -18,6 +18,22 @@ const useConfigStore = defineStore('config', () => {
   // 系统后台配置
   const systemConfig: Ref<SettingInter> = ref({})
 
+  // 类型
+  const payment_types = ref([
+    {
+      "label": "付费",
+      "value": "paid"
+    },
+    {
+      "label": "限时免费",
+      "value": "limited_free"
+    },
+    {
+      "label": "免费",
+      "value": "free"
+    }
+  ])
+
   // 字典列表
   const dicts: Ref<DictInter[]> = ref([])
 
@@ -35,6 +51,7 @@ const useConfigStore = defineStore('config', () => {
     config,
     dicts,
     systemConfig,
+    payment_types,
     updateSystemConfig,
     updateDicts
   }

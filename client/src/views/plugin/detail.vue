@@ -1,10 +1,18 @@
 <template>
   <div class="plugin-detail-container">
     <div class="plugin-detail-toolbar">
-      <span>返回</span>
+      <div class="back-btn" @click="goBack">
+        <el-icon><Back /></el-icon>
+        <span>返回</span>
+      </div>
       <template v-if="pluginDetail.user_plugin.id">
-        <el-button v-if="pluginDetail.user_plugin.status" type="danger" size="small">启用插件</el-button>
-        <el-button v-else type="primary" size="small">禁用插件</el-button>
+        <el-button
+          v-if="pluginDetail.user_plugin.status"
+          type="danger"
+          size="small"
+          :loading="loading.toggle"
+          @click="togglePlugin">禁用插件</el-button>
+        <el-button v-else type="primary" size="small" :loading="loading.toggle" @click="togglePlugin">启用插件</el-button>
       </template>
     </div>
     <div class="plugin-detail-info">
@@ -17,7 +25,7 @@
         <template v-else>
           <span class="plugin-detail-status status-info">未安装</span>
         </template>
-        <div class="plugin-detail-platform">{{ pluginDetail.platform }}</div>
+        <div class="plugin-detail-platform">{{ platform_types[pluginDetail.platform] }}</div>
       </div>
       <div class="plugin-detail-info-right">
         <div class="plugin-detail-info-title">
@@ -29,13 +37,18 @@
           <span class="meta-divider">|</span>
           <span>安装次数: {{ pluginDetail.downloadCounts }}</span>
           <span class="meta-divider">|</span>
-          <span>插件类型: {{ pluginDetail.category }}</span>
+          <span>插件类型: {{ plugin_types[pluginDetail.category] }}</span>
         </div>
         <div class="plugin-detail-info-desc">{{ pluginDetail.description }}</div>
         <div class="plugin-detail-info-tags">
           <span class="plugin-detail-info-payment">
             {{ payment_types[pluginDetail.payment_type] }}
-            <span v-if="pluginDetail.price > 0">({{ pluginDetail.price }}元)</span>
+            <span v-if="pluginDetail.payment">
+              (<span>
+                <template v-if="pluginDetail.payment_type !== 'limited_free'">{{ pluginDetail.price }}元</template>
+                <s v-else>{{ pluginDetail.price }}元</s>
+              </span>)
+            </span>
           </span>
           <el-tag
             v-for="(item, index) in pluginDetail.tags"
@@ -44,39 +57,50 @@
       </div>
       <div class="plugin-detail-info-action">
         <template v-if="pluginDetail.user_plugin.id">
-          <el-button type="warning">卸载</el-button>
-          <el-button v-if="pluginDetail.version !== pluginDetail.user_plugin.version" type="primary">更新</el-button>
+          <el-button type="warning" @click="handleUninstall" :loading="loading.uninstall">卸载</el-button>
+          <el-button
+            v-if="pluginDetail.version !== pluginDetail.user_plugin.version"
+            type="primary"
+            :loading="loading.update"
+            @click="handleUpdateInstall">更新</el-button>
         </template>
-        <el-button v-else type="success">安装</el-button>
+        <el-button v-else type="success" @click="handleInstall" :loading="loading.install">安装</el-button>
       </div>
     </div>
     <el-tabs v-model="activeName" class="plugin-detail-tabs">
       <el-tab-pane label="插件介绍" name="intro">
         <plugin-intro :detail="pluginDetail"></plugin-intro>
       </el-tab-pane>
-      <el-tab-pane label="支持" name="support">Config</el-tab-pane>
+      <el-tab-pane label="支持" name="support">
+        <plugin-support :detail="pluginDetail"></plugin-support>
+      </el-tab-pane>
       <el-tab-pane label="更新日志" name="uplog">
         <plugin-uplog :detail="pluginDetail"></plugin-uplog>
       </el-tab-pane>
-      <el-tab-pane label="插件评价" name="comment">Task</el-tab-pane>
+      <!-- <el-tab-pane label="插件评价" name="comment">Task</el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
 <script lang="ts" setup>
 import Plugin from '@/types/Plugin';
 import { PluginInter } from '@/typings/interface';
-import { Ref, computed, ref } from 'vue'
-import { useRoute } from 'vue-router';
+import { Ref, computed, h, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
 import useConfigStore from '@/store/config';
 import PluginIntro from './plugin-intro.vue'
 import PluginUplog from './plugin-uplog.vue'
+import PluginSupport from './plugin-support.vue'
+import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
+import { ElMessageBox } from 'element-plus'
 
 /**
  * 实例
  */
 const configStore = useConfigStore()
 const plugin = new Plugin()
+const router = useRouter()
 const route = useRoute()
+const ctx = useCtxInstance()
 const { plugin_id } = route.query
 
 /**
@@ -85,11 +109,31 @@ const { plugin_id } = route.query
 const activeName = ref('intro')
 const pluginDetail: Ref<PluginInter> = ref({})
 const payment_types = computed(() => {
-  const types = configStore.dicts.find(el => el.code === 'plugin_payment_type').values || []
+  return configStore.payment_types.reduce((total, cur) => {
+    total[cur.value as string] = cur.label
+    return total
+  }, {})
+})
+const plugin_types = computed(() => {
+  const types = configStore.dicts.find(el => el.code === 'plugin_type').values || []
   return types.reduce((total, cur) => {
     total[cur.value as string] = cur.label
     return total
   }, {})
+})
+const platform_types = computed(() => {
+  const types = configStore.dicts.find(el => el.code === 'plugin_env').values || []
+  return types.reduce((total, cur) => {
+    total[cur.value as string] = cur.label
+    return total
+  }, {})
+})
+const secret_key = ref('')
+const loading = reactive({
+  install: false,
+  uninstall: false,
+  update: false,
+  toggle: false
 })
 
 /**
@@ -103,6 +147,81 @@ function getDetail () {
   }
 }
 getDetail()
+// 返回
+function goBack () {
+  router.push({
+    name: 'Plugin'
+  })
+}
+// 切换插件状态
+function togglePlugin () {
+  useDeleteConfirm(`是否确定${ pluginDetail.value.user_plugin.status ? '禁用' : '启用' }该插件？`).then(() => {
+    loading.toggle = true
+    plugin.toggleIntsall(pluginDetail.value.user_plugin.id).then(() => {
+      const { status } = pluginDetail.value.user_plugin
+      ctx.$message({ message: status ? '禁用成功' : '启用成功', type: 'success', duration: 1000 })
+      getDetail()
+      loading.toggle = false
+    })
+  })
+}
+// 更新安装插件
+function handleUpdateInstall () {
+  useDeleteConfirm('是否确定更新插件').then(() => {
+    loading.update = true
+    plugin.updateInstall(pluginDetail.value.id).then(() => {
+      ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
+      getDetail()
+      loading.update = false
+    })
+  })
+}
+// 卸载插件
+function handleUninstall () {
+  // 判断该插件是否为付费插件
+  const { payment, price, id, payment_type } = pluginDetail.value
+  if (payment && payment_type === 'paid') {
+    uninstallPlugin(id, '该插件是付费插件，卸载后需要再安装需要填写安装秘钥，是否确定卸载')
+  } else {
+    uninstallPlugin(id)
+  }
+}
+function uninstallPlugin (id: number, text: string = '该操作将删除关联的存储桶，是否确定卸载该插件？') {
+  useDeleteConfirm(text).then(() => {
+    loading.uninstall = true
+    plugin.uninstall(id).then(() => {
+      ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
+      getDetail()
+      loading.uninstall = false
+    })
+  })
+}
+// 安装插件
+function handleInstall () {
+  const { payment, price, id, payment_type } = pluginDetail.value
+  if (payment && payment_type === 'paid') {
+    ElMessageBox.prompt('提示', '请输入安装秘钥，该秘钥找客服生成', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputPattern: /^.{10}$/,
+      inputErrorMessage: '请填写长度为10的安装秘钥'
+    }).then(({ value }) => {
+      installPlugin(id, value)
+    }).catch(() => {})
+  } else {
+    installPlugin(id)
+  }
+}
+function installPlugin (id: number, value: string = '') {
+  useDeleteConfirm('是否确定安装该插件？').then(() => {
+    loading.install = true
+    plugin.install(id, value).then(res => {
+      getDetail()
+      ctx.$message({ message: '插件安装成功', type: 'success', duration: 1000  })
+      loading.install = false
+    })
+  })
+}
 </script>
 <style lang="scss">
 .plugin-detail-container {
@@ -250,6 +369,21 @@ getDetail()
         padding: 10px 40px;
         overflow: auto;
       }
+    }
+  }
+  .back-btn {
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+    span {
+      margin-left: 5px;
+    }
+    &:hover {
+      background: #dfdfdf;
     }
   }
 }

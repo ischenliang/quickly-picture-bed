@@ -258,6 +258,7 @@ export interface PluginInter {
     id: number
     version: string
     status: boolean
+    createdAt: string
   }
 }
 
@@ -277,6 +278,25 @@ export interface UserPluginInter {
   updatedAt?: string
   // 插件
   plugin?: PluginInter
+}
+
+export interface WikiInter {
+  id?: number
+  title?: string
+  description?: string
+  status?: boolean
+  config?: {
+    type: 'gitee' | 'github'
+    owner: string
+    repo: string
+    branch: string
+    access_token: string
+    baseurl: string
+  }
+  uid?: number
+  weight?: number
+  updatedAt?: string
+  createdAt?: string
 }
 
 
