@@ -66,20 +66,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useCopyText, useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard, useUrlToImageFile } from '@/hooks/global';
+import { useCtxInstance, useDocumentClipboard, useGetSuffix, useWindowClipboard, useUrlToImageFile } from '@/hooks/global';
 import { AlbumInter, HabitsInter, ImageInter } from '@/typings/interface';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, Ref, watch } from 'vue';
-import { linkTypes, Link } from '@/global.config'
 import useConfigStore from '@/store/config'
 import cUpload from '@/components/web/upload/index.vue'
-import bucketUpload from '@/hooks/bucket/index';
 import Image from '@/types/Image';
-import { JsonResponse, PageResponse } from '@/typings/req-res';
+import { PageResponse } from '@/typings/req-res';
 import useUserStore from '@/store/user';
 import { useRoute } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
 import { useFileName } from '@/hooks/date-time';
-import UploadManager from '@/hooks/uploader';
 import Album from '@/types/Album';
 import Habits from '@/types/Habits';
 interface Props {
@@ -104,8 +101,6 @@ const emit = defineEmits(['update:userHabits', 'success'])
 const configStore = useConfigStore()
 const userStore = useUserStore()
 const image = new Image()
-const route = useRoute()
-const uploader = new UploadManager()
 const album = new Album()
 const habit = new Habits()
 
@@ -115,10 +110,6 @@ const habit = new Habits()
 const habits = computed({
   get: () => props.userHabits,
   set: (val) =>  emit('update:userHabits', val)
-})
-// 当前上传图片
-const current = computed(() => {
-  return userStore.currentImages
 })
 // 系统配置
 const systemConfig = computed(() => {
@@ -176,68 +167,10 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 }
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
-  const { id, type } = habits.value.current
+  const id = habits.value.current_bucket
+  console.log(fileList)
   // @ts-ignore
-  const plugins = userStore.pluginManager.plugins
-  if (!id || !type || type === '' || id === '' || !plugins[id]) {
-    return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
-  }
   showError(errorList)
-
-  uploader.uploadFile(id, fileList, ({ loaded, index, total }) => {
-    totalProgress.progress[index].loaded = loaded
-    totalProgress.progress[index].total = total
-  }).then((res: Array<ImageInter>) => {
-    totalProgress.percent = 0
-    // userStore.currentImages.splice(0, userStore.currentImages.length)
-    res.forEach((item, index) => {
-      let tmp = {
-        ...item,
-        bucket_id: id,
-        bucket_type: type
-      }
-      if (albumData.active_id) {
-        tmp.album_id = albumData.active_id
-      }
-      // 判断是否传img_id，传了代表更新数据
-      if (route.query.img_id) {
-        delete tmp.img_name
-        image.update({
-          id: route.query.img_id as string,
-          ...tmp,
-          slient: true
-        }).then((result: ImageInter) => {
-          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
-          userStore.currentImages.push({
-            ...result,
-            sort: item.order,
-            img_origin_name: item.img_origin_name,
-            img_name: item.img_origin_name
-          })
-          if (index === res.length - 1) {
-            ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-            emit('success')
-          }
-        })
-      } else {
-        image.create({
-          ...tmp
-        }).then((result: ImageInter) => {
-          result.img_preview_url = habits.value.current.config_baseUrl + result.img_url
-          userStore.currentImages.push({
-            ...result,
-            sort: item.order,
-            img_origin_name: item.img_origin_name,
-            img_name: item.img_origin_name
-          })
-          if (index === res.length - 1) {
-            ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
-            emit('success')
-          }
-        })
-      }
-    })
-  })
 }
 
 // 粘贴板上传文件：ctrl + v

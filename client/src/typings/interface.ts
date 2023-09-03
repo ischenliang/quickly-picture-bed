@@ -508,47 +508,6 @@ export interface TagInter {
 
 
 /**
- * 插件接口
- */
-interface RequestParam {
-  file?: File
-  filename: string
-}
-export interface MyPlugin {
-  name: string // 名称，对应存储桶的类别
-  id?: string // 存储桶id，对应存储桶的id
-  version: string // 版本
-  doc?: string // 文档地址
-  config: Array<{ // 表单定义
-    type: string // 字段类型
-    label: string // 表单提示文字
-    field: string // 生成节点key名称
-    default: string // 默认值
-    required?: boolean // 是否必填项
-    placeholder?: string // 输入框提示文字
-    hidden?: boolean // 是否隐藏当前节点
-    options?: Array<{ // 下拉框选择项
-      label: string
-      value: string
-    }>
-  }>
-  uploader: { // 插件上传配置
-    axios?: AxiosStatic // 上传
-    sparkMd5?: any // 文件md5加密
-    md5?: any // md5加密
-    hmacsha1?: any // macsha1加密，用于通用的siganature
-    crypto?: any
-    // 前置操作：获取数据或者数据处理
-    beforeEach: (file?: File) => any
-    // 返回请求配置
-    request: (params: RequestParam) => AxiosRequestConfig
-    // 响应格式配置
-    response: (res?: AxiosResponse, file?: any) => any
-  }
-}
-
-
-/**
  * 聊天时间
  */
 export interface ChatData {
@@ -560,4 +519,26 @@ export interface ChatData {
   loading: boolean // 请求中
   role: string // 角色
   clientId?: number // 客户端id，每天生成一个
+}
+
+/**
+ * 知识库
+ */
+export interface WikiInter {
+  id?: number // id
+  title?: string // 名称
+  description?: string // 描述
+  weight?: number // 权重
+  status?: boolean // 状态
+  uid?: number // 用户id
+  createdAt?: string // 创建时间
+  updatedAt?: string // 更新时间
+  config?: {
+    type: 'gitee' | 'github' // git类型
+    owner: string // git用户
+    repo: string // git仓库
+    branch: string // git分支
+    baseurl: string // git基地址
+    access_token: string // git访问token
+  }
 }

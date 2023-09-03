@@ -60,7 +60,7 @@
   
 <script lang="ts" setup>
 import Image from '@/types/Image';
-import { BucketInter, ImageInter, MyPlugin } from '@/typings/interface';
+import { BucketInter, ImageInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
 import { Ref, computed, reactive, ref } from 'vue';
 import JSZip from 'jszip'
@@ -74,7 +74,6 @@ import SparkMD5 from 'spark-md5';
 import hmacsha1 from 'hmacsha1'
 import md5 from 'md5'
 import crypto from 'crypto-js'
-import UploadManager from '@/hooks/uploader';
 import useConfigStore from '@/store/config';
 import { useJudgeImageNormal } from './useImageHook'
 import { blob } from 'stream/consumers';
@@ -98,7 +97,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
 const image = new Image()
-const uploadManager = new UploadManager()
 const ctx = useCtxInstance()
 const configStore = useConfigStore()
 
@@ -123,8 +121,6 @@ const loading = reactive({
 })
 // 图片列表
 const images: Ref<ImageInter[]> = ref([])
-// 当前存储桶插件
-let plugin: MyPlugin = null
 // 系统配置
 const systemConfig = computed(() => {
   const config = configStore.systemConfig
@@ -256,30 +252,6 @@ function handleExcelChange (e: ChangeEvent<HTMLInputElement>) {
 }
 // 上传图片
 function uploadImages (files, key: string) {
-  // 上传文件
-  uploadManager.uploadFile(plugin, files, ({ loaded, index, total }) => {
-    // 进度处理
-  }).then((res: Array<ImageInter>) => {
-    res.forEach((item, index) => {
-      let tmp = {
-        ...item,
-        bucket_id: props.detail.id,
-        bucket_type: props.detail.type
-      }
-      image.create({ ...tmp }).then((result: ImageInter) => {
-        if (index === res.length - 1) {
-          ctx.$message({ message: `导入成功，成功导入${res.length}张图片`, duration: 1000, type: 'success' })
-          loading[key] = false
-          if (key === 'import_zip') {
-            zipRef.value.value = ''
-          }
-          if (key === 'import_excel') {
-            excelRef.value.value = ''
-          }
-        }
-      })
-    })
-  })
 }
 // 处理数据
 function handleData (maps, filenames, key: 'import_excel' | 'import_zip') {
@@ -316,40 +288,6 @@ function handleData (maps, filenames, key: 'import_excel' | 'import_zip') {
     })
   })
 }
-// 注册插件
-function registerPlugin () {
-  const bucket = props.detail
-  const obj = JSON.parse(bucket.config)
-  for (let key in obj) {
-    obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
-      const keys = key.split('.')
-      if (keys[0] === 'config') {
-        return obj[keys[1]]
-      }
-    })
-  }
-  // 此处还需注册插件
-  if (bucket.plugin) {
-    // 第一步：将定义好的插件中的${config.xxx}替换成真实的数据(即全局config中的数据)
-    const tmp = bucket.plugin.replace(/\$\{((config|file).*?)\}/g, (v, key) => {
-      const keys = key.split('.')
-      if (keys[0] === 'config') {
-        return obj[keys[1]]
-      }
-    })
-
-    // 第二步：将定义好的插件转成js对象
-    plugin = new Function('return ' + tmp)()
-    plugin.name = bucket.id
-    // 第三步：为了解决直接调用axios报错问题，动态在uploader上挂载axios，然后才可以在内部使用this['axios']调用
-    plugin.uploader.axios = axios
-    plugin.uploader.sparkMd5 = SparkMD5
-    plugin.uploader.hmacsha1 = hmacsha1
-    plugin.uploader.crypto = crypto
-    plugin.uploader.md5 = md5
-  }
-}
-registerPlugin()
 
 /**
  * 回调函数

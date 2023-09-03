@@ -66,7 +66,7 @@ const bucket = new Bucket()
 const list: ListInter<BucketInter, Stats, Versions> = reactive({
   total: 0,
   filters: {
-    name: ''
+    search: ''
   },
   data: [],
   stats: [],
