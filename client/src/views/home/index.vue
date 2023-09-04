@@ -74,7 +74,7 @@ const handleClick = () => {
   .copy-history {
     flex-direction: column !important;
     .el-card {
-      width: 100%;
+      width: 100% !important;
       + .el-card {
         margin: 15px 0 0 0 !important;
       }

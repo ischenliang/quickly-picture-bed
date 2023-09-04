@@ -5,13 +5,13 @@
         <el-input placeholder="请输入搜索内容"></el-input>
       </div>
       <div class="wiki-toolbar-action">
-        <el-button type="primary" @click="visible.edit = true">新增</el-button>
+        <el-button type="primary" @click="handleUpdate(null)">新增</el-button>
       </div>
     </div>
     <div class="wiki-main">
       <el-row>
-        <el-col :xl="6" :lg="8" :md="12" v-for="item in 8" :key="item">
-          <wiki-item></wiki-item>
+        <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="'wiki-item-' + index">
+          <wiki-item :detail="item" @update="handleUpdate(item)" @delete="handleDelete(item)"></wiki-item>
         </el-col>
       </el-row>
     </div>
@@ -70,6 +70,15 @@ function listGet () {
   })
 }
 listGet()
+// 更新
+function handleUpdate (wiki: WikiInter) {
+  visible.edit = true
+  item.data = wiki
+}
+// 删除
+function handleDelete (wiki: WikiInter) {
+
+}
 </script>
 <style lang="scss">
 .wiki-conatiner {

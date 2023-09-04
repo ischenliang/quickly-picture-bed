@@ -50,6 +50,7 @@
     "sass": "^1.62.0",
     "sortablejs": "^1.15.0",
     "spark-md5": "^3.0.2",
+    "splitpanes": "^3.1.5",
     "swiper": "^9.2.4",
     "v-lazy-image": "^2.1.1",
     "v-viewer": "^3.0.10",
@@ -64,6 +65,7 @@
     "@types/crypto-js": "^4.1.1",
     "@types/mime-types": "^2.1.1",
     "@types/spark-md5": "^3.0.2",
+    "@types/splitpanes": "^2.2.1",
     "typescript": "^5.0.4"
   },
   "engines": {

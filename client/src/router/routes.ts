@@ -101,9 +101,15 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/wiki',
-        name: 'Wki',
+        name: 'Wiki',
         component: () => import('@/views/wiki/index.vue'),
         meta: { title: '知识库管理', icon: 'Collection', role: [1, 2, 10] }
+      },
+      {
+        path: '/wiki/article',
+        name: 'WikiArticle',
+        component: () => import('@/views/wiki/wiki-articles.vue'),
+        meta: { title: '知识库文档管理', icon: 'Collection', role: [1, 2, 10], hidden: true, active: '/wiki' }
       },
       {
         path: '/uplog',

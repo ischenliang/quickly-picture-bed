@@ -104,7 +104,6 @@ const login = () => {
           Cookies.set('email', form.username + form.username_suffix)
           Cookies.set('password', form.password)
         }
-        console.log(res)
         localStorage.setItem('token', res.token)
         ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
         router.push({ path: '/' })

@@ -25,6 +25,9 @@ instance.interceptors.response.use((response: any) => {
     return Promise.reject(response.data)
   }
 }, (error) => {
+  if (error.response.status === 401) {
+    localStorage.clear()
+  }
 })
 
 function http (url, data) {
