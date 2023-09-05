@@ -11,7 +11,12 @@
     <div class="wiki-main">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="'wiki-item-' + index">
-          <wiki-item :detail="item" @update="handleUpdate(item)" @delete="handleDelete(item)"></wiki-item>
+          <wiki-item
+            :detail="item"
+            @update="handleUpdate(item)"
+            @delete="handleDelete(item)"
+            @click="handleClick(item)">
+          </wiki-item>
         </el-col>
       </el-row>
     </div>
@@ -37,10 +42,12 @@ import { PageResponse } from '@/typings/req-res';
 import { reactive } from 'vue';
 import WikiItem from './wiki-item.vue'
 import EditWiki from './EditWiki.vue'
+import { useRouter } from 'vue-router';
 /**
  * 实例
  */
 const wiki = new Wiki()
+const router = useRouter()
 
 /**
  * 变量
@@ -78,6 +85,15 @@ function handleUpdate (wiki: WikiInter) {
 // 删除
 function handleDelete (wiki: WikiInter) {
 
+}
+// 点击
+function handleClick (wiki: WikiInter) {
+  router.push({
+    name: 'WikiArticle',
+    query: {
+      wid: wiki.id
+    }
+  })
 }
 </script>
 <style lang="scss">

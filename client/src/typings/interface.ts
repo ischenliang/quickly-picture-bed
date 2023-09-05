@@ -542,3 +542,10 @@ export interface WikiInter {
     access_token: string // git访问token
   }
 }
+
+export interface ActionItemInter {
+  icon: string
+  size: string | number
+  color?: any
+  text: string
+}

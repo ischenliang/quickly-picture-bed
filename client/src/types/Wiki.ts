@@ -34,4 +34,10 @@ export default class Wiki {
   find (params: Filter) {
     return http('/wiki/list', params)
   }
+  /**
+   * 知识库文档管理
+   */
+  getArticles (wid: number) {
+    return http('/article/page-tree', { wid })
+  }
 }
