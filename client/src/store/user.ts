@@ -1,4 +1,4 @@
-import { UserInter, HabitsInter, ImageInter, LogInter } from '@/typings/interface'
+import { UserInter, HabitsInter, ImageInter, LogInter, BucketInter } from '@/typings/interface'
 import { defineStore } from 'pinia'
 import { markRaw, reactive, Ref, ref, toRaw, unref } from 'vue'
 import { user_habits as defaultHabits } from '@/global.config'
@@ -17,20 +17,15 @@ const useUserStore = defineStore('user', () => {
 
   // 当前图片
   const currentImages: Ref<ImageInter[]> = ref([])
-  // {
-  //   id: '',
-  //   img_url: '',
-  //   img_size: 0,
-  //   img_height: 0,
-  //   img_width: 0,
-  //   img_name: ''
-  // }
 
   // 今日操作记录
   const user_logs: Ref<LogInter[]> = ref([])
 
   // 菜单列表
   const user_menus: Ref<RouteRecordRaw[]> = ref([])
+
+  // 存储桶列表
+  const user_buckets: Ref<BucketInter[]> = ref([])
 
   /**
    * 函数
@@ -62,6 +57,10 @@ const useUserStore = defineStore('user', () => {
     }
     list_filter.value = payload
   }
+  // 更新存储桶列表
+  const updateUserBuckets = (payload: BucketInter[]) => {
+    user_buckets.value = payload
+  }
 
   return {
     userInfo,
@@ -70,11 +69,13 @@ const useUserStore = defineStore('user', () => {
     user_logs,
     user_menus,
     list_filter,
+    user_buckets,
     updateUserInfo,
     updateUserHabits,
     updateUserLogs,
     updateUserMenus,
-    updateListFilter
+    updateListFilter,
+    updateUserBuckets
   }
 })
 

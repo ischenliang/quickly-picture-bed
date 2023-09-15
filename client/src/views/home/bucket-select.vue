@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts" setup>
+import useUserStore from '@/store/user';
 import Bucket from '@/types/Bucket';
 import Habits from '@/types/Habits';
 import { BucketInter, HabitsInter } from '@/typings/interface';
@@ -40,6 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
   } as HabitsInter)
 })
 const emit = defineEmits(['update:userHabits'])
+const userStore = useUserStore()
 
 /**
  * 变量
@@ -59,6 +61,7 @@ const listGet = () => {
     visible: true
   }).then((res: PageResponse<BucketInter>) => {
     buckets.value = res.items
+    userStore.updateUserBuckets(buckets.value)
   })
 }
 listGet()

@@ -37,7 +37,7 @@
               <gallery-item
                 :data="item"
                 :key="item.id"
-                :images="list.data.map(item => item.img_preview_url)"
+                :images="list.data.map(item => item.preview_url)"
                 @reload="listGet"
                 @submit="handleItemSubmit"
                 @view="handleClick(index)"></gallery-item>
@@ -97,10 +97,8 @@ const list: ListInter<ImageInter> = reactive({
   loading: false,
   filters: {
     img_name: '',
-    bucket_id: '', // 图床
+    bucket_id: 0, // 图床
     user_id: 0, // 全部
-    sort: 'updatedAt',
-    order: 'desc'
   },
   data: []
 })
@@ -108,7 +106,7 @@ const list: ListInter<ImageInter> = reactive({
 const selectAll = ref(false)
 // 存储桶列表
 const buckets: Ref<BucketInter[]> = ref([
-  { name: '全部', id: '' }
+  { name: '全部', id: 0 }
 ])
 // 删除按钮是否启用
 const disabled = computed(() => {
@@ -129,56 +127,8 @@ const getBuckets = () => {
     ...list.filters
   }).then((res: PageResponse<BucketInter>) => {
     buckets.value = [
-      { id: '', name: '全部' },
-      ...res.items.map(item => {
-        const obj = JSON.parse(item.config)
-        /**
-         * 将baseUrl中的占位符全局替换
-         *  为了避免不同存储桶的配置不同占位符也就不同带来的困扰，我们需要进行如下几步
-         *    1-1: 需要将baseUrl中的占位符全局替换成 obj.，例如${username} ==> ${obj.name}
-         *    1-2: 然后使用eval的方式来将${obj.xxx}替换成真实的数据
-         *       技巧：使用eval拼接出模板字符串格式，然后替换，则不需要花费更多的操作
-         *  注意：
-         *    eval需要捕获异常，避免 ${test} 使用eval转成模板字符串最后换成真实数据过程中，由于全局中并没有 test 变量而带来的错误 
-         *      错误：ReferenceError: test is not defined
-         *    在此处使用的方法中即${obj.test}不会报错，因为我们的obj是引用类型，查找不到该属性时会直接返回undefined
-         */
-        const { baseUrl } = obj
-
-        // 第一版本
-        // const tmp = baseUrl && baseUrl.replace(/\$\{/g, '${obj.')
-        // obj.baseUrl = eval('`' + tmp + '`')
-        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{(.*?)\}/g, (v, key) => {
-        //   console.log(key, obj[key])
-        //   return obj[key]
-        // })
-
-        // 第二版本
-        // obj.baseUrl = baseUrl && baseUrl.replace(/\$\{((config).*?)\}/g, (v, key) => {
-        //   const keys = key.split('.')
-        //   if (keys[0] === 'config') {
-        //     return obj[keys[1]]
-        //   }
-        // })
-
-        // 第三版本
-        for (let key in obj) {
-          obj[key] = obj[key].replace(/\$\{((config).*?)\}/g, (v, key) => {
-            const keys = key.split('.')
-            if (keys[0] === 'config') {
-              return obj[keys[1]]
-            }
-          })
-        }
-
-        return {
-          id: item.id,
-          name: item.name,
-          type: item.type,
-          tag: item.tag,
-          config_baseUrl: obj.baseUrl
-        }
-      })
+    { id: 0, name: '全部' },
+      ...res.items.map(el => el)
     ]
     listGet()
   })
@@ -192,9 +142,7 @@ const listGet = () => {
   }).then((res: PageResponse<ImageInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
-      item.checked = false
-      const bk = buckets.value.find(bu => bu.id === item.bucket_id)
-      item.img_preview_url = bk ? bk.config_baseUrl + item.img_url : item.img_url
+      item.preview_url = item.baseurl + item.url
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
@@ -215,7 +163,7 @@ const handleToggleSelectAll = () => {
 }
 // 复制已选的图片链接
 function copySelectLink () {
-  const coptxt = list.data.filter(el => el.checked).map(el => el.img_preview_url).join('\n')
+  const coptxt = list.data.filter(el => el.checked).map(el => el.preview_url).join('\n')
   useCopyText(ctx, coptxt)
 }
 // 点击
@@ -225,7 +173,7 @@ const handleClick = (index: number) => {
     options: {
       initialViewIndex: index
     },
-    images: list.data.map(item => item.img_preview_url)
+    images: list.data.map(item => item.preview_url)
   })
 }
 // 回调

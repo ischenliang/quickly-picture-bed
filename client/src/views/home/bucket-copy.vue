@@ -79,19 +79,15 @@ const linkTypesComputed = computed(() => {
 const getLinkValue = (item: Link) => {
   const images = current.value
   return images.sort((a, b) => a.sort - b.sort).map(el => {
-    const url =  el.img_preview_url
+    const url =  el.preview_url
     const obj = {
       url: url ? url : '',
-      filename: el.img_name
+      filename: el.name
     }
     return item.value.replace(/\$\{(.*?)\}/g, (v, key) => {
       return obj[key]
     })
   }).join('\n')
-}
-// 获取渲染内容
-function getRenderText (data) {
-  return data.split('\n').map(el => `<p>${el}</p>`).join('')
 }
 // 复制链接
 const copyAllLink = (item: Link) => {

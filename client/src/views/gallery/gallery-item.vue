@@ -12,14 +12,14 @@
       <v-lazy-image
         v-else
         :class="loaded ? 'loaded-cover' : 'loading-cover'"
-        :src="data.img_preview_url"
+        :src="data.preview_url"
         :src-placeholder="placeholder"
         :key="data.id"
         @error="handleRenderError"
         @load="hanldeLoad"></v-lazy-image>
     </div>
-    <div class="gallery-item-name" :title="data.img_origin_name">
-      <span>{{ data.img_origin_name || data.img_name }}</span>
+    <div class="gallery-item-name" :title="data.origin_name">
+      <span>{{ data.origin_name || data.name }}</span>
     </div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
@@ -133,7 +133,7 @@ watch(() => props.data, () => {
 const actions = {
   // 复制链接地址
   copy () {
-    const text = myData.value.img_preview_url
+    const text = myData.value.preview_url
     useCopyText(ctx, text)
   },
   // 选择

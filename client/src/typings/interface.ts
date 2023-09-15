@@ -71,49 +71,43 @@ export interface ImageInter {
   // 图片id
   id?: string
   // 图片名称
-  img_name?: string
+  name?: string
+  // 原始名称
+  origin_name?: string
   // 图片宽度
-  img_width?: number
+  width?: number
   // 图片高度
-  img_height?: number
+  height?: number
   // 文件类型
   mine_type?: string
   // 图片url
-  img_url?: string
+  url?: string
+  // 图片基地址
+  baseurl?: string
   // 图片预览地址
-  img_preview_url?: string
+  preview_url?: string
   // 图片大小
-  img_size?: number
+  size?: number
   // 存储桶id
   bucket_id?: string
   // 相册id
   album_id?: string
-  // 存储桶类型
-  bucket_type?: string
   // hash值：用于后续更新时使用
   hash?: string
   // 用户id
   uid?: string
-  // 排序值
-  // sort?: number
   // 是否选中
   checked?: boolean
   // 创建时间
   createdAt?: string
   // 更新时间
   updatedAt?: string
-  // 是否静态更新
-  slient?: boolean
   // 排序值
   sort?: number
-  // 是否置顶
-  top?: boolean | number
   // 标签
   tags?: string[]
-  // 原始名称
-  img_origin_name?: string
-  // 顺序
-  order?: number
+  // 权重
+  weight?: number
 }
 
 

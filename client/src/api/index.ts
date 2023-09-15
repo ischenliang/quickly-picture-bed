@@ -25,17 +25,26 @@ instance.interceptors.response.use((response: any) => {
     return Promise.reject(response.data)
   }
 }, (error) => {
+  console.log(error)
   if (error.response.status === 401) {
     localStorage.clear()
   }
 })
 
-function http (url, data) {
+function http (url, data, progressFn: Function = () => {}) {
   return new Promise((resolve, reject) => {
     instance({
       url,
       method: 'post',
-      data
+      data,
+      // 进度监测
+      onUploadProgress (e) {
+        progressFn({
+          loaded: e.loaded,
+          total: e.total,
+          percent: parseFloat((e.progress * 100).toFixed(2))
+        })
+      }
     }).then((res: any) => {
       resolve(res)
     }).catch(error => {

@@ -22,8 +22,8 @@
         :limit="systemConfig.system.maxcount"
         :multiple="systemConfig.system.maxcount > 1"
         @upload="beforeUpload">
-        <template #progress v-if="totalProgress.percent">
-          <el-progress :percentage="totalProgress.percent" />
+        <template #progress v-if="totalProgress.progress">
+          <el-progress :percentage="totalProgress.progress" />
         </template>
         <el-icon class="el-icon--upload">
           <upload-filled />
@@ -74,19 +74,12 @@ import cUpload from '@/components/web/upload/index.vue'
 import Image from '@/types/Image';
 import { PageResponse } from '@/typings/req-res';
 import useUserStore from '@/store/user';
-import { useRoute } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
 import { useFileName } from '@/hooks/date-time';
 import Album from '@/types/Album';
 import Habits from '@/types/Habits';
 interface Props {
   userHabits: HabitsInter
-}
-interface Progress {
-  [prop: string | number]: {
-    loaded: number
-    total: number
-  }
 }
 /**
  * 实例
@@ -119,15 +112,9 @@ const systemConfig = computed(() => {
 })
 // 进度统计
 const totalProgress: {
-  progress: Progress
-  percent: number
-  total: number
-  loaded: number
+  progress: number
 } = reactive({
-  progress: {},
-  percent: 0,
-  total: 0,
-  loaded: 0
+  progress: 0
 })
 // 相册列表
 const albumData: {
@@ -161,25 +148,50 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
     } else {
       errorList.push(file)
     }
-    totalProgress.progress[i] = { loaded: 0, total: file.size }
   }
+  totalProgress.progress = 0
   upload(fileList, errorList)
 }
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
-  const id = habits.value.current_bucket
-  console.log(fileList)
-  // @ts-ignore
+  const bucket_id = habits.value.current_bucket
+  console.log(fileList, bucket_id)
+  // 1、判断是否勾选存储桶，并且当前存储桶存在于存储桶列表中
+  const buckets = userStore.user_buckets.map(el => el.id)
+  if (!buckets.length) {
+    return ctx.$message({ message: '请先创建存储桶', duration: 1000, type: 'warning' })
+  }
+  if (!bucket_id || !buckets.includes(bucket_id)) {
+    return ctx.$message({ message: '请先选择存储桶，然后再上传', duration: 1000, type: 'warning' })
+  }
   showError(errorList)
+  // 2、处理请求体
+  const formData = new FormData()
+  formData.append('bucket_id', bucket_id.toString())
+  if (albumData.active_id) {
+    formData.append('album_id', albumData.active_id.toString())
+  }
+  fileList.forEach(el => {
+    formData.append('files', el)
+  })
+  // 3、上传文件
+  image.upload(formData, ({ loaded, total, percent }) => {
+    totalProgress.progress = percent
+  }).then((res: ImageInter[]) => {
+    totalProgress.progress = 0
+    ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
+    emit('success')
+    res.forEach(el => {
+      el.preview_url = el.baseurl + el.url
+      userStore.currentImages.push(el)
+    })
+  })
 }
 
 // 粘贴板上传文件：ctrl + v
 const clipboard = (event) => {
   useDocumentClipboard(event).then((files: File[]) => {
-    files.forEach((file, index) => {
-      totalProgress.progress[index] = { loaded: 0, total: file.size }
-    })
-    files.length && upload(files)
+    // upload(files)
   })
 }
 // 快捷上传
@@ -187,10 +199,7 @@ const entryUpload = (type: string) => {
   // 点击读取粘贴板的文件并上传
   if (type === 'clipboard') {
     useWindowClipboard().then((files: File[]) => {
-      files.forEach((file, index) => {
-        totalProgress.progress[index] = { loaded: 0, total: file.size }
-      })
-      files.length && upload(files)
+      // upload(files)
     }).catch(error => {
       ctx.$message({ message: error.message, type: 'error', duration: 1000 })
     })
@@ -201,8 +210,7 @@ const entryUpload = (type: string) => {
       cancelButtonText: '取消',
     }).then(({ value }) => {
       useUrlToImageFile(value, useFileName() + '.png', systemConfig.value.system.accept).then((res: File) => {
-        totalProgress.progress[0] = { loaded: 0, total: res.size }
-        upload([res])
+        // upload([res])
       }).catch(error => {
         ctx.$notify({
           title: '错误提示',
@@ -275,16 +283,9 @@ onBeforeUnmount(() => {
  * 监听器
  */
 watch(() => totalProgress.progress, (val) => {
-  totalProgress.loaded = 0
-  totalProgress.total = 0
-  for(let key in val) {
-    if (val[key].loaded !== 0) {
-      totalProgress.loaded += val[key].loaded
-    }
-    totalProgress.total += val[key].total
+  if (val !== 0) {
+    console.log('总进度：', totalProgress.progress)
   }
-  totalProgress.percent = parseFloat(((totalProgress.loaded / totalProgress.total) * 100).toFixed(2))
-  console.log('总进度：', totalProgress.percent + '%', totalProgress.loaded, totalProgress.total)
 }, {
   deep: true
 })

@@ -21,8 +21,8 @@ interface Filter extends PageReq {
  */
 export default class Image {
   // 新建
-  async create (params: ImageInter) {
-    return http('/image/create', params)
+  async upload (params: any, callback: Function) {
+    return http('/image/upload', params, callback)
   }
   /**
    * 删除图片

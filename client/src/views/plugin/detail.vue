@@ -30,7 +30,7 @@
       <div class="plugin-detail-info-right">
         <div class="plugin-detail-info-title">
           <span>{{ pluginDetail.title }}</span>
-          <span class="plugin-detail-version">1.0.4</span>
+          <span class="plugin-detail-version">{{ pluginDetail.version }}</span>
         </div>
         <div class="plugin-detail-info-meta">
           <span>作者: {{ pluginDetail.author }}</span>
