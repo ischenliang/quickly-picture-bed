@@ -21,7 +21,10 @@ instance.interceptors.request.use((config: any) => {
 instance.interceptors.response.use((response: any) => {
   if (response.data.code === 200) {
     return Promise.resolve(response.data.data)
-  }else {
+  } else {
+    if ([50001].includes(response.data.code)) {
+      return Promise.reject(response.data)
+    }
     return Promise.reject(response.data)
   }
 }, (error) => {
@@ -49,6 +52,9 @@ function http (url, data, progressFn: Function = () => {}) {
       resolve(res)
     }).catch(error => {
       console.log('报错了: ', error)
+      if ([50001].includes(error.code)) {
+        return reject(error)
+      }
       if (['/login', '/register', '/forget', '/tool/smsSend'].includes(url) || [201].includes(error.code)) {
         reject({ message: error.data || error.message, type: 'error' })
       } else {

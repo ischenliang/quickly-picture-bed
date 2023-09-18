@@ -253,7 +253,7 @@ function installPlugin (id: number, value: string = '') {
         flex-shrink: 0;
         margin-right: 20px;
         position: relative;
-        background-color: #000;
+        background-color: #e2e2e2;
         border-radius: 6px;
         img {
           width: 100%;

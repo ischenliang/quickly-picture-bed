@@ -178,13 +178,21 @@ const upload = (fileList: File[], errorList: File[] = []) => {
   image.upload(formData, ({ loaded, total, percent }) => {
     totalProgress.progress = percent
   }).then((res: ImageInter[]) => {
-    totalProgress.progress = 0
     ctx.$message({ message: '上传成功', duration: 1000, type: 'success' })
     emit('success')
     res.forEach(el => {
       el.preview_url = el.baseurl + el.url
       userStore.currentImages.push(el)
     })
+  }).catch(error => {
+    ctx.$notify({
+      title: '错误提示',
+      message: error.data,
+      type: 'error',
+      duration: 1000
+    })
+  }).finally(() => {
+    totalProgress.progress = 0
   })
 }
 

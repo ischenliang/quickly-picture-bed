@@ -59,6 +59,9 @@
                 :active-value="item.choices.active.value"
                 :inactive-text="item.choices.inactive.label"
                 :inactive-value="item.choices.inactive.value" />
+              <!-- 文本输入框类型 -->
+              <el-input v-else-if="item.type === 'string-textarea'" v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" type="textarea" :rows="4" />
+              <!-- 纯输入框类型 -->
               <el-input v-else v-model="item.default" size="large" :placeholder="item.placeholder" :disabled="item.disabled" />
               <p class="bucket-tips" v-if="item.tips" v-html="item.tips"></p>
             </el-form-item>
@@ -338,6 +341,9 @@ watch(() => props.detail, (val) => {
   .el-tabs__content {
     min-height: 400px;
     padding: 0 30px;
+    #pane-config {
+      padding-top: 20px;
+    }
   }
 }
 </style>

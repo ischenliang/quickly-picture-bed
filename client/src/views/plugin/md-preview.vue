@@ -116,5 +116,8 @@ useCopyCode(useCtxInstance())
       }
     }
   }
+  img {
+    display: block;
+  }
 }
 </style>

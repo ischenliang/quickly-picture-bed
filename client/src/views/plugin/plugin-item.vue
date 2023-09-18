@@ -201,6 +201,8 @@ const payment_types = computed(() => {
           margin-right: 10px;
           flex-shrink: 0;
           position: relative;
+          background: #e2e2e2;
+          border-radius: 6px;
           img {
             width: 100%;
             height: 100%;
