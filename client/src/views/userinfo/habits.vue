@@ -1,6 +1,7 @@
 <template>
   <div>
-    <c-card :title="'使用习惯设置'">
+    <!-- 可以参考: https://gitlab.com/-/profile/preferences -->
+    <c-card :title="'偏好设置'">
       <el-form :model="detail.data" :rules="rules" :label-position="'top'" class="my-habits">
         <el-row>
           <el-col :xl="24">

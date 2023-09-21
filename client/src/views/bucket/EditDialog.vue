@@ -291,6 +291,7 @@ watch(() => props.detail, (val) => {
   }
 }
 .bucket-tabs {
+  width: 100% !important;
   .el-tabs__nav-wrap {
     display: flex;
     justify-content: center;

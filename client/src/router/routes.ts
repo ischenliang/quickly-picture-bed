@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
         path: '/habits',
         name: 'Habits',
         component: () => import('@/views/userinfo/habits.vue'),
-        meta: { title: '使用习惯', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
+        meta: { title: '偏好设置', icon: 'UploadFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
         path: '/gallery',

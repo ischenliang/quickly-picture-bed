@@ -291,12 +291,12 @@ const payment_types = computed(() => {
     flex-shrink: 0;
     .plugin-item-tag {
       padding: 2px 5px;
-      // background: #ccc;
       font-size: 12px;
-      margin-right: 5px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      color: #333;
+      margin-right: 8px;
+      border-radius: 6px;
+      border: 1px solid #f2f2f2;
+      color: #4abcbd;
+      background: #f2f2f2;
     }
   }
   &:hover {

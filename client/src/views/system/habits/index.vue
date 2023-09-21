@@ -1,6 +1,6 @@
 <template>
   <div>
-    使用习惯管理
+    偏好设置管理
   </div>
 </template>
 

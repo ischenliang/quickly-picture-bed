@@ -141,5 +141,11 @@ function formatTime (time: string) {
     flex: 1;
     overflow: hidden;
   }
+  .markdown-body {
+    font-size: 16px !important;
+    li {
+      margin-bottom: 10px !important;
+    }
+  }
 } 
 </style>

@@ -93,7 +93,7 @@ const swipers = ref([
   { label: '存储桶管理', desc: '储存驱动易拓展，多样化储存，支持本地，阿里云、腾讯云、七牛云等对象存储，支持多桶储存，可同时添加多个对象存储桶管理，上不封顶。', url: new URL('./images/bucket.png', import.meta.url).href },
   { label: '操作日志', desc: '完整的可视化日志功能，记录用户所有操作，方便事件溯源，同时日志记录也是作为贡献数据统计的重要来源。', url: new URL('./images/log.png', import.meta.url).href },
   { label: '个人中心', desc: '扁平化个人中心管理功能，对个人资料以及登录密码进行管理，同时系统提供了一系列好看的内置头像供选。', url: new URL('./images/profile.png', import.meta.url).href },
-  { label: '使用习惯配置', desc: '考虑到每个用户的使用习惯不同，系统提供了使用习惯配置中心，可以配置自定义链接格式、复制链接的类型以及常用快捷键。', url: new URL('./images/habits.png', import.meta.url).href },
+  { label: '偏好设置配置', desc: '考虑到每个用户的偏好设置不同，系统提供了偏好设置配置中心，可以配置自定义链接格式、复制链接的类型以及常用快捷键。', url: new URL('./images/habits.png', import.meta.url).href },
   { label: '数据统计', desc: '系统提供了美观的数据统计功能，使得用户很清晰的看到图片数量、存储桶数量、占用总存储量、近一年的贡献度以及存储桶的使用情况。', url: new URL('./images/habits.png', import.meta.url).href }
 ])
 const year = new Date().getFullYear()

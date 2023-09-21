@@ -15,9 +15,12 @@
         <el-tag size="small" :type="detail.visible ? '' : 'danger'">{{ detail.visible ? '已启用' : '已禁用' }}</el-tag>
       </div>
       <div class="bucket-item-content">
-        <div class="bucket-content-title">{{ detail.name }}</div>
+        <div class="bucket-content-title">
+          <el-tag size="small" effect="dark" type="success">{{ detail.user_plugin.version }}</el-tag>
+          {{ detail.name }}
+        </div>
         <div class="bucket-content-count">
-          <el-tag size="small">版本号: {{ detail.user_plugin.version }}</el-tag>
+          <!-- <el-tag size="small">版本号: {{ detail.user_plugin.version }}</el-tag> -->
           <el-tag type="info" size="small">图片数量: 1</el-tag>
           <el-tag type="info" size="small">占用存储: 2MB</el-tag>
         </div>
@@ -128,6 +131,16 @@ $text-color-active: #32cfaa;
       // text-align: right;
       font-weight: 600;
       color: #535353;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      .el-tag {
+        margin-right: 2px;
+        height: 18px !important;
+        padding: 1px 3px;
+        background: #10b598;
+        border-color: #10b598;
+      }
     }
     .bucket-content-count {
       margin-top: 10px;

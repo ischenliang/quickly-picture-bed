@@ -179,7 +179,7 @@ function submit () {
 }
 // 获取插件信息
 function getPackage () {
-  if (!pkgInfo.value) {
+  // if (!pkgInfo.value) {
     loading.pkg = true
     axios({
       method: 'get',
@@ -192,7 +192,7 @@ function getPackage () {
       form.version = lastVersion
       loading.pkg = false
     })
-  }
+  // }
 }
 function getInfoByVersion (version: string) {
   const { author, description, logo, keywords, category } = pkgInfo.value.versions[version]
@@ -200,7 +200,7 @@ function getInfoByVersion (version: string) {
   form.description = description
   form.version = version
   form.category = category || 'uploader'
-  form.tags = keywords && keywords.slice(0, 5)
+  form.tags = (keywords && keywords.slice(0, 5)) || ['uploader', 'plugin']
   form.logo = logo || 'https://himg.bdimg.com/sys/portrait/item/public.1.1f2977ac.EaP-d0ojVIWjmGyxrZ326Q.jpg'
 }
 function handleChange (val) {
