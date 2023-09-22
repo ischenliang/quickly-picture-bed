@@ -193,7 +193,7 @@ function debounce(callback, time) {
   .plugin-logo {
     width: 30px;
     height: 30px;
-    border-radius: 50%;
+    // border-radius: 50%;
   }
 }
 </style>
