@@ -21,7 +21,23 @@
           </el-select>
         </div>
         <div>
-          <el-button type="primary" v-if="list.data.filter(el => el.checked).length" @click="copySelectLink">复制链接</el-button>
+          <el-button type="warning" v-if="selected.length === 1" @click="handleRename">重命名</el-button>
+          <!-- 这里采用一个下拉框的方式来提供选择的链接格式类型 -->
+          <el-dropdown v-if="selected.length" class="copy-link-type" trigger="click" @command="(func) => func()">
+            <el-button type="primary" icon="DocumentCopy">复制链接</el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="(link, index) in linkTypes"
+                  :key="index"
+                  :label="link.label"
+                  :value="link.id"
+                  :command="() => handleCommond(link)">
+                  {{ link.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
           <el-button type="primary" :icon="'Checked'" @click="handleToggleSelectAll">全选</el-button>
           <el-button
             :type="disabled ? 'default' : 'danger'"
@@ -58,10 +74,11 @@
     <!-- 需放进来：放在和gallery-item同级会导致点击时无效果 -->
     <detail-dialog
       v-if="item.detail"
-      v-model="item.detail"
+      :model-value="item.detail"
       :show-album="!false"
-      :detail="item.data"
-      @submit="listGet"/>
+      :id="item.data.id"
+      @submit="listGet"
+      @update:model-value="(val) => item.detail = val"/>
   </div>
 </template>
 
@@ -76,6 +93,8 @@ import GalleryItem from './gallery-item.vue'
 import { useFormat } from '@/hooks/date-time';
 import DetailDialog from './DetailDialog.vue'
 import { useRoute, useRouter } from 'vue-router';
+import { ElMessageBox } from 'element-plus';
+import { linkTypes } from '@/global.config';
 
 /**
  * 实例
@@ -101,6 +120,10 @@ const list: ListInter<ImageInter> = reactive({
     user_id: 0, // 全部
   },
   data: []
+})
+// 已勾选数据
+const selected: Ref<ImageInter[]> = computed(() => {
+  return list.data.filter(el => el.checked)
 })
 // 是否已全选
 const selectAll = ref(false)
@@ -154,6 +177,27 @@ const listGet = () => {
 /**
  * 逻辑处理
  */
+// 重命名
+function handleRename () {
+  const tmp = list.data.filter(el => el.checked)[0]
+  ElMessageBox.prompt('请输入新的文件名', '文件重命名', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputPattern: /^(?!\s*$).+/,
+    inputErrorMessage: '请输入新的文件名，文件名不符合标准',
+    inputType: 'textarea',
+    inputPlaceholder: '请输入新文件名',
+    inputValue: tmp.origin_name
+  }).then(({ value }) => {
+    image.update({
+      id: tmp.id,
+      origin_name: value
+    }).then(res => {
+      ctx.$message({ message: '重命名成功', duration: 1000, type: 'success' })
+      listGet()
+    })
+  }).catch(() => {})
+}
 // 全选
 const handleToggleSelectAll = () => {
   selectAll.value = !selectAll.value
@@ -162,11 +206,16 @@ const handleToggleSelectAll = () => {
   })
 }
 // 复制已选的图片链接
-function copySelectLink () {
-  const coptxt = list.data.filter(el => el.checked).map(el => el.preview_url).join('\n')
-  useCopyText(ctx, coptxt)
+function handleCommond (link: any) {
+  const copyText = selected.value.map(item => {
+    const obj = { url: item.preview_url, filename: item.name }
+    return link.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+      return obj[key]
+    })
+  }).join('\n')
+  useCopyText(ctx, copyText)
 }
-// 点击
+// 点击预览
 const handleClick = (index: number) => {
   // 参考：https://blog.csdn.net/Stephen_Joe/article/details/124815655
   ctx.$viewerApi({
@@ -176,7 +225,7 @@ const handleClick = (index: number) => {
     images: list.data.map(item => item.preview_url)
   })
 }
-// 回调
+// image-item按钮点击回调
 const handleItemSubmit = (e: { type: string, data: ImageInter }) => {
   switch (e.type) {
     case 'delete':
@@ -284,6 +333,9 @@ onActivated(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .copy-link-type {
+    margin: 0 10px;
   }
 }
 </style>

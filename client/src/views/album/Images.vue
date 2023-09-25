@@ -3,18 +3,36 @@
     <div
       class="album-image-header"
       :style="{
-        'background-image': `url('${detail.background ? detail.background : '/default.jpg'}')`
+        'background-color': detail.background || '#009688'
       }">
       <div class="album-actions">
         <el-button type="primary" icon="Back" @click="() => $router.back()">返回</el-button>
         <el-button type="success" icon="UploadFilled" @click="goUpload">去上传</el-button>
       </div>
       <div class="album-actions-footer">
-        <el-button type="info" icon="Tools" size="small" @click="item.tags = true">默认标签管理</el-button>
-        <el-button type="primary" v-if="showActionBar" icon="DocumentCopy" size="small" @click="handleAction('copy')">复制链接</el-button>
-        <el-button type="warning" v-if="showActionBar" icon="Close" size="small" @click="handleAction('remove')">移出相册</el-button>
-        <el-button type="danger" v-if="showActionBar" icon="Delete" size="small" @click="handleAction('delete')">删除所选</el-button>
-        <el-button type="success" v-if="showActionBar" icon="Stamp" size="small">标签管理</el-button>
+        <el-button type="info" icon="Tools" size="small" @click="item.tags = true">标签模板</el-button>
+        <template v-if="selected.length">
+          <el-button type="warning" v-if="selected.length === 1" @click="handleRename">重命名</el-button>
+          <el-button v-if="selected.length === 1" type="success" icon="Picture" size="small" @click="handleAction('cover')">设为封面</el-button>
+          <el-button v-if="selected.length === 1" type="success" icon="Stamp" size="small" @click="handleAction('tag')">标签管理</el-button>
+          <el-dropdown class="copy-link-type" trigger="click" @command="(func) => func()">
+            <el-button type="primary" icon="DocumentCopy" size="small">复制链接</el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="(link, index) in linkTypes"
+                  :key="index"
+                  :label="link.label"
+                  :value="link.id"
+                  :command="() => handleCommond(link)">
+                  {{ link.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <el-button type="warning" icon="Close" size="small" @click="handleAction('remove')">移出相册</el-button>
+          <el-button type="danger" icon="Delete" size="small" @click="handleAction('delete')">删除所选</el-button>
+        </template>
       </div>
       <div class="album-title">{{ detail.name }}</div>
       <div class="album-desc">{{ detail.desc }}</div>
@@ -54,8 +72,8 @@
           <span
             v-for="(tag, index) in album_tag.tags"
             :key="'filter-tag-' + index"
-            :class="['filter-tag-item', tag.value === list.filters.tag ? 'active' : '']"
-            @click="changeTag(tag.value)">
+            :class="['filter-tag-item', tag.value === list.filters.tag.value ? 'active' : '']"
+            @click="changeTag(tag)">
             {{ tag.value }}
           </span>
         </div>
@@ -67,7 +85,7 @@
               <gallery-item
                 :data="item"
                 :remove="true"
-                :images="list.data.map(item => item.img_preview_url)"
+                :images="list.data.map(item => item.preview_url)"
                 @reload="listGet"
                 :key="list.page + '-' + index"
                 @submit="handleItemSubmit"
@@ -78,11 +96,8 @@
                       size="small"
                       v-for="(tag, tIndex) in item.tags"
                       :key="'tag-' + tIndex"
-                      :type="getTagType(tag)">
-                      {{ tag }}
-                    </el-tag>
-                    <el-tag class="tags-edit" size="small" effect="dark" type="primary" @click.stop="editItemTag(item)">
-                      <el-icon><Edit /></el-icon>
+                      :type="(tag.type as any)">
+                      {{ tag.value }}
                     </el-tag>
                   </div>
                 </template>
@@ -107,13 +122,14 @@
       v-if="item.detail"
       v-model="item.detail"
       :show-album="false"
-      :detail="item.data"
+      :id="item.data.id"
       @submit="listGet"/>
     <!-- 标签编辑 -->
     <tag-dialog
       v-if="item.edit"
       v-model="item.edit"
       :detail="item.data"
+      :tags="album_tag"
       @submit="() => { getTags();listGet(); }" />
     <!-- 默认标签 -->
     <default-tags
@@ -131,12 +147,14 @@ import Album from '@/types/Album';
 import Image from '@/types/Image';
 import { AlbumInter, ImageInter, ListInter, AlbumTag } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { computed, onActivated, reactive, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DetailDialog from '@/views/gallery/DetailDialog.vue'
 import TagDialog from './TagDialog.vue'
 import defaultTags from './default-tags.vue'
 import GalleryItem from '@/views/gallery/gallery-item.vue'
+import { linkTypes } from '@/global.config';
+import { ElMessageBox } from 'element-plus';
 
 /**
  * 实例
@@ -161,23 +179,29 @@ const list: ListInter<ImageInter> = reactive({
   loading: false,
   filters: {
     album_id: +route.query.id || 0,
-    tag: '全部',
+    tag: {
+      type: '',
+      value: '全部'
+    },
     img_name: ''
   },
   data: []
 })
-// 是否显示操作栏
-const showActionBar = computed(() => {
-  return list.data.filter(el => el.checked).length
+// 已勾选数据
+const selected: Ref<ImageInter[]> = computed(() => {
+  return list.data.filter(el => el.checked)
 })
-const item = reactive({
+const item: {
+  detail: boolean
+  edit: boolean
+  tags: boolean
+  data: ImageInter
+} = reactive({
   detail: false,
   data: null,
   edit: false,
-  tags: false
+  tags: false,
 })
-// 置顶数量
-const tops = ref(0)
 // 所有标签
 const album_tag: Ref<AlbumTag> = ref(null)
 
@@ -190,7 +214,10 @@ function getTags (callback: Function = () => {}) {
     album_tag.value = res
     album_tag.value.tags.unshift({ type: 'primary', value: '全部' })
     if (!album_tag.value.tags.includes(list.filters.tag)) {
-      list.filters.tag = '全部'
+      list.filters.tag = {
+        type: '',
+        value: '全部'
+      }
       callback()
     }
   })
@@ -205,41 +232,62 @@ function getDetail () {
       res.updatedAt = useFormat(res.updatedAt, 'YYYY-MM-DD')
       detail.value = res
     })
+    listGet()
   }
 }
 getDetail()
 // 获取图片列表
 function listGet () {
   list.loading = true
-  tops.value = 0
   album.images({
     page: list.page,
     size: list.size,
     id: list.filters.album_id,
     name: list.filters.img_name,
-    tag: list.filters.tag === '全部' ? '' : list.filters.tag
+    tag: list.filters.tag
   }).then((res: PageResponse<ImageInter>) => {
     list.total = res.total
     list.data = res.items.map(item => {
       item.checked = false
+      item.preview_url = item.baseurl + item.url
       return item
     })
     list.loading = false
   })
+}
+// 重命名
+function handleRename () {
+  const tmp = list.data.filter(el => el.checked)[0]
+  ElMessageBox.prompt('请输入新的文件名', '文件重命名', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputPattern: /^(?!\s*$).+/,
+    inputErrorMessage: '请输入新的文件名，文件名不符合标准',
+    inputType: 'textarea',
+    inputPlaceholder: '请输入新文件名',
+    inputValue: tmp.origin_name
+  }).then(({ value }) => {
+    image.update({
+      id: tmp.id,
+      origin_name: value
+    }).then(res => {
+      ctx.$message({ message: '重命名成功', duration: 1000, type: 'success' })
+      listGet()
+    })
+  }).catch(() => {})
 }
 // 操作栏回调
 function handleAction (type) {
   let ids = []
   switch (type) {
     case 'remove':
-      ids = list.data.filter(item => item.checked).map(item => item.id)
+      ids = selected.value.map(item => item.id)
       useDeleteConfirm('确定将图片移出该相册吗？').then(() => {
         ids.map((id, index) => {
           image.update({
             id: id,
             album_id: '',
-            sort: 0,
-            slient: true
+            sort: 0
           }).then(async (res) => {
             if (index === ids.length - 1) {
               ctx.$message({ message: '移除成功', duration: 1000, type: 'success' })
@@ -249,12 +297,8 @@ function handleAction (type) {
         })
       })
       break
-    case 'copy':
-      const copyText = list.data.filter(item => item.checked).map(item => item.img_preview_url).join('\n')
-      useCopyText(ctx, copyText)
-      break
     case 'delete':
-      ids = list.data.filter(item => item.checked).map(item => item.id)
+      ids = selected.value.map(item => item.id)
       useDeleteConfirm().then(() => {
         ids.map((id, index) => {
           image.delete(id).then(res => {
@@ -266,7 +310,31 @@ function handleAction (type) {
         })
       })
       break
+    case 'cover':
+      useDeleteConfirm('确定将该图片设置为相册封面吗？').then(() => {
+        album.update({
+          id: list.filters.album_id,
+          cover: selected.value[0].preview_url
+        }).then(res => {
+          ctx.$message({ message: '封面设置成功', duration: 1000, type: 'success' })
+        })
+      })
+      break
+    case 'tag':
+      item.edit = true
+      item.data = selected.value[0]
+      break
   }
+}
+// 下拉回调
+function handleCommond (link: any) {
+  const copyText = selected.value.map(item => {
+    const obj = { url: item.preview_url, filename: item.name }
+    return link.value.replace(/\$\{(.*?)\}/g, (v, key) => {
+      return obj[key]
+    })
+  }).join('\n')
+  useCopyText(ctx, copyText)
 }
 
 /**
@@ -278,9 +346,10 @@ function handleClick(index: number) {
     options: {
       initialViewIndex: index
     },
-    images: list.data.map(item => item.img_preview_url)
+    images: list.data.map(item => item.preview_url)
   })
 }
+// 按钮事件回调
 function handleItemSubmit (e: { type: string, data: ImageInter }) {
   switch (e.type) {
     case 'delete':
@@ -296,8 +365,7 @@ function handleItemSubmit (e: { type: string, data: ImageInter }) {
         image.update({
           id: e.data.id,
           album_id: '',
-          sort: 0,
-          slient: true
+          sort: 0
         }).then(async (res) => {
           ctx.$message({ message: '移除成功', type: 'success', duration: 1000 })
           listGet()
@@ -308,24 +376,6 @@ function handleItemSubmit (e: { type: string, data: ImageInter }) {
       item[e.type] = true
       item.data = e.data
       break
-    case 'top':
-      image.update({
-        id: e.data.id,
-        slient: true,
-        sort: tops.value + 1
-      }).then(res => {
-        listGet()
-      })
-      break
-    case 'unTop':
-      image.update({
-        id: e.data.id,
-        slient: true,
-        sort: 0
-      }).then(res => {
-        listGet()
-      })
-      break
     case 'update':
       useListFilter(list, route.name, 'set')
       router.push({
@@ -335,23 +385,12 @@ function handleItemSubmit (e: { type: string, data: ImageInter }) {
           img_id: e.data.id
         }
       })
-      break    
+      break
+    case 'tag':
+      item.edit = true
+      item.data = e.data
+      break
   }
-}
-// 更新图片的标签
-function editItemTag (data: ImageInter) {
-  item.edit = true
-  item.data = data
-}
-// 根据tag名称渲染类别
-function getTagType (tag) {
-  if (tag === '已完结') {
-    return 'danger'
-  }
-  if (tag === '连载') {
-    return 'success'
-  }
-  return 'default'
 }
 // 切换标签
 function changeTag (tag) {
@@ -368,11 +407,6 @@ function goUpload () {
     }
   })
 }
-
-
-// 激活页
-onActivated(() => {
-})
 </script>
 
 <style lang="scss">
@@ -386,7 +420,7 @@ onActivated(() => {
     width: calc(100% + 19px + 19px);
     height: 250px;
     flex-shrink: 0;
-    background-color: #009688;
+    // background-color: #009688;
     background-size: 100% auto;
     background-position: center center;
     margin-top: -19px;
@@ -529,9 +563,9 @@ onActivated(() => {
             margin-left: 5px;
           }
         }
-        .tags-edit {
-          display: none;
-        }
+        // .tags-edit {
+        //   display: none;
+        // }
       }
       .gallery-item:hover {
         .tags-edit {
@@ -550,6 +584,9 @@ onActivated(() => {
       width: 100%;
       height: 100%;
     }
+  }
+  .copy-link-type {
+    margin: 0 10px;
   }
 }
 </style>

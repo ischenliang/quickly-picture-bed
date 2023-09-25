@@ -5,61 +5,49 @@
     :width="'700px'"
     :before-close="handleClose">
     <el-form :model="form" :rules="rules" class="album-dialog-form" label-position="top" ref="formRef">
-      <!-- 背景图 -->
-      <el-form-item label="顶部背景图" prop="background">
-        <div class="album-background" v-loading="loading.background">
-          <div class="album-background-img">
-            <img v-if="form.background" :src="form.background" alt="">
-          </div>
-          <web-upload
-            :accept="['png', 'jpg', 'jpeg']"
-            :limit="1"
-            :multiple="false"
-            :class="form.background ? 'c-upload-active' : ''"
-            @upload="beforeUpload($event, 'background')">
-            <el-icon class="el-icon--upload">
-              <upload-filled />
-            </el-icon>
-            <div class="el-upload__text">
-              建议尺寸1080*800，支持PNG、JPG、JPEG<br/>
-              支持拖拽上传，最大2M
-            </div>
-          </web-upload>
-        </div>
+      <el-form-item label="相册名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入相册名称" size="large" />
       </el-form-item>
-      <div class="album-form-inline">
-        <div class="inline-left">
-          <el-form-item label="相册名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入相册名称" size="large" />
-          </el-form-item>
-          <el-form-item label="相册简介" prop="desc">
-            <el-input v-model="form.desc" placeholder="介绍一下该相册..." type="textarea" :rows="4" size="large" />
-          </el-form-item>
-        </div>
-        <div class="inline-right">
-          <el-form-item label="相册封面" prop="cover">
-            <div class="album-cover" v-loading="loading.cover">
-              <div class="album-cover-img">
-                <img v-if="form.cover" :src="form.cover" alt="">
-              </div>
-              <web-upload
-                :accept="['png', 'jpg', 'jpeg']"
-                :limit="1"
-                :multiple="false"
-                :class="form.cover ? 'c-upload-active' : ''"
-                @upload="beforeUpload($event, 'cover')">
-                <el-icon class="el-icon--upload">
-                  <upload-filled />
-                </el-icon>
-                <div class="el-upload__text">
-                  建议尺寸1080*800，支持PNG、JPG、JPEG<br/>
-                  支持拖拽上传，最大2M
-                </div>
-              </web-upload>
-            </div>
-          </el-form-item>
-        </div>
-      </div>
+      <el-form-item label="访问权限" prop="access_type">
+        <el-select v-model="form.access_type" placeholder="请选择访问权限" size="large" style="width: 100%" popper-class="album-status-popper">
+          <el-option :value="0" label="私密相册">
+            <p class="title"><el-icon><Lock /></el-icon>私密相册</p>
+            <p class="desc">私密相册，仅自己可见</p>
+          </el-option>
+          <el-option :value="1" label="公开相册">
+            <p class="title"><el-icon><Unlock /></el-icon>公开相册</p>
+            <p class="desc">公开相册，所有用户均可见</p>
+          </el-option>
+          <el-option :value="2" label="密码访问">
+            <p class="title"><el-icon><SwitchButton /></el-icon>密码访问</p>
+            <p class="desc">密码访问，其他用户校验密码后方可见</p>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="form.access_type === 2" label="访问密码" prop="access_pass">
+        <el-input v-model="form.access_pass" placeholder="请输入相册访问密码" size="large" />
+      </el-form-item>
+      <el-form-item label="顶部背景色" prop="background">
+        <el-color-picker v-model="form.background" color-format="hex" show-alpha :predefine="[
+          '#ff4500',
+          '#ff8c00',
+          '#ffd700',
+          '#90ee90',
+          '#00ced1',
+          '#1e90ff',
+          '#c71585',
+          'rgba(255, 69, 0, 0.68)',
+          'rgb(255, 120, 0)',
+          'hsv(51, 100, 98)',
+          'hsva(120, 40, 94, 0.5)',
+          'hsl(181, 100%, 37%)',
+          'hsla(209, 100%, 56%, 0.73)',
+          '#c7158577',
+        ]" />
+      </el-form-item>
+      <el-form-item label="相册简介" prop="desc">
+        <el-input v-model="form.desc" placeholder="介绍一下该相册..." type="textarea" :rows="4" size="large" />
+      </el-form-item>
     </el-form>
     <template #action>
       <el-button @click="handleClose">取 消</el-button>
@@ -71,9 +59,7 @@
 <script lang="ts" setup>
 import { AlbumInter } from '@/typings/interface';
 import { computed, reactive, ref, watch } from 'vue';
-import WebUpload from '@/components/web/upload/index.vue'
 import { useCtxInstance, useGetSuffix } from '@/hooks/global';
-import { useFileName } from '@/hooks/date-time';
 import { FormRules } from 'element-plus';
 import Album from '@/types/Album';
 
@@ -111,14 +97,32 @@ const form: AlbumInter = reactive({
   name: '',
   desc: '',
   cover: '',
-  cover_preview: '',
-  background: '',
-  background_preview: '',
-  uid: '',
+  background: '#009688',
+  access_type: 0,
+  access_pass: ''
 })
 const rules: FormRules = reactive({
   name: [
     { required: true, message: '请输入相册名称', trigger: ['blur'] }
+  ],
+  access_type: [
+    { required: true, message: '请选择相册访问权限', trigger: ['blur'] }
+  ],
+  access_pass: [
+    {
+      required: true,
+      trigger: ['blur', 'change'],
+      validator: (rule: any, value: any, callback: any) => {
+        if (form.access_type === 2 && value === '') {
+          callback('请输入相册访问密码')
+        } else {
+          callback()
+        }
+      }
+    }
+  ],
+  background: [
+    { required: true, message: '请选择顶部背景色', trigger: ['blur', 'change'] }
   ]
 })
 // 表单ref
@@ -289,6 +293,27 @@ watch(() => props.detail, (val) => {
       }
       .el-icon--upload {
         margin-bottom: 10px;
+      }
+    }
+  }
+}
+.album-status-popper {
+  .el-select-dropdown__item {
+    height: auto !important;
+    margin-bottom: 5px;
+    .desc {
+      font-size: 14px;
+      color: #999;
+      line-height: 24px;
+    }
+    .title {
+      line-height: 30px;
+      font-weight: bold;
+      display: flex;
+      font-size: 15px;
+      align-items: center;
+      .el-icon {
+        margin-right: 5px;
       }
     }
   }

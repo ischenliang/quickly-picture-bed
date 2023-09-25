@@ -7,7 +7,7 @@
         <v-lazy-image
           v-else
           :class="[bindClass]"
-          :src="album.cover_preview"
+          :src="album.cover"
           :src-placeholder="placeholder"
           :key="album.id"
           @load="handleLoad"
@@ -41,7 +41,7 @@ interface Props {
 }
 withDefaults(defineProps<Props>(), {
   album: () => ({
-    id: '',
+    id: 0,
     name: '',
     desc: '',
     cover: '',

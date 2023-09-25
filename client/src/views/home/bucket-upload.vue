@@ -6,12 +6,16 @@
           v-model="albumData.active_id"
           placeholder="相册选择"
           style="width: 180px;"
+          popper-class="album-select-popper"
           @change="toggleCurrentBucket(albumData.active_id)">
           <el-option
             v-for="(item, index) in albumData.data"
             :key="item.id"
             :label="item.name"
-            :value="item.id" />
+            :value="item.id">
+            <p class="title">{{ item.name }}</p>
+            <p class="desc">{{ item.desc }}</p>
+          </el-option>
         </el-select>
       </el-tooltip>
     </div>
@@ -54,8 +58,8 @@
               <el-icon><Connection /></el-icon>URL远程上传
             </div>
           </el-tooltip>
-          <el-tooltip effect="dark" content="将网络图片保存到系统中" placement="bottom">
-            <div class="btn-link btn-link-base64" @click="entryUpload('url')">
+          <el-tooltip effect="dark" content="将Base64编码的图片保存到系统中" placement="bottom">
+            <div class="btn-link btn-link-base64" @click="entryUpload('base64')">
               <el-icon><HelpFilled /></el-icon>Base64上传
             </div>
           </el-tooltip>
@@ -78,6 +82,8 @@ import { ElMessageBox } from 'element-plus';
 import { useFileName } from '@/hooks/date-time';
 import Album from '@/types/Album';
 import Habits from '@/types/Habits';
+import { useRoute } from 'vue-router';
+import { file } from 'jszip';
 interface Props {
   userHabits: HabitsInter
 }
@@ -96,6 +102,8 @@ const userStore = useUserStore()
 const image = new Image()
 const album = new Album()
 const habit = new Habits()
+const route = useRoute()
+const { album_id } = route.query
 
 /**
  * 变量
@@ -121,7 +129,7 @@ const albumData: {
   active_id: number
   data: AlbumInter[]
 } = reactive({
-  active_id: ctx.$route.query.album_id || habits.value.current_album, // 当前勾选相册id
+  active_id: album_id ? parseInt(album_id as string) : habits.value.current_album, // 当前勾选相册id
   data: []
 })
 
@@ -129,8 +137,7 @@ const albumData: {
  * 逻辑处理
 */
 // 文件上传前对文件大小限制
-const beforeUpload = (e: { files: FileList, error: string }) => {
-  // console.log(e)
+const beforeUpload = (e: { files: File[], error: string }) => {
   if (e.error) {
     return ctx.$message({ message: e.error, duration: 1000, type: 'error' })
   }
@@ -155,7 +162,6 @@ const beforeUpload = (e: { files: FileList, error: string }) => {
 // 上传
 const upload = (fileList: File[], errorList: File[] = []) => {
   const bucket_id = habits.value.current_bucket
-  console.log(fileList, bucket_id)
   // 1、判断是否勾选存储桶，并且当前存储桶存在于存储桶列表中
   const buckets = userStore.user_buckets.map(el => el.id)
   if (!buckets.length) {
@@ -195,11 +201,25 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     totalProgress.progress = 0
   })
 }
-
+// 处理快捷上传的文件
+function handleFiles (files: File[]) {
+  if (files.length === 0) {
+    return
+  }
+  if (files.length >= systemConfig.value.system.maxcount) {
+    return ctx.$message({
+      message: '上传文件长度超出数量限制',
+      duration: 1000,
+      type: 'error'
+    })
+  } else {
+    beforeUpload({ files: files, error: '' })
+  }
+}
 // 粘贴板上传文件：ctrl + v
 const clipboard = (event) => {
   useDocumentClipboard(event).then((files: File[]) => {
-    // upload(files)
+    handleFiles(files)
   })
 }
 // 快捷上传
@@ -207,18 +227,20 @@ const entryUpload = (type: string) => {
   // 点击读取粘贴板的文件并上传
   if (type === 'clipboard') {
     useWindowClipboard().then((files: File[]) => {
-      // upload(files)
+      handleFiles(files)
     }).catch(error => {
       ctx.$message({ message: error.message, type: 'error', duration: 1000 })
     })
   }
   if (type === 'url') {
-    ElMessageBox.prompt('请输入网络图片url', '提示', {
+    ElMessageBox.prompt('请输入网络图片url', '网络图片上传', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
+      inputType: 'textarea',
+      inputPlaceholder: '请输入图片url'
     }).then(({ value }) => {
       useUrlToImageFile(value, useFileName() + '.png', systemConfig.value.system.accept).then((res: File) => {
-        // upload([res])
+        handleFiles([res])
       }).catch(error => {
         ctx.$notify({
           title: '错误提示',
@@ -227,7 +249,27 @@ const entryUpload = (type: string) => {
           duration: 1000
         })
       })
-    })
+    }).catch(() => {})
+  }
+  if (type === 'base64') {
+    ElMessageBox.prompt('请输入图片的base64编码内容', 'Bas64图片上传', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputType: 'textarea',
+      inputPlaceholder: '请输入图片的base64编码内容'
+    }).then(({ value }) => {
+      // 1、将 base64 字符串解码为字节数组（Uint8Array）
+      const bytes = atob(value.replace(/^data:.+;base64,/, '')) // 得去掉前缀
+      const byteArray = new Uint8Array(bytes.length)
+      for (let i = 0; i < bytes.length; i++) {
+        byteArray[i] = bytes.charCodeAt(i);
+      }
+      // 2、创建 Blob 对象
+      const blob = new Blob([byteArray], { type: 'image/jpeg' }); // 替换成相应的 MIME 类型
+      // 3、创建File对象
+      const file = new File([blob], useFileName() + '.png', { type: 'image/png' }); // 替换成相应的文件名和 MIME 类型
+      handleFiles([file])
+    }).catch(() => {})
   }
 }
 // 提示错误信息
@@ -261,7 +303,7 @@ function getAlbums () {
     order: 'desc'
   }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
     albumData.data = [
-      { id: 0, name: '图库' },
+      { id: 0, name: '图库', desc: '不放进任何相册中' },
       ...res.items
     ]
   })
@@ -365,6 +407,31 @@ watch(() => totalProgress.progress, (val) => {
     color: #386af1;
     &:hover {
       background: #ecf5ff;
+    }
+  }
+}
+.album-select-popper {
+  max-width: 250px;
+  .el-select-dropdown__item {
+    height: auto !important;
+    margin-bottom: 5px;
+    .desc {
+      font-size: 14px;
+      color: #999;
+      line-height: 24px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .title {
+      line-height: 30px;
+      font-weight: bold;
+      display: flex;
+      font-size: 15px;
+      align-items: center;
+      .el-icon {
+        margin-right: 5px;
+      }
     }
   }
 }

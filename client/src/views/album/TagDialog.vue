@@ -7,26 +7,41 @@
     <div class="album-tags-dialog">
       <div class="album-dialog-tags template-tags">
         <p>模板标签</p>
-        <el-tag v-for="(item, index) in tags" :key="'template-' + index" @click="addTag(item.value)">
-          {{ item.label }}
+        <el-tag
+          v-for="(item, index) in tags.tags.slice(1)"
+          :key="'template-' + index"
+          :type="(item.type as any)"
+          @click="addTag(item)">
+          {{ item.value }}
         </el-tag>
       </div>
       <div class="album-dialog-tags">
         <p>已选标签</p>
         <el-tag
-        v-for="(item, index) in selected"
-        :key="'selected-' + index"
-        type="success"
-        closable
-        @close="handleRemove(item)">{{ item }}</el-tag>
-        <el-input
-          v-if="edit"
-          ref="InputRef"
-          v-model="value"
-          size="small"
-          @keyup.enter="handleInputConfirm"
-          @blur="handleInputConfirm"/>
-        <el-tag v-else type="success" class="add-tag" effect="dark" @click="showInput">+ 新增</el-tag>
+          v-for="(item, index) in selectedTags"
+          :key="'selected-' + index"
+          :type="(item.type as any)"
+          closable
+          @close="handleRemove(index)">
+          {{ item.value }}
+        </el-tag>
+      </div>
+      <div class="album-dialog-tags" style="display: flex;flex-direction: column;">
+        <p>新增标签</p>
+        <div>
+          <el-input v-model="form.value" placeholder="请输入标签内容">
+            <template #prepend>
+              <el-select v-model="form.type" placeholder="标签类型" style="width: 110px;">
+                <el-option label="primary" value="primary"></el-option>
+                <el-option label="danger" value="danger"></el-option>
+                <el-option label="success" value="success"></el-option>
+                <el-option label="info" value="info"></el-option>
+                <el-option label="warning" value="warning"></el-option>
+              </el-select>
+            </template>
+          </el-input>
+          <el-button style="margin-top: 10px;" type="primary" @click="handleAdd">确定新增</el-button>
+        </div>
       </div>
     </div>
     <template #action>
@@ -37,11 +52,11 @@
 </template>
 
 <script lang="ts" setup>
-import Dict from '@/types/Dict';
+import { useCtxInstance } from '@/hooks/global';
 import Image from '@/types/Image';
-import { DictInter, ImageInter } from '@/typings/interface';
+import { AlbumTag, ImageInter, TagInter } from '@/typings/interface';
 import { ElInput } from 'element-plus';
-import { computed, nextTick, Ref, ref, watch } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 
 /**
  * 实例
@@ -49,16 +64,17 @@ import { computed, nextTick, Ref, ref, watch } from 'vue';
 interface Props {
   modelValue: boolean
   detail: ImageInter
+  tags: AlbumTag
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   detail: () => ({
-    id: ''
+    id: 0
   } as ImageInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])
-const dict = new Dict()
 const image = new Image()
+const ctx = useCtxInstance()
 
 
 /**
@@ -72,63 +88,53 @@ const dialogVisible = computed({
     emit('update:modelValue', val)
   }
 })
-const tags: Ref<Array<{ label: string; value: string }>> = ref([])
-const selected: Ref<string[]> = ref([])
-const edit = ref(false)
-const value = ref('')
-const InputRef = ref<InstanceType<typeof ElInput>>()
+const form: TagInter = reactive({
+  type: 'primary',
+  value: ''
+})
+const selectedTags: Ref<TagInter[]> = ref([])
 
 /**
  * 回调函数
  */
+// 新增标签
+function handleAdd () {
+  if (!form.type) {
+    return ctx.$message({ message: '请选择标签类型', duration: 1000, type: 'warning' })
+  }
+  if (!form.value.trim()) {
+    return ctx.$message({ message: '请填写标签内容', duration: 1000, type: 'warning' })
+  }
+  // 先判断当前标签是否已存在
+  const flag = selectedTags.value.some(el => el.value === form.value && el.type === form.type)
+  if (flag) {
+    ctx.$message({ message: '该标签已存在', duration: 1000, type: 'warning' })
+  }
+  selectedTags.value.push({ type: form.type, value: form.value })
+  form.type = ''
+  form.value = ''
+}
 // 关闭窗口
 const handleClose = () => {
   dialogVisible.value = false
 }
 // 提交
-const submit = () => {
+function submit () {
   image.update({
     id: props.detail.id,
-    slient: true,
-    tags: selected.value
+    tags: selectedTags.value
   }).then(res => {
     dialogVisible.value = false
     emit('submit')
   })
 }
-const listGet = () => {
-  dict.detailByPro('code', 'album_tag').then((res: DictInter) => {
-    tags.value = res.values.map(item => {
-      return {
-        label: item.label as string,
-        value: item.value as string
-      }
-    })
-  })
-}
-listGet()
-// 显示输入框
-const showInput = () => {
-  edit.value = true
-  nextTick(() => {
-    InputRef.value!.input!.focus()
-  })
-}
-// 输入框输入
-const handleInputConfirm = () => {
-  if (value.value) {
-    selected.value.push(value.value)
-  }
-  edit.value = false
-  value.value = ''
-}
 // 删除
-const handleRemove = (tag: string) => {
-  selected.value.splice(selected.value.indexOf(tag), 1)
+function handleRemove (index: number) {
+  selectedTags.value.splice(index, 1)
 }
 // 添加标签
-const addTag = (tag) => {
-  selected.value.push(tag)
+function addTag (tag) {
+  selectedTags.value.push(tag)
 }
 
 /**
@@ -136,7 +142,7 @@ const addTag = (tag) => {
  */
 watch(() => props.detail, (val) => {
   if (val) {
-    selected.value = val.tags && val.tags.length ? [...val.tags] : []
+    selectedTags.value = val.tags && val.tags.length ? [...val.tags] : []
   }
 }, {
   immediate: true
@@ -163,13 +169,6 @@ watch(() => props.detail, (val) => {
       font-weight: bold;
       margin-bottom: 10px;
       color: #2d8cf0;
-    }
-    .el-input {
-      width: 80px;
-    }
-    .add-tag, .el-input {
-      margin-left: 10px;
-      cursor: pointer;
     }
   }
   .el-tag {

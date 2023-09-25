@@ -53,9 +53,7 @@ const router = useRouter()
 const list: ListInter<AlbumInter> = reactive({
   total: 0,
   filters: {
-    name: '',
-    sort: 'sort',
-    order: 'desc'
+    name: ''
   },
   data: [],
   loading: false
@@ -76,13 +74,14 @@ const listGet = () => {
   list.loading = true
   album.find({
     ...list.filters
-  }).then((res: PageResponse<AlbumInter, { id: string, count: number }>) => {
+  }).then((res: PageResponse<AlbumInter, { id: number, count: number }>) => {
     list.data = res.items.map(item => {
-      // item.count = res.stats.find(stat => stat.id === item.id).count
+      item.count = res.stats.find(stat => stat.id === item.id).count
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
       return item
     })
+    list.total = res.total
     list.loading = false
   })
 }

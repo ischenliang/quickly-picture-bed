@@ -109,17 +109,10 @@ function handleClick () {
 
 watch(() => props.data, () => {
   if (props.remove) {
-    if (props.data.sort === 0) {
-      btns.value = [
-        ...defaultBtns,
-        { icon: 'Flag', type: 'warning', title: '置顶图片', action: 'topping' }
-      ]
-    } else {
-      btns.value = [
-        ...defaultBtns,
-        { icon: 'SoldOut', type: 'warning', title: '取消置顶', action: 'unTopping' }
-      ]
-    }
+    btns.value = [
+      ...defaultBtns.filter(el => el.action !== 'delete'),
+      { icon: 'PriceTag', type: 'success', title: '标签管理', action: 'tag' }
+    ]
   }
 }, {
   deep: true,
@@ -167,6 +160,10 @@ const actions = {
   // 覆盖文件
   update () {
     emit('submit', { type: 'update', data: myData.value })
+  },
+  // 标签管理
+  tag () {
+    emit('submit', { type: 'tag', data: myData.value })
   }
 }
 </script>

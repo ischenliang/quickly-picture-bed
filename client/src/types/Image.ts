@@ -34,7 +34,7 @@ export default class Image {
    * @param id 
    * @returns 
    */
-  delete (id: string) {
+  delete (id: number) {
     return http('/image/delete', { id })
   }
   // 更新
@@ -46,7 +46,7 @@ export default class Image {
     return http('/image/list', params)
   }
   // 详情
-  detail (id: string) {
+  detail (id: string | number) {
     return http('/image/detail', { id })
   }
 }

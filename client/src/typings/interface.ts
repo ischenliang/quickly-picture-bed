@@ -69,7 +69,7 @@ export interface BucketSourceConfig {
  */
 export interface ImageInter {
   // 图片id
-  id?: string
+  id?: number
   // 图片名称
   name?: string
   // 原始名称
@@ -79,7 +79,7 @@ export interface ImageInter {
   // 图片高度
   height?: number
   // 文件类型
-  mine_type?: string
+  mime_type?: string
   // 图片url
   url?: string
   // 图片基地址
@@ -91,7 +91,7 @@ export interface ImageInter {
   // 存储桶id
   bucket_id?: string
   // 相册id
-  album_id?: string
+  album_id?: number | string
   // hash值：用于后续更新时使用
   hash?: string
   // 用户id
@@ -105,7 +105,7 @@ export interface ImageInter {
   // 排序值
   sort?: number
   // 标签
-  tags?: string[]
+  tags?: TagInter[]
   // 权重
   weight?: number
 }
@@ -479,13 +479,18 @@ export interface VerifyCodeInter {
  */
 export interface AlbumInter {
   id?: number // 验证码id
-  uid?: string // 相册拥有者
+  uid?: number // 相册拥有者
   name?: string // 相册名称
   desc?: string // 相册描述
   cover?: string // 相册封面
   background?: string // 相册背景
   count?: number // 关联图片数量
   sort?: number // 排序值
+  view_num?: number // 浏览量
+  access_type?: 1 | 2 | 0 // 访问权限,1 - 公开，2 - 密码访问，0 - 私有
+  access_pass?: string // 访问密码，只有当access_type为2时有
+  sortby?: string // 排序字段
+  sortorder?: string // 排序顺序
   createdAt?: string // 创建时间
   updatedAt?: string // 更新时间
 }
