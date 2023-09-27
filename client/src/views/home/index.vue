@@ -25,8 +25,8 @@
         <bucket-upload v-model:user-habits="userHabits"></bucket-upload>
       </el-card>
 
-      <!-- 复制链接 -->
-      <el-card class="drag-card">
+      <!-- 拖拽预览 -->
+      <el-card class="drag-card" v-if="images.length">
         <bucket-drag v-model:user-habits="userHabits"></bucket-drag>
       </el-card>
     </div>
@@ -61,6 +61,9 @@ const route = useRoute()
  */
 const userHabits = computed(() => {
   return userStore.user_habits.data
+})
+const images = computed(() => {
+  return userStore.currentImages
 })
 
 // 返回

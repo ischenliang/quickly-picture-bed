@@ -20,6 +20,13 @@
       </el-tooltip>
     </div>
     <div class="custom-card-upload">
+      <div class="custom-upload-loading" v-if="totalProgress.progress">
+        <img src="/loading.gif" alt="">
+        <p>
+          <span v-if="totalProgress.progress < 100">正在上传图片...</span>
+          <span v-if="totalProgress.progress === 100">正在将图片转存到存储桶...</span>
+        </p>
+      </div>
       <!-- 上传区 -->
       <c-upload
         :accept="systemConfig.system.accept"
@@ -350,8 +357,32 @@ watch(() => totalProgress.progress, (val) => {
     flex-direction: column;
     .custom-card-upload {
       display: flex;
+      position: relative;
       .c-upload {
         flex: 1;
+      }
+    }
+    .custom-upload-loading {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      height: calc(100% - 20px);
+      width: 100%;
+      background: rgba($color: #000000, $alpha: 0.5);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 6px;
+      img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+      }
+      p {
+        font-size: 20px;
+        color: #fff;
       }
     }
   }

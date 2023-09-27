@@ -5,14 +5,21 @@
         <el-icon><Back /></el-icon>
         <span>返回</span>
       </div>
-      <template v-if="pluginDetail.user_plugin.id">
-        <el-button
-          v-if="pluginDetail.user_plugin.status"
-          type="danger"
-          size="small"
-          :loading="loading.toggle"
-          @click="togglePlugin">禁用插件</el-button>
-        <el-button v-else type="primary" size="small" :loading="loading.toggle" @click="togglePlugin">启用插件</el-button>
+      <template v-if="pluginDetail.user_plugin.id && route.name === 'PluginDetail'">
+        <el-tooltip
+          placement="bottom"
+          effect="dark"
+          :content="pluginDetail.user_plugin.status ? '禁用后，创建存储桶时将不会显示该插件' : '启用后，创建存储桶时会显示该插件'">
+          <el-button
+            v-if="pluginDetail.user_plugin.status"
+            type="danger"
+            size="small"
+            :loading="loading.toggle"
+            @click="togglePlugin">
+            禁用插件
+          </el-button>
+          <el-button v-else type="primary" size="small" :loading="loading.toggle" @click="togglePlugin">启用插件</el-button>
+        </el-tooltip>
       </template>
     </div>
     <div class="plugin-detail-info">
@@ -55,7 +62,7 @@
             :key="index">{{ item }}</el-tag>
         </div>
       </div>
-      <div class="plugin-detail-info-action">
+      <div class="plugin-detail-info-action" v-if="route.name === 'PluginDetail'">
         <template v-if="pluginDetail.user_plugin.id">
           <el-button type="warning" @click="handleUninstall" :loading="loading.uninstall">卸载</el-button>
           <el-button
@@ -149,9 +156,16 @@ function getDetail () {
 getDetail()
 // 返回
 function goBack () {
-  router.push({
-    name: 'Plugin'
-  })
+  const { name } = route
+  if (name === 'SystemPluginDetail') {
+    return router.push({
+      name: 'SystemPlugin'
+    })
+  } else {
+    return router.push({
+      name: 'Plugin'
+    })
+  }
 }
 // 切换插件状态
 function togglePlugin () {

@@ -1,78 +1,79 @@
 <template>
-  <div class="backstage-account-plugin">
-    <table-page
-      :table-data="list"
-      :is-index="true"
-      :border="true"
-      @pageChange="listGet"
-      :actionWidth="260">
-      <template #filter>
-        <filter-item :text="'插件名称:'">
-          <el-input v-model="list.filters.name" placeholder="请输入插件名称" @input="handleInput" />
-        </filter-item>
-        <filter-item :text="'插件类别:'">
-          <el-input v-model="list.filters.name" placeholder="请输入插件名称" @input="handleInput" />
-        </filter-item>
+  <div class="plugin-container">
+    <div class="plugin-toolbar">
+      <div class="plugin-toolbar-filter">
+        <span>总计: {{ list.total }}(个)</span>
+        <el-input v-model="list.filters.search" placeholder="请输入插件名称" />
+        <el-select v-model="list.filters.category" placeholder="请选择插件类别">
+          <el-option
+            v-for="(item, index) in plugin_types"
+            :key="'type-' + index"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button type="primary" @click="listGet">查询</el-button>
+        <el-button type="default" @click="resetFilter">重置</el-button>
+      </div>
+      <div class="plugin-toolbar-action">
+        <el-button type="primary" @click="handleAction({ type: 'edit', data: null })">新增</el-button>
+        <el-button @click="toggleDrag">{{ draggable ? '完成排序' : '启用排序' }}</el-button>
+      </div>
+    </div>
+    <el-row class="plugin-list" v-loading="list.loading"  id="sortableRef">
+      <template v-if="list.data.length">
+        <el-col
+          v-for="(item, index) in list.data"
+          :key="'plugin-item-' + index + '-' + item.id"
+          :xl="6"
+          :lg="8"
+          :md="12" 
+          class="drag-box-col">
+          <plugin-item
+            :detail="item"
+            :editable="true"
+            :draggable="draggable"
+            @click="handleClick(item)"
+            @action="handleAction">
+          </plugin-item>
+        </el-col>
       </template>
-      <template #action>
-        <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
+      <template v-else>
+        <c-empty></c-empty>
       </template>
-      <template #logo="data">
-        <img :src="data.logo || 'http://localhost:5174/src/views/userinfo/images/%E6%98%9F%E5%BA%A7_%E7%99%BD%E7%BE%8A%E5%BA%A7.png'" alt="" class="plugin-logo">
-      </template>
-      <template #status="data">
-        <el-tag :type="data.status ? 'success' : 'danger'">{{ data.status ? '已启用' : '已禁用' }}</el-tag>
-      </template>
-      <template #payment="data">
-        {{ payment_types[data.payment_type] }}
-        <span v-if="data.payment">
-          (<span style="color: red;">
-            <template v-if="data.payment_type !== 'limited_free'">{{ data.price }}元</template>
-            <s v-else>{{ data.price }}元</s>
-          </span>)
-        </span>
-      </template>
-      <template #updatedAt="data">
-        {{ useFromNow(data.updatedAt) }}
-      </template>
-      <template #tableAction="{ row }">
-        <el-button type="primary" size="small" @click="itemOperate(row, 'edit')">更新</el-button>
-        <el-button
-          :type="row.status ? 'warning' : 'info'"
-          size="small"
-          @click="itemOperate(row, 'switch')">
-          {{ row.status ? '禁用' : '启用' }}
-        </el-button>
-        <el-button type="success" size="small" @click="itemOperate(row, 'detail')">预览</el-button>
-        <el-button type="danger" size="small" @click="itemOperate(row, 'delete')">删除</el-button>
-      </template>
-    </table-page>
-    <edit-plugin
-      v-if="visible.edit"
-      v-model="visible.edit"
-      :detail="item.data"
-      @submit="listGet">
-    </edit-plugin>
+    </el-row>
   </div>
+  <!-- 新增 | 编辑插件 -->
+  <edit-plugin
+    v-if="visible.edit"
+    v-model="visible.edit"
+    :detail="item.data"
+    @submit="listGet">
+  </edit-plugin>
 </template>
-
 <script lang="ts" setup>
-import { reactive, computed } from 'vue'
-import { config } from './config'
-import { ListInter, PluginInter } from '@/typings/interface'
-import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
-import { PageResponse } from '@/typings/req-res'
-import { useFormat } from '@/hooks/date-time'
-import Plugin from '@/types/Plugin'
+import Plugin from '@/types/Plugin';
+import pluginItem from '@/views/plugin/plugin-item.vue';
+import { ListInter, PluginInter } from '@/typings/interface';
+import { Ref, computed, nextTick, reactive, ref } from 'vue';
+import { PageResponse } from '@/typings/req-res';
+import { useRouter } from 'vue-router';
+import { useCtxInstance, useDeleteConfirm, useDragSort } from '@/hooks/global';
 import editPlugin from './edit-plugin.vue'
-import useConfigStore from "@/store/config"
-import { useFromNow } from '@/hooks/date-time'
+import useConfigStore from '@/store/config';
 /**
  * 实例
  */
-const ctx = useCtxInstance()
 const plugin = new Plugin()
+const router = useRouter()
+const ctx = useCtxInstance()
 const configStore = useConfigStore()
+const plugin_types = computed(() => {
+  return [
+    { label: '全部', value: '' },
+    ...configStore.dicts.find(el => el.code === 'plugin_type').values || []
+  ]
+})
 
 /**
  * 变量
@@ -81,119 +82,142 @@ const list: ListInter<PluginInter> = reactive({
   page: 1,
   size: 10,
   total: 0,
-  config,
   filters: {
     search: '',
     category: ''
   },
+  loading: false,
   data: []
 })
 // 当前被操作项
 let item = reactive({
   data: null
 })
+// 弹窗
 const visible = reactive({
   edit: false,
   detail: false
 })
-const payment_types = computed(() => {
-  return configStore.payment_types.reduce((total, cur) => {
-    total[cur.value as string] = cur.label
-    return total
-  }, {})
-})
+
 
 /**
  * 逻辑处理
  */
 // 获取数据
-const listGet = () => {
+function listGet () {
+  list.loading = true
   plugin.find({
-    page: list.page,
-    size: list.size,
+    // page: list.page,
+    // size: list.size,
     ...list.filters
   }).then((res: PageResponse<PluginInter>) => {
+    list.data = res.items
     list.total = res.total
-    list.data = res.items.map(item => {
-      item.createdAt = useFormat(item.createdAt)
-      item.updatedAt = useFormat(item.updatedAt)
-      return item
-    })
+    list.loading = false
   })
 }
 listGet()
+// 跳转到详情
+function handleClick (item: PluginInter) {
+  router.push({
+    name: 'SystemPluginDetail',
+    query: {
+      plugin_id: item.id
+    }
+  })
+}
 // 操作
-const itemOperate = (data: any, type) => {
-  item.data = data
-  visible[type] = true
-  if (type === 'delete') {
-    useDeleteConfirm().then(() => {
-      plugin.delete(data.id).then(res => {
-        ctx.$message({ type: 'success', duration: 1000, message: '删除成功' })
-        listGet()
+function handleAction (e: { type: any; data: PluginInter }) {
+  item.data = e.data
+  visible[e.type] = true
+  switch (e.type) {
+    case 'edit':
+      break
+    case 'switch':
+      const { status, id } = e.data
+      useDeleteConfirm(`确定要${ status ? '禁用' : '启用' }该存储源插件吗？`).then(() => {
+        plugin.toggle(id).then(res => {
+          ctx.$message({ type: 'success', duration: 1000, message: `${ status ? '禁用' : '启用' }成功` })
+          listGet()
+        })
       })
-    })
-  }
-  if (type === 'switch') {
-    useDeleteConfirm(`确定要${ data.status ? '禁用' : '启用' }该存储源插件吗？`).then(() => {
-      plugin.toggle(data.id).then(res => {
-        ctx.$message({ type: 'success', duration: 1000, message: `${ data.status ? '禁用' : '启用' }成功` })
-        listGet()
+      break
+    case 'delete':
+      useDeleteConfirm().then(() => {
+        plugin.delete(e.data.id).then(res => {
+          ctx.$message({ type: 'success', duration: 1000, message: '删除成功' })
+          listGet()
+        })
       })
-    })
+      break
   }
 }
-function handleInput (e) {
-  debounce(() => {
+// 重置筛选
+function resetFilter () {
+  Object.keys(list.filters).forEach(key => {
+    if (typeof list.filters[key] === 'number') {
+      list.filters[key] = 0
+    } else {
+      list.filters[key] = ''
+    }
+  })
+  listGet()
+}
+
+
+const draggable = ref(false)
+function toggleDrag () {
+  draggable.value = !draggable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  list.loading = true
+  const [from, to] = [list.data[fromIndex], list.data[toIndex]]
+  plugin.sort(from.id, to.id).then(() => {
     listGet()
-  }, 2000)()
+  })
 }
-// 防抖
-function debounce(callback, time) {
-  let timer = null
-  return (...args) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      callback(args)
-    }, time)
-  }
-}
-
-/**
- * 回调函数
- */
 </script>
-
 <style lang="scss">
-@import '@/styles/flex-layout.scss';
-.backstage-account-plugin {
+.plugin-container {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  .tabs-item1 {
-    @include flex-layout-align(row, flex-start, center);
-    span {
-      font-size: 14px;
-      line-height: 22px;
-      cursor: pointer;
-      &:not(.el-tag) {
-        padding: 5px 15px 5px 0;
+  display: flex;
+  flex-direction: column;
+  .plugin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 10px;
+    &-filter {
+      display: flex;
+      align-items: center;
+      > .el-input, > .el-select {
+        width: 11.5rem;
       }
-      &.el-tag {
-        margin-right: 15px;
-      }
-      &:first-child {
-        font-weight: bold;
+      .el-input, .el-select, .el-button {
+        &:not(:first-child) {
+          margin-left: 15px;
+        }
       }
     }
+    &-action {
+      flex-shrink: 0;
+    }
   }
-  .plugin-icon {
-    font-size: 22px;
+  .el-row {
+    &.plugin-list {
+      flex: 1;
+      background: #fff;
+    }
+    .el-col {
+      padding: 10px;
+    }
   }
-  .plugin-logo {
-    width: 30px;
-    height: 30px;
-    // border-radius: 50%;
-  }
-}
+} 
 </style>

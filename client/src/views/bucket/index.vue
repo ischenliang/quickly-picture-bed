@@ -1,14 +1,28 @@
 <template>
   <div class="bucket-container">
     <c-card :title="'存储桶'" v-loading="list.loading">
-      <el-row>
+      <template #cardAction>
+        <span>
+          <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
+        </span>
+      </template>
+      <el-row id="sortableRef">
         <!-- 新建 -->
         <el-col :xl="6" :lg="8" :md="12">
           <bucket-item :create="true" @click="itemOperate(null, 'edit')"></bucket-item>
         </el-col>
         <!-- 遍历存储桶列表 -->
-        <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
-          <bucket-item :detail="item">
+        <el-col
+          v-for="(item, index) in list.data"
+          :key="'bucket-item-' + index + '-' + item.id"
+          :xl="6"
+          :lg="8"
+          :md="12"
+          class="drag-box-col">
+          <bucket-item
+            :key="item.id"
+            :detail="item"
+            :editable="editable">
             <template #action>
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
               <div class="bucket-action-item" @click="itemOperate(item, 'toggle')">{{ item.visible ? '禁用' : '启用' }}</div>
@@ -36,9 +50,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import { BucketInter, ListInter, UserInter } from '@/typings/interface'
-import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
+import { useCtxInstance, useDeleteConfirm, useDragSort } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import MigrateDialog from './MigrateDialog.vue'
@@ -122,6 +136,27 @@ const itemOperate = (data: BucketInter, type) => {
       })
     })
   }
+}
+
+
+const editable = ref(false)
+function toggleDrag () {
+  editable.value = !editable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  list.loading = true
+  // -1的原因: 在于前面有个新建元素占位
+  const [from, to] = [list.data[fromIndex - 1], list.data[toIndex - 1]]
+  bucket.sort(from.id, to.id).then(() => {
+    listGet()
+  })
 }
 </script>
 

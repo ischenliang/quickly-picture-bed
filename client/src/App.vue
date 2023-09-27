@@ -73,4 +73,14 @@ html, body, #app {
   top: 1px !important;
   right: -5px !important;
 }
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+.chosen {
+  background: #0187C4;
+}
+.drag {
+  background: blue;
+}
 </style>

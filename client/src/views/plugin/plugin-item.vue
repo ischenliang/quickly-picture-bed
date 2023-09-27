@@ -1,30 +1,38 @@
 <template>
   <div class="plugin-item">
+    <drag-box v-if="draggable"></drag-box>
     <div class="plugin-item-header">
       <div class="plugin-item-category">
         <el-icon :size="18" color="#00b8d4"><UploadFilled /></el-icon>
         <span>{{ detail.category }}插件</span>
       </div>
       <div class="plugin-item-env">
-        <div class="plugin-item-env-item env-installed" v-if="detail.user_plugin.id">已安装</div>
-        <template v-if="detail.user_plugin.id">
-          <template v-if="detail.user_plugin.version === detail.version">
-            <div class="plugin-item-env-item env-version">{{ detail.version }}</div>
-          </template>
-          <template v-else>
-            <el-tooltip
-              effect="dark"
-              :content="'有新版本，最新版本: ' + detail.version"
-              placement="right">
-              <div class="plugin-item-env-item env-version">
-                <span class="env-version-dot"></span>
-                {{ detail.user_plugin.version }}
-              </div>
-            </el-tooltip>
-          </template>
+        <template v-if="editable">
+          <div v-if="detail.status" class="plugin-item-env-item env-enabled">已启用</div>
+          <div v-else class="plugin-item-env-item env-disabled">已禁用</div>
+          <div class="plugin-item-env-item env-version">{{ detail.version }}</div>
         </template>
         <template v-else>
-          <div class="plugin-item-env-item env-version">{{ detail.version }}</div>
+          <div class="plugin-item-env-item env-installed" v-if="detail.user_plugin.id">已安装</div>
+          <template v-if="detail.user_plugin.id">
+            <template v-if="detail.user_plugin.version === detail.version">
+              <div class="plugin-item-env-item env-version">{{ detail.version }}</div>
+            </template>
+            <template v-else>
+              <el-tooltip
+                effect="dark"
+                :content="'有新版本，最新版本: ' + detail.version"
+                placement="right">
+                <div class="plugin-item-env-item env-version">
+                  <span class="env-version-dot"></span>
+                  {{ detail.user_plugin.version }}
+                </div>
+              </el-tooltip>
+            </template>
+          </template>
+          <template v-else>
+            <div class="plugin-item-env-item env-version">{{ detail.version }}</div>
+          </template>
         </template>
       </div>
     </div>
@@ -59,12 +67,26 @@
       </div>
     </div>
     <div class="plugin-item-footer">
-      <span
-        class="plugin-item-tag"
-        v-for="(item, index) in detail.tags"
-        :key="'tag-' + index">
-        {{ item }}
-      </span>
+      <div class="plugin-item-tags">
+        <span
+          class="plugin-item-tag"
+          v-for="(item, index) in detail.tags"
+          :key="'tag-' + index">
+          {{ item }}
+        </span>
+      </div>
+      <div class="plugin-item-action" v-if="editable">
+        <el-dropdown trigger="hover" placement="bottom-end" @command="(func) => func()">
+          <icon-more :size="18"></icon-more>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item :command="() => handleCommond('edit')"><el-icon><Edit /></el-icon>更新插件</el-dropdown-item>
+              <el-dropdown-item :command="() => handleCommond('switch')"><el-icon><SwitchButton /></el-icon>{{ detail.status ? '禁用' : '启用' }}插件</el-dropdown-item>
+              <el-dropdown-item :command="() => handleCommond('delete')"><el-icon><Delete /></el-icon>删除插件</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
@@ -73,18 +95,25 @@ import useConfigStore from '@/store/config';
 import { PluginInter } from '@/typings/interface';
 import { computed } from 'vue';
 import { useFromNow } from '@/hooks/date-time'
+import iconMore from '@/components/icons/icon-more.vue'
+import dragBox from '@/components/dragBox.vue';
 
 interface Props {
   detail: PluginInter
+  editable?: boolean
+  draggable?: boolean
 }
 
 /**
  * 实例
  */
 const props = withDefaults(defineProps<Props>(), {
-  detail: () => ({} as PluginInter)
+  detail: () => ({} as PluginInter),
+  editable: false,
+  draggable: false
 })
 const configStore = useConfigStore()
+const emit = defineEmits(['action'])
 
 /**
  * 变量
@@ -95,6 +124,16 @@ const payment_types = computed(() => {
     return total
   }, {})
 })
+
+/**
+ * 逻辑处理
+ */
+function handleCommond (type: string) {
+  emit('action', {
+    type,
+    data: props.detail
+  })
+}
 </script>
 <style lang="scss">
 .plugin-item {
@@ -110,6 +149,7 @@ const payment_types = computed(() => {
   cursor: pointer;
   transition: all .3s;
   background: #fff;
+  position: relative;
   &-header {
     height: 36px;
     // background: #00b8d41a;
@@ -159,8 +199,14 @@ const payment_types = computed(() => {
           &.env-platform {
             background: #007bff;
           }
-          &.env-installed, &.env-version {
+          &.env-installed, &.env-version, &.env-disabled, &.env-enabled {
             border-radius: 4px;
+          }
+          &.env-disabled {
+            background: #f56c6c;
+          }
+          &.env-enabled {
+            background: #67c23a;
           }
           .env-version-dot {
             width: 6px;
@@ -289,6 +335,8 @@ const payment_types = computed(() => {
   &-footer {
     padding: 0 15px 10px 15px;
     flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
     .plugin-item-tag {
       padding: 2px 5px;
       font-size: 12px;
@@ -298,9 +346,27 @@ const payment_types = computed(() => {
       color: #4abcbd;
       background: #f2f2f2;
     }
+    .plugin-item-tags {
+      flex: 1;
+      overflow: hidden;
+    }
+    .plugin-item-action {
+      width: 24px;
+      height: 21px;
+      border-radius: 4px;
+      background: #e1e1e1;
+      flex-shrink: 0;
+      margin-left: 5px;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+    }
   }
   &:hover {
     transform: translateY(-10px);
+    // .plugin-item-action {
+    //   display: flex;
+    // }
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="album-item">
+    <drag-box v-if="editable"></drag-box>
     <!-- <img class="album-item-cover" :src="album.cover_preview" /> -->
     <div class="album-item-cover">
       <template v-if="album.cover">
@@ -14,11 +15,14 @@
           @error="handleRenderError"></v-lazy-image>
       </template>
       <template v-else>
-        <img src="/default.jpg" alt="">
+        <img src="/default.png" class="load-error" alt="">
       </template>
     </div>
     <div class="album-item__content">
-      <div class="album-item-name">{{ album.name }}({{ album.count }})</div>
+      <div class="album-item-name">
+        <!-- <span style="color: red;font-weight: bold;">{{ album.id }}</span> -  -->
+        {{ album.name }}({{ album.count }})
+      </div>
       <div class="album-item-divider"></div>
       <div class="album-item-desc">{{ album.desc }}</div>
     </div>
@@ -34,10 +38,12 @@
 import { AlbumInter } from '@/typings/interface';
 import VLazyImage from 'v-lazy-image';
 import { ref } from 'vue';
+import dragBox from '@/components/dragBox.vue';
 const placeholder = new URL('../../../views/gallery/loading.gif', import.meta.url).href
 
 interface Props {
   album: AlbumInter
+  editable?: boolean
 }
 withDefaults(defineProps<Props>(), {
   album: () => ({
@@ -47,7 +53,8 @@ withDefaults(defineProps<Props>(), {
     cover: '',
     background: '',
     count: 0
-  } as AlbumInter)
+  } as AlbumInter),
+  editable: false
 })
 const emit = defineEmits(['submit'])
 
@@ -72,8 +79,8 @@ function handleRenderError () {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  // background: #000;
-  background: #009688;
+  background: rgba($color: #000000, $alpha: 0.85);
+  // background: #009688;
   border-radius: 8px;
 
   .album-item-cover {
@@ -84,6 +91,13 @@ function handleRenderError () {
     width: 100%;
     height: 100%;
     .loaded {
+      width: 100%;
+      height: 100%;
+      transition: all 0.35s;
+      opacity: 0.8;
+      object-fit: cover;
+    }
+    .load-error {
       width: 100%;
       height: 100%;
       transition: all 0.35s;

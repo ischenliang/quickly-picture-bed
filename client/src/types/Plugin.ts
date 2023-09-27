@@ -58,4 +58,8 @@ export default class Plugin {
   toggle (id: number) {
     return http('/plugin/toggle', { id })
   }
+  // 排序
+  sort (from: number, to: number) {
+    return http('/plugin/sort', { from, to })
+  }
 }

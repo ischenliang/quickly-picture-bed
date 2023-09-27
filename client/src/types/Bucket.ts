@@ -42,4 +42,11 @@ export default class Bucket {
   detail (id: string) {
     return http('/bucket/detail', { id })
   }
+  // 排序
+  sort (from: number, to: number) {
+    return http('/bucket/sort', {
+      from,
+      to
+    })
+  }
 }

@@ -34,7 +34,7 @@
           <p><span>安装次数: </span>{{ detail.downloadCounts }}</p>
           <p><span>创建时间: </span>{{ formatTime(detail.createdAt) }}</p>
           <p><span>最近更新: </span>{{ formatTime(detail.updatedAt) }}</p>
-          <p v-if="detail.user_plugin.id"><span>安装时间: </span>{{ formatTime(detail.user_plugin.createdAt) }}</p>
+          <p v-if="detail.user_plugin.id && route.name === 'PluginDetail'"><span>安装时间: </span>{{ formatTime(detail.user_plugin.createdAt) }}</p>
         </div>
       </div>
     </div>
@@ -47,6 +47,7 @@ import { computed, ref } from 'vue';
 import mdPreview from './md-preview.vue';
 import useConfigStore from '@/store/config'
 import { useFormat } from '@/hooks/date-time'
+import { useRoute } from 'vue-router';
 
 interface Props {
   detail: PluginInter
@@ -59,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
   detail: () => ({} as PluginInter)
 })
 const configStore = useConfigStore()
+const route = useRoute()
 
 /**
  * 变量

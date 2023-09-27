@@ -43,22 +43,33 @@
             :type="disabled ? 'default' : 'danger'"
             :icon="'Delete'"
             :disabled="disabled"
-            @click="deleteAll">删除所选</el-button>
+            @click="deleteAll">
+            删除所选
+          </el-button>
+          <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
         </div>
       </div>
       <div class="gallery-list" v-loading="list.loading">
-        <el-row v-if="list.data.length">
-          <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
-            <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
-              <gallery-item
-                :data="item"
-                :key="item.id"
-                :images="list.data.map(item => item.preview_url)"
-                @reload="listGet"
-                @submit="handleItemSubmit"
-                @view="handleClick(index)"></gallery-item>
-            </el-col>
-          </template>
+        <el-row v-if="list.data.length" id="sortableRef">
+          <el-col
+            v-for="(item, index) in list.data"
+            :key="'gallery-item-' + index + '-' + item.id"
+            :xl="4"
+            :lg="6"
+            :md="8"
+            :sm="12"
+            :xs="24"
+            class="drag-box-col">
+            <gallery-item
+              :data="item"
+              :key="item.id"
+              :editable="editable"
+              :images="list.data.map(item => item.preview_url)"
+              @reload="listGet"
+              @submit="handleItemSubmit"
+              @view="handleClick(index)">
+            </gallery-item>
+          </el-col>
         </el-row>
         <div class="empty-data" v-else>
           <el-empty description="暂无数据"></el-empty>
@@ -83,12 +94,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useCopyText, useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDeleteConfirm, useDragSort, useListFilter } from '@/hooks/global';
 import Bucket from '@/types/Bucket';
 import Image from '@/types/Image';
 import { BucketInter, ImageInter, ListInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { computed, onActivated, reactive, Ref, ref, watch } from 'vue';
+import { computed, nextTick, onActivated, reactive, Ref, ref, watch } from 'vue';
 import GalleryItem from './gallery-item.vue'
 import { useFormat } from '@/hooks/date-time';
 import DetailDialog from './DetailDialog.vue'
@@ -104,6 +115,7 @@ const image = new Image()
 const ctx = useCtxInstance()
 const route = useRoute()
 const router = useRouter()
+const editable = ref(false)
 
 /**
  * 变量
@@ -270,6 +282,34 @@ const handleInput = (val) => {
   setTimeout(() => {
     listGet()
   }, 1000)
+}
+
+function toggleDrag () {
+  editable.value = !editable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  const [from, to] = [list.data[fromIndex], list.data[toIndex]]
+  // const [fromWeight, toWeight] = [from.weight, to.weight]
+  // from.weight = toWeight
+  // to.weight = fromWeight
+  // list.data.splice(fromIndex, 1, to)
+  // list.data.splice(toIndex, 1, from)
+  // console.log(fromIndex, from.id, from.name)
+  // console.log(toIndex, to.id, to.name)
+  // initDrag()
+  
+  list.loading = true
+  image.sort(from.id, to.id).then(() => {
+    listGet()
+    // initDrag()
+  })
 }
 
 /**

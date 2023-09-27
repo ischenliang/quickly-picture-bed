@@ -1,5 +1,6 @@
 <template>
   <div :class="['gallery-item', data.checked ? 'gallery-item-active' : '']">
+    <drag-box v-if="editable"></drag-box>
     <div class="gallery-item-cover" @click="handleClick">
       <slot name="tags"></slot>
       <span class="gallery-item-top" v-if="remove && data.sort > 0"><el-icon><Flag /></el-icon>置顶</span>
@@ -19,6 +20,7 @@
         @load="hanldeLoad"></v-lazy-image>
     </div>
     <div class="gallery-item-name" :title="data.origin_name">
+      <!-- <span style="color: red;font-weight: bold;">{{ data.id }} - {{ data.weight }}</span> -  -->
       <span>{{ data.origin_name || data.name }}</span>
     </div>
     <div class="gallery-item-action">
@@ -39,12 +41,14 @@ import { ImageInter } from '@/typings/interface';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import VLazyImage from 'v-lazy-image';
+import dragBox from '@/components/dragBox.vue';
 
 interface Props {
   data: ImageInter
   fit?: string
   images?: Array<string>
   remove?: boolean
+  editable?: boolean
 }
 
 interface BtnProps {
@@ -60,6 +64,7 @@ interface BtnProps {
 const props = withDefaults(defineProps<Props>(), {
   fit: 'scale-down',
   remove: false,
+  editable: false,
   data: () => ({
     img_name: '',
     img_preview_url: '',
@@ -186,6 +191,7 @@ const actions = {
   cursor: pointer;
   position: relative;
   transition: all 0.3s;
+  position: relative;
   &.gallery-item-active {
     background: rgba(204,232,255,.5);
     border: 1px solid rgba(153,209,255,.57);
@@ -235,7 +241,8 @@ const actions = {
     img {
       width: 100%;
       height: 100%;
-      object-fit: scale-down;
+      // object-fit: scale-down;
+      object-fit: fill;
       &.loading-cover {
         object-fit: scale-down;
       }

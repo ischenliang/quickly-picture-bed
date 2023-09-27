@@ -2,17 +2,22 @@
   <div class="album-container">
     <c-card :title="'我的相册(' + list.total + ')'" v-loading="list.loading">
       <template #cardAction>
-        <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
+        <span>
+          <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
+          <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
+        </span>
       </template>
-      <el-row>
+      <el-row id="sortableRef">
         <el-col
           v-for="(item, index) in list.data"
-          :key="index"
+          :key="'album-item-' + index + '-' + item.id"
           :xl="6"
           :lg="8"
-          :md="12">
+          :md="12"
+          class="drag-box-col">
           <album-item
             :album="item"
+            :editable="editable"
             @submit="itemOperate(item, $event)"
             @click="handleClick(item)"></album-item>
         </el-col>
@@ -29,9 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import { AlbumInter, ListInter } from '@/typings/interface'
-import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
+import { useCtxInstance, useDeleteConfirm, useDragSort } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
 import useConfigStore from '@/store/config'
@@ -115,6 +120,26 @@ const handleClick = (data: AlbumInter) => {
     query: {
       id: data.id
     }
+  })
+}
+
+
+const editable = ref(false)
+function toggleDrag () {
+  editable.value = !editable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  list.loading = true
+  const [from, to] = [list.data[fromIndex], list.data[toIndex]]
+  album.sort(from.id, to.id).then(() => {
+    listGet()
   })
 }
 </script>

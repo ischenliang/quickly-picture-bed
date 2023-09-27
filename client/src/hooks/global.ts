@@ -7,6 +7,7 @@ import { useFileName } from './date-time';
 import { mimeTypes } from '@/global.config';
 import useUserStore from '@/store/user';
 import md5 from 'md5'
+import Sortable from 'sortablejs'
 
 
 interface Ctx {
@@ -383,4 +384,27 @@ export function useUrlToImageFile (url: string, imageName: string, accept: strin
  */
 export function useMd5 (pwd: string, suffix: string = 'a1b2c3') {
   return md5(pwd + suffix)
+}
+
+/**
+ * 拖拽排序
+ * @param el 
+ * @param callBack 
+ */
+export function useDragSort (el: HTMLElement, data: Array<any>, callBack: Function) {
+  return Sortable.create(el, {
+    handle: '.drag-box', // 拖拽的元素，使列表单元中符合选择器的元素成为拖动的手柄，只有按住拖动手柄才能使列表单元进行拖动
+    draggable: '.drag-box-col', // 允许拖拽的项目类名
+    ghostClass: 'ghost', // drop placeholder的css类名
+    chosenClass: 'chosen', // 被选中项的css 类名
+    dragClass: 'drag', // 正在被拖拽中的css类名
+    onEnd: (event) => {
+      const { oldIndex, newIndex } = event
+      callBack(oldIndex, newIndex)
+      
+      // const [from, to] = [data[oldIndex], data[newIndex]]
+      // const fromIndex = data.findIndex(el => el.id === from.id)
+      // const toIndex = data.findIndex(el => el.id === to.id)
+    },
+  })
 }

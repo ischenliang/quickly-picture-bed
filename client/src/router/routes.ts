@@ -22,7 +22,7 @@ export const constRoutes: RouteRecordRaw[] = [
   {
     path: '/test',
     name: 'Test',
-    component: () => import('@/views/test.vue'),
+    component: () => import('@/views/test2.vue'),
     meta: { title: '忘记密码' }
   }
 ]
@@ -152,6 +152,12 @@ const routes: RouteRecordRaw[] = [
             name: 'SystemPlugin',
             component: () => import('@/views/system/plugin/index.vue'),
             meta: { title: '插件管理', icon: 'ScaleToOriginal' }
+          },
+          {
+            path: '/system/pluginDetail',
+            name: 'SystemPluginDetail',
+            component: () => import('@/views/plugin/detail.vue'),
+            meta: { title: '插件管理', icon: 'ScaleToOriginal', hidden: true, active: '/system/plugin' }
           },
           {
             path: '/system/dict',

@@ -11,6 +11,7 @@
       </div>
       <div class="album-actions-footer">
         <el-button type="info" icon="Tools" size="small" @click="item.tags = true">标签模板</el-button>
+        <el-button size="small" @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
         <template v-if="selected.length">
           <el-button type="warning" v-if="selected.length === 1" @click="handleRename">重命名</el-button>
           <el-button v-if="selected.length === 1" type="success" icon="Picture" size="small" @click="handleAction('cover')">设为封面</el-button>
@@ -79,31 +80,38 @@
         </div>
       </div>
       <div class="album-image-list" v-loading="list.loading">
-        <el-row v-if="list.data.length">
-          <template v-for="(item, index) in list.data" :key="'gallery-item' + index">
-            <el-col :xl="4" :lg="6" :md="8" :sm="12" :xs="24">
-              <gallery-item
-                :data="item"
-                :remove="true"
-                :images="list.data.map(item => item.preview_url)"
-                @reload="listGet"
-                :key="list.page + '-' + index"
-                @submit="handleItemSubmit"
-                @view="handleClick(index)">
-                <template #tags>
-                  <div class="album-tags">
-                    <el-tag
-                      size="small"
-                      v-for="(tag, tIndex) in item.tags"
-                      :key="'tag-' + tIndex"
-                      :type="(tag.type as any)">
-                      {{ tag.value }}
-                    </el-tag>
-                  </div>
-                </template>
-              </gallery-item>
-            </el-col>
-          </template>
+        <el-row v-if="list.data.length" id="sortableRef">
+          <el-col
+            v-for="(item, index) in list.data"
+            :key="'gallery-item-' + index + '-' + item.id"
+            :xl="4"
+            :lg="6"
+            :md="8"
+            :sm="12"
+            :xs="24"
+            class="drag-box-col">
+            <gallery-item
+              :data="item"
+              :remove="true"
+              :editable="editable"
+              :images="list.data.map(item => item.preview_url)"
+              @reload="listGet"
+              :key="list.page + '-' + index + item.id"
+              @submit="handleItemSubmit"
+              @view="handleClick(index)">
+              <template #tags>
+                <div class="album-tags">
+                  <el-tag
+                    size="small"
+                    v-for="(tag, tIndex) in item.tags"
+                    :key="'tag-' + tIndex"
+                    :type="(tag.type as any)">
+                    {{ tag.value }}
+                  </el-tag>
+                </div>
+              </template>
+            </gallery-item>
+          </el-col>
         </el-row>
         <div class="empty-data" v-else>
           <el-empty description="暂无数据"></el-empty>
@@ -142,12 +150,12 @@
 
 <script lang="ts" setup>
 import { useFormat } from '@/hooks/date-time';
-import { useCopyText, useCtxInstance, useDeleteConfirm, useListFilter } from '@/hooks/global';
+import { useCopyText, useCtxInstance, useDeleteConfirm, useDragSort, useListFilter } from '@/hooks/global';
 import Album from '@/types/Album';
 import Image from '@/types/Image';
 import { AlbumInter, ImageInter, ListInter, AlbumTag } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { computed, reactive, Ref, ref } from 'vue';
+import { computed, nextTick, reactive, Ref, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DetailDialog from '@/views/gallery/DetailDialog.vue'
 import TagDialog from './TagDialog.vue'
@@ -405,6 +413,25 @@ function goUpload () {
     query: {
       album_id: detail.value.id
     }
+  })
+}
+
+const editable = ref(false)
+function toggleDrag () {
+  editable.value = !editable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  list.loading = true
+  const [from, to] = [list.data[fromIndex], list.data[toIndex]]
+  image.sort(from.id, to.id).then(() => {
+    listGet()
   })
 }
 </script>

@@ -49,4 +49,11 @@ export default class Image {
   detail (id: string | number) {
     return http('/image/detail', { id })
   }
+  // 排序
+  sort (from: number, to: number) {
+    return http('/image/sort', {
+      from,
+      to
+    })
+  }
 }

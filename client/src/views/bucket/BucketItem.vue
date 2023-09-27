@@ -10,6 +10,7 @@
       </div>
     </template>
     <template v-else>
+      <drag-box v-if="editable"></drag-box>
       <div class="bucket-item-tags">
         <el-tag size="small" type="success">{{ detail.user_plugin.plugin.title }}</el-tag>
         <el-tag size="small" :type="detail.visible ? '' : 'danger'">{{ detail.visible ? '已启用' : '已禁用' }}</el-tag>
@@ -36,13 +37,16 @@
 </template>
 <script lang="ts" setup>
 import { BucketInter } from '@/typings/interface';
+import dragBox from '@/components/dragBox.vue';
 
 interface Props {
   create?: boolean
   detail?: BucketInter
+  editable?: boolean
 }
 withDefaults(defineProps<Props>(), {
   create: false,
+  editable: false,
   detail: () => ({
     id: 0,
     name: '',

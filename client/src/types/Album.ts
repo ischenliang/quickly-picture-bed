@@ -53,4 +53,11 @@ export default class Album {
       tags
     })
   }
+  // 排序
+  sort (from: number, to: number) {
+    return http('/album/sort', {
+      from,
+      to
+    })
+  }
 }
