@@ -40,4 +40,8 @@ export default class Wiki {
   getArticles (wid: number) {
     return http('/article/page-tree', { wid })
   }
+  // 文档详情
+  getArticleDetail (id: number) {
+    return http('/article/detail', { id })
+  }
 }

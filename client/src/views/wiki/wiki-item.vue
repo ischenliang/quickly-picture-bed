@@ -78,6 +78,11 @@ function handleOperate (type) {
     font-weight: 600;
     color: #535353;
     margin-bottom: 10px;
+    height: 22px;
+    overflow: hidden;
+    padding-right: 40px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   &-desc {
     font-size: 15px;
@@ -112,12 +117,12 @@ function handleOperate (type) {
     &-item {
       width: 30px;
       height: 20px;
-      background: #b8c7e6;
+      background: #e3e3e3;
       border-radius: 4px;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #1c3f94;
+      color: #757575;
     }
   }
   &-status {

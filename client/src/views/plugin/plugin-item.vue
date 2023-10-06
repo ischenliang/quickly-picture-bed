@@ -349,6 +349,7 @@ function handleCommond (type: string) {
     .plugin-item-tags {
       flex: 1;
       overflow: hidden;
+      height: 21px;
     }
     .plugin-item-action {
       width: 24px;

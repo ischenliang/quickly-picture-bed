@@ -80,7 +80,7 @@ export default class Users {
   }
   // 保存
   save (params: UserInter) {
-    return http('/user/save', params)
+    return http('/user/update', params)
   }
   // 保存
   changePwd (params: { password: string, old_password: string }) {

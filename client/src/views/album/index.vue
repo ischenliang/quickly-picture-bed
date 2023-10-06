@@ -28,7 +28,6 @@
       v-if="visible.edit"
       v-model="visible.edit"
       :detail="item.data"
-      :base-url="configStore.systemConfig.website.baseUrl"
       @submit="listGet"/>
   </div>
 </template>

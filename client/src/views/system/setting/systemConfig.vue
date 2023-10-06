@@ -3,7 +3,7 @@
     <c-card :title="'上传配置'">
       <el-row>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="title" label="可选文件类型">
+          <el-form-item prop="system.accept" label="可选文件类型">
             <el-select
               v-model="myForm.system.accept"
               multiple
@@ -16,25 +16,23 @@
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="subtitle" label="单文件最大容量(MB)">
+          <el-form-item prop="system.maxsize" label="单文件最大容量(MB)">
             <el-input-number v-model="myForm.system.maxsize" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="desc" label="单次最多上传文件数量">
+          <el-form-item prop="system.maxcount" label="单次最多上传文件数量">
             <el-input-number v-model="myForm.system.maxcount" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶容量限制(MB)">
+          <el-form-item prop="system.storage_size" label="存储桶容量限制(MB)">
             <el-input-number v-model="myForm.system.storage_size" :min="1" size="large" />
           </el-form-item>
         </el-col>
         <el-col :xl="6" :lg="8" :md="12">
-          <el-form-item prop="name" label="存储桶数量限制">
-            <el-input v-model="myForm.system.storage_count" placeholder="请输入网站名称" size="large">
-              <template #append>.com</template>
-            </el-input>
+          <el-form-item prop="system.storage_count" label="存储桶数量限制">
+            <el-input-number v-model="myForm.system.storage_count" :min="1" size="large" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -42,17 +40,17 @@
 
     <c-card :title="'图标配置(存储桶类型等图标)'">
       <el-row>
-        <el-col :xl="6" :lg="8" :md="12">
+        <el-col :xl="8" :lg="8" :md="12">
           <el-form-item prop="name" label="图标url">
             <el-input v-model="myForm.system.icon_url" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
+        <el-col :xl="8" :lg="8" :md="12">
           <el-form-item prop="name" label="图标前缀(FontClass)">
             <el-input v-model="myForm.system.icon_prefix" placeholder="请输入网站名称" size="large" />
           </el-form-item>
         </el-col>
-        <el-col :xl="6" :lg="8" :md="12">
+        <el-col :xl="8" :lg="8" :md="12">
           <el-form-item prop="name" label="图标字体Font Family">
             <el-input v-model="myForm.system.icon_font" placeholder="请输入网站名称" size="large" />
           </el-form-item>
@@ -60,7 +58,7 @@
       </el-row>
     </c-card>
 
-    <c-card :title="'ip定位服务配置'">
+    <c-card :title="'ip定位服务和邮件服务配置'">
       <el-row>
         <el-col :xl="12" :lg="8" :md="12">
           <el-form-item prop="map_type" label="启用服务类型">
@@ -75,11 +73,6 @@
             <el-input v-model="myForm.system.map_key" placeholder="请输入开放者秘钥" size="large" />
           </el-form-item>
         </el-col>
-      </el-row>
-    </c-card>
-
-    <c-card :title="'邮件服务配置'">
-      <el-row>
         <el-col :xl="12" :lg="8" :md="12">
           <el-form-item prop="mail_user" label="收件人邮箱">
             <el-input v-model="myForm.system.mail_user" placeholder="请输入收件人邮箱" size="large" />
@@ -95,7 +88,7 @@
 
     <c-card :title="'菜单配置'">
       <p style="line-height: 22px;color: #666;margin-bottom: 5px;">对右上角的菜单和链接配置</p>
-      <monaco-editor v-model="myForm.bucket_service"></monaco-editor>
+      <monaco-editor v-model="myForm.bucket_service_str"></monaco-editor>
     </c-card>
 
     <c-card :title="'版权信息'">

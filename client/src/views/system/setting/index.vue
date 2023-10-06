@@ -15,22 +15,20 @@
     </c-card>
   </div>
   <div class="page-action">
-    <el-button size="medium" type="default">取消</el-button>
-    <el-button size="medium" type="primary" @click="handleSave">保存</el-button>
+    <el-button type="default">取消</el-button>
+    <el-button type="primary" @click="handleSave">保存</el-button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Ref, ref, toRaw, watch } from 'vue'
 import WebsiteConfig from './websiteConfig.vue'
-import AboutConfig from './aboutConfig.vue'
 import SystemConfig from './systemConfig.vue'
 import UplogConfig from './uplogConfig.vue'
-import PluginConfig from './pluginConfig.vue'
 import { SettingInter } from '@/typings/interface'
 import config from './config'
 import Setting from '@/types/Setting'
-import { JsonResponse, PageResponse } from '@/typings/req-res'
+import { JsonResponse } from '@/typings/req-res'
 import { useCtxInstance } from '@/hooks/global'
 import { useRoute, useRouter } from 'vue-router'
 import useConfigStore from '@/store/config'
@@ -50,10 +48,8 @@ const configStore = useConfigStore()
 const activeName = ref('website')
 const tabs = ref([
   { label: '网站配置', name: 'website', component: toRaw(WebsiteConfig) },
-  { label: '关于我们', name: 'about', component: toRaw(AboutConfig) },
   { label: '系统配置', name: 'system', component: toRaw(SystemConfig) },
   { label: '更新日志', name: 'uplog', component: toRaw(UplogConfig) },
-  { label: '插件配置', name: 'plugin', component: toRaw(PluginConfig) }
 ])
 const form: Ref<SettingInter> = ref({
   ...config
@@ -63,13 +59,9 @@ const form: Ref<SettingInter> = ref({
  * 获取数据
  */
 const getData = () => {
-  setting.find().then((res: PageResponse<SettingInter>) => {
-    if (res.items && res.items.length) {
-      form.value = res.items[0]
-      if (!res.items[0].plugin) {
-        form.value.plugin = config.plugin
-      }
-    }
+  setting.detail().then((res: SettingInter) => {
+    res.bucket_service_str = JSON.stringify(res.bucket_service, null, '\t')
+    form.value = res
   })
 }
 getData()
@@ -79,10 +71,17 @@ getData()
  * 逻辑处理
  */
 const handleSave = () => {
-  setting.save(form.value).then((res: JsonResponse<SettingInter>) => {
+
+  setting.save({
+    ...form.value,
+    bucket_service: JSON.parse(form.value.bucket_service_str)
+  }).then((res: JsonResponse<SettingInter>) => {
     ctx.$message({ message: '保存成功', duration: 1000, type: 'success' })
     // toRaw(form.value)避免在修改时就跟着改变了
-    configStore.updateSystemConfig(toRaw(form.value))
+    configStore.updateSystemConfig({
+      ...toRaw(form.value),
+      bucket_service: JSON.parse(form.value.bucket_service_str)
+    })
   })
 }
 // tabs切换

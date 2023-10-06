@@ -14,8 +14,8 @@ export default class Setting {
     return http('/setting/update', params)
   }
   // 查询
-  find () {
-    return http('/setting/list', {})
+  detail () {
+    return http('/setting/detail', {})
   }
   // 保存
   save (params: SettingInter) {

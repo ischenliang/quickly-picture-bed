@@ -293,6 +293,27 @@ export interface WikiInter {
   createdAt?: string
 }
 
+export interface ArticleInter {
+  id?: number
+  title?: string
+  markdown?: string
+  type?: string
+  url?: string
+  weight?: number
+  wid?: number
+  uid?: number
+  theme?: {
+    code?: string
+    markdown?: string
+  }
+  sha?: string
+  publishedAt?: string
+  public?: number
+  pid?: number
+  createdAt?: string
+  updatedAt?: string
+}
+
 
 /**
  * 字典管理
@@ -327,13 +348,8 @@ export interface SettingInter {
   // 设置-网站信息
   website?: {
     logo?: string // logo
-    logo_preview?: string
     ico?: string // ico
-    ico_preview?: string
     name?: string // 名称
-    title?: string // 标题
-    subtitle?: string // 副标题
-    domain?: string // 域名
     desc?: string // 描述
     keys?: Array<string> // 关键词
     author?: string // 作者
@@ -341,12 +357,8 @@ export interface SettingInter {
     // 打赏
     // 支付宝打赏二维码
     reward_alipay?: string
-    reward_alipay_preview?: string
     // 微信打赏二维码
     reward_weixin?: string
-    reward_weixin_preview?: string
-    // 静态文件前缀
-    baseUrl?: string
   }
   // 联系我们
   contact?: {
@@ -401,10 +413,6 @@ export interface SettingInter {
     mail_user?: string // 发件人
     mail_pass?: string // 授权码
   }
-  // 插件配置
-  plugin?: {
-    default: string // 插件默认格式
-  }
   // 更新日志
   uplog?: string // 更新日志url
   // 存储桶后台服务配置
@@ -413,6 +421,7 @@ export interface SettingInter {
     link: string
     target: string
   }>
+  bucket_service_str?: string
   // 创建时间
   createdAt?: string
   // 更新时间
@@ -435,12 +444,12 @@ export interface HabitsInter {
     value: string // 快捷键内容：Command + Shift + P 
     id: number // 快捷键id
   }>
-  // 上传提示
-  showUpdateTip?: boolean
-  // 复制提示
-  showCopyTip?: boolean
-  // 删除提示
-  showDeleteTip?: boolean
+  showTip?: {
+    copy: boolean // 复制提示
+    delete: boolean // 删除提示
+    update: boolean
+    upload: boolean // 上传提示
+  }
   // 上传前重命名
   rename?: boolean
   // 时间戳重命名

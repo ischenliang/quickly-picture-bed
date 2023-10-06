@@ -42,22 +42,22 @@
           <div class="wiki-inline-name">关联仓库</div>
           <div class="wiki-inline-desc">考虑到方便知识库的文章作版本控制，故将文章内容保存在git远程仓库，通过RestApi访问。</div>
           <el-form-item label="仓库类型" prop="config.type">
-            <el-select style="width: 100%;" size="large" v-model="form.config.type" :disabled="detail.id ? true : false">
+            <el-select style="width: 100%;" size="large" v-model="form.config.type" :disabled="detail && detail.id ? true : false">
               <el-option label="Gitee" value="gitee"></el-option>
               <el-option label="Github" value="github"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="Git用户名" prop="config.owner">
-            <el-input v-model="form.config.owner" placeholder="输入Git用户名" size="large" :disabled="detail.id ? true : false"></el-input>
+            <el-input v-model="form.config.owner" placeholder="输入Git用户名" size="large" :disabled="detail && detail.id ? true : false"></el-input>
           </el-form-item>
           <el-form-item label="Git仓库名" prop="config.repo">
-            <el-input v-model="form.config.repo" placeholder="输入Git仓库名" size="large" :disabled="detail.id ? true : false"></el-input>
+            <el-input v-model="form.config.repo" placeholder="输入Git仓库名" size="large" :disabled="detail && detail.id ? true : false"></el-input>
           </el-form-item>
           <el-form-item label="Git仓库分支" prop="config.branch">
-            <el-input v-model="form.config.branch" placeholder="输入Git仓库分支" size="large"></el-input>
+            <el-input v-model="form.config.branch" placeholder="输入Git仓库分支" size="large" :disabled="detail && detail.id ? true : false"></el-input>
           </el-form-item>
           <el-form-item label="Git仓库基地址" prop="config.baseurl">
-            <el-input v-model="form.config.baseurl" placeholder="输入Git仓库基地址" size="large"></el-input>
+            <el-input v-model="form.config.baseurl" placeholder="输入Git仓库基地址" size="large" :disabled="detail && detail.id ? true : false"></el-input>
           </el-form-item>
           <el-form-item label="Git访问token" prop="config.access_token">
             <el-input v-model="form.config.access_token" show-password placeholder="输入Git的access_token" size="large"></el-input>

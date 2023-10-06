@@ -9,6 +9,20 @@
         </el-col>
       </el-row>
     </c-card>
+
+    <c-card :title="'关于系统'">
+      <el-row>
+        <el-col :xl="24">
+          <el-form-item prop="desc" label="关于系统内容">
+            <bytemd-editor
+              :value="myForm.contact.about"
+              :mode="'split'"
+              style="height: 500px;"
+              @change="handleChange"></bytemd-editor>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </c-card>
   </el-form>
 </template>
 
@@ -26,7 +40,7 @@ import config from './config'
 }>(), {
   data: () => ({
     ...config
-  })
+  } as SettingInter)
 })
 const emit = defineEmits(['update:data'])
 
@@ -45,6 +59,9 @@ const rules = reactive({
     { required: true, message: '请输入网站logo', trigger: ['blur'] }
   ]
 })
+const handleChange = (v) => {
+  myForm.value.contact.about = v
+}
 </script>
 
 <style lang="scss" scoped>

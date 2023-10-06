@@ -4,16 +4,12 @@ export default {
     logo: '',
     ico: '',
     name: '',
-    title: '',
-    subtitle: '',
-    domain: '',
     desc: '',
     keys: [],
     author: '',
     version: '',
     reward_alipay: '',
-    reward_weixin: '',
-    baseUrl: 'http://lc-DZNcsGI3.cn-n1.lcfile.com'
+    reward_weixin: ''
   },
   contact: {
     weixin: '',
@@ -48,5 +44,5 @@ export default {
   plugin: {
     default: ''
   },
-  bucket_service: ''
+  bucket_service: []
 }

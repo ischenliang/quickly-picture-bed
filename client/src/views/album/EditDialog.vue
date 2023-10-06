@@ -69,11 +69,9 @@ import Album from '@/types/Album';
 interface Props {
   modelValue: boolean
   detail: AlbumInter
-  baseUrl: string
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  baseUrl: '',
   detail: () => ({} as AlbumInter)
 })
 const emit = defineEmits(['update:modelValue', 'submit'])

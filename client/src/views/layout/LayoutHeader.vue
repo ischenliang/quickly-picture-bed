@@ -1,7 +1,7 @@
 <template>
   <div class="app-header">
     <router-link :to="'/'" tag="div" class="app-logo">
-      <img :src="website.logo_preview || '/logo.png'" alt="系统logo">
+      <img :src="website.logo || '/logo.png'" alt="系统logo">
       <span class="app-name">{{ website.name || '默认系统名称' }}</span>
     </router-link>
     <div class="app-rightmenu">

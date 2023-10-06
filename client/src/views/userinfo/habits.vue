@@ -29,22 +29,22 @@
           </el-col>
           <el-col :xl="3">
             <el-form-item label="开启上传提示" prop="name">
-              <el-switch v-model="detail.data.showUpdateTip" size="large" />
+              <el-switch v-model="detail.data.showTip.upload" size="large" />
             </el-form-item>
           </el-col>
           <el-col :xl="21">
             <el-form-item label="开启删除提示" prop="name">
-              <el-switch v-model="detail.data.showDeleteTip" size="large" />
+              <el-switch v-model="detail.data.showTip.delete" size="large" />
             </el-form-item>
           </el-col>
           <el-col :xl="3">
             <el-form-item label="开启复制提示" prop="name">
-              <el-switch v-model="detail.data.showCopyTip" size="large" />
+              <el-switch v-model="detail.data.showTip.copy" size="large" />
             </el-form-item>
           </el-col>
           <el-col :xl="21">
             <el-form-item label="上传后自动复制url" prop="name">
-              <el-switch v-model="detail.data.autoPaste" size="large" />
+              <el-switch v-model="detail.data.showTip.update" size="large" />
             </el-form-item>
           </el-col>
           <el-col :xl="24">
@@ -127,9 +127,12 @@ const detail: { data: HabitsInter } = reactive({
           "id": 5
         }
     ],
-    showUpdateTip: true,
-    showDeleteTip: true,
-    showCopyTip: true,
+    showTip: {
+      copy: true,
+      delete: true,
+      update: true,
+      upload: true
+    },
     autoPaste: true,
     current: {},
     link_format: '![]($url)',

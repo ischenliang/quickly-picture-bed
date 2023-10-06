@@ -28,22 +28,19 @@ export function useGetSystemConfig () {
     const configStore = useConfigStore()
     if (!configStore.systemConfig.id) {
       setting.default().then((res: SettingInter) => {
-        const { ico, baseUrl, logo } = res.website
-        res.website.ico_preview = baseUrl + ico
-        res.website.logo_preview = baseUrl + logo
         configStore.updateSystemConfig(res)
-
-        const { ico_preview, title, name, logo_preview } = configStore.systemConfig.website
+        const { ico, name, logo } = configStore.systemConfig.website
         const { icon_url } = configStore.systemConfig.system
         const linkEl = document.createElement('link')
         const headEl =  document.querySelector('head')
         // ico
-        linkEl.href = ico_preview
+        linkEl.href = ico
         linkEl.type = 'image/x-icon'
         linkEl.rel = 'shortcut icon'
         headEl.appendChild(linkEl)
         // 标题
-        document.title = title
+        document.title = name
+        // 其它信息：描述、关键字等等
         // iconfont
         const style = document.createElement('link')
         style.rel = 'stylesheet'

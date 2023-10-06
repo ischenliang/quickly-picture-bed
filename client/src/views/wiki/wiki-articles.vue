@@ -28,6 +28,7 @@
             children: 'children',
             label: 'title',
           }"
+          :expand-on-click-node="false"
           @node-click="handleNodeClick">
           <template #default="{ node, data }">
             <div class="node-item">
@@ -167,7 +168,8 @@
       </div>
       <div class="wiki-article-preview__content">
         <div class="wiki-article-preview-main">
-          <div style="height: 300px;border: 1px solid #efefef;margin-bottom: 10px;" v-for="item in 10" :key="item"></div>
+          <!-- <div style="height: 300px;border: 1px solid #efefef;margin-bottom: 10px;" v-for="item in 10" :key="item"></div> -->
+          <md-preview :value="article.markdown"></md-preview>
         </div>
         <div class="wiki-article-preview-navigator">导航目录</div>
       </div>
@@ -176,7 +178,7 @@
 </template>
 <script lang="ts" setup>
 import Wiki from '@/types/Wiki'
-import { ActionItemInter, WikiInter } from '@/typings/interface'
+import { ActionItemInter, WikiInter, ArticleInter } from '@/typings/interface'
 import { Ref, ref, markRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import IconFolder from './icons/icon-folder.vue'
@@ -193,6 +195,7 @@ import IconSave from './icons/icon-save.vue'
 import IconMove from './icons/icon-move.vue'
 import IconDelete from './icons/icon-delete.vue'
 import actionPopover from './action-popover.vue'
+import mdPreview from '../plugin/md-preview.vue'
 // import { Splitpanes, Pane } from 'splitpanes'
 // import 'splitpanes/dist/splitpanes.css'
 
@@ -218,6 +221,10 @@ const actions: Ref<ActionItemInter[]> = ref([
   { icon: 'magic', size: 18, text: '从模板新建' },
   { icon: 'markdown', size: 18, text: '导入文档' }
 ])
+const article: Ref<ArticleInter> = ref({
+  id: 0,
+  title: ''
+})
 
 /**
  * 逻辑
@@ -269,8 +276,11 @@ function handleGoBack () {
     name: 'Wiki'
   })
 }
+// 节点点击
 function handleNodeClick (data: WikiInter) {
-  console.log(data)
+  wiki.getArticleDetail(data.id).then((res: ArticleInter) => {
+    article.value = res
+  })
 }
 // 获取页面目录树
 function getPageTree () {

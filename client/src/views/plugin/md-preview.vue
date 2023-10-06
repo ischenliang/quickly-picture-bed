@@ -74,7 +74,7 @@ useCopyCode(useCtxInstance())
 <style lang="scss">
 .markdown-body {
   min-height: 400px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
   color: #24292f;
