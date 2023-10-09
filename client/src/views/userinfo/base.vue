@@ -44,20 +44,6 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <!-- <el-input v-model="form.address" placeholder="请输入用户名" size="large" /> -->
-          <!-- <el-cascader
-            v-model="form.address"
-            :options="citys.list"
-            filterable
-            clearable
-            :props="{
-              value: 'code',
-              label: 'name',
-              children: 'list'
-            }"
-            style="width: 100%;"
-            popper-class="c-cascader"
-            @change="handleChange"/> -->
           <el-cascader
             v-model="form.address"
             :options="citys"
@@ -242,20 +228,20 @@ const userAvatar = computed(() => {
  * 逻辑处理
  */
 // 打开头像选择框
-const openAvatarDialog = () => {
+function openAvatarDialog () {
   item.visible = true
 }
-const avatarSubmit = (e) => {
+function avatarSubmit (e) {
   form.value.avatar = e
 }
-const submit = () => {
+function submit () {
   user.save(form.value).then(res => {
     ctx.$message({ message: '更新成功', duration: 1000, type: 'success' })
     userStore.updateUserInfo(form.value)
   })
 }
 // 切换职业
-const changeMajor = (item) => {
+function changeMajor (item) {
   form.value.major = item.value
 }
 

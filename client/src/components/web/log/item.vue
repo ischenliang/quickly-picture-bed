@@ -5,7 +5,11 @@
     </div>
     <div class="log-item-meta">
       <!--  （{{ log.operate_id }}） -->
-      <div class="log-item-title">{{ log.content }} - {{ log.operate_cont }} ({{ log.client_info ? (log.client_info.province + log.client_info.city) : '未知' }})</div>
+      <!-- {{ log.email }} -  -->
+      <div class="log-item-title">
+        <span>{{ log.operate_cont }}</span>
+        <span>({{ log.client_info ? (log.client_info.province + log.client_info.city) : '未知' }})</span>
+      </div>
       <div class="log-item-desc">{{ log.createdAt }}</div>
     </div>
   </div>
@@ -35,6 +39,8 @@ withDefaults(defineProps<Props>(), {
 .log-item {
   height: 56px;
   padding: 10px 0;
+  overflow: hidden;
+  width: 100%;
   @include flex-layout-align(row, space-between, center);
   + .log-item {
     border-top: 1px solid #e8eaec;

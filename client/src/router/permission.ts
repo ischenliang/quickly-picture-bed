@@ -13,9 +13,10 @@ router.beforeEach(async (to, from, next) => {
   const flag = await useGetSystemConfig()
   const userStore = useUserStore()
   const userInfo = userStore.userInfo
+  const exclude = ['/login', '/register', '/forget', '/contact']
   if (token) {
     if (userInfo) {
-      ['/login', '/register', '/forget'].includes(to.path) ? next('/') : next()
+      exclude.includes(to.path) ? next('/') : next()
     } else {
       const data: UserInter = await user.current()
       userStore.updateUserInfo(data)
@@ -42,10 +43,10 @@ router.beforeEach(async (to, from, next) => {
       if (!flag || !habit) {
         next({ ...to, replace: true })
       }
-      ['/login', '/register', '/forget'].includes(to.path) ? next('/') : next()
+      exclude.includes(to.path) ? next('/') : next()
     }
   } else {
-    if (['/login', '/register', '/forget'].includes(to.path)) {
+    if (exclude.includes(to.path)) {
       next()
     } else {
       next('/login')

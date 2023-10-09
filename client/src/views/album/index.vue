@@ -4,10 +4,10 @@
       <template #cardAction>
         <span>
           <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
-          <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
+          <el-button v-if="list.data.length" @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
         </span>
       </template>
-      <el-row id="sortableRef">
+      <el-row id="sortableRef" v-if="list.data.length">
         <el-col
           v-for="(item, index) in list.data"
           :key="'album-item-' + index + '-' + item.id"
@@ -22,6 +22,7 @@
             @click="handleClick(item)"></album-item>
         </el-col>
       </el-row>
+      <c-empty v-else></c-empty>
     </c-card>
 
     <edit-dialog

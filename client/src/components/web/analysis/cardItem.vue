@@ -2,7 +2,10 @@
   <div class="card-item">
     <div class="card-item-left">
       <div class="card-item-count">
-        <span class="total-count">{{ formatCount(item.total) }}</span>
+        <span class="total-count">
+          <!-- {{ formatCount(item.total) }} -->
+          <count-up :startVal="0" :endVal="item.total" :duration="2"></count-up>
+        </span>
         <span class="today-count" v-if="item.today !== 0" :style="{
           color: formatStyle(item.today)
         }">{{ formatTodayCount(item.today) }}</span>
@@ -19,6 +22,7 @@
 </template>
 
 <script lang="ts" setup>
+import CountUp from 'vue-countup-v3'
 interface Props {
   item?: {
     total?: number
@@ -66,42 +70,41 @@ const formatStyle = (count) => {
 <style lang="scss">
 .card-item {
   width: 100%;
-  height: 130px;
+  height: 110px;
   background: #fff;
   border-radius: 4px;
-  padding: 20px 25px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   .card-item-right {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     margin-left: 10px;
     flex-shrink: 0;
     background: v-bind('item.bgcolor');
-    // border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 6px;
   }
   .card-item-left {
     flex: 1;
     .card-item-count {
       margin-bottom: 10px;
       .total-count {
-        font-size: 30px;
+        font-size: 26px;
       }
       .today-count {
-        font-size: 16px;
+        font-size: 14px;
         color: rgb(102, 144, 249);
         margin-left: 5px;
       }
     }
     .card-item-label {
-      // color: #1d2129;
-      color: #009688;
-      font-weight: bold;
-      font-size: 18px;
+      // color: #009688;
+      // font-weight: bold;
+      font-size: 16px;
     }
   }
 }

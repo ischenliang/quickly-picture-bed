@@ -31,7 +31,7 @@
         <div class="vch__tips">贡献度的统计数据包括代码提交、创建任务 / Pull Request、合并 Pull Request，其中代码提交的次数需本地配置的 git 邮箱是 Gitee 帐号已确认绑定的才会被统计。</div>
       </div>
     </div>
-    近期动态、存储桶概况、动态分布图、用户增长图
+    近期动态图(地图)、存储桶增长统计图、用户动态分布图、用户增长图
   </div>
 </template>
 

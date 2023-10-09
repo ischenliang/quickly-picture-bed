@@ -22,6 +22,9 @@ import ComDialog from '@/components/dialog/index.vue'
 import cCard from '@/components/el-component/cCard.vue'
 import cTabs from '@/components/el-component/cTabs.vue'
 
+// 空状态
+import cEmpty from '@/components/cEmpty.vue'
+
 // 方式二
 export default {
   install (app, option) {
@@ -35,5 +38,6 @@ export default {
     app.component('ComDialog', ComDialog)
     app.component('cCard', cCard)
     app.component('cTabs', cTabs)
+    app.component('cEmpty', cEmpty)
   }
 }

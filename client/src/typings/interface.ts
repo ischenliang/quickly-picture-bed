@@ -170,7 +170,7 @@ export interface LogInter {
   // 操作记录，系统操作：“218.88.53.138”(ip)，图片操作：“ab346d65ff689e44.jpg”(文件名称)
   operate_cont?: string
   // 操作内容，系统操作：登录了系统，图片操作：上传了图片
-  content?: string
+  email?: string
   // 操作时间，如：2022-09-19 17:51:33
   createdAt?: string
   // 操作人，用户id
@@ -556,4 +556,15 @@ export interface ActionItemInter {
   size: string | number
   color?: any
   text: string
+}
+
+export interface RewardInter {
+  cover: string
+  label: string
+}
+
+export interface BucketStatsInter {
+  id: number
+  bucket_storage: string | number
+  bucket_count: number
 }

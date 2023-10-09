@@ -8,6 +8,7 @@ import http from '@/api'
 interface Filter extends PageReq {
   uid?: string,
   visible?: boolean
+  is_only_names?: boolean
 }
 
 /**

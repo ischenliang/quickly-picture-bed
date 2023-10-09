@@ -5,20 +5,7 @@
       <p>作者: {{ detail.author }}</p>
       <p>版本: {{ detail.version }}</p>
       <p>类别: {{ detail.category }}</p>
-      <div class="reward">
-        <div class="reward-item">
-          <div class="reward-item-img">
-            <img src="http://lc-dzncsgi3.cn-n1.lcfile.com/FnXBNkKfhnOYoLppJGSWQY6dUh1rnMHA/reward_alipay.jpg" alt="">
-          </div>
-          <div class="reward-item-label">支付宝</div>
-        </div>
-        <div class="reward-item">
-          <div class="reward-item-img">
-            <img src="http://lc-dzncsgi3.cn-n1.lcfile.com/PAMB9Ah4luFLiVvwp6oVh6pelyPudsNK/reward_weixin.jpg" alt="">
-          </div>
-          <div class="reward-item-label">微信</div>
-        </div>
-      </div>
+      <c-reward></c-reward>
     </section>
     <section>
       <p class="title">联系作者</p>
@@ -31,6 +18,7 @@
 </template>
 <script lang="ts" setup>
 import { PluginInter } from '@/typings/interface';
+import cReward from '@/components/cReward.vue';
 
 interface Props {
   detail: PluginInter

@@ -2,7 +2,6 @@
   <div class="plugin-container">
     <div class="plugin-toolbar">
       <div class="plugin-toolbar-filter">
-        <span>总计: {{ list.total }}(个)</span>
         <el-input v-model="list.filters.search" placeholder="请输入插件名称" />
         <el-select v-model="list.filters.category" placeholder="请选择插件类别">
           <el-option
@@ -60,7 +59,7 @@ const list: ListInter<PluginInter> = reactive({
 })
 const plugin_types = computed(() => {
   return [
-    { label: '全部', value: '' },
+    { label: `全部（${list.total}）`, value: '' },
     ...configStore.dicts.find(el => el.code === 'plugin_type').values || []
   ]
 })
@@ -119,10 +118,8 @@ function resetFilter () {
       > .el-input, > .el-select {
         width: 11.5rem;
       }
-      .el-input, .el-select, .el-button {
-        &:not(:first-child) {
-          margin-left: 15px;
-        }
+      :not(:first-child) {
+        margin-left: 15px;
       }
     }
     &-action {

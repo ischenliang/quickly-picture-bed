@@ -29,12 +29,12 @@
       <el-input v-model="form.rpassword" :prefix-icon="'Lock'" show-password placeholder="确认密码" size="large"></el-input>
     </el-form-item>
     <el-form-item prop="remember" class="register-enter">
-      <span>
-        <el-checkbox v-model="form.remember" /> 我同意
-        <a href="javascript:;">《用户协议》</a><a href="javascript:;">《隐私协议》</a>
-        <!-- <router-link :to="'/login'">《用户协议》</router-link><router-link :to="'/login'">《隐私协议》</router-link> -->
+      <span style="display: flex;align-items: center;">
+        <el-checkbox style="margin-right: 8px;" v-model="form.remember" />
+        <span>我同意</span>
+        <a href="javascript:;">《用户协议和隐私协议》</a>
       </span>
-      <span>已有账号，去 <router-link :to="'/login'">登录</router-link></span>
+      <span>已有账号, 去 <router-link :to="'/login'">登录</router-link></span>
     </el-form-item>
     <el-form-item class="login_btn">
       <el-button :loading="loading" type="primary" size="large" @click.native="register">提交注册</el-button>
@@ -80,14 +80,6 @@ const formRef: Ref<FormInstance | null> = ref()
 const rules = reactive({
   username: [
     { required: true, message: '请输入邮箱账号', trigger: ['blur'] },
-    // {
-    //   validator: (rule, value, callback) => {
-    //     if (!/^\w{3,}(\.\w+)*@[A-z0-9]+(\.[A-z]{2,5}){1,2}$/.test(value)) {
-    //       return callback('邮箱格式不正确')
-    //     }
-    //     callback()
-    //   }
-    // }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: ['blur'] },

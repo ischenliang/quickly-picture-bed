@@ -34,6 +34,10 @@ export default class Wiki {
   find (params: Filter) {
     return http('/wiki/list', params)
   }
+  // 复制知识库
+  copy (id: number, name: string) {
+    return http('/wiki/copy', { id, name })
+  }
   /**
    * 知识库文档管理
    */

@@ -56,8 +56,8 @@
     <div class="wiki-article-preview">
       <div class="wiki-article-preview__header">
         <div class="left-content">
-          <div class="wiki-article-title">文档笔记文档笔记</div>
-          <div class="wiki-article-time">上次修改于 2023-09-04 14:10:41</div>
+          <div class="wiki-article-title">{{ article.title }}</div>
+          <div class="wiki-article-time">更新于 {{ useFromNow(article.updatedAt) }}</div>
         </div>
         <div class="right-content">
           <!-- 编辑、分享、演示、更多(页面信息、导出为、打印、移动、删除) -->
@@ -196,6 +196,7 @@ import IconMove from './icons/icon-move.vue'
 import IconDelete from './icons/icon-delete.vue'
 import actionPopover from './action-popover.vue'
 import mdPreview from '../plugin/md-preview.vue'
+import { useFromNow } from '@/hooks/date-time'
 // import { Splitpanes, Pane } from 'splitpanes'
 // import 'splitpanes/dist/splitpanes.css'
 

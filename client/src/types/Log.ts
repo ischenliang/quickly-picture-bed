@@ -41,4 +41,16 @@ export default class Log {
   reLocate (id: string) {
     return http('/log/reLocate', { id })
   }
+  // 获取banner
+  banner () {
+    return http('/stats/banner', {})
+  }
+  // 近期动态
+  rencentLog () {
+    return http('/stats/rencentLog', {})
+  }
+  // 占比数据
+  percentData () {
+    return http('/stats/percentData', {})
+  }
 }

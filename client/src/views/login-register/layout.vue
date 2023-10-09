@@ -40,19 +40,21 @@
       </div>
       <div class="login-footer" v-if="slots.default">
         <div class="footer-inline">
-          <span>联系我们</span>|
-          <span>关于系统</span>|
-          <!-- <span>官方博客</span>| -->
-          <a href="https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller/doc" target="_blank">官方文档</a>|
-          <a href="https://github.com/ischenliang/quickly-picture-bed" target="_blank">Github</a>|
-          <a href="https://gitee.com/itchenliang/quickly-picture-bed" target="_blank">Gitee</a>
+          <router-link :to="'/contact'" tag="span">联系我们</router-link>|
+          <router-link :to="'/contact'" tag="span">关于系统</router-link>|
+          <template
+            v-for="(item, index) in configStore.systemConfig.bucket_service"
+            :key="index">
+            <a :href="item.link" :target="item.target">{{ item.label }}</a>
+            <span v-if="index !== configStore.systemConfig.bucket_service.length - 1">|</span>
+          </template>
         </div>
         <div class="footer-inline">
           <span>商务联系： itchenliang@163.com</span>|
           <span>技术支持： itchenliang@163.com</span>
         </div>
         <div class="footer-inline">
-          <span>Copyright © 2019 - {{ year }} itchenliang All Rights Reserved.</span>
+          <span>Copyright © 2019 - {{ year }} {{ website.author }} All Rights Reserved.</span>
           <a :href="copyright.miiturl">
             <span>{{ copyright.miitbeian }}</span>
           </a>
@@ -103,6 +105,9 @@ const copyright = computed(() => {
     miitbeian: system.copyright_miitbeian,
     miiturl: system.copyright_miiturl
   }
+})
+const website = computed(() => {
+  return configStore.systemConfig.website
 })
 
 

@@ -22,8 +22,8 @@
         </div>
         <div class="bucket-content-count">
           <!-- <el-tag size="small">版本号: {{ detail.user_plugin.version }}</el-tag> -->
-          <el-tag type="info" size="small">图片数量: 1</el-tag>
-          <el-tag type="info" size="small">占用存储: 2MB</el-tag>
+          <el-tag type="info" size="small">图片数量: {{ stats.bucket_count }}</el-tag>
+          <el-tag type="info" size="small">占用存储: {{ stats.bucket_storage }}MB</el-tag>
         </div>
         <div class="bucket-content-time">
           更新于: {{ detail.updatedAt }}
@@ -36,13 +36,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BucketInter } from '@/typings/interface';
+import { BucketInter, BucketStatsInter } from '@/typings/interface';
 import dragBox from '@/components/dragBox.vue';
 
 interface Props {
   create?: boolean
   detail?: BucketInter
   editable?: boolean
+  stats?: BucketStatsInter
 }
 withDefaults(defineProps<Props>(), {
   create: false,
@@ -54,7 +55,8 @@ withDefaults(defineProps<Props>(), {
       plugin: {
         logo: ''
       }
-    }
+    },
+    stats: {}
   } as BucketInter)
 })
 </script>

@@ -14,7 +14,7 @@
     </el-form-item>
     <el-form-item class="verify-code" prop="verify_code" style="margin-bottom: 10px;">
       <el-input v-model="form.verify_code" placeholder="请输入验证码" size="large"></el-input>
-      <img :src="imgCode.code" alt="" @click="getImgCode">
+      <img :src="imgCode.code" title="看不清，点击图片换一张" alt="" @click="getImgCode">
     </el-form-item>
     <el-form-item prop="remember" class="register-enter">
       <el-checkbox v-model="form.remember">记住密码</el-checkbox>

@@ -58,7 +58,8 @@ const habits = computed({
  */
 const listGet = () => {
   bucket.find({
-    visible: true
+    visible: true,
+    is_only_names: true
   }).then((res: PageResponse<BucketInter>) => {
     buckets.value = res.items
     userStore.updateUserBuckets(buckets.value)

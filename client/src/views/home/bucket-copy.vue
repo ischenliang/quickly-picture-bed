@@ -91,11 +91,16 @@ const getLinkValue = (item: Link) => {
 }
 // 复制链接
 const copyAllLink = (item: Link) => {
-  useCopyText(ctx, getLinkValue(item))
+  copyLink(getLinkValue(item))
 }
 // 复制当前一项链接
 function copyItemLink (str) {
-  useCopyText(ctx, str)
+  copyLink(str)
+}
+function copyLink (text: string) {
+  if (current.value.length) {
+    useCopyText(ctx, text)
+  }
 }
 
 const handleTabChange = async (name) => {

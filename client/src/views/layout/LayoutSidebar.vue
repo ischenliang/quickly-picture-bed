@@ -70,7 +70,8 @@ watch(() => route, (val) => {
 
 <style lang="scss">
 .sidebar-container {
-  padding: 20px 10px;
+  // padding: 20px 10px;
+  padding: 10px 10px 20px 10px;
   .logo-bannner {
     width: 100%;
     img {

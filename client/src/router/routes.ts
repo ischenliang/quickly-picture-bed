@@ -24,7 +24,13 @@ export const constRoutes: RouteRecordRaw[] = [
     name: 'Test',
     component: () => import('@/views/test2.vue'),
     meta: { title: '忘记密码' }
-  }
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('@/views/about/index.vue'),
+    meta: { title: '关于系统' }
+  },
 ]
 
 const routes: RouteRecordRaw[] = [
@@ -70,10 +76,16 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '存储桶', icon: 'HelpFilled', role: [1, 2, 10] }
       },
       {
+        path: '/analysis',
+        name: 'Analysis',
+        component: () => import('@/views/log/analysis.vue'),
+        meta: { title: '仪表盘', icon: 'PieChart', role: [1, 2, 10] }
+      },
+      {
         path: '/albums',
         name: 'Albums',
         component: () => import('@/views/album/index.vue'),
-        meta: { title: '我的相册', icon: 'Reading', role: [1, 2, 10] }
+        meta: { title: '我的相册', icon: 'Camera', role: [1, 2, 10] }
       },
       {
         path: '/albums/images',
@@ -91,7 +103,7 @@ const routes: RouteRecordRaw[] = [
         path: '/plugin',
         name: 'Plugin',
         component: () => import('@/views/plugin/index.vue'),
-        meta: { title: '插件市场', icon: 'DataLine', role: [1, 2, 10] }
+        meta: { title: '插件市场', icon: 'Ticket', role: [1, 2, 10] }
       },
       {
         path: '/plugin/detail',
@@ -120,14 +132,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/about',
         name: 'About',
-        component: () => import('@/views/log/about.vue'),
+        component: () => import('@/views/about/about.vue'),
         meta: { title: '关于系统', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
-      },
-      {
-        path: '/analysis',
-        name: 'Analysis',
-        component: () => import('@/views/log/analysis.vue'),
-        meta: { title: '使用分析', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
       },
       {
         path: '/system',

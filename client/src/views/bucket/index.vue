@@ -22,6 +22,7 @@
           <bucket-item
             :key="item.id"
             :detail="item"
+            :stats="getStats(item)"
             :editable="editable">
             <template #action>
               <div class="bucket-action-item" @click="itemOperate(item, 'edit')">编辑</div>
@@ -51,7 +52,7 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive, ref } from 'vue'
-import { BucketInter, ListInter, UserInter } from '@/typings/interface'
+import { BucketInter, ListInter, BucketStatsInter } from '@/typings/interface'
 import { useCtxInstance, useDeleteConfirm, useDragSort } from '@/hooks/global'
 import { PageResponse } from '@/typings/req-res'
 import EditDialog from './EditDialog.vue'
@@ -59,11 +60,6 @@ import MigrateDialog from './MigrateDialog.vue'
 import Bucket from '@/types/Bucket'
 import { useFormat } from '@/hooks/date-time'
 import BucketItem from './BucketItem.vue'
-interface Stats {
-  id: string
-  bucket_storage: string
-  bucket_count: number
-}
 interface Versions {
   id: string
   version: string
@@ -77,7 +73,7 @@ const bucket = new Bucket()
 /**
  * 变量
  */
-const list: ListInter<BucketInter, Stats, Versions> = reactive({
+const list: ListInter<BucketInter, BucketStatsInter, Versions> = reactive({
   total: 0,
   filters: {
     search: ''
@@ -104,11 +100,15 @@ const listGet = () => {
   list.loading = true
   bucket.find({
     ...list.filters
-  }).then((res: PageResponse<BucketInter, Stats, Versions>) => {
+  }).then((res: PageResponse<BucketInter, BucketStatsInter, Versions>) => {
     list.total = res.total
     list.data = res.items.map(item => {
       item.createdAt = useFormat(item.createdAt)
       item.updatedAt = useFormat(item.updatedAt)
+      return item
+    })
+    list.stats = res.stats.map(item => {
+      item.bucket_storage = item.bucket_storage ? (parseInt(item.bucket_storage as any) / 1021 / 1024).toFixed(2) : 0
       return item
     })
     list.loading = false
@@ -157,6 +157,10 @@ function dragSort (fromIndex: number, toIndex: number) {
   bucket.sort(from.id, to.id).then(() => {
     listGet()
   })
+}
+// 获取统计数据
+function getStats (item: BucketInter) {
+  return list.stats.find(el => el.id === item.id)
 }
 </script>
 

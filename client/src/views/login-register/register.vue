@@ -2,10 +2,10 @@
   <layout>
     <div class="login-header">
       <div>
-        <img src="http://lc-dzncsgi3.cn-n1.lcfile.com/e4TyxC3fN5Mxq2P8PxFHcCbllUPoLzhE/logo.png" alt="" />
-        轻快图片管理系统
+        <img :src="configStore.systemConfig.website.logo" alt="系统logo" />
+        {{ configStore.systemConfig.website.name || '轻快图片管理系统' }}
       </div>
-      <p>图片上传+管理新体验的轻量级图片管理系统、图床系统</p>
+      <p>{{ configStore.systemConfig.website.desc || '图片上传+管理新体验的轻量级图片管理系统、图床系统' }}</p>
     </div>
     <el-tabs class="type-tabs" v-model="activeTab">
       <el-tab-pane label="通用账号注册" name="first">
@@ -19,10 +19,12 @@
 import { ref } from 'vue';
 import Layout from './layout.vue'
 import RegisterPassword from './component/register-password.vue'
+import useConfigStore from '@/store/config';
 
 /**
  * 实例
  */
+const configStore = useConfigStore()
 
 /**
  * 变量

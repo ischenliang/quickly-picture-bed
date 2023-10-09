@@ -37,6 +37,10 @@ export default class Users {
   update (params: UserInter) {
     return http('/user/update', params)
   }
+  // 用户详情
+  detail (id: number) {
+    return http('/user/detail', { id })
+  }
   // 更新用户属性
   updateByPro (id: string, property: string, value: any) {
     return http('/user/update', {
