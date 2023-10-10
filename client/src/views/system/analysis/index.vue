@@ -18,13 +18,14 @@
         <card-item :item="banners.article"></card-item>
       </el-col>
       <el-col :xl="4" :lg="8" :md="12">
-        <card-item :item="banners.plugin"></card-item>
+        <card-item :item="banners.user"></card-item>
       </el-col>
     </el-row>
     <!-- 贡献度和动态 -->
     <el-row>
       <el-col :xl="12" :lg="12">
         <chart-item style="height: 400px;" :title="'用户增长图'">
+          <recent-user :data="percentData.stats"></recent-user>
         </chart-item>
       </el-col>
       <el-col :xl="12" :lg="12">
@@ -50,29 +51,34 @@ import chartItem from '@/views/log/chart-item.vue'
 import Log from '@/types/Log';
 import { Ref, ref } from 'vue';
 import StatsRecent from '@/views/log/components/recent-year.vue'
+import RecentUser from '@/views/log/components/recent-user.vue'
 import MapChart from '@/views/log/components/map-chart.vue'
 interface Banner {
-  image: {
+  image?: {
     total: number
     today: number
   }
-  bucket: {
+  bucket?: {
     total: number
     today: number
   }
-  album: {
+  album?: {
     total: number
     today: number
   }
-  plugin: {
+  plugin?: {
     total: number
     today: number
   }
-  wiki: {
+  wiki?: {
     total: number
     today: number
   }
-  article: {
+  article?: {
+    total: number
+    today: number
+  }
+  user?: {
     total: number
     today: number
   }
@@ -125,7 +131,7 @@ const banners: Ref<{ [prop: string]: BannerIten }> = ref({
     color: '#f19797',
     unit: ''
   },
-  plugin: {
+  user: {
     total: 0,
     today: 0,
     label: '用户数量',
@@ -162,7 +168,7 @@ const loading = ref(false)
  */
 // 获取面板数据
 function getBanner () {
-  log.banner().then((res: Banner) => {
+  log.banner('admin').then((res: Banner) => {
     banner.value = res
     Object.keys(res).forEach(key => {
       if (banners.value[key]) {
@@ -176,32 +182,9 @@ getBanner()
 // 获取统计数据
 function getPercentData () {
   loading.value = true
-  log.percentData().then((res: any) => {
+  log.percentData('admin').then((res: any) => {
     percentData.value = res
-    percentData.value.bucket_image = res.bucket_image.map(el => {
-      return {
-        name: el.bucket_name,
-        value: el.count
-      }
-    })
-    percentData.value.album_image = res.album_image.map(el => {
-      return {
-        name: el.album_name,
-        value: el.count
-      }
-    })
-    percentData.value.wiki_article = res.wiki_article.map(el => {
-      return {
-        name: el.wiki_name,
-        value: el.count
-      }
-    })
-    percentData.value.bucket_storage = res.bucket_storage.map(el => {
-      return {
-        name: el.bucket_name,
-        value: ((el.count || 0) / (1024 * 1024)).toFixed(2)
-      }
-    })
+    console.log(res)
     loading.value = false
   })
 }

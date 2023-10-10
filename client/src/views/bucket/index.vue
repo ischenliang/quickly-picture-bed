@@ -1,6 +1,6 @@
 <template>
   <div class="bucket-container">
-    <c-card :title="'存储桶'" v-loading="list.loading">
+    <c-card :title="`存储桶(${list.total})`" v-loading="list.loading">
       <template #cardAction>
         <span>
           <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>

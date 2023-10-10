@@ -42,15 +42,15 @@ export default class Log {
     return http('/log/reLocate', { id })
   }
   // 获取banner
-  banner () {
-    return http('/stats/banner', {})
+  banner (type: 'admin' | 'user' = 'user') {
+    return http('/stats/banner', { type })
   }
   // 近期动态
   rencentLog () {
     return http('/stats/rencentLog', {})
   }
   // 占比数据
-  percentData () {
-    return http('/stats/percentData', {})
+  percentData (type: 'admin' | 'user' = 'user') {
+    return http('/stats/percentData', { type })
   }
 }

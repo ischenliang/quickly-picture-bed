@@ -4,30 +4,91 @@
   </div>
 </template>
 <script lang="ts" setup>
-import axios from 'axios';
-import { onMounted, ref, type Ref } from 'vue'
-
+import { onMounted, ref, type Ref } from "vue";
+import * as echarts from "echarts";
+import axios from "axios";
+import { getProvinceMapInfo, name2pinyin } from "./util";
 interface ChinaData {
-  name: string
-  value: number
+  name: string;
+  value: number;
 }
 
 /**
  * 变量
  */
-// @ts-ignore
-const echarts = window.echarts
-const myChart: Ref<any> = ref()
+const myChart: Ref<any> = ref();
+// 所有省份的矢量地图数据：判断是否已经注册过地图
+const mapData: Ref<{ [prop: string]: any }> = ref({});
+// 散点数据
+var data = [
+  { name: "北京", value: 177 },
+  { name: "四川", value: 102 },
+  { name: "内蒙古", value: 47 },
+  { name: "浙江", value: 114 },
+  { name: "宁夏", value: 18 },
+  { name: "新疆", value: 67 },
+  { name: "广东", value: 123 },
+  { name: "广西", value: 59 },
+  { name: "海南", value: 14 },
+];
 var mapName = "china";
-var geoCoordMap: any = {};
-var data: Ref<ChinaData[]> = ref([])
-
 
 /**
  * 逻辑处理
  */
-// 转换数据
-function convertData (data: any) {
+// 获取数据
+function getData() {
+  data = [
+    { name: "北京", value: 177 },
+    { name: "天津", value: 42 },
+    { name: "河北", value: 102 },
+    { name: "山西", value: 81 },
+    { name: "内蒙古", value: 47 },
+    { name: "辽宁", value: 67 },
+    { name: "吉林", value: 82 },
+    { name: "黑龙江", value: 66 },
+    { name: "上海", value: 24 },
+    { name: "江苏", value: 92 },
+    { name: "浙江", value: 114 },
+    { name: "安徽", value: 109 },
+    { name: "福建", value: 116 },
+    { name: "江西", value: 91 },
+    { name: "山东", value: 119 },
+    { name: "河南", value: 137 },
+    { name: "湖北", value: 116 },
+    { name: "湖南", value: 114 },
+    { name: "重庆", value: 91 },
+    { name: "四川", value: 125 },
+    { name: "贵州", value: 62 },
+    { name: "云南", value: 83 },
+    { name: "西藏", value: 9 },
+    { name: "陕西", value: 80 },
+    { name: "甘肃", value: 56 },
+    { name: "青海", value: 10 },
+    { name: "宁夏", value: 18 },
+    { name: "新疆", value: 67 },
+    { name: "广东", value: 123 },
+    { name: "广西", value: 59 },
+    { name: "海南", value: 14 },
+  ];
+  updateChart();
+}
+// 更新地图
+function updateChart() {
+}
+// 获取中国地图数据
+async function getChinaMap() {
+  const chinaMap = (await axios.get("/data/china.json")).data;
+  chinaMap.features.forEach((el) => {
+    // 地区名称
+    var name = el.properties.name;
+    // 地区经纬度
+    geoCoordMap[name] = el.properties.cp;
+  });
+  return chinaMap;
+}
+// 数据转换: 将data转换成[经度，纬度，数据]
+function convertData(data) {
   var res = [];
   for (var i = 0; i < data.length; i++) {
     var geoCoord = geoCoordMap[data[i].name];
@@ -39,89 +100,50 @@ function convertData (data: any) {
     }
   }
   return res;
-};
-
-/**
- * 监听器
- */
-onMounted(async () => {
-  data.value = [
-    { "name": "四川", "value": 14 },
-    { "name": "重庆", "value": 10 },
-    { "name": "广东", "value": 12 },
-    { "name": "浙江", "value": 9 },
-    { "name": "江苏", "value": 3 },
-    { "name": "新疆", "value": 4 },
-    { "name": "西藏", "value": 2 },
-    { "name": "山东", "value": 1 },
-    { "name": "吉林", "value": 2 },
-    { "name": "江西", "value": 2 },
-    { "name": "黑龙江", "value": 1 },
-    { "name": "宁夏", "value": 1 },
-    { "name": "山西", "value": 1 },
-    { "name": "青海", "value": 2 }
-  ]
-  myChart.value = echarts.init(document.getElementById("chart"));
-  myChart.value.showLoading();
-  var mapFeatures = echarts.getMap(mapName).geoJson.features;
-  myChart.value.hideLoading();
-  mapFeatures.forEach((v: any) => {
-    // 地区名称
-    var name = v.properties.name;
-    // 地区经纬度
-    geoCoordMap[name] = v.properties.cp;
-  });
-  var option = {
-    tooltip: {
-      // padding: 0,
-      enterable: true,
-      transitionDuration: 1,
-      label: {
-        color: "#fff",
-        decoration: "none",
-      },
-      formatter: (params: any) => {
-        const current = data.value.find(el => el.name === params.name)
-        if (current && current.value) {
-          return `<div>
-          <p style="font-size: 16px;font-weight: bold;">${params.name}</p>
-          <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#91cc75;"></span>
-          <span>${current ? current.value : 0}</span> 
-        </div>`
-        } else {
-          return ''
-        }
-      },
-    },
+}
+async function initChart(el) {
+  myChart.value = echarts.init(el);
+  const chinaMap = await getChinaMap();
+  console.log(chinaMap)
+  console.log((await axios.get('/data/china2.json')).data)
+  echarts.registerMap("china", chinaMap);
+  myChart.value.showLoading()
+  const option = {
     // 视觉映射: 就是将数据映射到视觉元素（视觉通道）
     visualMap: {
-      show: false,
+      show: true,
       min: 0,
       max: 200,
-      left: "10%",
+      left: "left",
       top: "bottom",
-      calculable: true,
+      text: ["高", "低"], // 文本，默认为数值文本
+      // calculable: true, // 是否启用滑动条
       seriesIndex: [1],
       inRange: {
-        color: ["#04387b", "#467bc0"], // 蓝绿
+        color: ["#00467F", "#A5CC82"],
       },
     },
-    // 地理坐标系组件
     geo: {
+      show: true,
       map: mapName,
       label: {
-        show: true,
-        color: "#333841",
-        textShadowColor: '#fff',
-        textShadowBlur: 2,
-        // shadowColor: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-        position: 'left'
+        normal: {
+          show: false,
+        },
+        emphasis: {
+          show: false,
+        },
       },
-      // 设置后可以缩放地图
       roam: true,
-      zoom: 1.21,
+      // itemStyle: {
+      //   normal: {
+      //     areaColor: "#031525",
+      //     borderColor: "#3B5077",
+      //   },
+      //   emphasis: {
+      //     areaColor: "#2B91B7",
+      //   },
+      // },
       itemStyle: {
         normal: {
           areaColor: "#0031A8",
@@ -134,79 +156,153 @@ onMounted(async () => {
         }
       }
     },
-    // 数据集
     series: [
-      // 生成的渲染，可以实现多颜色块地图
+      // 生成地图上的散点：即各个省份的省会城市所在地
       {
         name: "散点",
         type: "scatter",
         coordinateSystem: "geo",
-        data: convertData(data.value),
-        // 标记大小
-        symbolSize: 0,
+        data: convertData(data),
+        symbolSize: (val) => {
+          return val[2] / 10;
+        },
+        label: {
+          normal: {
+            formatter: "{b}",
+            position: "right",
+            show: true,
+          },
+          emphasis: {
+            show: true,
+          },
+        },
+        itemStyle: {
+          normal: {
+            color: "#05C3F9",
+          },
+        },
+        zlevel: 2
       },
-      // 地图上映射具体的数据
+      // 生成地图
       {
         type: "map",
         map: mapName,
         geoIndex: 0,
-        // showLegendSymbol: false, // 存在legend时显示
+        aspectScale: 0.75, //长宽比
+        showLegendSymbol: false, // 存在legend时显示
         label: {
-          show: true,
+          normal: {
+            show: true,
+          },
+          emphasis: {
+            show: false,
+            textStyle: {
+              color: "#fff",
+            },
+          },
         },
         roam: true,
         itemStyle: {
-          areaColor: "#031525",
-          borderColor: "#3B5077",
-        },
-        animation: false,
-        data: data,
-        emphasis: {
-          label: {
-            show: false,
-            color: "#fff",
+          normal: {
+            areaColor: "#031525",
+            borderColor: "#3B5077",
           },
-          itemStyle: {
+          emphasis: {
             areaColor: "#2B91B7",
           },
         },
+        animation: false,
+        data: data
       },
-      // 排名前五的高亮效果
+      // 生成marker点
       {
-        name: "省份数据",
+        name: "点",
+        type: "scatter",
+        coordinateSystem: "geo",
+        symbol: "pin",
+        symbolSize: (val, params) => {
+          const aMax = data.reduce((total, cur, index, arr) => {
+            if (cur.value >= total) {
+              total = cur.value
+            }
+            return total
+          }, data[0].value)
+          const maxPin = 40, minPin = 25
+          const percent = parseFloat((aMax/maxPin).toPrecision(2))
+          const scale = val[2] / percent
+          return scale <= minPin ? minPin : scale
+        },
+        label: {
+          show: true,
+          fontSize: 11,
+          formatter: (params) => {
+            return params.data.value.pop()
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: "#F62157", //标志颜色
+          },
+        },
+        zlevel: 6,
+        data: convertData(data),
+      },
+      // 带有涟漪特效动画的散点
+      {
+        name: "Top 5",
         type: "effectScatter",
         coordinateSystem: "geo",
-        data: convertData(data.value.sort((a: ChinaData, b: ChinaData) =>  {
-          return b.value - a.value;
-        })),
-        symbolSize: (val: any) => {
-          return 10;
+        data: convertData(data.sort((a, b) => b.value - a.value).slice(0, 5)),
+        symbolSize: function (val) {
+          return val[2] / 10;
         },
         showEffectOn: "render",
         rippleEffect: {
-          scale: 5,
           brushType: "stroke",
         },
+        hoverAnimation: true,
         label: {
-          formatter: "{b}",
-          position: "left",
-          show: false,
+          normal: {
+            formatter: "{b}",
+            position: "right",
+            show: true,
+          },
         },
         itemStyle: {
-          color: "yellow",
-          shadowBlur: 5,
-          shadowColor: "yellow",
+          normal: {
+            color: "yellow",
+            shadowBlur: 10,
+            shadowColor: "yellow",
+          },
         },
-        zlevel: 1,
+        zlevel: 4
       },
-    ],
+    ]
   };
-  myChart.value.setOption(option)
-})
+  myChart.value.setOption(option);
+  myChart.value.hideLoading()
+}
 
-window.addEventListener('resize', () => {
-  myChart.value.resize()
-})
+const geoCoordMap = {};
+/**
+ * 监听器
+ */
+onMounted(async () => {
+  const el = document.getElementById("chart")
+  await initChart(el)
+  // const resizeObserver = new ResizeObserver(async (entries) => {
+  //   // myChart.value.dispose()
+  //   // await initChart(el)
+  //   myChart.value.resize()
+  // })
+  // if (el) {
+  //   resizeObserver.observe(el)
+  // }
+});
+
+window.addEventListener("resize", () => {
+  myChart.value.resize();
+});
 </script>
 <style lang="scss">
 .china-map {
