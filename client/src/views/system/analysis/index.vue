@@ -1,49 +1,91 @@
 <template>
-  <div style="padding: 30px;">
-    <p style="color: red;">需要根据角色来判断显示什么样的统计，例如：管理员查看则是看平台所有的数据，其他角色则是看自己相关的数据即可。</p>
-    图片数量、存储桶数量、占用总存储量、动态数量(图片操作、系统操作)、用户数量
-    <div style="width: 100%;">
-      <div style="margin: 0 auto;text-align: center;margin-bottom: 10px;font-weight: bold;">贡献度</div>
-      <div class="calender-heatmap">
-        <calendar-heatmap
-          :no-data-text="false"
-          :values="logs"
-          :round="0"
-          :end-date="endDate"
-          :tooltip-unit="'贡献'"
-          :locale="{
-            less: '少',
-            more: '多',
-            on: '',
-            days: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
-          }"
-          :vertical="false"
-          :tooltip-formatter="tooltipFormat"
-          :range-color="['#ebedf0', '#dae2ef', '#c0ddf9', '#73b3f3', '#3886e1', '#17459e']"
-          @day-click="handlClick">
-          <template #vch__legend-left>
-            <span>最近一年贡献：xxx 次</span>
-            <span>最长连续贡献：xx 日</span>
-            <span>最近连续贡献：xx 日</span>
-          </template>
-        </calendar-heatmap>
-        <div class="vch__tips">贡献度的统计数据包括代码提交、创建任务 / Pull Request、合并 Pull Request，其中代码提交的次数需本地配置的 git 邮箱是 Gitee 帐号已确认绑定的才会被统计。</div>
-      </div>
-    </div>
-    近期动态图(地图)、存储桶增长统计图、用户动态分布图、用户增长图
+  <div class="analysis-dash" v-loading="loading">
+    <!-- 顶部banner -->
+    <el-row>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.image"></card-item>
+      </el-col>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.bucket"></card-item>
+      </el-col>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.album"></card-item>
+      </el-col>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.wiki"></card-item>
+      </el-col>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.article"></card-item>
+      </el-col>
+      <el-col :xl="4" :lg="8" :md="12">
+        <card-item :item="banners.plugin"></card-item>
+      </el-col>
+    </el-row>
+    <!-- 贡献度和动态 -->
+    <el-row>
+      <el-col :xl="12" :lg="12">
+        <chart-item style="height: 400px;" :title="'用户增长图'">
+        </chart-item>
+      </el-col>
+      <el-col :xl="12" :lg="12">
+        <chart-item style="height: 400px;" :title="'访问动态分布'">
+          <map-chart></map-chart>
+        </chart-item>
+      </el-col>
+    </el-row>
+    <!-- 近一年内数据 -->
+    <el-row>
+      <el-col>
+        <chart-item style="height: 400px;" :title="'近一年内数据统计'">
+          <stats-recent :data="percentData.stats"></stats-recent>
+        </chart-item>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script lang="ts" setup>
+import CardItem from '@/components/web/analysis/cardItem.vue'
+import chartItem from '@/views/log/chart-item.vue'
 import Log from '@/types/Log';
-import { useFormatTime } from '@/typings/date-time';
-import moment from 'moment';
 import { Ref, ref } from 'vue';
-import { CalendarHeatmap } from 'vue3-calendar-heatmap'
-interface LogCount {
-  date: string
-  count: number
+import StatsRecent from '@/views/log/components/recent-year.vue'
+import MapChart from '@/views/log/components/map-chart.vue'
+interface Banner {
+  image: {
+    total: number
+    today: number
+  }
+  bucket: {
+    total: number
+    today: number
+  }
+  album: {
+    total: number
+    today: number
+  }
+  plugin: {
+    total: number
+    today: number
+  }
+  wiki: {
+    total: number
+    today: number
+  }
+  article: {
+    total: number
+    today: number
+  }
+}
+
+interface BannerIten {
+  total: number
+  today: number
+  label: string
+  bgcolor: string
+  cover: string
+  color: string
+  unit: string
 }
 
 /**
@@ -54,59 +96,139 @@ const log = new Log()
 /**
  * 变量
  */
-// 贡献列表
-const logs: Ref<LogCount[]> = ref([])
-// 结束日期
-const endDate = ref(moment().format('YYYY-MM-DD'))
+const banner: Ref<Banner> = ref()
+const banners: Ref<{ [prop: string]: BannerIten }> = ref({
+  image: {
+    total: 0,
+    today: 0,
+    label: '图片数量',
+    bgcolor: '#f0f9eb',
+    cover: 'PictureFilled',
+    color: '#9ee974',
+    unit: ''
+  },
+  bucket: {
+    total: 0,
+    today: 0,
+    label: '存储桶数量',
+    bgcolor: '#ecf5ff',
+    cover: 'Coffee',
+    color: '#6fb4fb',
+    unit: ''
+  },
+  album: {
+    total: 0,
+    today: 0,
+    label: '相册数量',
+    bgcolor: '#fef0f0',
+    cover: 'CameraFilled',
+    color: '#f19797',
+    unit: ''
+  },
+  plugin: {
+    total: 0,
+    today: 0,
+    label: '用户数量',
+    bgcolor: '#f8ebff',
+    cover: 'User',
+    color: '#c889e9',
+    unit: ''
+  },
+  wiki: {
+    total: 0,
+    today: 0,
+    label: '知识库数量',
+    bgcolor: '#c9f2ff',
+    cover: 'Collection',
+    color: '#4bb7d9',
+    unit: ''
+  },
+  article: {
+    total: 0,
+    today: 0,
+    label: '文章数量',
+    bgcolor: '#fdf6ec',
+    cover: 'Document',
+    color: '#fbcb87',
+    unit: ''
+  }
+})
+const percentData: Ref<any> = ref({})
+const loading = ref(false)
 
 
 /**
  * 数据获取 
  */
-const getLogs = () => {
-  log.contributes({}).then((res: LogCount[]) => {
-    logs.value = res
+// 获取面板数据
+function getBanner () {
+  log.banner().then((res: Banner) => {
+    banner.value = res
+    Object.keys(res).forEach(key => {
+      if (banners.value[key]) {
+        banners.value[key].today = res[key].today
+        banners.value[key].total = res[key].total
+      }
+    })
   })
 }
-getLogs()
-
-
-const handlClick = (day) => {
-  console.log(day)
+getBanner()
+// 获取统计数据
+function getPercentData () {
+  loading.value = true
+  log.percentData().then((res: any) => {
+    percentData.value = res
+    percentData.value.bucket_image = res.bucket_image.map(el => {
+      return {
+        name: el.bucket_name,
+        value: el.count
+      }
+    })
+    percentData.value.album_image = res.album_image.map(el => {
+      return {
+        name: el.album_name,
+        value: el.count
+      }
+    })
+    percentData.value.wiki_article = res.wiki_article.map(el => {
+      return {
+        name: el.wiki_name,
+        value: el.count
+      }
+    })
+    percentData.value.bucket_storage = res.bucket_storage.map(el => {
+      return {
+        name: el.bucket_name,
+        value: ((el.count || 0) / (1024 * 1024)).toFixed(2)
+      }
+    })
+    loading.value = false
+  })
 }
-
-const tooltipFormat = (val) => {
-  return val.count + '个贡献: ' + useFormatTime(val.date, 'YYYY-MM-DD')
-}
+getPercentData()
 </script>
 
 <style lang="scss">
-.calender-heatmap {
-  max-width: 900px;
-  font-size: 12px;
-  margin: 0 auto;
-  .vch__legend {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .vch__legend-left {
-      span + span {
-        margin-left: 20px;
-      }
-    }
-    .vch__legend-right {
-      margin-top: 5px;
-      .vch__legend {
-        svg {
-          margin: 0 5px;
-        }
-      }
+.analysis-dash {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 10px 20px 10px;
+  overflow: auto;
+  .el-row {
+    .el-col {
+      padding: 7.5px;
     }
   }
-  .vch__tips {
-    margin-top: 10px;
-    color: #8c92a4;
-    line-height: 1.33;
+  .contributes-row {
+    .el-col {
+      max-height: 290px;
+      overflow: hidden;
+    }
   }
 }
 </style>

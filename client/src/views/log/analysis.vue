@@ -244,7 +244,8 @@ getPercentData()
   position: absolute;
   top: 0;
   left: 0;
-  padding: 10px;
+  padding: 10px 10px 20px 10px;
+  overflow: auto;
   .el-row {
     .el-col {
       padding: 7.5px;
