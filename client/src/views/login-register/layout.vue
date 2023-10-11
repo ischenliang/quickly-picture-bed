@@ -237,7 +237,7 @@ const website = computed(() => {
     padding: 0 50px 0px 50px;
     box-sizing: border-box;
     box-sizing: 0 0 20px 8px #6336ee0d;
-    z-index: 9999;
+    z-index: 555;
   }
   .login-swiper {
     display: flex;

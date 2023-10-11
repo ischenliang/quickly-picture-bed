@@ -3,7 +3,7 @@
   <div class="recent-log">
     <div class="recent-log__header">近期动态(近一周)</div>
     <div class="recent-log__content">
-      <log-item v-for="(item, index) in [...logs, ...logs]" :key="index" :log="item"></log-item>
+      <log-item v-for="(item, index) in logs" :key="index" :log="item"></log-item>
     </div>
   </div>
 </template>

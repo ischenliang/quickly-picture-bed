@@ -24,5 +24,4 @@ const options = ref([
 </script>
 
 <style lang="scss">
-
 </style>

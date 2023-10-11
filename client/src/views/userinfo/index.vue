@@ -18,7 +18,8 @@ import base from './base.vue'
 import security from './security.vue'
 import binding from './binding.vue'
 import notification from './notification.vue'
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import habits from './habits.vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useCtxInstance } from '@/hooks/global'
 
 const activeTab = ref('base')
@@ -26,6 +27,7 @@ const tabs = ref([
   { label: '基本设置', name: 'base', component: markRaw(base) },
   { label: '账号设置', name: 'security', component: markRaw(security) },
   // { label: '账号绑定', name: 'binding', component: markRaw(binding) },
+  { label: '偏好设置', name: 'habits', component: markRaw(habits) },
   { label: '新消息通知', name: 'notification', component: markRaw(notification) }
 ])
 const ctx = useCtxInstance()
@@ -78,8 +80,10 @@ watch(() => route, (val: any) => {
   .profile-tabs {
     height: 100%;
     border: none !important;
+    display: flex;
     .el-tabs__header {
       width: 200px;
+      flex-shrink: 0;
       background: #fff;
       border-bottom: none;
       .el-tabs__item {
@@ -105,7 +109,14 @@ watch(() => route, (val: any) => {
       }
     }
     .el-tabs__content {
-      padding: 8px 40px;
+      padding: 0px;
+      flex: 1;
+      height: 100%;
+      .el-tab-pane {
+        height: 100%;
+        overflow: auto;
+        padding: 8px 40px;
+      }
     }
   }
 }

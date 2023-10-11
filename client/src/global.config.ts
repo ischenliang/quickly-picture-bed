@@ -4,9 +4,12 @@ export const user_habits: HabitsInter = {
   shortKey: [
     { label: '快捷上传', key: 'upload', value: 'Command + Shift + P', id: 1 }
   ],
-  showUpdateTip: true,
-  showCopyTip: true,
-  showDeleteTip: true,
+  showTip: {
+    copy: true,
+    delete: true,
+    update: true,
+    upload: true
+  },
   rename: false,
   autoRename: true,
   autoPaste: true,

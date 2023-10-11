@@ -77,7 +77,7 @@ const form = reactive({
   remember: false // 统一协议
 })
 const formRef: Ref<FormInstance | null> = ref()
-const rules = reactive({
+const rules: any = reactive({
   username: [
     { required: true, message: '请输入邮箱账号', trigger: ['blur'] },
   ],
@@ -141,7 +141,8 @@ const register = () => {
       loading.value = true
       user.register({
         account: email.value,
-        password: useMd5(form.password),
+        // password: useMd5(form.password),
+        password: form.password,
         sms_code: form.sms_code
       }).then((res: any) => {
         ctx.$message({ message: '注册成功，去登录吧', type: 'success', duration: 1000 })

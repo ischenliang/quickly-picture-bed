@@ -41,7 +41,7 @@ const form = reactive({
   rpassword: ''
 })
 const formRef: Ref<FormInstance | null> = ref()
-const rules = reactive({
+const rules: any = reactive({
   old_password: [
     { required: true, message: '请输入原始密码', trigger: 'blur' },
   ],
@@ -94,8 +94,8 @@ const submit = () => {
         })
       }
       user.changePwd({
-        password: useMd5(form.password),
-        old_password: useMd5(form.old_password)
+        password: form.password,
+        old_password: form.old_password
       }).then(res => {
         ctx.$message({
           message: '密码修改成功',

@@ -1,75 +1,84 @@
 <template>
-  <div>
-    <!-- 可以参考: https://gitlab.com/-/profile/preferences -->
-    <c-card :title="'偏好设置'">
-      <el-form :model="detail.data" :rules="rules" :label-position="'top'" class="my-habits">
-        <el-row>
-          <el-col :xl="24">
-            <el-form-item label="自定义链接格式" prop="name">
-              <p style="width: 100%;line-height: 20px;font-size: 12px;color: #999;">
-                <span>用占位符<b> ${url} </b>来表示url的位置</span>
-                <span>用占位符<b> ${filename} </b>来表示文件名</span>
-              </p>
-              <p style="width: 100%;line-height: 20px;font-size: 12px;color: #999;">如：[${filename}](${url})</p>
-              <el-input v-model="detail.data.link_format" placeholder="请输入用户名" size="large" />
-            </el-form-item>
-          </el-col>
-          <el-col :xl="24">
-            <el-form-item label="默认复制图片链接类型" prop="name">
-              <el-select v-model="detail.data.pasteStyle" size="large" style="width: 100%;">
-                <el-option label="URL" value="url"/>
-                <el-option label="HTML" value="html"/>
-                <el-option label="Markdown" value="markdown"/>
-                <el-option label="CSS" value="css"/>
-                <el-option label="BBCode" value="bbcode"/>
-                <el-option label="UBB" value="ubb"/>
-                <el-option label="自定义" value="custom"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="3">
-            <el-form-item label="开启上传提示" prop="name">
-              <el-switch v-model="detail.data.showTip.upload" size="large" />
-            </el-form-item>
-          </el-col>
-          <el-col :xl="21">
-            <el-form-item label="开启删除提示" prop="name">
-              <el-switch v-model="detail.data.showTip.delete" size="large" />
-            </el-form-item>
-          </el-col>
-          <el-col :xl="3">
-            <el-form-item label="开启复制提示" prop="name">
-              <el-switch v-model="detail.data.showTip.copy" size="large" />
-            </el-form-item>
-          </el-col>
-          <el-col :xl="21">
-            <el-form-item label="上传后自动复制url" prop="name">
-              <el-switch v-model="detail.data.showTip.update" size="large" />
-            </el-form-item>
-          </el-col>
-          <el-col :xl="24">
-            <el-form-item label="快捷键设置" prop="name">
-              <!-- <el-input v-model="detail.data.link_format" placeholder="请输入用户名" size="large" /> -->
-              <el-table
-                border
-                :data="detail.data.shortKey"
-                @row-click="handleRowClick">
-                <el-table-column prop="key" label="快捷键名称" align="left" />
-                <el-table-column prop="value" label="快捷键绑定" align="left" />
-                <el-table-column prop="label" label="快捷键描述" align="left" />
-              </el-table>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="">
-          <el-button type="primary" size="large" @click="submit">保存</el-button>
-        </el-form-item>
-      </el-form>
-    </c-card>
+  <!-- 可以参考: https://gitlab.com/-/profile/preferences -->
+  <div class="user-habits">
+    <div class="user-habits-title">偏好设置</div>
+    <el-form :model="detail.data" :rules="rules" :label-position="'top'" class="my-habits">
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'自定义链接格式'"
+          :direction="'column'">
+          <template #desc>
+            <p>
+              <span>用占位符<b> ${url} </b>来表示url的位置</span>
+              <span>用占位符<b> ${filename} </b>来表示文件名。</span>
+              <span>如：[${filename}](${url})</span>
+            </p>
+          </template>
+          <el-input v-model="detail.data.link_format" placeholder="请输入用户名" size="large" />
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'自定义链接格式'"
+          :direction="'column'"
+          :desc="'设定复制链接的格式'">
+          <el-select v-model="detail.data.pasteStyle" size="large" style="width: 100%;">
+            <el-option v-for="(item, index) in linkTypes" :key="index" :label="item.label" :value="item.id"/>
+          </el-select>
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'开启上传提示'"
+          :desc="'选中回答或文章中的语句后可方便地「摘录到百科」'">
+          <el-switch v-model="detail.data.showTip.upload" size="large" />
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'开启删除提示'"
+          :desc="'选中回答或文章中的语句后可方便地「摘录到百科」'">
+          <el-switch v-model="detail.data.showTip.delete" size="large" />
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'开启复制提示'"
+          :desc="'选中回答或文章中的语句后可方便地「摘录到百科」'">
+          <el-switch v-model="detail.data.showTip.copy" size="large" />
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'上传后自动复制url'"
+          :desc="'选中回答或文章中的语句后可方便地「摘录到百科」'">
+          <el-switch v-model="detail.data.showTip.update" size="large" />
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
+          :title="'快捷键设置'"
+          :direction="'column'"
+          :border="false"
+          :desc="'选中回答或文章中的语句后可方便地「摘录到百科」'">
+          <el-table
+            border
+            :data="detail.data.shortKey"
+            @row-click="handleRowClick">
+            <el-table-column prop="key" label="快捷键名称" align="left" />
+            <el-table-column prop="value" label="快捷键绑定" align="left" />
+            <el-table-column prop="label" label="快捷键描述" align="left" />
+          </el-table>
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="large" @click="submit">保存</el-button>
+      </el-form-item>
+    </el-form>
     <habits-dialog
-      v-if="visible"
-      v-model="visible"
-      :detail="item.data"
+        v-if="visible"
+        v-model="visible"
+        :detail="item.data"
       @submit="handleSubmit"></habits-dialog>
   </div>
 </template>
@@ -81,7 +90,8 @@ import Habits from '@/types/Habits';
 import { HabitsInter } from '@/typings/interface';
 import { reactive, ref } from 'vue';
 import HabitsDialog from './habits-dialog.vue'
-
+import habitCollapseItem from './habit-collapse-item.vue';
+import { linkTypes } from '@/global.config';
 
 /**
  * 实例
@@ -139,7 +149,7 @@ const detail: { data: HabitsInter } = reactive({
     pasteStyle: 'url',
   }
 })
-const rules = []
+const rules: any = []
 const visible = ref(false)
 const item = reactive({
   data: {}
@@ -186,13 +196,27 @@ const submit = () => {
 
 <style lang="scss">
 .my-habits {
-  .el-form-item__label {
-    font-weight: bold;
-    font-size: 15px;
-  }
   .el-table thead th.el-table__cell {
     background-color: rgb(244, 246, 249);
     color: black;
   }
+  .el-form-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px !important;
+    &__label {
+      display: none;
+    }
+    &__content {
+    }
+  }
+}
+.user-habits-title {
+  margin-bottom: 30px;
+  color: rgba(0,0,0,.85);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
 }
 </style>
