@@ -38,7 +38,7 @@ const activeTab = ref('first')
 const logo = computed(() => {
   const website: any = sytemStore.systemConfig.website
   if (website) {
-    return website.logo_preview
+    return website.logo
   } else {
     return new URL('../logo.png', import.meta.url).href
   }

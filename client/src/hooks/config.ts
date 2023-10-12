@@ -29,7 +29,7 @@ export function useGetSystemConfig () {
     if (!configStore.systemConfig.id) {
       setting.default().then((res: SettingInter) => {
         configStore.updateSystemConfig(res)
-        const { ico, name, logo } = configStore.systemConfig.website
+        const { ico, name, logo, keys, desc } = configStore.systemConfig.website
         const { icon_url } = configStore.systemConfig.system
         const linkEl = document.createElement('link')
         const headEl =  document.querySelector('head')
@@ -41,6 +41,10 @@ export function useGetSystemConfig () {
         // 标题
         document.title = name
         // 其它信息：描述、关键字等等
+        const meta: HTMLMetaElement = document.querySelector('meta[name="keywords"]')
+        meta.content = keys.join(',')
+        const description: HTMLMetaElement = document.querySelector('meta[name="description"]')
+        description.content = desc
         // iconfont
         const style = document.createElement('link')
         style.rel = 'stylesheet'

@@ -25,8 +25,8 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item icon="Edit" @click="handleOperate('update')">编辑</el-dropdown-item>
-              <el-dropdown-item icon="DeleteFilled" @click="handleOperate('delete')">删除</el-dropdown-item>
               <el-dropdown-item icon="Notification" @click="handleOperate('copy')">复制</el-dropdown-item>
+              <el-dropdown-item icon="DeleteFilled" @click="handleOperate('delete')">删除</el-dropdown-item>
               <el-dropdown-item icon="Download" @click="handleOperate('download')">导出</el-dropdown-item>
             </el-dropdown-menu>
           </template>

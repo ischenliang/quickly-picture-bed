@@ -249,9 +249,7 @@ export interface Setting {
   // 设置-网站信息
   website?: {
     logo?: string // logo
-    logo_preview?: string
     ico?: string // ico
-    ico_preview?: string
     name?: string // 名称
     title?: string // 标题
     subtitle?: string // 副标题
@@ -263,10 +261,8 @@ export interface Setting {
     // 打赏
     // 支付宝打赏二维码
     reward_alipay?: string
-    reward_alipay_preview?: string
     // 微信打赏二维码
     reward_weixin?: string
-    reward_weixin_preview?: string
     // 静态文件前缀
     baseUrl?: string
   }

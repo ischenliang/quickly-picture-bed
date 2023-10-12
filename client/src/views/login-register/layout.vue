@@ -93,10 +93,13 @@ const swipers = ref([
   { label: '图片上传区', desc: '可以选择指定存储桶将其图片上传到该存储桶对应的云服务中，支持图片多图上传、拖拽上传、上传预览、全屏预览。', url: new URL('./images/home.png', import.meta.url).href },
   { label: '图片管理', desc: '扁平化图片管理功能，支持全选、单选多选、一键复制等，并且提供强大的图片预览功能，支持图片上下左右翻转、平面翻转、放大缩小等。', url: new URL('./images/gallery.png', import.meta.url).href },
   { label: '存储桶管理', desc: '储存驱动易拓展，多样化储存，支持本地，阿里云、腾讯云、七牛云等对象存储，支持多桶储存，可同时添加多个对象存储桶管理，上不封顶。', url: new URL('./images/bucket.png', import.meta.url).href },
+  { label: '相册管理', desc: '提供了直观的界面和便捷的操作方式，帮助用户快速管理和回顾珍贵的照片回忆。将照片按不同主题或分类进行整理和归档。', url: new URL('./images/album.png', import.meta.url).href },
   { label: '操作日志', desc: '完整的可视化日志功能，记录用户所有操作，方便事件溯源，同时日志记录也是作为贡献数据统计的重要来源。', url: new URL('./images/log.png', import.meta.url).href },
+  { label: '插件市场', desc: '提供了数十种内置插件，用户可以安装插件来支持不同的对象存储服务，例如阿里云oss，腾讯云cos，七牛云todo等对象存储服务。', url: new URL('./images/plugin.png', import.meta.url).href },
+  { label: '知识库管理', desc: '整合、组织和存储海量信息，实现高效的知识管理和检索，帮助用户轻松获取所需知识并提升工作效率。', url: new URL('./images/wiki.png', import.meta.url).href },
   { label: '个人中心', desc: '扁平化个人中心管理功能，对个人资料以及登录密码进行管理，同时系统提供了一系列好看的内置头像供选。', url: new URL('./images/profile.png', import.meta.url).href },
   { label: '偏好设置配置', desc: '考虑到每个用户的偏好设置不同，系统提供了偏好设置配置中心，可以配置自定义链接格式、复制链接的类型以及常用快捷键。', url: new URL('./images/habits.png', import.meta.url).href },
-  { label: '数据统计', desc: '系统提供了美观的数据统计功能，使得用户很清晰的看到图片数量、存储桶数量、占用总存储量、近一年的贡献度以及存储桶的使用情况。', url: new URL('./images/habits.png', import.meta.url).href }
+  { label: '数据统计', desc: '系统提供了美观的数据统计功能，使得用户很清晰的看到图片数量、存储桶数量、占用总存储量、近一年的贡献度以及存储桶的使用情况。', url: new URL('./images/analysis.png', import.meta.url).href }
 ])
 const year = new Date().getFullYear()
 const copyright = computed(() => {

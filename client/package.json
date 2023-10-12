@@ -45,8 +45,6 @@
     "moment": "^2.29.4",
     "monaco-editor": "^0.37.1",
     "pinia": "^2.0.35",
-    "postcss": "^8.4.22",
-    "qiniu-js": "^3.4.1",
     "reset.css": "^2.0.2",
     "sass": "^1.62.0",
     "sortablejs": "^1.15.0",
