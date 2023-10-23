@@ -4,17 +4,17 @@
       基于Koa2 + Vue3.x + Vite3.x + typescript开发的轻量级快捷图片管理系统、图床系统
     </div>
     <span align="center">
-        <img src="https://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
-        <img src="https://img.shields.io/badge/vite-3.1.4-brightgreen" />
-        <img src="https://img.shields.io/badge/vuerouter-4.1.5-brightgreen" />
-        <img src="https://img.shields.io/badge/element--plus-2.2.17-brightgreen" />
-        <img src="https://img.shields.io/badge/pinia-2.0.22-brightgreen" />
-        <img src="https://img.shields.io/badge/typescript-4.8.4-brightgreen" />
-        <img src="https://img.shields.io/badge/koa-2.x-brightgreen" />
-        <img src="https://img.shields.io/badge/koa--ts--controllers-3.x-brightgreen" />
-        <img src="https://img.shields.io/badge/sequelize-6.x-brightgreen" />
-        <img src="https://img.shields.io/badge/mysql-brightgreen" />
-        <img src="https://img.shields.io/badge/jsonwebtoken-brightgreen" />
+        <img src="http://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
+        <img src="http://img.shields.io/badge/vite-3.1.4-brightgreen" />
+        <img src="http://img.shields.io/badge/vuerouter-4.1.5-brightgreen" />
+        <img src="http://img.shields.io/badge/element--plus-2.2.17-brightgreen" />
+        <img src="http://img.shields.io/badge/pinia-2.0.22-brightgreen" />
+        <img src="http://img.shields.io/badge/typescript-4.8.4-brightgreen" />
+        <img src="http://img.shields.io/badge/koa-2.x-brightgreen" />
+        <img src="http://img.shields.io/badge/koa--ts--controllers-3.x-brightgreen" />
+        <img src="http://img.shields.io/badge/sequelize-6.x-brightgreen" />
+        <img src="http://img.shields.io/badge/mysql-brightgreen" />
+        <img src="http://img.shields.io/badge/jsonwebtoken-brightgreen" />
     </span>
 </div>
 
@@ -94,8 +94,8 @@
   例如：图片是否添加水印(文字水印|图片水印)插件、图片裁剪旋转缩放插件、图片压缩插件、图片滤镜、图片标注等图片处理相关插件。
 8. 整合markdown工具<br>
   大对数人使用markdown工具都是使用`typora`，然后直接在`typora`整合`picgo`实现图片上传功能，所以其实大多数都不会单独上传图片，故本系统需增加一项`文档管理`功能，可以对文章进行管理。大致界面设计如下:
-  ![202303011050594.png](https://imgs.itchenliang.club/img/202303011050594.png)
-  ![2023030110512010.png](https://imgs.itchenliang.club/img/2023030110512010.png)
+  ![202303011050594.png](http://imgs.itchenliang.club/img/202303011050594.png)
+  ![2023030110512010.png](http://imgs.itchenliang.club/img/2023030110512010.png)
   主要包括的功能项：
     - 文档目录管理
     - 文档文章管理
@@ -110,10 +110,10 @@
 ## 安装
 ### 安装步骤
 **1. 安装node**<br/>
-前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
+前往[node官网](http://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
 
 **2. 安装git**<br/>
-前往[Git官网](https://git-scm.com/)下载`git`并安装，此步可忽略。
+前往[Git官网](http://git-scm.com/)下载`git`并安装，此步可忽略。
 
 **3. 安装typescript、nodemon、ts-node**<br/>
 使用下面的命令全局安装`typescript`
@@ -186,23 +186,23 @@ cd client
 npm run dev
 ```
 控制台出现如下如所示即代表启动成功
-![202211101711526.png](https://imgs.itchenliang.club/img/202211101711526.png)<br/>
-![202211101712519.png](https://imgs.itchenliang.club/img/202211101712519.png)
+![202211101711526.png](http://imgs.itchenliang.club/img/202211101711526.png)<br/>
+![202211101712519.png](http://imgs.itchenliang.club/img/202211101712519.png)
 
 **9. 配置邮箱服务和ip定位服务**
 使用系统提供的默认管理员账号`admin@163.com`登录系统，点击左侧菜单栏上的`系统配置`菜单，进入系统配置页面，然后点击顶部的`系统配置`tab栏，找到`ip定位服务配置`以及`邮件服务配置`填写相关数据即可。
-![202303070911541.png](https://imgs.itchenliang.club/img/202303070911541.png)
+![202303070911541.png](http://imgs.itchenliang.club/img/202303070911541.png)
 注意：
   - 本系统预设了两种`ip定位服务`
-    - 百度地图：获取开发者秘钥的前提需要登录[百度地图开放平台](https://lbsyun.baidu.com/)注册账号，并入驻成为开发者，创建`服务端`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
-    ![202303070914444.png](https://imgs.itchenliang.club/img/202303070914444.png)
-    - 高德地图：获取开发者秘钥的前提需要登录[高德地图开放平台](https://lbs.amap.com/)注册账号，并入驻成为开发者，创建`web服务`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
-    ![202303070916513.png](https://imgs.itchenliang.club/img/202303070916513.png)
+    - 百度地图：获取开发者秘钥的前提需要登录[百度地图开放平台](http://lbsyun.baidu.com/)注册账号，并入驻成为开发者，创建`服务端`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
+    ![202303070914444.png](http://imgs.itchenliang.club/img/202303070914444.png)
+    - 高德地图：获取开发者秘钥的前提需要登录[高德地图开放平台](http://lbs.amap.com/)注册账号，并入驻成为开发者，创建`web服务`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
+    ![202303070916513.png](http://imgs.itchenliang.club/img/202303070916513.png)
   - 本系统为了方便用户使用，提供了使用邮箱注册账号、邮箱找回密码等功能，默认使用的是`qq邮件服务`，故需要配置`qq邮件服务`的相关数据
     - 首先登录`QQ邮箱`，点击`设置 -> 账号`，找到`POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务`
-      ![202303070920131.png](https://imgs.itchenliang.club/img/202303070920131.png)
+      ![202303070920131.png](http://imgs.itchenliang.club/img/202303070920131.png)
       在`POP3/SMTP服务`一栏，必须是上图所示的，已开启状态，开启后会拿到对应的授权码，将授权码填写到`邮件服务配置`一栏中的`邮件授权码`输入框中，并且填写发件人邮箱地址(即您启用授权码的qq邮箱)
-      ![2023030709221710.png](https://imgs.itchenliang.club/img/2023030709221710.png)
+      ![2023030709221710.png](http://imgs.itchenliang.club/img/2023030709221710.png)
 
 
 **9. 项目打包部署**<br/>
@@ -222,7 +222,7 @@ docker-compose up
 上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:3002`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
 
 ### Docker运行程序
-直接拉取[Docker Hub](https://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
+直接拉取[Docker Hub](http://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
 1. 运行server服务端
   ```shell
   docker run -p 3002:3002--env-file .env itchenliang/quickly-picture-bed-server:1.0
@@ -251,7 +251,7 @@ docker-compose up
   ```
   上面的`.env`文件是用于指定请求的后端接口地址
   ```yml
-  # 需带上http|https协议，默认不加 "/"
+  # 需带上http|http协议，默认不加 "/"
   # 注意vite中的环境变量需要以VITE开头
   VITE_APP_BASE_URL=http://127.0.0.1:3002
   ```
@@ -261,69 +261,69 @@ docker-compose up
 
 ## 预览
 ### 登录
-![202211101727165.png](https://imgs.itchenliang.club/img/202211101727165.png)
+![202211101727165.png](http://imgs.itchenliang.club/img/202211101727165.png)
 
 ### 注册
-![2022111017274810.png](https://imgs.itchenliang.club/img/2022111017274810.png)
+![2022111017274810.png](http://imgs.itchenliang.club/img/2022111017274810.png)
 
 ### 忘记密码
-![202211101728063.png](https://imgs.itchenliang.club/img/202211101728063.png)
+![202211101728063.png](http://imgs.itchenliang.club/img/202211101728063.png)
 
 ### 上传区
-![202211101718307.png](https://imgs.itchenliang.club/img/202211101718307.png)
+![202211101718307.png](http://imgs.itchenliang.club/img/202211101718307.png)
 
 ### 图片管理
-![202211101719274.png](https://imgs.itchenliang.club/img/202211101719274.png)
+![202211101719274.png](http://imgs.itchenliang.club/img/202211101719274.png)
 
 ### 存储桶管理
-![202211101719413.png](https://imgs.itchenliang.club/img/202211101719413.png)
+![202211101719413.png](http://imgs.itchenliang.club/img/202211101719413.png)
 
 ### 相册管理
-![202211101720094.png](https://imgs.itchenliang.club/img/202211101720094.png)
+![202211101720094.png](http://imgs.itchenliang.club/img/202211101720094.png)
 
 ### 操作日志
-![202211101720309.png](https://imgs.itchenliang.club/img/202211101720309.png)
+![202211101720309.png](http://imgs.itchenliang.club/img/202211101720309.png)
 
 ### 个人中心
-![202211101721163.png](https://imgs.itchenliang.club/img/202211101721163.png)
-![202211101721385.png](https://imgs.itchenliang.club/img/202211101721385.png)
+![202211101721163.png](http://imgs.itchenliang.club/img/202211101721163.png)
+![202211101721385.png](http://imgs.itchenliang.club/img/202211101721385.png)
 
 ### 使用习惯配置
-![202211101723388.png](https://imgs.itchenliang.club/img/202211101723388.png)
+![202211101723388.png](http://imgs.itchenliang.club/img/202211101723388.png)
 
 ### 数据统计
-![202211101724094.png](https://imgs.itchenliang.club/img/202211101724094.png)
+![202211101724094.png](http://imgs.itchenliang.club/img/202211101724094.png)
 
 ### 用户管理
-![202211101724463.png](https://imgs.itchenliang.club/img/202302201017207.png)
+![202211101724463.png](http://imgs.itchenliang.club/img/202302201017207.png)
 
 ### 存储桶插件管理
 为了方便拓展，存储桶以插件的形式开发，由管理员直接在系统上进行在线开发，并且支持插件版本管理(版本回退、版本对比)。
 
 **存储桶插件列表**
-![202211101725136.png](https://imgs.itchenliang.club/img/202302201018349.png)
+![202211101725136.png](http://imgs.itchenliang.club/img/202302201018349.png)
 
 **存储桶插件开发**
-![202302201023375.png](https://imgs.itchenliang.club/img/202302201023375.png)
+![202302201023375.png](http://imgs.itchenliang.club/img/202302201023375.png)
 
 **存储桶插件开发预览**
-![202302201024225.png](https://imgs.itchenliang.club/img/202302201024225.png)
+![202302201024225.png](http://imgs.itchenliang.club/img/202302201024225.png)
 
 **存储桶插件版本管理**
-![202302201024461.png](https://imgs.itchenliang.club/img/202302201024461.png)
+![202302201024461.png](http://imgs.itchenliang.club/img/202302201024461.png)
 
 **存储桶插件版本对比**
-![202302201025202.png](https://imgs.itchenliang.club/img/202302201025202.png)
+![202302201025202.png](http://imgs.itchenliang.club/img/202302201025202.png)
 
 
 ### 字典管理
-![202211101725334.png](https://imgs.itchenliang.club/img/202211101725334.png)
+![202211101725334.png](http://imgs.itchenliang.club/img/202211101725334.png)
 
 ### 系统设置
-![2022111017260710.png](https://imgs.itchenliang.club/img/2022111017260710.png)
+![2022111017260710.png](http://imgs.itchenliang.club/img/2022111017260710.png)
 
 ### 更新日志
-![202211101726356.png](https://imgs.itchenliang.club/img/202211101726356.png)
+![202211101726356.png](http://imgs.itchenliang.club/img/202211101726356.png)
 
 
 ## 联系我
