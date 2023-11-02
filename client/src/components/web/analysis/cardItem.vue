@@ -92,6 +92,8 @@ const formatStyle = (count) => {
     flex: 1;
     .card-item-count {
       margin-bottom: 10px;
+      display: flex;
+      align-items: flex-end;
       .total-count {
         font-size: 26px;
       }

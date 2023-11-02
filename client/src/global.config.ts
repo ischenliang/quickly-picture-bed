@@ -75,3 +75,8 @@ export const baseURL = `${ip}/v1`
 
 export const PluginLoadUrl = 'https://unpkg.com/'
 export const npmRegistry = 'https://registry.npmjs.org'
+
+
+export const authorConfig = {
+  email: 'itchenliang@163.com'
+}

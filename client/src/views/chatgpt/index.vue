@@ -34,7 +34,7 @@
           <p>服务器昂贵，接口昂贵，但网站免费！！</p>
           <p style="font-weight: bold;">如果你觉得做的好，可以给我买一瓶冰阔落</p>
           <p v-if="!chatgpt" style="color: red;font-weight: bold;">您未被授权使用chatgpt功能，如需使用请联系管理员授权！</p>
-          <p v-if="!chatgpt" style="color: red;font-weight: bold;">联系邮箱: itchenliang@163.com</p>
+          <p v-if="!chatgpt" style="color: red;font-weight: bold;">联系邮箱: {{ authorConfig.email }}</p>
           <el-image :src="alipay"></el-image>
         </div>
         <div class="chatgpt-message-operate">
@@ -92,6 +92,7 @@ import { ChatData } from '@/typings/interface';
 import rewardDialog from './reward-dialog.vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Log from '@/types/Log';
+import { authorConfig } from '@/global.config'
 
 interface ChangeEvent<T = Element> extends Event {
   target: EventTarget & T

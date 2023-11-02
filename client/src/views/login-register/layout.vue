@@ -40,8 +40,8 @@
       </div>
       <div class="login-footer" v-if="slots.default">
         <div class="footer-inline">
-          <router-link :to="'/contact'" tag="span">联系我们</router-link>|
-          <router-link :to="'/contact'" tag="span">关于系统</router-link>|
+          <router-link :to="'/contact'" tag="a" target="_blank">联系我们</router-link>|
+          <router-link :to="'/contact'" tag="a" target="_blank">关于系统</router-link>|
           <template
             v-for="(item, index) in configStore.systemConfig.bucket_service"
             :key="index">
@@ -50,8 +50,8 @@
           </template>
         </div>
         <div class="footer-inline">
-          <span>商务联系： itchenliang@163.com</span>|
-          <span>技术支持： itchenliang@163.com</span>
+          <span>商务联系： {{ authorConfig.email }}</span>|
+          <span>技术支持： {{ authorConfig.email }}</span>
         </div>
         <div class="footer-inline">
           <span>Copyright © 2019 - {{ year }} {{ website.author }} All Rights Reserved.</span>
@@ -72,6 +72,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/css'
 import 'swiper/css/pagination'
 import useConfigStore from '@/store/config';
+import { authorConfig } from '@/global.config'
 
 /**
  * 实例
