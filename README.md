@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="http://img.itchenliang.club/img/202211101734215.png"/>
+    <img src="./doc/images/202211101734215.png"/>
     <div align="center">
       基于Koa2 + Vue3.x + Vite3.x + typescript开发的轻量级快捷图片管理系统、图床系统
     </div>
@@ -94,8 +94,8 @@
   例如：图片是否添加水印(文字水印|图片水印)插件、图片裁剪旋转缩放插件、图片压缩插件、图片滤镜、图片标注等图片处理相关插件。
 8. 整合markdown工具<br>
   大对数人使用markdown工具都是使用`typora`，然后直接在`typora`整合`picgo`实现图片上传功能，所以其实大多数都不会单独上传图片，故本系统需增加一项`文档管理`功能，可以对文章进行管理。大致界面设计如下:
-  ![202303011050594.png](http://img.itchenliang.club/img/202303011050594.png)
-  ![2023030110512010.png](http://img.itchenliang.club/img/2023030110512010.png)
+  ![202303011050594.png](./doc/images/202303011050594.png)
+  ![2023030110512010.png](./doc/images/2023030110512010.png)
   主要包括的功能项：
     - 文档目录管理
     - 文档文章管理
@@ -163,7 +163,7 @@ cd server
 npm install
 ```
 如果上面在安装依赖过程中失败，报错如下图所示:
-![202303300904229.png](http://img.itchenliang.club/img/202303300904229.png)
+![202303300904229.png](./doc/images/202303300904229.png)
 报错是因为我们的包版本过低了，但是当前的`node`版本过高了，有两种解决方案:
 - 将`node`版本切换到`14.18.2`可完成安装(开发时使用的此版本)
 - 另一种方案则是使用`npm i -f`强制安装依赖
@@ -186,23 +186,23 @@ cd client
 npm run dev
 ```
 控制台出现如下如所示即代表启动成功
-![202211101711526.png](http://img.itchenliang.club/img/202211101711526.png)<br/>
-![202211101712519.png](http://img.itchenliang.club/img/202211101712519.png)
+![202211101711526.png](./doc/images/202211101711526.png)<br/>
+![202211101712519.png](./doc/images/202211101712519.png)
 
 **9. 配置邮箱服务和ip定位服务**
 使用系统提供的默认管理员账号`admin@163.com`登录系统，点击左侧菜单栏上的`系统配置`菜单，进入系统配置页面，然后点击顶部的`系统配置`tab栏，找到`ip定位服务配置`以及`邮件服务配置`填写相关数据即可。
-![202303070911541.png](http://img.itchenliang.club/img/202303070911541.png)
+![202303070911541.png](./doc/images/202303070911541.png)
 注意：
   - 本系统预设了两种`ip定位服务`
     - 百度地图：获取开发者秘钥的前提需要登录[百度地图开放平台](http://lbsyun.baidu.com/)注册账号，并入驻成为开发者，创建`服务端`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
-    ![202303070914444.png](http://img.itchenliang.club/img/202303070914444.png)
+    ![202303070914444.png](./doc/images/202303070914444.png)
     - 高德地图：获取开发者秘钥的前提需要登录[高德地图开放平台](http://lbs.amap.com/)注册账号，并入驻成为开发者，创建`web服务`类型的应用，复制应用的`AK`填写到上面截图中的`开发者秘钥`中，然后点击`保存`按钮，此时就开启了`ip定位服务`。
-    ![202303070916513.png](http://img.itchenliang.club/img/202303070916513.png)
+    ![202303070916513.png](./doc/images/202303070916513.png)
   - 本系统为了方便用户使用，提供了使用邮箱注册账号、邮箱找回密码等功能，默认使用的是`qq邮件服务`，故需要配置`qq邮件服务`的相关数据
     - 首先登录`QQ邮箱`，点击`设置 -> 账号`，找到`POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务`
-      ![202303070920131.png](http://img.itchenliang.club/img/202303070920131.png)
+      ![202303070920131.png](./doc/images/202303070920131.png)
       在`POP3/SMTP服务`一栏，必须是上图所示的，已开启状态，开启后会拿到对应的授权码，将授权码填写到`邮件服务配置`一栏中的`邮件授权码`输入框中，并且填写发件人邮箱地址(即您启用授权码的qq邮箱)
-      ![2023030709221710.png](http://img.itchenliang.club/img/2023030709221710.png)
+      ![2023030709221710.png](./doc/images/2023030709221710.png)
 
 
 **9. 项目打包部署**<br/>
@@ -261,69 +261,69 @@ docker-compose up
 
 ## 预览
 ### 登录
-![202211101727165.png](http://img.itchenliang.club/img/202211101727165.png)
+![202211101727165.png](./doc/images/202211101727165.png)
 
 ### 注册
-![2022111017274810.png](http://img.itchenliang.club/img/2022111017274810.png)
+![2022111017274810.png](./doc/images/2022111017274810.png)
 
 ### 忘记密码
-![202211101728063.png](http://img.itchenliang.club/img/202211101728063.png)
+![202211101728063.png](./doc/images/202211101728063.png)
 
 ### 上传区
-![202211101718307.png](http://img.itchenliang.club/img/202211101718307.png)
+![202211101718307.png](./doc/images/202211101718307.png)
 
 ### 图片管理
-![202211101719274.png](http://img.itchenliang.club/img/202211101719274.png)
+![202211101719274.png](./doc/images/202211101719274.png)
 
 ### 存储桶管理
-![202211101719413.png](http://img.itchenliang.club/img/202211101719413.png)
+![202211101719413.png](./doc/images/202211101719413.png)
 
 ### 相册管理
-![202211101720094.png](http://img.itchenliang.club/img/202211101720094.png)
+![202211101720094.png](./doc/images/202211101720094.png)
 
 ### 操作日志
-![202211101720309.png](http://img.itchenliang.club/img/202211101720309.png)
+![202211101720309.png](./doc/images/202211101720309.png)
 
 ### 个人中心
-![202211101721163.png](http://img.itchenliang.club/img/202211101721163.png)
-![202211101721385.png](http://img.itchenliang.club/img/202211101721385.png)
+![202211101721163.png](./doc/images/202211101721163.png)
+![202211101721385.png](./doc/images/202211101721385.png)
 
 ### 使用习惯配置
-![202211101723388.png](http://img.itchenliang.club/img/202211101723388.png)
+![202211101723388.png](./doc/images/202211101723388.png)
 
 ### 数据统计
-![202211101724094.png](http://img.itchenliang.club/img/202211101724094.png)
+![202211101724094.png](./doc/images/202211101724094.png)
 
 ### 用户管理
-![202211101724463.png](http://img.itchenliang.club/img/202302201017207.png)
+![202211101724463.png](./doc/images/202302201017207.png)
 
 ### 存储桶插件管理
 为了方便拓展，存储桶以插件的形式开发，由管理员直接在系统上进行在线开发，并且支持插件版本管理(版本回退、版本对比)。
 
 **存储桶插件列表**
-![202211101725136.png](http://img.itchenliang.club/img/202302201018349.png)
+![202211101725136.png](./doc/images/202302201018349.png)
 
 **存储桶插件开发**
-![202302201023375.png](http://img.itchenliang.club/img/202302201023375.png)
+![202302201023375.png](./doc/images/202302201023375.png)
 
 **存储桶插件开发预览**
-![202302201024225.png](http://img.itchenliang.club/img/202302201024225.png)
+![202302201024225.png](./doc/images/202302201024225.png)
 
 **存储桶插件版本管理**
-![202302201024461.png](http://img.itchenliang.club/img/202302201024461.png)
+![202302201024461.png](./doc/images/202302201024461.png)
 
 **存储桶插件版本对比**
-![202302201025202.png](http://img.itchenliang.club/img/202302201025202.png)
+![202302201025202.png](./doc/images/202302201025202.png)
 
 
 ### 字典管理
-![202211101725334.png](http://img.itchenliang.club/img/202211101725334.png)
+![202211101725334.png](./doc/images/202211101725334.png)
 
 ### 系统设置
-![2022111017260710.png](http://img.itchenliang.club/img/2022111017260710.png)
+![2022111017260710.png](./doc/images/2022111017260710.png)
 
 ### 更新日志
-![202211101726356.png](http://img.itchenliang.club/img/202211101726356.png)
+![202211101726356.png](./doc/images/202211101726356.png)
 
 
 ## 联系我
@@ -340,10 +340,10 @@ Email: <a href="mailto:itchenliang@163.com">itchenliang@163.com</a>
     </tr>
     <tr style="background: #f6f8fa;">
       <td style="width: 50%;">
-        <img src="http://lc-dzncsgi3.cn-n1.lcfile.com/FnXBNkKfhnOYoLppJGSWQY6dUh1rnMHA/reward_alipay.jpg" />
+        <img src="./doc/images/reward_alipay.jpg" />
       </td>
       <td style="width: 50%;">
-        <img src="http://lc-dzncsgi3.cn-n1.lcfile.com/PAMB9Ah4luFLiVvwp6oVh6pelyPudsNK/reward_weixin.jpg" />
+        <img src="./doc/images/reward_weixin.jpg" />
       </td>
     </tr>
   </tbody>
