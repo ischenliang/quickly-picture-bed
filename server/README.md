@@ -1,5 +1,5 @@
 # 服务端代码
-该项目服务端是采用nestjs开发
+该项目服务端是采用nestjs开发，主要涉及的技术有Nestjs + Express、Typescript、sequelize、axios、nodemailer、svg-captcha等。
 
 如有需要请联系管理员：
 - 邮箱: itchenliang@163.com
