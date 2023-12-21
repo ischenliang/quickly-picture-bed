@@ -17,3 +17,19 @@
     background: #ccc;
   }
 }
+
+.img-fill {
+  object-fit: fill;
+}
+.img-contain {
+  object-fit: contain;
+}
+.img-cover {
+  object-fit: cover;
+}
+.img-scale-down {
+  object-fit: scale-down;
+}
+.img-none {
+  object-fit: none;
+}

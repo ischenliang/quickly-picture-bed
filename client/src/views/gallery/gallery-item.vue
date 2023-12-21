@@ -19,9 +19,8 @@
         @error="handleRenderError"
         @load="hanldeLoad"></v-lazy-image>
     </div>
-    <div class="gallery-item-name" :title="data.origin_name">
-      <!-- <span style="color: red;font-weight: bold;">{{ data.id }} - {{ data.weight }}</span> -  -->
-      <span>{{ data.origin_name || data.name }}</span>
+    <div class="gallery-item-name" :title="data[habits.gallery_img_name || 'origin_name']">
+      <span>{{ data[habits.gallery_img_name || 'origin_name'] }}</span>
     </div>
     <div class="gallery-item-action">
       <el-tooltip v-for="(item, index) in btns" :key="index" effect="dark" :content="item.title" placement="bottom">
@@ -42,6 +41,7 @@ import { computed, reactive, Ref, ref, watch } from 'vue';
 import { useCopyText, useCtxInstance } from '@/hooks/global';
 import VLazyImage from 'v-lazy-image';
 import dragBox from '@/components/dragBox.vue';
+import useUserStore from '@/store/user';
 
 interface Props {
   data: ImageInter
@@ -73,12 +73,19 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['update:data', 'reload', 'submit', 'view'])
 const ctx = useCtxInstance()
+const userStore = useUserStore()
 
 const placeholder = new URL('./loading.gif', import.meta.url).href
 
 /**
  * 变量
  */
+const habits = computed(() => {
+  return userStore.user_habits.data
+})
+const fit = computed(() => {
+  return userStore.user_habits.data.gallery_img_fit || 'cover'
+})
 const myData = computed({
   get () {
     return props.data
@@ -242,7 +249,7 @@ const actions = {
       width: 100%;
       height: 100%;
       // object-fit: scale-down;
-      object-fit: fill;
+      object-fit: v-bind(fit);
       &.loading-cover {
         object-fit: scale-down;
       }

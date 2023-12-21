@@ -4,10 +4,14 @@
     :shadow="shadow">
     <template #header style="padding: 20px;">
       <div class="c-card__header">
-        <slot name="title">
-          <span>{{ title }}</span>
-        </slot>
-        <slot name="cardAction"></slot>
+        <div class="c-card__header-title">
+          <slot name="title">
+            <span>{{ title }}</span>
+          </slot>
+        </div>
+        <div class="c-card__header-action">
+          <slot name="cardAction"></slot>
+        </div>
       </div>
     </template>
     <slot></slot>
@@ -23,7 +27,7 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   title: 'Card name',
   shadow: 'never',
-  headerPadding: '18px 20px'
+  headerPadding: '15px 20px'
 })
 </script>
 
@@ -46,6 +50,16 @@ withDefaults(defineProps<Props>(), {
     @include flex-layout-align(row, space-between, center);
     > :first-child {
       font-weight: bold;
+    }
+    &-title {
+
+    }
+    &-action {
+      display: flex;
+      gap: 15px;
+      .el-button+.el-button {
+        margin-left: 0px !important;
+      }
     }
   }
 }

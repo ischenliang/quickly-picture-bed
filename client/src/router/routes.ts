@@ -79,7 +79,7 @@ const routes: RouteRecordRaw[] = [
         path: '/analysis',
         name: 'Analysis',
         component: () => import('@/views/log/analysis.vue'),
-        meta: { title: '仪表盘', icon: 'PieChart', role: [1, 2, 10] }
+        meta: { title: '仪表盘', icon: 'PieChart', role: [1, 2, 10], hidden: true, active: '/' }
       },
       {
         path: '/albums',
@@ -92,12 +92,6 @@ const routes: RouteRecordRaw[] = [
         name: 'AlbumsImages',
         component: () => import('@/views/album/Images.vue'),
         meta: { title: '我的相册', icon: 'Reading', role: [1, 2, 10], hidden: true, active: '/albums', keepAlive: true }
-      },
-      {
-        path: '/log',
-        name: 'Log',
-        component: () => import('@/views/log/index.vue'),
-        meta: { title: '操作日志', icon: 'ChatDotRound', role: [1, 2, 10] }
       },
       {
         path: '/plugin',
@@ -115,7 +109,7 @@ const routes: RouteRecordRaw[] = [
         path: '/wiki',
         name: 'Wiki',
         component: () => import('@/views/wiki/index.vue'),
-        meta: { title: '知识库管理', icon: 'Collection', role: [1, 2, 10] }
+        meta: { title: '我的知识库', icon: 'Collection', role: [1, 2, 10] }
       },
       {
         path: '/wiki/article',
@@ -134,6 +128,12 @@ const routes: RouteRecordRaw[] = [
         name: 'About',
         component: () => import('@/views/about/about.vue'),
         meta: { title: '关于系统', icon: 'PictureFilled', hidden: true, active: '/', role: [1, 2, 10] }
+      },
+      {
+        path: '/log',
+        name: 'Log',
+        component: () => import('@/views/log/index.vue'),
+        meta: { title: '操作日志', icon: 'ChatDotRound', role: [1, 2, 10] }
       },
       {
         path: '/system',

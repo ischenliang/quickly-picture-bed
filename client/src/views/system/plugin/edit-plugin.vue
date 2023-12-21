@@ -179,21 +179,23 @@ function submit () {
 }
 // 获取插件信息
 function getPackage () {
-  // if (!pkgInfo.value) {
-    loading.pkg = true
-    axios({
-      method: 'get',
-      url: `${npmRegistry}/${form.name}` + `?time=` + Math.random() 
-    }).then(res => {
-      pkgInfo.value = res.data
-      const { 'dist-tags': distTags, versions } = res.data
-      version.value = Object.keys(versions).reverse()
-      const lastVersion = distTags.latest
-      form.version = lastVersion
-      loading.pkg = false
-    })
-  // }
+  loading.pkg = true
+  axios({
+    method: 'get',
+    url: `${npmRegistry}/${form.name}?time=${Math.random()}`
+  }).then(res => {
+    pkgInfo.value = res.data
+    const { 'dist-tags': distTags, versions } = res.data
+    version.value = Object.keys(versions).reverse()
+    const lastVersion = distTags.latest
+    form.version = lastVersion
+    loading.pkg = false
+  }).catch(error => {
+    ctx.$message({ message: error.message, duration: 1000, type: 'error' })
+    loading.pkg = false
+  })
 }
+// 获取指定版本的信息
 function getInfoByVersion (version: string) {
   const { author, description, logo, keywords, category } = pkgInfo.value.versions[version]
   form.author = author.name

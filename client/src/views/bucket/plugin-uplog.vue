@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
  * 变量
  */
 const url = computed(() => {
-  return `${PluginLoadUrl}${props.plugin_name}@${props.plugin_version}`
+  return `${PluginLoadUrl}${props.plugin_name}/${props.plugin_version}/files`
 })
 const doc_md = ref('')
 

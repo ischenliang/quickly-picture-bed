@@ -67,7 +67,7 @@ const route = useRoute()
  */
 const url = computed(() => {
   const { name, version } = props.detail
-  return `${PluginLoadUrl}${name}@${version}`
+  return `${PluginLoadUrl}${name}/${version}/files`
 })
 const doc_md = ref('')
 const loading = ref(false)

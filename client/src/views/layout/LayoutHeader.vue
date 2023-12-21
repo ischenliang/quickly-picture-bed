@@ -48,6 +48,9 @@ const router = useRouter()
 const website = computed(() => {
   return configStore.systemConfig.website
 })
+const system = computed(() => {
+  return configStore.systemConfig.system
+})
 const userInfo = computed(() => {
   return userStore.userInfo
 })
@@ -59,9 +62,14 @@ const roles = computed(() => {
   }, {})
 })
 // 功能区
-const features = ref([
-  { text: 'ChatGPT', path: '/chatgpt', bg: new URL('./images/jhot.svg', import.meta.url).href }
-])
+const features = computed(() => {
+  if (system.value.enable_chatgpt) {
+    return [
+      { text: 'ChatGPT', path: '/chatgpt', bg: new URL('./images/jhot.svg', import.meta.url).href }
+    ]
+  }
+  return []
+})
 // 超链接
 const links = computed(() => {
   return configStore.systemConfig.bucket_service

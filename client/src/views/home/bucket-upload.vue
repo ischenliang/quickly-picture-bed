@@ -31,7 +31,7 @@
       <c-upload
         :accept="systemConfig.system.accept"
         :limit="systemConfig.system.maxcount"
-        :multiple="systemConfig.system.maxcount > 1"
+        :multiple="$route.query.img_id ? false : systemConfig.system.maxcount > 1"
         @upload="beforeUpload">
         <template #progress v-if="totalProgress.progress">
           <el-progress :percentage="totalProgress.progress" />
@@ -90,7 +90,6 @@ import { useFileName } from '@/hooks/date-time';
 import Album from '@/types/Album';
 import Habits from '@/types/Habits';
 import { useRoute } from 'vue-router';
-import { file } from 'jszip';
 interface Props {
   userHabits: HabitsInter
 }
@@ -110,7 +109,7 @@ const image = new Image()
 const album = new Album()
 const habit = new Habits()
 const route = useRoute()
-const { album_id } = route.query
+const { album_id, img_id } = route.query
 
 /**
  * 变量
@@ -181,6 +180,9 @@ const upload = (fileList: File[], errorList: File[] = []) => {
   // 2、处理请求体
   const formData = new FormData()
   formData.append('bucket_id', bucket_id.toString())
+  if (img_id) {
+    formData.append('image_id', img_id.toString())
+  }
   if (albumData.active_id) {
     formData.append('album_id', albumData.active_id.toString())
   }

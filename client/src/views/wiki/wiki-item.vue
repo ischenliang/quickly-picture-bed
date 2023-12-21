@@ -1,5 +1,6 @@
 <template>
   <div class="wiki-item">
+    <drag-box v-if="editable"></drag-box>
     <div class="wiki-item__header">
       <div class="wiki-item-cover" :style="{ background: generateCover(detail.title) }">{{ coverName }}</div>
       <div class="wiki-item-wrapper">
@@ -39,16 +40,19 @@
 import { useFromNow } from '@/hooks/date-time';
 import { WikiInter } from '@/typings/interface';
 import { computed } from 'vue'
+import dragBox from '@/components/dragBox.vue';
 
 interface Props {
   detail: WikiInter
+  editable?: boolean
 }
 
 /**
  * 实例
  */
 const props = withDefaults(defineProps<Props>(), {
-  detail: () => ({} as WikiInter)
+  detail: () => ({} as WikiInter),
+  editable: false
 })
 const emit = defineEmits(['update', 'delete'])
 

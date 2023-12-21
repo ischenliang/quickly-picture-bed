@@ -1,28 +1,56 @@
 <template>
   <div class="album-container">
-    <c-card :title="'我的相册(' + list.total + ')'" v-loading="list.loading">
+    <c-card :title="'我的相册(' + list.total + ')'">
       <template #cardAction>
-        <span>
+        <el-input
+          v-model="list.filters.search"
+          placeholder="请输入搜索内容..."
+          style="width: 180px;"
+          :suffix-icon="'Search'"
+          clearable
+          @input="handleInput"/>
+      </template>
+      <div class="album-filter">
+        <div>
+          <el-select v-model="list.filters.access_type" placeholder="请选择相册类别" filterable @change="listGet">
+            <el-option
+              v-for="(item, index) in types"
+              :key="'bucket-' + index"
+              :label="item.label"
+              :value="item.value" />
+          </el-select>
+        </div>
+        <div>
           <el-button type="primary" @click="itemOperate(null, 'edit')">新增</el-button>
           <el-button v-if="list.data.length" @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
-        </span>
-      </template>
-      <el-row id="sortableRef" v-if="list.data.length">
-        <el-col
-          v-for="(item, index) in list.data"
-          :key="'album-item-' + index + '-' + item.id"
-          :xl="6"
-          :lg="8"
-          :md="12"
-          class="drag-box-col">
-          <album-item
-            :album="item"
-            :editable="editable"
-            @submit="itemOperate(item, $event)"
-            @click="handleClick(item)"></album-item>
-        </el-col>
-      </el-row>
-      <c-empty v-else></c-empty>
+        </div>
+      </div>
+      <div class="album-list" v-loading="list.loading">
+        <el-row id="sortableRef" v-if="list.data.length">
+          <el-col
+            v-for="(item, index) in list.data"
+            :key="'album-item-' + index + '-' + item.id"
+            :xl="6"
+            :lg="8"
+            :md="12"
+            class="drag-box-col">
+            <album-item
+              :album="item"
+              :editable="editable"
+              @submit="itemOperate(item, $event)"
+              @click="handleClick(item)"></album-item>
+          </el-col>
+        </el-row>
+        <c-empty v-else></c-empty>
+      </div>
+      <div class="album-pagination">
+        <pagination
+          v-model:page="list.page"
+          v-model:size="list.size"
+          :total="list.total"
+          :page-sizes="[12, 24, 48, 96]"
+          @change="listGet"/>
+      </div>
     </c-card>
 
     <edit-dialog
@@ -51,14 +79,23 @@ const ctx = useCtxInstance()
 const album = new Album()
 const configStore = useConfigStore()
 const router = useRouter()
+const types = ref([
+  { label: '全部相册', value: '' },
+  { label: '私密相册', value: 0 },
+  { label: '公开相册', value: 1 },
+  { label: '密码访问', value: 2 }
+])
 
 /**
  * 变量
  */
 const list: ListInter<AlbumInter> = reactive({
   total: 0,
+  page: 1,
+  size: 12,
   filters: {
-    name: ''
+    search: '',
+    access_type: ''
   },
   data: [],
   loading: false
@@ -78,6 +115,8 @@ const visible = reactive({
 const listGet = () => {
   list.loading = true
   album.find({
+    page: list.page,
+    size: list.size,
     ...list.filters
   }).then((res: PageResponse<AlbumInter, { id: number, count: number }>) => {
     list.data = res.items.map(item => {
@@ -142,6 +181,12 @@ function dragSort (fromIndex: number, toIndex: number) {
     listGet()
   })
 }
+// 搜索
+function handleInput (val) {
+  setTimeout(() => {
+    listGet()
+  }, 1000)
+}
 </script>
 
 <style lang="scss">
@@ -168,14 +213,35 @@ $text-color-active: #32cfaa;
   }
   .el-card__body {
     overflow: auto;
+    @include flex-layout(column);
+    padding: 20px 20px 10px;
   }
   
-  .el-row {
-    width: 100%;
-    height: 100%;
-    align-content: flex-start;
-    .el-col {
-      padding: 8px;
+  .album-list {
+    flex: 1;
+    .el-row {
+      width: 100%;
+      height: 100%;
+      align-content: flex-start;
+      .el-col {
+        padding: 8px;
+      }
+    }
+  }
+  .album-pagination {
+    flex-shrink: 0;
+  }
+
+  .album-filter {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 5px;
+    flex-shrink: 0;
+    .el-button-group {
+      margin-right: 12px;
+    }
+    .el-select {
+      width: 180px;
     }
   }
 }

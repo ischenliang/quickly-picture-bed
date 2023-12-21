@@ -46,7 +46,7 @@ interface Props {
  */
 const props = withDefaults(defineProps<Props>(), {
   accept: () => (['*']),
-  limit: 3,
+  limit: 1,
   multiple: true
 })
 const emit = defineEmits(['upload'])

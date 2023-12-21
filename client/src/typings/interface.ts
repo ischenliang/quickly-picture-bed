@@ -72,6 +72,7 @@ export interface ImageInter {
   id?: number
   // 图片名称
   name?: string
+  img_name?: string
   // 原始名称
   origin_name?: string
   // 图片宽度
@@ -86,6 +87,7 @@ export interface ImageInter {
   baseurl?: string
   // 图片预览地址
   preview_url?: string
+  img_preview_url?: string
   // 图片大小
   size?: number
   // 存储桶id
@@ -412,6 +414,10 @@ export interface SettingInter {
     // 邮件服务配置
     mail_user?: string // 发件人
     mail_pass?: string // 授权码
+
+    // 其他配置
+    enable_register?: boolean // 是否启用注册功能
+    enable_chatgpt?: boolean // 是否启用chatgpt功能
   }
   // 更新日志
   uplog?: string // 更新日志url
@@ -470,6 +476,12 @@ export interface HabitsInter {
   createdAt?: string
   // 更新时间
   updatedAt?: string
+  // 图片层现方式
+  gallery_img_fit?:  "fill" | "contain" | "cover" | "none" | "scale-down"
+  // 图片显示名称
+  gallery_img_name?: string
+  // 相册封面层现方式
+  album_cover_fit?: string
 }
 
 

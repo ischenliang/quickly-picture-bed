@@ -219,14 +219,16 @@ const album_tag: Ref<AlbumTag> = ref(null)
 // 获取标签列表
 function getTags (callback: Function = () => {}) {
   album.tags(+route.query.id).then((res: AlbumTag) => {
-    album_tag.value = res
-    album_tag.value.tags.unshift({ type: 'primary', value: '全部' })
-    if (!album_tag.value.tags.includes(list.filters.tag)) {
-      list.filters.tag = {
-        type: '',
-        value: '全部'
+    if (res) {
+      album_tag.value = res
+      album_tag.value.tags.unshift({ type: 'primary', value: '全部' })
+      if (!album_tag.value.tags.includes(list.filters.tag)) {
+        list.filters.tag = {
+          type: '',
+          value: '全部'
+        }
+        callback()
       }
-      callback()
     }
   })
 }
@@ -236,9 +238,11 @@ function getDetail () {
   const id = route.query.id
   if (id) {
     album.detail(+id).then((res: AlbumInter) => {
-      res.createdAt = useFormat(res.createdAt, 'YYYY-MM-DD')
-      res.updatedAt = useFormat(res.updatedAt, 'YYYY-MM-DD')
-      detail.value = res
+      if (res) {
+        res.createdAt = useFormat(res.createdAt, 'YYYY-MM-DD')
+        res.updatedAt = useFormat(res.updatedAt, 'YYYY-MM-DD')
+        detail.value = res
+      }
     })
     listGet()
   }
@@ -294,8 +298,7 @@ function handleAction (type) {
         ids.map((id, index) => {
           image.update({
             id: id,
-            album_id: '',
-            sort: 0
+            album_id: null
           }).then(async (res) => {
             if (index === ids.length - 1) {
               ctx.$message({ message: '移除成功', duration: 1000, type: 'success' })

@@ -233,7 +233,7 @@ const handleData = (user_plugin_id: number | string) => {
     // 这里需要使用用户安装的插件
     const { plugin: {name}, version } = current_plugin.value
     // 动态加载模块：添加随机数，避免模块不重复加载
-    const url = `${PluginLoadUrl}${name}@${version}`
+    const url = `${PluginLoadUrl}${name}/${version}/files/dist/index.js`
     loading.value = true
     import(/* @vite-ignore */url + `?time=` + Math.random())
       .then((res: { default }) => {

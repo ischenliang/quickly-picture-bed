@@ -16,7 +16,7 @@
       </div>
       <div class="plugin-toolbar-action">
         <el-button type="primary" @click="handleAction({ type: 'edit', data: null })">新增</el-button>
-        <el-button @click="toggleDrag">{{ draggable ? '完成排序' : '启用排序' }}</el-button>
+        <el-button @click="toggleDrag">{{ draggable ? `完成排序(${list.total})` : `启用排序(${list.total})` }}</el-button>
       </div>
     </div>
     <el-row class="plugin-list" v-loading="list.loading"  id="sortableRef">
@@ -69,7 +69,7 @@ const ctx = useCtxInstance()
 const configStore = useConfigStore()
 const plugin_types = computed(() => {
   return [
-    { label: `全部（${list.total}）`, value: '' },
+    { label: `全部`, value: '' },
     ...configStore.dicts.find(el => el.code === 'plugin_type').values || []
   ]
 })

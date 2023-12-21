@@ -1,37 +1,52 @@
 <template>
   <div class="wiki-conatiner">
-    <div class="wiki-toolbar">
-      <div class="wiki-toolbar-filter">
-        <el-input placeholder="请输入搜索内容"></el-input>
-        <el-button type="primary">查询</el-button>
-        <el-button>重置</el-button>
+    <c-card :title="`知识库(${list.total})`" v-loading="list.loading">
+      <template #cardAction>
+        <el-input
+          v-model="list.filters.search"
+          placeholder="请输入搜索内容..."
+          style="width: 180px;"
+          :suffix-icon="'Search'"
+          clearable
+          @input="handleInput"/>
+      </template>
+      <div class="wiki-filter">
+        <div></div>
+        <div>
+          <el-button el-button type="primary" @click="handleUpdate(null)">新增</el-button>
+          <el-button v-if="list.data.length" @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
+        </div>
       </div>
-      <div class="wiki-toolbar-action">
-        <el-button type="primary" @click="handleUpdate(null)">新增</el-button>
+      <div class="wiki-list" v-loading="list.loading">
+        <c-empty v-if="list.data.length === 0"></c-empty>
+        <el-row id="sortableRef" v-else>
+          <el-col
+            :xl="6"
+            :lg="8"
+            :md="12"
+            v-for="(item, index) in list.data"
+            :key="'wiki-item-' + index"
+            class="drag-box-col">
+            <wiki-item
+              :detail="item"
+              :editable="editable"
+              @update="handleUpdate(item)"
+              @delete="handleDelete(item)"
+              @copy="handleCopy(item)"
+              @click="handleClick(item)">
+            </wiki-item>
+          </el-col>
+        </el-row>
       </div>
-    </div>
-    <div class="wiki-main" v-loading="list.loading">
-      <c-empty v-if="list.data.length === 0"></c-empty>
-      <el-row v-else>
-        <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="'wiki-item-' + index">
-          <wiki-item
-            :detail="item"
-            @update="handleUpdate(item)"
-            @delete="handleDelete(item)"
-            @copy="handleCopy(item)"
-            @click="handleClick(item)">
-          </wiki-item>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="wiki-pagination">
-      <pagination
-        v-model:page="list.page"
-        v-model:size="list.size"
-        :total="list.total"
-        :page-sizes="[18, 36, 72, 100]"
-        @change="listGet"/>
-    </div>
+      <div class="wiki-pagination">
+        <pagination
+          v-model:page="list.page"
+          v-model:size="list.size"
+          :total="list.total"
+          :page-sizes="[18, 36, 72, 100]"
+          @change="listGet"/>
+      </div>
+    </c-card>
     <edit-wiki
       v-if="visible.edit"
       v-model="visible.edit"
@@ -43,12 +58,12 @@
 import Wiki from '@/types/Wiki';
 import { ListInter, WikiInter } from '@/typings/interface';
 import { PageResponse } from '@/typings/req-res';
-import { h, reactive, ref } from 'vue';
+import { h, nextTick, reactive, ref } from 'vue';
 import WikiItem from './wiki-item.vue'
 import EditWiki from './EditWiki.vue'
 import { useRouter } from 'vue-router';
 import CEmpty from '@/components/cEmpty.vue';
-import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
+import { useCtxInstance, useDeleteConfirm, useDragSort } from '@/hooks/global';
 import { ElButton, ElCheckbox, ElInput, ElMessageBox } from 'element-plus';
 /**
  * 实例
@@ -66,6 +81,7 @@ const list: ListInter<WikiInter> = reactive({
   total: 0,
   loading: false,
   filters: {
+    search: ''
   },
   data: []
 })
@@ -81,7 +97,11 @@ const item: { data: WikiInter } = reactive({
  */
 function listGet () {
   list.loading = true
-  wiki.find({}).then((res: PageResponse<WikiInter>) => {
+  wiki.find({
+    page: list.page,
+    size: list.size,
+    ...list.filters
+  }).then((res: PageResponse<WikiInter>) => {
     list.data = res.items
     list.total = res.total
     list.loading = false
@@ -170,46 +190,68 @@ function handleClick (wiki: WikiInter) {
     }
   })
 }
+
+
+const editable = ref(false)
+function toggleDrag () {
+  editable.value = !editable.value
+  initDrag()
+}
+function initDrag () {
+  nextTick(() => {
+    useDragSort(document.querySelector('#sortableRef'), list.data, dragSort)
+  })
+}
+// 切换顺序
+function dragSort (fromIndex: number, toIndex: number) {
+  list.loading = true
+  const [from, to] = [list.data[fromIndex], list.data[toIndex]]
+  wiki.sort(from.id, to.id).then(() => {
+    listGet()
+  })
+}
+// 搜索
+function handleInput (val) {
+  setTimeout(() => {
+    listGet()
+  }, 1000)
+}
 </script>
 <style lang="scss">
+@import '@/styles/flex-layout.scss';
 .wiki-conatiner {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  .el-row {
-    .el-col {
-      padding: 5px 10px 15px;
-    }
+  .el-card__header {
+    padding: 12px 20px;
   }
-  .wiki-toolbar {
-    padding: 20px 20px 5px 20px;
-    display: flex;
-    justify-content: space-between;
-    flex-shrink: 0;
-    padding-bottom: 2px;
-    &-filter {
-      display: flex;
-      > .el-input, > .el-select {
-        width: 11.5rem;
-      }
-      :not(:first-child) {
-        margin-left: 15px;
-      }
-    }
-  }
-  .wiki-main {
-    flex: 1;
+  .el-card__body {
     overflow: auto;
-    padding: 0 10px;
+    @include flex-layout(column);
+    padding: 20px 20px 10px;
+  }
+  .wiki-list {
+    flex: 1;
+    .el-row {
+      .el-col {
+        padding: 5px 10px 15px;
+      }
+    }
   }
   .wiki-pagination {
     flex-shrink: 0;
-    padding: 0 20px 20px;
+  }
+  .wiki-filter {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 5px;
+    flex-shrink: 0;
+    .el-button-group {
+      margin-right: 12px;
+    }
+    .el-select {
+      width: 180px;
+    }
   }
 }
 </style>

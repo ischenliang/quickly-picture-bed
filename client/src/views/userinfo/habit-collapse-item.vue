@@ -8,7 +8,10 @@
         <slot name="desc">{{ desc }}</slot>
       </div>
     </div>
-    <div class="habit-collapse-item__right" :style="{
+    <div :class="{
+      'habit-collapse-item__right': true,
+      column: direction === 'column'
+    }" :style="{
       'width': direction === 'row' ? '' : '100%'
     }">
       <slot></slot>
@@ -57,7 +60,7 @@ const style: any = computed(() => {
     .habit-collapse-item-title {
       font-size: 16px;
       font-weight: bold;
-      color: #121212;
+      color: #5f5b5b;
     }
     .habit-collapse-item-desc {
       font-size: 14px;
@@ -66,6 +69,10 @@ const style: any = computed(() => {
   }
   &__right {
     flex-shrink: 0;
+    margin-left: 10px;
+    &.column {
+      margin-left: 0px !important;
+    }
   }
 }
 </style>

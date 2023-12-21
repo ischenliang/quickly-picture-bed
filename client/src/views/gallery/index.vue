@@ -3,14 +3,15 @@
     <c-card :title="'图库'">
       <template #cardAction>
         <el-input
-          v-model="list.filters.img_name"
-          placeholder="请输入名称搜索"
+          v-model="list.filters.search"
+          placeholder="请输入搜索内容..."
           style="width: 180px;"
           :suffix-icon="'Search'"
           clearable
           @input="handleInput"/>
       </template>
       <div class="gallery-filter">
+        <!-- 筛选 -->
         <div>
           <el-select v-model="list.filters.bucket_id" placeholder="请选择需要显示的图床" filterable @change="listGet">
             <el-option
@@ -20,24 +21,28 @@
               :value="item.id" />
           </el-select>
         </div>
+        <!-- 操作 -->
         <div>
           <el-button type="warning" v-if="selected.length === 1" @click="handleRename">重命名</el-button>
           <!-- 这里采用一个下拉框的方式来提供选择的链接格式类型 -->
-          <el-dropdown v-if="selected.length" class="copy-link-type" trigger="click" @command="(func) => func()">
-            <el-button type="primary" icon="DocumentCopy">复制链接</el-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  v-for="(link, index) in linkTypes"
-                  :key="index"
-                  :label="link.label"
-                  :value="link.id"
-                  :command="() => handleCommond(link)">
-                  {{ link.label }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+          <template v-if="selected.length">
+            <el-dropdown class="copy-link-type" trigger="click" @command="(func) => func()">
+              <el-button type="primary" icon="DocumentCopy">复制链接</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="(link, index) in linkTypes"
+                    :key="index"
+                    :label="link.label"
+                    :value="link.id"
+                    :command="() => handleCommond(link)">
+                    {{ link.label }}
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-button type="primary" :icon="'Position'" @click="handleMoveAlbum">移入相册</el-button>
+          </template>
           <el-button type="primary" :icon="'Checked'" @click="handleToggleSelectAll">全选</el-button>
           <el-button
             :type="disabled ? 'default' : 'danger'"
@@ -90,6 +95,12 @@
       :id="item.data.id"
       @submit="listGet"
       @update:model-value="(val) => item.detail = val"/>
+    <album-dialog
+      v-if="selected.length && item.move"
+      :model-value="item.move"
+      :ids="selected.map(el => el.id)"
+      @submit="listGet"
+      @update:model-value="(val) => item.move = val"/>
   </div>
 </template>
 
@@ -103,6 +114,7 @@ import { computed, nextTick, onActivated, reactive, Ref, ref, watch } from 'vue'
 import GalleryItem from './gallery-item.vue'
 import { useFormat } from '@/hooks/date-time';
 import DetailDialog from './DetailDialog.vue'
+import AlbumDialog from './AlbumDialog.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
 import { linkTypes } from '@/global.config';
@@ -127,7 +139,7 @@ const list: ListInter<ImageInter> = reactive({
   total: 0,
   loading: false,
   filters: {
-    img_name: '',
+    search: '',
     bucket_id: 0, // 图床
     user_id: 0, // 全部
   },
@@ -149,6 +161,7 @@ const disabled = computed(() => {
 })
 const item = reactive({
   detail: false,
+  move: false,
   data: null
 })
 
@@ -158,9 +171,7 @@ const item = reactive({
 // 获取存储桶列表
 const getBuckets = () => {
   list.loading = true
-  bucket.find({
-    ...list.filters
-  }).then((res: PageResponse<BucketInter>) => {
+  bucket.find({}).then((res: PageResponse<BucketInter>) => {
     buckets.value = [
     { id: 0, name: '全部' },
       ...res.items.map(el => el)
@@ -277,6 +288,10 @@ const deleteAll = () => {
     })
   })
 }
+// 移入相册
+function handleMoveAlbum () {
+  item.move = true
+}
 // 搜索
 const handleInput = (val) => {
   setTimeout(() => {
@@ -347,6 +362,7 @@ onActivated(() => {
   .el-card__body {
     overflow: auto;
     @include flex-layout(column);
+    padding: 20px 20px 10px;
   }
   .gallery-filter {
     display: flex;
@@ -357,7 +373,7 @@ onActivated(() => {
       margin-right: 12px;
     }
     .el-select {
-      width: 150px;
+      width: 180px;
     }
   }
   .el-col {

@@ -1,12 +1,17 @@
 <template>
   <div class="bucket-container">
-    <c-card :title="`存储桶(${list.total})`" v-loading="list.loading">
+    <c-card :title="`存储桶(${list.total})`">
       <template #cardAction>
-        <span>
-          <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
-        </span>
+        <el-button @click="toggleDrag">{{ editable ? '完成排序' : '启用排序' }}</el-button>
+        <el-input
+          v-model="list.filters.search"
+          placeholder="请输入搜索内容..."
+          style="width: 180px;"
+          :suffix-icon="'Search'"
+          clearable
+          @input="handleInput"/>
       </template>
-      <el-row id="sortableRef">
+      <el-row id="sortableRef" v-loading="list.loading">
         <!-- 新建 -->
         <el-col :xl="6" :lg="8" :md="12">
           <bucket-item :create="true" @click="itemOperate(null, 'edit')"></bucket-item>
@@ -162,6 +167,12 @@ function dragSort (fromIndex: number, toIndex: number) {
 function getStats (item: BucketInter) {
   return list.stats.find(el => el.id === item.id)
 }
+// 搜索
+function handleInput (val) {
+  setTimeout(() => {
+    listGet()
+  }, 1000)
+}
 </script>
 
 <style lang="scss">
@@ -176,6 +187,10 @@ function getStats (item: BucketInter) {
     .el-col {
       padding: 10px 15px 40px;
     }
+  }
+  .card-header__filter {
+    display: flex;
+    gap: 15px;
   }
 }
 </style>

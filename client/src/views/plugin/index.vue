@@ -1,41 +1,48 @@
 <template>
   <div class="plugin-container">
-    <div class="plugin-toolbar">
-      <div class="plugin-toolbar-filter">
-        <el-input v-model="list.filters.search" placeholder="请输入插件名称" />
-        <el-select v-model="list.filters.category" placeholder="请选择插件类别">
-          <el-option
-            v-for="(item, index) in plugin_types"
-            :key="'type-' + index"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-button type="primary" @click="listGet">查询</el-button>
-        <el-button type="default" @click="resetFilter">重置</el-button>
-      </div>
-    </div>
-    <el-row class="plugin-list" v-loading="list.loading">
-      <template v-if="list.data.length">
-        <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
-          <plugin-item :detail="item" @click="handleClick(item)"></plugin-item>
-        </el-col>
+    <c-card :title="`插件市场(${list.total})`">
+      <template #cardAction>
+        <div class="plugin-filter">
+          <el-select v-model="list.filters.category" placeholder="请选择插件类别" @change="listGet">
+            <el-option
+              v-for="(item, index) in plugin_types"
+              :key="'type-' + index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-input
+            v-model="list.filters.search"
+            placeholder="请输入搜索内容..."
+            style="width: 180px;"
+            :suffix-icon="'Search'"
+            clearable
+            @input="handleInput"/>
+        </div>
       </template>
-      <template v-else>
-        <c-empty></c-empty>
-      </template>
-    </el-row>
+      <el-row class="plugin-list" v-loading="list.loading">
+        <template v-if="list.data.length">
+          <el-col :xl="6" :lg="8" :md="12" v-for="(item, index) in list.data" :key="index">
+            <plugin-item :detail="item" @click="handleClick(item)"></plugin-item>
+          </el-col>
+        </template>
+        <template v-else>
+          <c-empty></c-empty>
+        </template>
+      </el-row>
+    </c-card>
   </div>
 </template>
 <script lang="ts" setup>
 import Plugin from '@/types/Plugin';
 import pluginItem from './plugin-item.vue';
 import { ListInter, PluginInter } from '@/typings/interface';
-import { Ref, ref, reactive, computed } from 'vue';
+import { Ref, ref, reactive, computed, nextTick } from 'vue';
 import { PageResponse } from '@/typings/req-res';
 import { useRouter } from 'vue-router';
 import useConfigStore from '@/store/config';
 import cEmpty from '@/components/cEmpty.vue'
+import { useDragSort } from '@/hooks/global';
 /**
  * 实例
  */
@@ -59,7 +66,7 @@ const list: ListInter<PluginInter> = reactive({
 })
 const plugin_types = computed(() => {
   return [
-    { label: `全部（${list.total}）`, value: '' },
+    { label: '全部插件', value: '' },
     ...configStore.dicts.find(el => el.code === 'plugin_type').values || []
   ]
 })
@@ -90,41 +97,24 @@ function handleClick (item: PluginInter) {
     }
   })
 }
-// 重置筛选
-function resetFilter () {
-  Object.keys(list.filters).forEach(key => {
-    if (typeof list.filters[key] === 'number') {
-      list.filters[key] = 0
-    } else {
-      list.filters[key] = ''
-    }
-  })
-  listGet()
+
+// 搜索
+function handleInput (val) {
+  setTimeout(() => {
+    listGet()
+  }, 1000)
 }
 </script>
 <style lang="scss">
 .plugin-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  .plugin-toolbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0 10px;
-    &-filter {
-      display: flex;
-      align-items: center;
-      > .el-input, > .el-select {
-        width: 11.5rem;
-      }
-      :not(:first-child) {
-        margin-left: 15px;
-      }
-    }
-    &-action {
-      flex-shrink: 0;
-    }
+  .el-card__header {
+    padding: 12px 20px;
+  }
+  .el-card__body {
+    overflow: auto;
+    padding: 10px;
   }
   .el-row {
     &.plugin-list {
@@ -133,6 +123,13 @@ function resetFilter () {
     }
     .el-col {
       padding: 10px;
+    }
+  }
+  .plugin-filter {
+    display: flex;
+    gap: 15px;
+    .el-select {
+      width: 180px;
     }
   }
 } 

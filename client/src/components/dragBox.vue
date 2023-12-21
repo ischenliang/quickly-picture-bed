@@ -21,6 +21,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 4px 4px 0 0;
   cursor: move;
   &-line {
     width: 46px;

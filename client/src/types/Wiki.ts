@@ -48,4 +48,11 @@ export default class Wiki {
   getArticleDetail (id: number) {
     return http('/article/detail', { id })
   }
+  // 排序
+  sort (from: number, to: number) {
+    return http('/wiki/sort', {
+      from,
+      to
+    })
+  }
 }

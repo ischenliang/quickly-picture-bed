@@ -37,8 +37,9 @@
 <script lang="ts" setup>
 import { AlbumInter } from '@/typings/interface';
 import VLazyImage from 'v-lazy-image';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import dragBox from '@/components/dragBox.vue';
+import useUserStore from '@/store/user';
 const placeholder = new URL('../../../views/gallery/loading.gif', import.meta.url).href
 
 interface Props {
@@ -57,8 +58,12 @@ withDefaults(defineProps<Props>(), {
   editable: false
 })
 const emit = defineEmits(['submit'])
+const userStore = useUserStore()
 
 const bindClass = ref('')
+const fit = computed(() => {
+  return userStore.user_habits.data.album_cover_fit || 'cover'
+})
 
 const handleClick = (type) => {
   emit('submit', type)
@@ -95,14 +100,14 @@ function handleRenderError () {
       height: 100%;
       transition: all 0.35s;
       opacity: 0.8;
-      object-fit: cover;
+      object-fit: v-bind(fit);
     }
     .load-error {
       width: 100%;
       height: 100%;
       transition: all 0.35s;
       opacity: 0.8;
-      object-fit: cover;
+      object-fit: v-bind(fit);
     }
   }
 

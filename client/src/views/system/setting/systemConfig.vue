@@ -86,6 +86,21 @@
       </el-row>
     </c-card>
 
+    <c-card :title="'其他配置'">
+      <el-row>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="enable_register" label="是否启用注册">
+            <el-switch v-model="myForm.system.enable_register"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :xl="12" :lg="8" :md="12">
+          <el-form-item prop="enable_chatgpt" label="是否启用ChatGPT">
+            <el-switch v-model="myForm.system.enable_chatgpt"></el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </c-card>
+
     <c-card :title="'菜单配置'">
       <p style="line-height: 22px;color: #666;margin-bottom: 5px;">对右上角的菜单和链接配置</p>
       <monaco-editor v-model="myForm.bucket_service_str"></monaco-editor>

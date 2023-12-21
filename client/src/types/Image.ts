@@ -11,7 +11,7 @@ import http from '@/api'
 interface Filter extends PageReq {
   uid?: string
   img_name?: string
-  bucket_id?: string
+  bucket_id?: number
 }
 
 /**

@@ -113,7 +113,6 @@ watch(() => route, (val) => {
       width: 240px;
       height: 100%;
       background: #fff;
-      // box-shadow: 0 0 17px 0 rgb(130 122 122 / 10%);
       border-right: 1px solid #dcdee2;
     }
     .content-container {
@@ -125,13 +124,12 @@ watch(() => route, (val) => {
         flex: 1;
         width: 100%;
         overflow: auto;
-        padding: 20px;
+        padding: 15px;
         position: relative;
       }
       .footer-container {
         flex-shrink: 0;
         height: 30px;
-        // background: red;
       }
     }
   }
