@@ -61,6 +61,16 @@ const useUserStore = defineStore('user', () => {
   const updateUserBuckets = (payload: BucketInter[]) => {
     user_buckets.value = payload
   }
+  // 重置所有数据
+  function resetData () {
+    userInfo.value = null
+    user_habits.data = toRaw(defaultHabits)
+    list_filter.value = {}
+    currentImages.value = []
+    user_logs.value = []
+    user_menus.value = []
+    user_buckets.value = []
+  }
 
   return {
     userInfo,
@@ -75,7 +85,8 @@ const useUserStore = defineStore('user', () => {
     updateUserLogs,
     updateUserMenus,
     updateListFilter,
-    updateUserBuckets
+    updateUserBuckets,
+    resetData
   }
 })
 

@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts" setup>
+import useUserStore from '@/store/user';
 import { UserInter } from '@/typings/interface';
 import { computed, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -169,6 +170,7 @@ const userAvatar = computed(() => {
 })
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const entries = ref([
   { label: '使用分析', icon: 'DataAnalysis', route: 'Analysis' },
@@ -194,7 +196,8 @@ const goView = (item) => {
 
 const logout = () => {
   localStorage.removeItem('token')
-  window.location.reload()
+  userStore.resetData()
+  router.push({ path: '/login' })
 }
 </script>
 

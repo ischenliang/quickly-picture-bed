@@ -30,8 +30,7 @@ instance.interceptors.response.use((response: any) => {
 }, (error) => {
   console.log(error)
   if (error.response.status === 401) {
-    localStorage.clear()
-    window.location.reload()
+    return Promise.reject(error.response.data)
   }
 })
 
@@ -63,7 +62,7 @@ function http (url, data, progressFn: Function = () => {}) {
         if ([401].includes(error.code) || (error.code === 500 && error.message === 'invalid token')) {
           // 为了避免由于登录失效后到登录页还需重新输入数据
           localStorage.removeItem('token')
-          useUserStore().updateUserInfo(null)
+          useUserStore().resetData()
           router.push({
             path: '/login'
           })

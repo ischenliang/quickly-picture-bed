@@ -19,13 +19,21 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.gif'],
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          // 跳过组件解析
+          isCustomElement: (tag) => tag.includes('custom-')
+        }
+      }
+    }),
     monacoEditorPlugin({})
   ],
   publicDir: 'public',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'), // 配置别名
+      // 'vue': 'vue/dist/vue.esm-bundler.js' // 解决：[Vue warn]: Component provided template option but runtime compilation is not supported in this build of Vue. Configure your bundler to alias "vue" to "vue/dist/vue.esm-bundler.js".
     }
   },
   // 强制预构建插件包

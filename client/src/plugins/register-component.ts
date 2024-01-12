@@ -1,5 +1,5 @@
 // 全局组件注册
-import cButton from '@/components/cButton.vue'
+// import cButton from '@/components/cButton.vue'
 // 方式一
 // export default function (app, option) {
 //   app.component('c-button', cButton)
@@ -28,7 +28,7 @@ import cEmpty from '@/components/cEmpty.vue'
 // 方式二
 export default {
   install (app, option) {
-    app.component('c-button', cButton)
+    // app.component('c-button', cButton)
     app.component('tableTable', tableTable)
     app.component('tablePage', tablePage)
     app.component('tableCard', tableCard)

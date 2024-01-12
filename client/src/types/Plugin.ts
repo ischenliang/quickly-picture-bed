@@ -35,7 +35,7 @@ export default class Plugin {
     return http('/plugin/list', params)
   }
   // 获取已安装的插件
-  installed (params: { status: boolean }) {
+  installed (params: { status: boolean, type?: string }) {
     return http('/plugin/installed', params)
   }
   // 安装插件

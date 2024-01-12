@@ -247,8 +247,9 @@ function handleCommond (type: string) {
           margin-right: 10px;
           flex-shrink: 0;
           position: relative;
-          background: #e2e2e2;
+          // background: #e2e2e2;
           border-radius: 6px;
+          border: 1px solid #ddd;
           img {
             width: 100%;
             height: 100%;

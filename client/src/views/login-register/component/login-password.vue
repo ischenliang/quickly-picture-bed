@@ -91,7 +91,7 @@ const imgCode = reactive({
  * 回调函数
  */
 const login = () => {
-  formRef.value.validate(valid => {
+  formRef.value && formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
       user.login({

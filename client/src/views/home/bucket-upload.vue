@@ -197,11 +197,16 @@ const upload = (fileList: File[], errorList: File[] = []) => {
     emit('success')
     res.forEach(el => {
       el.preview_url = el.baseurl + el.url
-      userStore.currentImages.push(el)
+      const idx = userStore.currentImages.findIndex(img => img.id === el.id)
+      if (img_id || idx !== -1) {
+        userStore.currentImages.splice(idx, 1, el)
+      } else {
+        userStore.currentImages.push(el)
+      }
     })
   }).catch(error => {
     ctx.$notify({
-      title: '错误提示',
+      title: '插件运行错误提示',
       message: error.data,
       type: 'error',
       duration: 1000

@@ -1,0 +1,2 @@
+.message{color:red}.message.underline{text-decoration:underline}
+.c-button{align-items:center;background:#fff;border:1px solid #dcdfe6;border-radius:4px;box-sizing:border-box;color:#606266;cursor:pointer;display:inline-flex;font-size:14px;font-weight:500;justify-content:center;line-height:1;outline:none;padding:8px 15px;-webkit-user-select:none;-moz-user-select:none;user-select:none;white-space:nowrap}.c-button--primary{background:#409eff;border-color:#409eff;color:#fff}.c-button--success{background:#67c23a;border-color:#67c23a;color:#fff}

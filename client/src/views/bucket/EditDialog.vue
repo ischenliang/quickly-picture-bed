@@ -151,7 +151,7 @@ const loading = ref(false)
  * 数据获取
  */
 const getInstallPlugins = () => {
-  plugin.installed({ status: true }).then((res: PageResponse<UserPluginInter>) => {
+  plugin.installed({ status: true, type: 'uploader' }).then((res: PageResponse<UserPluginInter>) => {
     bucketPlugins.value = res.items
     if (form.user_plugin_id) {
       handleData(form.user_plugin_id)

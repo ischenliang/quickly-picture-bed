@@ -9,7 +9,7 @@
         <el-tooltip
           placement="bottom"
           effect="dark"
-          :content="pluginDetail.user_plugin.status ? '禁用后，创建存储桶时将不会显示该插件' : '启用后，创建存储桶时会显示该插件'">
+          :content="pluginDetail.user_plugin.status ? tips[pluginDetail.category].active : tips[pluginDetail.category].inactive">
           <el-button
             v-if="pluginDetail.user_plugin.status"
             type="danger"
@@ -84,6 +84,10 @@
       <el-tab-pane label="更新日志" name="uplog">
         <plugin-uplog :detail="pluginDetail"></plugin-uplog>
       </el-tab-pane>
+      <!-- 只有安装并是启用状态，同时还必须是工具插件才有该栏 -->
+      <el-tab-pane label="在线使用" name="onlineuse" v-if="pluginDetail.user_plugin.status && pluginDetail.category === 'tooler'">
+        <plugin-runcode :detail="pluginDetail"></plugin-runcode>
+      </el-tab-pane>
       <!-- <el-tab-pane label="插件评价" name="comment">Task</el-tab-pane> -->
     </el-tabs>
   </div>
@@ -97,8 +101,35 @@ import useConfigStore from '@/store/config';
 import PluginIntro from './plugin-intro.vue'
 import PluginUplog from './plugin-uplog.vue'
 import PluginSupport from './plugin-support.vue'
+import PluginRuncode from './plugin-runcode.vue'
 import { useCtxInstance, useDeleteConfirm } from '@/hooks/global';
 import { ElMessageBox } from 'element-plus'
+const tips = {
+  tooler: {
+    active: '禁用后，就不会有在线使用栏目',
+    inactive: '启用后，才能显示在线使用栏目'
+  },
+  themer: {
+    active: '',
+    inactive: ''
+  },
+  uploader: {
+    active: '禁用后，创建存储桶时将不会显示该插件',
+    inactive: '启用后，创建存储桶时会显示该插件'
+  },
+  transformer: {
+    active: '',
+    inactive: ''
+  },
+  handler: {
+    active: '',
+    inactive: ''
+  },
+  commander: {
+    active: '',
+    inactive: ''
+  }
+}
 
 /**
  * 实例
@@ -269,6 +300,7 @@ function installPlugin (id: number, value: string = '') {
         position: relative;
         background-color: #e2e2e2;
         border-radius: 6px;
+        border: 1px solid #ddd;
         img {
           width: 100%;
           height: 100%;
@@ -374,6 +406,7 @@ function installPlugin (id: number, value: string = '') {
     }
     .el-tabs__header {
       flex-shrink: 0;
+      margin: 0px !important;
     }
     .el-tabs__content {
       flex: 1;
@@ -382,6 +415,10 @@ function installPlugin (id: number, value: string = '') {
         height: 100%;
         padding: 10px 40px;
         overflow: auto;
+        padding-top: 20px;
+        &#pane-onlineuse {
+          padding: 20px !important;
+        }
       }
     }
   }
