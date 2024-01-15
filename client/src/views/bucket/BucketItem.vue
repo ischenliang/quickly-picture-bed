@@ -63,17 +63,17 @@ withDefaults(defineProps<Props>(), {
 <style lang="scss">
 @import '@/styles/flex-layout.scss';
 $border: 1px solid #e9ecef;
-$border-active: 1px solid #32cfaa;
-$text-color: #747a80;
-$text-color-active: #32cfaa;
+$border-active: 1px solid var(--el-color-primary);
+$text-color: var(--el-text-color-secondary);
+$text-color-active: var(--el-color-primary);
 @mixin border($active: false) {
   border-radius: 6px;
   border-style: solid;
   border-width: 1px;
   @if $active {
-    border-color: #32cfaa;
+    border-color: $text-color-active;
   } @else {
-    border-color: #e9ecef;
+    border-color: var(--el-border-color-lighter);
   }
 }
 .bucket-item {
@@ -86,7 +86,7 @@ $text-color-active: #32cfaa;
   .bucket-item-tip {
     width: 100%;
     height: 100%;
-    color: #747a80;
+    color: var(--el-text-color-regular);
     @include flex-layout-align(row, center, center);
     span {
       margin-right: 5px;
@@ -104,18 +104,13 @@ $text-color-active: #32cfaa;
     top: -25px;
     position: absolute;
     left: 10px;
-    background: #fff;
+    background: var(--el-color-white);
     @include flex-layout-align(row, center, center);
     img {
       width: 30px;
       height: 30px;
       transform: rotate(-45deg);
       border-radius: 4px;
-    }
-    span {
-      font-size: 30px;
-      transform: rotate(-45deg);
-      color: #535353;
     }
   }
   .bucket-item-tags {
@@ -134,9 +129,8 @@ $text-color-active: #32cfaa;
     overflow: hidden;
     .bucket-content-title {
       font-size: 16px;
-      // text-align: right;
       font-weight: 600;
-      color: #535353;
+      color: var(--el-text-color-primary);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -144,8 +138,8 @@ $text-color-active: #32cfaa;
         margin-right: 2px;
         height: 18px !important;
         padding: 1px 3px;
-        background: #10b598;
-        border-color: #10b598;
+        background: var(--el-color-success);
+        border-color: var(--el-color-success);
       }
     }
     .bucket-content-count {
@@ -155,17 +149,16 @@ $text-color-active: #32cfaa;
       }
     }
     .bucket-content-time {
-      // line-height: 20px;
       height: 20px;
       display: flex;
       align-items: center;
       font-size: 14px;
       margin-top: 10px;
-      color: rgba(0,0,0,.45);
+      color: var(--el-text-color-secondary);
       .el-tag {
         margin-right: 5px;
-        background-color: red !important;
-        border-color: red !important;
+        background-color: var(--el-color-danger) !important;
+        border-color: var(--el-color-danger) !important;
       }
     }
   }
@@ -189,9 +182,9 @@ $text-color-active: #32cfaa;
     transform: translateY(-10px);
     .bucket-item-square {
       @include border(true);
-      background: #32cfaa;
+      background: var(--el-color-success);
       span {
-        color: #fff;
+        color: var(--el-color-white);
       }
     }
     .bucket-item-action {

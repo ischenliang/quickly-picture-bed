@@ -96,22 +96,23 @@ const handleClick = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    // color: #0db3a6;
+    color: var(--el-text-color-primary);
   }
   .home-tips {
     font-size: 16px;
-    // color: #0db3a6;
-    color: #ff4a83;
-    // margin-bottom: 15px;
+    color: var(--el-color-warning);
     margin-bottom: 10px;
   }
   .el-card {
     margin-bottom: 15px;
-    box-shadow: 0px 0px 3px rgb(0 0 0 / 12%);
+    box-shadow: var(--el-card-shadow);
     border: 0;
     .el-card__body {
       padding: 15px 15px 10px;
       position: relative;
+    }
+    .bucket-title {
+      color: var(--el-text-color-primary);
     }
   }
 

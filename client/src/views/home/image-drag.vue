@@ -194,9 +194,10 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   padding: 5px 15px;
-  background: #e7f7f8;
+  background: var(--el-color-success-light-9);
   border-radius: 0 0 10px 10px;
-  color: #0db3a6;
+  color: var(--el-color-success) !important;
+  font-weight: bold;
 }
 .bucket-drag-box {
   flex: 1;
@@ -214,18 +215,13 @@ onMounted(() => {
   padding: 3px;
   height: 56px;
   overflow: hidden;
-  // cursor: move;
   &-main {
     width: 100%;
     height: 100%;
-    // background: rgba(4, 193, 180, .1);
-    // background: rgb(127 133 132 / 10%);
-    // padding: 5px 5px 5px 0;
     padding: 0 5px;
     display: flex;
-    color: #0db3a6;
     align-items: center;
-    border: 1px solid #f2f2f2;
+    border: 1px solid var(--el-border-color);
     border-radius: 4px;
   }
   &-icon {
@@ -259,11 +255,11 @@ onMounted(() => {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #666;
+    color: var(--el-text-color-regular);
   }
   &-filesize {
     font-size: 13px;
-    color: #7d7b7b;
+    color: var(--el-text-color-secondary);
   }
   &-action {
     flex-shrink: 0;
@@ -275,7 +271,7 @@ onMounted(() => {
     &-item {
       cursor: pointer;
       width: 20px;
-      color: #ea644a;
+      color: var(--el-color-danger);
     }
   }
 }

@@ -136,7 +136,7 @@ function handleSubmit () {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 10px;
-    color: #2d8cf0;
+    color: var(--el-color-primary);
   }
   .tags-manage {
     margin-top: 25px;

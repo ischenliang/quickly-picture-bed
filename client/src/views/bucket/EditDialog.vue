@@ -283,7 +283,7 @@ watch(() => props.detail, (val) => {
   overflow: hidden;
   .bucket-tips {
     font-size: 12px;
-    color: #898989;
+    color: var(--el-text-color-secondary);
     line-height: 18px;
     .doc_link {
       line-height: 22px;

@@ -183,25 +183,21 @@ const actions = {
 <style lang="scss" scoped>
 @import '@/styles/text.scss';
 .gallery-item {
-  // padding: 10px;
-  // width: 270px;
-  // height: 210px;
   height: 200px;
-  // border: 1px solid #dcdee2;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--el-border-color-lighter);
   border-radius: 8px 8px 4px 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  background: var(--el-color-white);
+  box-shadow: var(--el-box-shadow-lighter);
   cursor: pointer;
   position: relative;
   transition: all 0.3s;
   position: relative;
   &.gallery-item-active {
-    background: rgba(204,232,255,.5);
-    border: 1px solid rgba(153,209,255,.57);
+    background: var(--el-color-primary-light-9);
+    border: 1px solid var(--el-color-primary-light-3);
   }
 
   .gallery-item-cover {
@@ -214,12 +210,12 @@ const actions = {
       left: 0;
       font-size: 12px;
       padding: 3px 8px;
-      background: #409eff;
+      background: var(--el-color-primary);
       z-index: 3;
       display: flex;
       align-items: center;
       border-radius: 4px 0 4px 0;
-      color: #fff;
+      color: var(--el-color-white);
       i {
         margin-right: 3px;
       }
@@ -231,12 +227,12 @@ const actions = {
       right: 0;
       font-size: 12px;
       padding: 3px 8px;
-      background: #409eff;
+      background: var(--el-color-primary);
       z-index: 3;
       display: flex;
       align-items: center;
       border-radius: 0 4px 0 4px;
-      color: #fff;
+      color: var(--el-color-white);
       display: none;
     }
 
@@ -259,7 +255,7 @@ const actions = {
   .gallery-item-name {
     height: 26px;
     flex-shrink: 0;
-    color: #8492a6;
+    color: var(--el-text-color-secondary);
     font-size: 14px;
     text-align: center;
     margin: 3px 0;
@@ -290,15 +286,9 @@ const actions = {
   }
 
   &:hover {
-    // .gallery-item-cover {
-    //   .el-image {
-    //     transform: scale(1.2);
-    //     // opacity: 0.60;
-    //   }
-    // }
     transform: translateY(-5px);
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
-    border-color: #fff;
+    box-shadow: var(--el-box-shadow-lighter);
+    border-color: var(--el-color-white);
     .gallery-item-edit {
       display: flex;
     }

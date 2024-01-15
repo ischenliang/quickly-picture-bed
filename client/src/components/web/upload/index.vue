@@ -123,8 +123,7 @@ const handleDragenter = (e: DragEvent) => {
     position: relative;
     flex: 1;
     .c-upload-dragger {
-      background-color: #fff;
-      border: 1px dashed #d9d9d9;
+      border: 1px dashed var(--el-border-color);
       border-radius: 6px 6px 0 0;
       box-sizing: border-box;
       cursor: pointer;
@@ -136,36 +135,31 @@ const handleDragenter = (e: DragEvent) => {
       justify-content: center;
       align-items: center;
       height: 100%;
-      // user-select: none;
       .el-icon--upload {
         font-size: 67px;
-        color: #C0C4CC;
+        color: var(--el-text-color-regular);
         margin-bottom: 16px;
         line-height: 50px;
       }
       .el-upload__text {
-        color: #606266;
+        color: var(--el-text-color-secondary);
         font-size: 14px;
         text-align: center;
         line-height: 1.6;
       }
       &:hover, &.is-dragover {
-        border: 1px dashed #0974f7;
-        background: rgba(32, 159, 255, 0.06);
+        border: 1px dashed var(--el-color-primary-light-3);
+        background: var(--el-color-primary-light-9);
       }
     }
     .c-upload__input {
-      // position: absolute;
-      // bottom: 0;
-      // right: 0;
-      // opacity: 0;
       display: none;
     }
   }
   .c-upload__action {
     height: 33px;
     border-radius: 0 0 6px 6px;
-    border: 1px dashed #d9d9d9;
+    border: 1px dashed var(--el-border-color);
     border-top: none;
     display: flex;
     align-items: center;
@@ -174,7 +168,7 @@ const handleDragenter = (e: DragEvent) => {
   }
   .c-upload__tip {
     font-size: 12px;
-    color: #606266;
+    color: var(--el-text-color-regular);
     margin-top: 7px;
     flex-shrink: 0;
   }

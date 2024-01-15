@@ -408,7 +408,7 @@ watch(() => totalProgress.progress, (val) => {
   height: 300px;
   &__tip {
     span {
-      color: #0db3a6;
+      color: var(--el-color-success);
       font-weight: bold;
     }
   }
@@ -430,21 +430,21 @@ watch(() => totalProgress.progress, (val) => {
     font-size: 15px;
   }
   &-clip {
-    color: #0db3a6;
+    color: var(--el-color-success);
     &:hover {
-      background: #e7f7f8;
+      background: var(--el-color-success-light-9);
     }
   }
   &-network {
-    color: #E7826D;
+    color: var(--el-color-warning);
     &:hover {
-      background: #fdf6ec;
+      background: var(--el-color-warning-light-9);
     }
   }
   &-base64 {
-    color: #386af1;
+    color: var(--el-color-primary);
     &:hover {
-      background: #ecf5ff;
+      background: var(--el-color-primary-light-9);
     }
   }
 }
@@ -455,7 +455,7 @@ watch(() => totalProgress.progress, (val) => {
     margin-bottom: 5px;
     .desc {
       font-size: 14px;
-      color: #999;
+      color: var(--el-text-color-secondary);
       line-height: 24px;
       overflow: hidden;
       white-space: nowrap;

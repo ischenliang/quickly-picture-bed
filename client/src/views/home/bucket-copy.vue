@@ -133,7 +133,7 @@ const handleTabChange = async (name) => {
     @include flex-layout(column);
     overflow: hidden;
     .el-tabs__header {
-      background: #fff;
+      background: var(--el-color-white);
       flex-shrink: 0;
     }
     .el-tabs__content {
@@ -148,12 +148,12 @@ const handleTabChange = async (name) => {
         .links-copy {
           width: 100%;
           min-height: 100px;
-          background: rgba(204,232,255,.5);
-          border: 1px solid rgba(153,209,255,.57);
+          background: var(--el-color-primary-light-9);
+          border: 1px solid var(--el-color-primary-light-3);
           border-radius: 4px;
           padding: 8px 40px 8px 10px;
           font-size: 14px;
-          color: #747a80;
+          color: var(--el-text-color-secondary);
           cursor: pointer;
           word-break: break-all;
           position: relative;
@@ -165,7 +165,6 @@ const handleTabChange = async (name) => {
             transform: translateY(-50%);
             height: 100%;
             width: 40px;
-            // display: none;
             justify-content: center;
             align-items: center;
             cursor: pointer;
@@ -185,9 +184,9 @@ const handleTabChange = async (name) => {
               margin-bottom: 5px;
             }
             &:hover {
-              border: 1px solid rgba(153, 209, 255, 0.57);
-              background-color: #3a92eb;
-              color: #fff;
+              border: 1px solid var(--el-color-primary);
+              background-color: var(--el-color-primary);
+              color: var(--el-color-white);
             }
           }
         }
@@ -195,7 +194,7 @@ const handleTabChange = async (name) => {
     }
     .el-tabs__item {
       margin-left: -1px;
-      border-right: 1px solid #dcdfe6;
+      border-right: 1px solid var(--el-border-color-light);
       &.is-active {
         font-weight: bold;
       }

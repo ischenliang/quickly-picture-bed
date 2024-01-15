@@ -58,14 +58,14 @@ const listGet = () => {
   album.find({}).then((res: PageResponse<AlbumInter>) => {
     albums.value = [
       {
-        id: '',
+        id: 0,
         name: '图库'
       },
       ...res.items
     ]
     const flag = albums.value.some(el => el.id === habits.value.current_album)
     if (!flag) {
-      habits.value.current_album = ''
+      habits.value.current_album = null
     }
   })
 }
@@ -76,7 +76,7 @@ listGet()
  * 逻辑处理
  */
 // 切换当前图床
-const toggleCurrentBucket = async (item: string) => {
+const toggleCurrentBucket = async (item: number) => {
   habits.value.current_album = item
   await habit.save({
     id: habits.value.id,

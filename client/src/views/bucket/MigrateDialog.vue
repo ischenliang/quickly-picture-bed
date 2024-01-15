@@ -312,8 +312,9 @@ const handleClose = () => {
 .migrate-item {
   &-title {
     font-size: 18px;
-    color: #000;
+    color: var(--el-text-color-primary);
     margin: 5px 0;
+    font-weight: bold;
   }
   &-desc {
     line-height: 24px;

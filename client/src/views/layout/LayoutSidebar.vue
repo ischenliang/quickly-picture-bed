@@ -1,7 +1,13 @@
 <template>
   <div class="sidebar-container v-scrollbar">
     <div class="logo-bannner">
-      <img src="./images/banner.png" alt="">
+      <!-- <img src="./images/banner.png" alt=""> -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+        <image xlink:href="./images/banner2.webp" x="30" y="0" height="380" width="380" />
+        <text x="410" y="130" class="text-title-en" font-family="Helvetica">LightFastPicture</text>
+        <text x="410" y="245" class="text-title-cn" font-family="Helvetica">轻快图片管理系统</text>
+        <text x="410" y="340" class="text-desc" font-family="Helvetica">轻量级快捷图片图床管理系统</text>
+      </svg>
     </div>
     <el-menu
       :default-active="activeMenu"
@@ -70,13 +76,31 @@ watch(() => route, (val) => {
 
 <style lang="scss">
 .sidebar-container {
-  // padding: 20px 10px;
-  padding: 10px 10px 20px 10px;
   .logo-bannner {
     width: 100%;
-    img {
+    svg {
       width: 100%;
+      background: var(--bg-color);
+      border-bottom: 1px solid #dcdee2;
+      text {
+        &.text-title-en {
+          fill: #409eff;
+          font-size: 90px;
+          font-weight: bold;
+        }
+        &.text-title-cn {
+          fill: #0db3a6;
+          font-size: 80px;
+        }
+        &.text-desc {
+          fill: #969696;
+          font-size: 54px;
+        }
+      }
     }
+  }
+  .el-menu {
+    padding: 10px 20px;
   }
   .el-menu-item, .el-sub-menu__title {
     // height: 45px;

@@ -446,22 +446,23 @@ function dragSort (fromIndex: number, toIndex: number) {
   position: relative;
   display: flex;
   flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
   .album-image-header {
-    width: calc(100% + 19px + 19px);
+    width: 100%;
     height: 250px;
     flex-shrink: 0;
-    // background-color: #009688;
     background-size: 100% auto;
     background-position: center center;
-    margin-top: -19px;
-    margin-left: -19px;
     padding: 20px 3%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     position: relative;
-    color: #fff;
-    box-shadow: 0px 1px 10px #0000001a;
+    color: var(--el-color-white);
+    box-shadow: var(--el-box-shadow-lighter);
     .album-actions {
       position: absolute;
       top: 0;
@@ -522,6 +523,7 @@ function dragSort (fromIndex: number, toIndex: number) {
   }
   .album-image-content {
     flex: 1;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     .album-image-filter {

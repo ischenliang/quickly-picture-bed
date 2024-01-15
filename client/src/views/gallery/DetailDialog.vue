@@ -196,7 +196,7 @@ function handleChangeAlbum () {
 
 <style lang="scss">
 .c-list {
-  border: 1px solid #dcdee2;
+  border: 1px solid var(--el-border-color);
   border-radius: 6px;
   margin-bottom: 16px;
   .c-list-item {
@@ -207,10 +207,10 @@ function handleChangeAlbum () {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    color: #747a80;
+    color: var(--el-text-color-regular);
     min-height: 49px;
     + .c-list-item {
-      border-top: 1px solid #e8eaec;
+      border-top: 1px solid var(--el-border-color);
     }
     .item-label {
       flex-shrink: 0;
@@ -232,12 +232,13 @@ function handleChangeAlbum () {
   }
 }
 .album-select-popper {
+  max-width: calc(600px - 20px * 2);
   .el-select-dropdown__item {
     height: auto !important;
     margin-bottom: 5px;
     .desc {
       font-size: 14px;
-      color: #999;
+      color: var(--el-text-color-secondary);
       line-height: 24px;
     }
     .title {
