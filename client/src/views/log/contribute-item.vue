@@ -73,7 +73,7 @@ function handlClick (day) {
 <style lang="scss">
 .contributes-container {
   width: 100%;
-  background: #fff;
+  background: var(--el-bg-color-white);
   padding: 15px;
   height: 100%;
   .calender-title {
@@ -83,8 +83,6 @@ function handlClick (day) {
     font-weight: bold;
   }
   .calender-heatmap {
-    // max-width: 900px;
-    // margin: 0 auto;
     font-size: 12px;
     .vch__legend {
       display: flex;
@@ -106,7 +104,7 @@ function handlClick (day) {
     }
     .vch__tips {
       margin-top: 10px;
-      color: #8c92a4;
+      color: var(--el-text-color-secondary);
       line-height: 1.33;
     }
   }

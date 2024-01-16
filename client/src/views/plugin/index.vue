@@ -119,7 +119,6 @@ function handleInput (val) {
   .el-row {
     &.plugin-list {
       flex: 1;
-      background: #fff;
     }
     .el-col {
       padding: 10px;

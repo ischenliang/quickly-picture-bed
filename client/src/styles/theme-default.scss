@@ -1,4 +1,29 @@
 :root {
-  --el-card-shadow: 0px 0px 3px rgba(0, 0, 0, 0.12);
-  --el-color-info: #6c757d;
+  --el-border-color: rgba(255, 255, 255, 0.2);
+  --el-border-color-light: rgba(255, 255, 255, 0.2);
+  --el-border-color-lighter: rgba(255, 255, 255, 0.1);
+  --el-border-color-extra-light: #696767;
+  --el-border-color-tag: var(--el-border-color);
+
+  --el-color-white: #fff;
+  --el-color-info: #cfcfcf;
+  --el-color-primary-light-9: rgba(81, 214, 169, 0.15);
+  --el-bg-color-overlay: rgb(16, 16, 20);
+  --el-bg-color-white: #232324;
+  --el-bg-color-tag: #1f1f21;
+  --el-bg-color-tag-active: #6c757d;
+  --el-bg-color: var(--el-bg-color-white); // tooltip使用
+  --el-bg-color-plugin: #474747;
+
+  --el-fill-color-light: rgb(16, 16, 20);
+  --el-fill-color-lighter: var(--el-bg-color-white);
+  --el-fill-color-dark: var(--el-fill-color-light);
+  --el-fill-color-darker: var(--el-fill-color-light);
+  --el-fill-color-blank: var(--el-bg-color-white);
+
+  --el-mask-color: var(--el-bg-color-white);
+
+  --el-text-color-primary: #fbfbfb;
+  --el-text-color-regular: #cdc9c9;
+  --el-text-color-secondary: #979494;
 }

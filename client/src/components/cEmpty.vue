@@ -11,6 +11,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #6b6b6b;
+  color: var(--el-text-color-regular);
 }
 </style>

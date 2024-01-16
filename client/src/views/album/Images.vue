@@ -535,14 +535,14 @@ function dragSort (fromIndex: number, toIndex: number) {
       .filter-input {
         width: 748px;
         .el-input__wrapper {
-          box-shadow: 0 0 0 1px #409eff inset;
+          box-shadow: 0 0 0 1px var(--el-color-primary) inset;
         }
         .el-input-group__append {
-          background: #409eff;
+          background: var(--el-color-primary);
           box-shadow: none;
-          border: 1px solid #409eff;
+          border: 1px solid var(--el-color-primary);
           border-left: none;
-          color: #fff;
+          color: var(--el-color-white);
         }
       }
       .filter-tags {
@@ -551,7 +551,7 @@ function dragSort (fromIndex: number, toIndex: number) {
         margin-top: 8px;
         display: flex;
         flex-wrap: wrap;
-        color: rgba($color: #000000, $alpha: 0.65);
+        color: var(--el-text-color-regular);
         span:first-child {
           margin-right: 5px;
         }
@@ -560,8 +560,8 @@ function dragSort (fromIndex: number, toIndex: number) {
           cursor: pointer;
           margin-bottom: 8px;
           &.active {
-            background: #409eff;
-            color: #fff;
+            background: var(--el-color-primary);
+            color: var(--el-color-white);
             border-radius: 4px;
             font-size: 12px;
             padding: 2px 5px;

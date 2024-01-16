@@ -84,7 +84,7 @@ const toggleCurrentBucket = async (item: BucketInter) => {
 <style lang="scss" scoped>
 @import '@/styles/flex-layout.scss';
 $color: var(--el-color-info);
-$color-active: var(--el-color-white);
+$color-active: var(--el-bg-color-white);
 .bucket-title {
   font-size: 18px;
   margin-bottom: 15px;
@@ -95,15 +95,15 @@ $color-active: var(--el-color-white);
     height: 38px !important;
     padding: 0 15px;
     font-size: 16px;
-    background: transparent;
+    background: transparent !important;
     border: 1px solid $color;
     color: $color;
     margin-bottom: 8px;
     margin-left: 8px;
     cursor: pointer;
     &.el-tag--dark {
-      background: $color;
-      color: $color-active;
+      background: var(--el-bg-color-tag-active) !important;
+      color: var(--el-color-white);
     }
   }
 }

@@ -133,7 +133,7 @@ const handleTabChange = async (name) => {
     @include flex-layout(column);
     overflow: hidden;
     .el-tabs__header {
-      background: var(--el-color-white);
+      background: var(---el-bg-color-white);
       flex-shrink: 0;
     }
     .el-tabs__content {

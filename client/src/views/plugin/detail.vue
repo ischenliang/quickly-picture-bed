@@ -278,12 +278,12 @@ function installPlugin (id: number, value: string = '') {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fff;
+  background: var(--el-bg-color-white);
   .plugin-detail {
     &-toolbar {
       height: 40px;
       padding: 0 20px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid var(--el-border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -298,9 +298,9 @@ function installPlugin (id: number, value: string = '') {
         flex-shrink: 0;
         margin-right: 20px;
         position: relative;
-        background-color: #e2e2e2;
+        background-color: var(--el-fill-color);
         border-radius: 6px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--el-border-color);
         img {
           width: 100%;
           height: 100%;
@@ -308,29 +308,29 @@ function installPlugin (id: number, value: string = '') {
         }
         .plugin-detail-status {
           padding: 2px 8px;
-          color: #fff;
+          color: var(--el-color-white);
           position: absolute;
           right: 0;
           border-radius: 0 6px 0 10px;
           font-size: 14px;
           &.status-success {
-            background: #52c41a;
+            background: var(--el-color-success);
           }
           &.status-danger {
-            background: #f56c6c;
+            background: var(--el-color-danger);
           }
           &.status-info {
-            background: #909399;
+            background: var(--el-color-info);
           }
         }
         .plugin-detail-platform {
           position: absolute;
           bottom: 0;
           width: 100%;
-          background: rgba(0, 0, 0, 0.2);
+          background: var(--el-color-info-light-5);
           font-size: 12px;
           border-radius: 0 0 6px 6px;
-          color: #fff;
+          color: var(--el-color-white);
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -346,6 +346,7 @@ function installPlugin (id: number, value: string = '') {
         margin-bottom: 15px;
         display: flex;
         align-items: center;
+        color: var(--el-text-color-primary);
       }
       &-payment {
         position: relative;
@@ -353,14 +354,14 @@ function installPlugin (id: number, value: string = '') {
         padding: 0 12px;
         font-size: 12px;
         text-align: center;
-        background-color: #e60012;
-        color: #fff;
+        color: var(--el-color-white);
         height: 20px;
         line-height: 20px;
-        background-color: #ef5656;
+        background: var(--el-color-danger);
       }
       &-meta {
         margin-bottom: 10px;
+        color: var(--el-text-color-regular);
         .meta-divider {
           margin: 0 8px;
         }
@@ -380,6 +381,7 @@ function installPlugin (id: number, value: string = '') {
       &-desc {
         line-height: 24px;
         height: 48px;
+        color: var(--el-text-color-secondary);
         font-size: 14px;
         text-align: justify;
         overflow: hidden;
@@ -391,9 +393,10 @@ function installPlugin (id: number, value: string = '') {
     &-version {
       padding: 2px 5px;
       font-size: 12px;
-      background: #d9d9d9;
+      background: var(--el-fill-color-darker);
       border-radius: 4px;
       margin-left: 12px;
+      color: var(--el-text-color-regular);
     }
   }
   .plugin-detail-tabs {
@@ -430,11 +433,12 @@ function installPlugin (id: number, value: string = '') {
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.3s;
+    color: var(--el-text-color-regular);
     span {
       margin-left: 5px;
     }
     &:hover {
-      background: #dfdfdf;
+      background: var(--el-fill-color-dark);
     }
   }
 }

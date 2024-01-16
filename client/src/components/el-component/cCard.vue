@@ -39,7 +39,7 @@ withDefaults(defineProps<Props>(), {
   border: 0px !important;
   @include flex-layout(column);
   .el-card__header {
-    border-bottom: 1px solid #f6f6f8;
+    border-bottom: 1px solid var(--el-border-color);
     flex-shrink: 0;
     padding: v-bind(headerPadding);
   }

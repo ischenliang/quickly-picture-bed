@@ -189,7 +189,7 @@ const actions = {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--el-color-white);
+  background: var(--el-bg-color-white);
   box-shadow: var(--el-box-shadow-lighter);
   cursor: pointer;
   position: relative;
@@ -288,7 +288,7 @@ const actions = {
   &:hover {
     transform: translateY(-5px);
     box-shadow: var(--el-box-shadow-lighter);
-    border-color: var(--el-color-white);
+    border-color: var(--el-bg-color-white);
     .gallery-item-edit {
       display: flex;
     }

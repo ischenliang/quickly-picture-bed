@@ -212,7 +212,7 @@ watch(() => props.detail, (val) => {
     }
     &-img {
       padding: 20px;
-      background: #fafafa;
+      background: var(--el-fill-color-light);
       margin-bottom: 10px;
       display: flex;
       justify-content: center;
@@ -222,29 +222,25 @@ watch(() => props.detail, (val) => {
     }
     &-divider {
       width: 1px;
-      background: #eee;
+      background: var(--el-border-color);
       margin: 0 20px;
     }
     &-name {
       margin-bottom: 5px;
-      color: #333;
+      color: var(--el-text-color-primary);
       font-size: 18px;
     }
     &-desc {
       margin-bottom: 15px;
-      color: #999;
+      color: var(--el-text-color-secondary);
       line-height: 24px;
     }
     &-tip {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
-      color: #999;
+      color: var(--el-text-color-secondary);
       font-size: 16px;
-      .el-icon {
-        margin-right: 6px;
-        color: #73d897;
-      }
     }
   }
 }
@@ -254,7 +250,7 @@ watch(() => props.detail, (val) => {
     margin-bottom: 5px;
     .desc {
       font-size: 14px;
-      color: #999;
+      color: var(--el-text-color-secondary);
       line-height: 24px;
     }
     .title {

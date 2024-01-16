@@ -60,11 +60,11 @@ const style: any = computed(() => {
     .habit-collapse-item-title {
       font-size: 16px;
       font-weight: bold;
-      color: #5f5b5b;
+      color: var(--el-text-color-regular);
     }
     .habit-collapse-item-desc {
       font-size: 14px;
-      color: #8493a5;
+      color: var(--el-text-color-secondary);
     }
   }
   &__right {

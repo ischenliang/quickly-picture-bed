@@ -37,12 +37,11 @@ function getRecentLogs () {
 getRecentLogs()
 </script>
 <style lang="scss">
-@import './theme.scss';
 .recent-log {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: $bgcolor;
+  background: var(--el-bg-color-white);
   overflow: hidden;
   &__header {
     display: flex;

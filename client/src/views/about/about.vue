@@ -74,7 +74,7 @@ const contact = computed(() => {
   height: 100%;
   font-size: 30px;
   text-align: center;
-  color: #1665B4;
+  color: var(--el-color-primary);
   font-weight: bold;
   background-image: url('./images/left.png'), url('./images/right.png');
   background-repeat: no-repeat, no-repeat;
@@ -82,17 +82,19 @@ const contact = computed(() => {
   padding: 0 150px;
 }
 .about {
+  color: var(--el-text-color-primary);
   &-inline {
     line-height: 26px;
-    color: #4f4a4a;
+    color: var(--el-text-color-regular);
   }
   &-title {
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 10px;
-    border-left: 5px solid #1665B4;
+    border-left: 5px solid var(--el-color-primary);
     padding-left: 10px;
     line-height: 24px;
+    color: var(--el-text-color-primary);
   }
   &-line {
     margin-top: 20px;

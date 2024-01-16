@@ -43,7 +43,7 @@ withDefaults(defineProps<Props>(), {
   width: 100%;
   @include flex-layout-align(row, space-between, center);
   + .log-item {
-    border-top: 1px solid #e8eaec;
+    border-top: 1px solid var(--el-border-color);
   }
   .log-item-avatar {
     width: 36px;
@@ -63,11 +63,11 @@ withDefaults(defineProps<Props>(), {
     .log-item-title {
       font-weight: 500;
       margin-bottom: 4px;
-      color: #515a6e;
+      color: var(--el-text-color-regular);
       font-size: 14px;
     }
     .log-item-desc {
-      color: rgba(0,0,0,.45);
+      color: var(--el-text-color-secondary);
       font-size: 14px;
     }
   }

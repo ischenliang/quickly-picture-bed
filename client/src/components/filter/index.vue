@@ -22,7 +22,7 @@ defineProps({
 
 <style lang="scss" scoped>
 .filter {
-  background: white;
+  background: var(--el-bg-color-white);
   padding: 15px 20px 0 15px;
   display: flex;
   justify-content: space-between;

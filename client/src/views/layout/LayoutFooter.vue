@@ -15,7 +15,7 @@
 @import '@/styles/flex-layout.scss';
 .footer-container {
   font-size: 12px;
-  color: #999;
+  color: var(--el-text-color-secondary);
   @include flex-layout-align(row, center, center);
   span {
     margin-right: 8px;

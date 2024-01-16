@@ -216,10 +216,9 @@ const handleSubmit = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    // background: #f9f9f9;
-    background: #c0c4cc;
+    background: var(--el-fill-color-dark);
     cursor: pointer;
-    border: 2px solid #fff;
+    border: 2px solid transparent;
     position: relative;
     img {
       width: 100%;
@@ -228,34 +227,16 @@ const handleSubmit = () => {
     span {
       padding: 2px 0;
       width: 100%;
-      // background-color: #5397bd;
-      background: #00bcd4;
+      background: var(--el-color-primary);
       text-align: center;
       font-size: 12px;
-      color: #fff;
+      color: var(--el-color-white);
       b {
         margin-right: 5px;
       }
     }
     &.active {
-      border-color: #409eff;
-      span {
-        background-color: #409eff;
-      }
-      // &::after {
-      //   content: "✔";
-      //   position: absolute;
-      //   top: -1px;
-      //   left: 0;
-      //   width: 30px;
-      //   height: 30px;
-      //   background: rgba($color: #000000, $alpha: 0.2);
-      //   display: flex;
-      //   color: #fff;
-      //   justify-content: center;
-      //   align-items: center;
-      //   font-size: 18px;
-      // }
+      border-color: var(--el-color-primary);
     }
   }
 }

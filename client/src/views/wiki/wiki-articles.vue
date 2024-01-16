@@ -295,7 +295,7 @@ getPageTree()
 .wiki-article {
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: var(--el-bg-color-white);
   position: absolute;
   top: 0;
   left: 0;
@@ -304,13 +304,13 @@ getPageTree()
   &-sidebar {
     flex-shrink: 0;
     width: 300px;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--el-border-color);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     &__header {
       min-height: 48px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--el-border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -318,13 +318,13 @@ getPageTree()
       .wiki-search-entry {
         flex: 1;
         height: 32px;
-        background: #f2f4f6;
+        background: var(--el-fill-color);
         padding: 0 6px 0 12px;
         border-radius: 6px;
         display: flex;
         align-items: center;
         font-size: 14px;
-        color: rgba($color: #000000, $alpha: 0.3);
+        color: var(--el-text-color-disabled);
         cursor: pointer;
         &-content {
           margin: 0 8px;
@@ -336,35 +336,35 @@ getPageTree()
           height: 16px;
           opacity: .4;
           border-radius: 3px;
-          background: #8592a6;
+          background: var(--el-color-info-light-3);
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 12px;
           line-height: 16px;
-          color: #fff;
+          color: var(--el-color-white);
         }
         &:hover {
-          background: #e6e9ed;
+          background: var(--el-fill-color-darker);
         }
       }
       .wiki-go-back {
         margin-right: 5px;
         height: 32px;
         width: 60px;
-        background: #f2f4f6;
+        background: var(--el-fill-color);
         font-size: 14px;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 6px;
-        color: rgba(0, 0, 0, 0.3);
+        color: var(--el-text-color-disabled);
         cursor: pointer;
         .el-icon {
           margin-right: 5px;
         }
         &:hover {
-          background: #e6e9ed;
+          background: var(--el-fill-color-darker);
         }
       }
     }
@@ -373,7 +373,7 @@ getPageTree()
     }
     &__footer {
       height: 48px;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--el-border-color);
     }
   }
   &-preview {
@@ -384,7 +384,7 @@ getPageTree()
     &__header {
       height: 68px;
       flex-shrink: 0;
-      border-bottom: 1px solid rgb(222,224,227);
+      border-bottom: 1px solid var(--el-border-color);
       display: flex;
       justify-content: space-between;
       padding: 10px;
@@ -399,15 +399,11 @@ getPageTree()
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
-          color: #333;
+          color: var(--el-text-color-primary);
         }
-        // .wiki-article-navigator {
-        //   font-size: 12px;
-        //   color: #838383;
-        // }
         .wiki-article-time {
           font-size: 12px;
-          color: #909aaa;
+          color: var(--el-text-color-secondary);
         }
       }
       .right-content {
@@ -424,17 +420,25 @@ getPageTree()
             display: flex;
             align-items: center;
             font-size: 14px;
-            color: #666;
+            color: var(--el-text-color-regular);
             cursor: pointer;
             .wiki-icon, .el-icon {
               margin-right: 5px;
+              svg {
+                fill: var(--el-text-color-regular);
+              }
             }
             &:not(:first-child) {
               margin-left: 5px;
             }
             &:hover {
               background: rgba(102,152,255,.1);
-              color: #6698ff;
+              color: var(--el-color-primary);
+              .wiki-icon, .el-icon {
+                svg {
+                  fill: var(--el-color-primary);
+                }
+              }
             }
           }
         }
@@ -451,13 +455,13 @@ getPageTree()
     }
     &-navigator {
       width: 220px;
-      border-left: 1px solid #eee;
+      border-left: 1px solid var(--el-border-color);
       position: fixed;
       height: calc(100% - 60px - 68px);
       right: 17px;
       top: calc(60px + 68px);
       z-index: 999;
-      background: #fff;
+      background: var(--el-bg-color-white);
       padding: 10px;
     }
   }
@@ -480,10 +484,10 @@ getPageTree()
           font-size: 18px;
           &.node-item-icon {
             &__file {
-              color: rgb(156, 156, 251);
+              color: var(--el-text-color-regular);
             }
             &__folder {
-              color: rgb(246, 198, 89);
+              color: var(--el-color-warning);
             }
           }
         }
@@ -496,7 +500,7 @@ getPageTree()
         &-action {
           flex-shrink: 0;
           padding: 3px 4px;
-          background: #eaeaea;
+          background: var(--el-fill-color);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -517,20 +521,23 @@ getPageTree()
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid var(--el-border-color);
     .action {
-      padding: 3px 4px;
-      background: rgba(102,152,255,.1);
-      color: #6698ff;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--el-fill-color-dark);
+      color: var(--el-text-color-primary);
       font-size: 12px;
       border-radius: 4px;
-      border: 1px solid #f8f9fa;
-      color: #333;
+      border: 1px solid var(--el-border-color);
       cursor: pointer;
     }
     span {
       font-weight: bold;
-      color: #555;
+      color: var(--el-text-color-regular);
     }
   }
 }
@@ -549,22 +556,25 @@ getPageTree()
       justify-content: space-between;
       cursor: pointer;
       &__left {
-        color: #333;
+        color: var(--el-text-color-primary);
         display: flex;
         align-items: center;
         .el-icon, .wiki-icon {
-          color: #aaa;
+          color: var(--el-text-color-regular);
           margin-right: 8px;
+          svg {
+            fill: var(--el-text-color-regular);
+          }
         }
       }
       &__right {
         .entry-key {
           font-size: 12px;
-          color: #aaa;
+          color: var(--el-text-color-disabled);
         }
       }
       &:hover {
-        background: #f5f5f5;
+        background: var(--el-fill-color-light);
       }
     }
   }

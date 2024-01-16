@@ -12,7 +12,7 @@
 .drag-box {
   width: 100%;
   height: 36px;
-  background: #d7d7d7;
+  background: var(--el-fill-color-dark);
   position: absolute;
   top: 0;
   left: 0;
@@ -26,7 +26,7 @@
   &-line {
     width: 46px;
     height: 2px;
-    background: #888;
+    background: var(--el-text-color-regular);
     margin-bottom: 5px;
   }
 }

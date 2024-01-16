@@ -21,7 +21,7 @@ defineProps({
   margin: 0 20px 15px 0;
   .filter-text {
     margin-right: 10px;
-    color: #666666;
+    color: var(--el-text-color-regular);
   }
   .el-select, .el-input {
     width: 200px;

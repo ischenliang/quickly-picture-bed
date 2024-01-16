@@ -37,22 +37,22 @@ const width = computed(() => {
   }
 }
 .status-default .status-dot {
-  background: #fff;
+  background: var(--el-bg-color-white);
   border: 1px solid #dcdfe6;
 }
 .status-primary .status-dot {
-  background: #409eff;
+  background: var(--el-color-primary);
 }
 .status-success .status-dot {
-  background: #67c23a;
+  background: var(--el-color-success);
 }
 .status-info .status-dot {
-  background: #909399;
+  background: var(--el-color-info);
 }
 .status-warning .status-dot {
-  background: #e6a23c;
+  background: var(--el-color-warning);
 }
 .status-danger .status-dot {
-  background: #f56c6c;
+  background: var(--el-color-danger);
 }
 </style>

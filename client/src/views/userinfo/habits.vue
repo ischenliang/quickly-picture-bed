@@ -250,7 +250,7 @@ const submit = () => {
   })
 }
 // 点击切换fit
-function handleFitClick (payload: "fill" | "contain" | "cover" | "none" | "scale-down", key: 'gallery_img_fit' | 'album_cover_fit') {
+function handleFitClick (payload: any, key: 'gallery_img_fit' | 'album_cover_fit') {
   detail.data[key] = payload
 }
 // 点击切换模式
@@ -262,8 +262,8 @@ function handleGalleryName (payload: string) {
 <style lang="scss">
 .my-habits {
   .el-table thead th.el-table__cell {
-    background-color: rgb(244, 246, 249);
-    color: black;
+    background-color: var(--el-fill-color-light);
+    color: var(--el-text-color-primary);
   }
   .el-form-item {
     width: 100%;
@@ -284,7 +284,7 @@ function handleGalleryName (payload: string) {
     gap: 20px;
     margin: 10px 0;
     .fit-item {
-      box-shadow: 0 0 14px 3px #cbcbcb;
+      box-shadow: var(--el-box-shadow-lighter);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -298,24 +298,24 @@ function handleGalleryName (payload: string) {
         border-radius: 6px 6px 0 0;
       }
       &.active {
-        box-shadow: 0 0 14px 3px #409eff;
+        box-shadow: 0 0 14px 3px var(--el-color-primary);
         .fit-item-name {
-          color: #409eff;
-          border-top-color: #409eff;
+          color: var(--el-color-primary);
+          border-top-color: var(--el-color-primary);
         }
       }
       &-name {
         width: 100%;
         border-top: 1px solid #ddd;
         text-align: center;
-        color: #36465e;
+        color: var(--el-text-color-regular);
       }
     }
   }
 }
 .user-habits-title {
   margin-bottom: 30px;
-  color: rgba(0,0,0,.85);
+  color: var(--el-text-color-primary);
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
@@ -326,7 +326,7 @@ function handleGalleryName (payload: string) {
   margin: 10px 0;
   .tag-item {
     padding: 5px 20px;
-    background: #f5f7f9;
+    background: var(--el-fill-color-light);
     border-radius: 6px;
     display: flex;
     flex-direction: column;
@@ -337,19 +337,19 @@ function handleGalleryName (payload: string) {
     }
     &-title {
       font-size: 16px;
-      color: #222;
+      color: var(--el-text-color-primary);
     }
     &-desc {
       font-size: 14px;
-      color: #777;
+      color: var(--el-text-color-secondary);
     }
     &.active {
-      background: rgb(24, 144, 255);
+      background: var(--el-color-primary);
       .tag-item-title {
-        color: #fff;
+        color: var(--el-color-white);
       }
       .tag-item-desc {
-        color: #e7e7e7;
+        color: var(--el-color-info-light-9);
       }
     }
   }

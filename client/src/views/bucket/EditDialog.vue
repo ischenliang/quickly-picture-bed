@@ -300,7 +300,7 @@ watch(() => props.detail, (val) => {
     font-size: 14px;
     line-height: 1.5;
     word-wrap: break-word;
-    color: #24292f;
+    color: var(--el-text-color-primary);
     overflow: hidden !important;
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     h1:first-of-type {

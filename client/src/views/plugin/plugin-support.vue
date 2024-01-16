@@ -37,11 +37,11 @@ const props = withDefaults(defineProps<Props>(), {
   }
   p {
     line-height: 26px;
-    color: #777;
+    color: var(--el-text-color-secondary);
     &.title {
       font-size: 18px;
       margin-bottom: 5px;
-      color: #333;
+      color: var(--el-text-color-primary);
     }
   }
   .reward {
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
     .reward-item {
       max-width: 200px;
       min-width: 100px;
-      border: 1px dashed #dcdfe6;
+      border: 1px dashed var(--el-border-color);
       margin-right: 20px;
       margin-bottom: 10px;
       border-radius: 6px;

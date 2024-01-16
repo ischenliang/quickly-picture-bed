@@ -115,12 +115,11 @@ const coverName = computed(() => {
 .wiki-item {
   width: 100%;
   height: 192px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--el-border-color-lighter);
   border-radius: 6px;
   cursor: pointer;
   padding: 16px;
-  background: #fff;
-  // border-top: 5px solid #0db3a6;
+  background: var(--el-bg-color-white);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -142,16 +141,15 @@ const coverName = computed(() => {
   &-cover {
     width: 48px;
     height: 48px;
-    background: #f986c1;
     border-radius: 6px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--el-color-white);
     font-weight: bold;
     font-size: 26px;
-    text-shadow: 0 0 5px #000;
+    text-shadow: 0 0 5px var(--el-color-black);
   }
   &-wrapper {
     flex: 1;
@@ -163,7 +161,7 @@ const coverName = computed(() => {
   &-title {
     font-size: 18px;
     font-weight: 600;
-    color: #535353;
+    color: var(--el-text-color-regular);
     height: 22px;
     overflow: hidden;
     padding-right: 40px;
@@ -172,12 +170,12 @@ const coverName = computed(() => {
   }
   &-time {
     font-size: 14px;
-    color: #999;
+    color: var(--el-text-color-placeholder);
   }
   &-desc {
     font-size: 15px;
     margin-top: 10px;
-    color: rgba(0, 0, 0, 0.45);
+    color: var(--el-text-color-secondary);
     line-height: 22px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -193,19 +191,22 @@ const coverName = computed(() => {
   &-git {
     a {
       text-decoration: none;
-      color: #2d8cf0;
+      color: var(--el-color-primary);
     }
   }
   &-action {
     &-item {
       width: 30px;
       height: 20px;
-      background: #e3e3e3;
+      background: var(--el-fill-color-dark);
       border-radius: 4px;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #757575;
+      color: var(--el-text-color-regular);
+      svg {
+        fill: var(--el-text-color-regular);
+      }
     }
   }
 }

@@ -44,7 +44,6 @@ watch(() => userStore.user_habits.data.shortKey, (val) => {
 
 <style lang="scss">
 // @import 'reset.css';
-@import '@/styles/font.scss';
 html {
   box-sizing: border-box;
 }
@@ -66,7 +65,7 @@ html, body, #app {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background: $bgcolor-main;
+  background: var(--el-fill-color-light);
   // padding: 10px;
 }
 .user-info-popover {
@@ -75,12 +74,65 @@ html, body, #app {
 }
 .ghost {
   opacity: 0.5;
-  background: #c8ebfb;
+  background: var(--el-color-warning);;
 }
 .chosen {
-  background: #0187C4;
+  background: var(--el-color-info-light-5);;
 }
 .drag {
-  background: blue;
+  background: var(--el-color-primary);
+}
+
+.el-card {
+  background: var(--el-bg-color-white) !important;
+}
+.el-input {
+  .el-input__wrapper {
+    background: var(--el-bg-color-white) !important;
+  }
+}
+.el-textarea {
+  .el-textarea__inner {
+    background: var(--el-bg-color-white) !important;
+  }
+}
+.el-tabs {
+  background: var(--el-bg-color-white) !important;
+  
+}
+.el-pagination {
+  .el-pager {
+    li {
+      background: var(--el-fill-color-light) !important;
+      border: 1px solid var(--el-border-color) !important;
+      color: var(--el-text-color-secondary) !important;
+      &.is-active {
+        border-color: var(--el-color-primary) !important;
+        color: var(--el-text-color-primary) !important;
+      }
+    }
+  }
+  button {
+    background: var(--el-fill-color-light) !important;
+  }
+}
+.el-dialog {
+  background: var(--el-bg-color-white) !important;
+}
+.el-table {
+  background: var(--el-bg-color-white) !important;
+  tr {
+    background-color: var(--el-bg-color-white) !important;
+    color: var(--el-text-color-regular) !important;
+  }
+}
+.el-menu {
+  background-color: var(--el-bg-color-white) !important;
+}
+.el-tag {
+  &:not(.el-tag--dark) {
+    background: var(--el-bg-color-tag) !important;
+    border-color: var(--el-border-color-tag) !important;
+  }
 }
 </style>

@@ -191,26 +191,19 @@ const restFilters = () => {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: red;
+    background: var(--el-color-danger);
     margin-right: 5px;
   }
   .status-success {
-    $color: #67c23a;
     .status-dot {
-      background: $color;
+      background: var(--el-color-success);
     }
-    // .status-text {
-    //   color: $color;
-    // }
   }
   .status-danger {
-    $color: #f56c6c;
+    $color: var(--el-color-danger);
     .status-dot {
       background: $color;
     }
-    // .status-text {
-    //   color: $color;
-    // }
   }
 }
 </style>

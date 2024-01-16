@@ -20,29 +20,28 @@ defineProps<Props>()
 .chart-item {
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--el-bg-color-white);
   height: 300px;
   &__header {
     padding: 0 15px;
     height: 46px;
-    border-bottom: 1px solid #f5f7f9;
+    border-bottom: 1px solid var(--el-border-color-light);
     display: flex;
     align-items: center;
     .title {
       font-size: 16px;
-      color: #000;
+      color: var(--el-text-color-primary);
     }
     .unit {
       font-size: 14px;
       margin-left: 5px;
       vertical-align: baseline;
-      color: #777;
+      color: var(--el-text-color-secondary);
       padding-top: 5px;
     }
   }
   &__content {
     flex: 1;
-    // padding: 15px;
     overflow: hidden;
   }
 }

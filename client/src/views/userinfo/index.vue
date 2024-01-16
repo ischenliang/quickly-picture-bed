@@ -76,7 +76,7 @@ watch(() => route, (val: any) => {
 .profile-container {
   height: 100%;
   padding: 16px 0;
-  background: #fff;
+  background: var(--el-bg-color-white);
   .profile-tabs {
     height: 100%;
     border: none !important;
@@ -84,7 +84,7 @@ watch(() => route, (val: any) => {
     .el-tabs__header {
       width: 200px;
       flex-shrink: 0;
-      background: #fff;
+      background: var(--el-bg-color-white);
       border-bottom: none;
       .el-tabs__item {
         text-align: left !important;
@@ -92,10 +92,10 @@ watch(() => route, (val: any) => {
         margin: 0 !important;
         margin-bottom: 8px !important;
         &.is-active {
-          border-right: 3px solid #1890ff !important;
+          border-right: 3px solid var(--el-color-primary) !important;
           background: #e6f7ff;
           font-weight: 700;
-          color: rgb(24, 144, 255);
+          color: var(--el-color-primary);
         }
       }
       .el-tabs__nav-wrap {

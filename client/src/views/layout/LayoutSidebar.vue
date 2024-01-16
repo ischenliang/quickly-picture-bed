@@ -80,35 +80,33 @@ watch(() => route, (val) => {
     width: 100%;
     svg {
       width: 100%;
-      background: var(--bg-color);
-      border-bottom: 1px solid #dcdee2;
+      background: var(--el-bg-color-white);
+      border-bottom: 1px solid var(--el-border-color);
       text {
         &.text-title-en {
-          fill: #409eff;
+          fill: var(--el-color-primary);
           font-size: 90px;
           font-weight: bold;
         }
         &.text-title-cn {
-          fill: #0db3a6;
+          fill: var(--el-color-success);
           font-size: 80px;
         }
         &.text-desc {
-          fill: #969696;
+          fill: var(--el-text-color-secondary);
           font-size: 54px;
         }
       }
     }
   }
   .el-menu {
-    padding: 10px 20px;
+    padding: 5px 15px;
   }
   .el-menu-item, .el-sub-menu__title {
-    // height: 45px;
-    // line-height: 45px;
-    // margin: 5px 0;
     &.is-active {
-      background: #f0faff;
+      background: var(--el-color-primary-light-9);
       border-radius: 4px;
+      color: var(--el-color-primary) !important;
     }
     &:not(.is-active):hover {
       background: none;

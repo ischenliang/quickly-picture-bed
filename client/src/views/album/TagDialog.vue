@@ -168,7 +168,7 @@ watch(() => props.detail, (val) => {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
-      color: #2d8cf0;
+      color: var(--el-color-primary);
     }
   }
   .el-tag {

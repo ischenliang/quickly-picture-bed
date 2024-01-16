@@ -124,14 +124,14 @@ function formatTime (time: string) {
       &-title {
         font-size: 16px;
         font-weight: bold;
-        color: #555;
+        color: var(--el-text-color-regular);
         margin-bottom: 10px;
       }
       &-content {
         p {
           line-height: 25px;
           font-size: 14px;
-          color: #666;
+          color: var(--el-text-color-secondary);
         }
         .el-tag + .el-tag {
           margin-left: 8px;

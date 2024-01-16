@@ -138,9 +138,9 @@ const pageChange = ($event) => {
     }
   }
   .pagination {
-    background: #fff !important;
+    background: var(--el-bg-color-white) !important;
     margin-top: 0px !important;
-    border: 1px solid #EBEEF5 !important;
+    border: 1px solid var(--el-border-color) !important;
     border-top: none !important;
     padding: 0 5px 5px !important;
     border-radius: 0 0 4px 4px !important;

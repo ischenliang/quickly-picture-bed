@@ -36,7 +36,7 @@ const rewards: Ref<RewardInter[]> = computed(() => {
   .reward-item {
     max-width: 200px;
     min-width: 100px;
-    border: 1px dashed #dcdfe6;
+    border: 1px dashed var(--el-border-color);
     margin-right: 20px;
     margin-bottom: 10px;
     border-radius: 6px;

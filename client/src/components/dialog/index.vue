@@ -10,7 +10,7 @@
     .el-dialog__header {
       padding: 15px 20px !important;
       margin-right: 0px !important;
-      border-bottom: 1px solid #e8eaec;
+      border-bottom: 1px solid var(--el-border-color);
       margin-bottom: 0px;
     }
   }

@@ -105,8 +105,8 @@ const handleClick = () => {
   }
   .el-card {
     margin-bottom: 15px;
-    box-shadow: var(--el-card-shadow);
     border: 0;
+    box-shadow: var(--el-box-shadow-lighter);
     .el-card__body {
       padding: 15px 15px 10px;
       position: relative;

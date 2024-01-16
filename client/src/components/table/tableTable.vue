@@ -123,10 +123,11 @@ const getIndex = (index) => {
   height: 100%;
   .el-table {
     thead {
-      color: black;
+      color: var(--el-text-color-primary);
       font-weight: bold;
       th.el-table__cell {
-        background-color: rgb(244, 246, 249);
+        background-color: var(--el-fill-color-lighter) !important;
+        color: var(--el-text-color-primary) !important;
       }
     }
     .cell {

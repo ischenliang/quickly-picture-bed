@@ -62,7 +62,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 <style lang="scss">
 @import '@/styles/flex-layout.scss';
-$border: 1px solid #e9ecef;
+$border: 1px solid var(--el-border-color);
 $border-active: 1px solid var(--el-color-primary);
 $text-color: var(--el-text-color-secondary);
 $text-color-active: var(--el-color-primary);
@@ -104,13 +104,16 @@ $text-color-active: var(--el-color-primary);
     top: -25px;
     position: absolute;
     left: 10px;
-    background: var(--el-color-white);
+    background: var(--el-bg-color-white);
     @include flex-layout-align(row, center, center);
     img {
       width: 30px;
       height: 30px;
       transform: rotate(-45deg);
       border-radius: 4px;
+    }
+    span {
+      transform: rotate(-45deg);
     }
   }
   .bucket-item-tags {

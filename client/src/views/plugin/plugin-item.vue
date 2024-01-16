@@ -3,7 +3,7 @@
     <drag-box v-if="draggable"></drag-box>
     <div class="plugin-item-header">
       <div class="plugin-item-category">
-        <el-icon :size="18" color="#00b8d4"><UploadFilled /></el-icon>
+        <el-icon :size="18"><UploadFilled /></el-icon>
         <span>{{ detail.category }}插件</span>
       </div>
       <div class="plugin-item-env">
@@ -137,10 +137,9 @@ function handleCommond (type: string) {
 </script>
 <style lang="scss">
 .plugin-item {
-  // border: 1px solid #00b8d4;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--el-border-color-lighter);
   border-radius: 4px;
-  box-shadow: 0 0.2rem 0.5rem #0000000d,0 0 0.05rem #0000001a;
+  box-shadow: var(--el-box-shadow-lighter);
   width: 100%;
   height: 231px;
   display: flex;
@@ -148,12 +147,11 @@ function handleCommond (type: string) {
   overflow: hidden;
   cursor: pointer;
   transition: all .3s;
-  background: #fff;
+  background: var(--el-bg-color-white);
   position: relative;
   &-header {
     height: 36px;
-    // background: #00b8d41a;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--el-border-color-lighter);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -161,11 +159,7 @@ function handleCommond (type: string) {
     flex-shrink: 0;
     .plugin-item {
       &-category {
-        // color: #0db3a6;
-        // color: #00b8d4;
-        // color: #007bff;
-        // font-weight: bold;
-        color: #0db3a6;
+        color: var(--el-color-success);
         font-size: 14px;
         display: flex;
         align-items: center;
@@ -188,30 +182,30 @@ function handleCommond (type: string) {
         margin-left: 5px;
         &-item {
           padding: 1px 7px;
-          background: #00b8d4;
+          background: var(--el-color-success);
           font-size: 12px;
           border-radius: 10px;
-          color: #fff;
+          color: var(--el-color-white);
           transform: scale(0.95);
           margin-right: 3px;
           display: flex;
           align-items: center;
           &.env-platform {
-            background: #007bff;
+            background: var(--el-color-primary);
           }
           &.env-installed, &.env-version, &.env-disabled, &.env-enabled {
             border-radius: 4px;
           }
           &.env-disabled {
-            background: #f56c6c;
+            background: var(--el-color-danger);
           }
           &.env-enabled {
-            background: #67c23a;
+            background: var(--el-color-success);
           }
           .env-version-dot {
             width: 6px;
             height: 6px;
-            background: red;
+            background: var(--el-color-danger);
             border-radius: 50%;
             margin-right: 5px;
           }
@@ -247,9 +241,8 @@ function handleCommond (type: string) {
           margin-right: 10px;
           flex-shrink: 0;
           position: relative;
-          // background: #e2e2e2;
           border-radius: 6px;
-          border: 1px solid #ddd;
+          border: 1px solid var(--el-border-color-lighter);
           img {
             width: 100%;
             height: 100%;
@@ -259,11 +252,11 @@ function handleCommond (type: string) {
             position: absolute;
             bottom: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--el-fill-color-darker);
             font-size: 12px;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 6px 6px;
             height: 18px;
-            color: #fff;
+            color: var(--el-color-white);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -280,16 +273,16 @@ function handleCommond (type: string) {
           top: 6px;
           right: 0px;
           &.free {
-            background: #e3eafd;
-            color: #1c3f94;
+            background: var(--el-fill-color-darker);
+            color: var(--el-color-primary-light-3);
           }
           &.limited-free {
-            background: #fbebd5;
-            color: #86511c;
+            background: var(--el-color-warning-light-8);
+            color: var(--el-color-warning);
           }
           &.paid {
-            background: #ff6728;
-            color: #fff;
+            background: var(--el-color-danger);
+            color: var(--el-color-white);
           }
         }
         &-info {
@@ -297,13 +290,14 @@ function handleCommond (type: string) {
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          color: var(--el-text-color-primary);
           &-line {
             display: flex;
             margin-top: 5px;
             font-size: 14px;
             .info-divider {
               margin: 0 8px;
-              color: rgba(0,0,0,0.3);
+              color: var(--el-border-color-darker);
             }
             span {
               display: flex;
@@ -328,7 +322,7 @@ function handleCommond (type: string) {
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow: hidden;
-        color: #646a73;
+        color: var(--el-text-color-regular);
         font-size: 14px;
       }
     }
@@ -343,32 +337,33 @@ function handleCommond (type: string) {
       font-size: 12px;
       margin-right: 8px;
       border-radius: 6px;
-      border: 1px solid #f2f2f2;
-      color: #4abcbd;
-      background: #f2f2f2;
+      border: 1px solid var(--el-border-color-lighter);
+      color: var(--el-text-color-regular);
+      background: var(--el-bg-color-plugin);
     }
     .plugin-item-tags {
       flex: 1;
       overflow: hidden;
-      height: 21px;
+      height: 24px;
     }
     .plugin-item-action {
       width: 24px;
       height: 21px;
       border-radius: 4px;
-      background: #e1e1e1;
+      background: var(--el-fill-color-dark);
       flex-shrink: 0;
       margin-left: 5px;
       justify-content: center;
       align-items: center;
       display: flex;
+      color: var(--el-text-color-regular);
+      svg {
+        color: var(--el-text-color-regular);
+      }
     }
   }
   &:hover {
     transform: translateY(-10px);
-    // .plugin-item-action {
-    //   display: flex;
-    // }
   }
 }
 </style>

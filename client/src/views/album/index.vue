@@ -191,20 +191,6 @@ function handleInput (val) {
 
 <style lang="scss">
 @import '@/styles/flex-layout.scss';
-$border: 1px solid #e9ecef;
-$border-active: 1px solid #32cfaa;
-$text-color: #747a80;
-$text-color-active: #32cfaa;
-@mixin border($active: false) {
-  border-radius: 6px;
-  border-style: solid;
-  border-width: 1px;
-  @if $active {
-    border-color: #32cfaa;
-  } @else {
-    border-color: #e9ecef;
-  }
-}
 .album-container {
   width: 100%;
   height: 100%;

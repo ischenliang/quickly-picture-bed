@@ -104,11 +104,10 @@ function handleClick (item) {
     }
     .app-name {
       font-size: 22px;
-      // font-weight: 600;
       margin-left: 10px;
       word-break: keep-all;
       white-space: nowrap;
-      color: #181818;
+      color: var(--el-text-color-primary);
     }
     &:link, &:visited {
       text-decoration: none;
@@ -132,9 +131,9 @@ function handleClick (item) {
         align-items: center;
         cursor: pointer;
         text-decoration: none;
-        color: #606266;
+        color: var(--el-text-color-regular);
         &:hover {
-          color: #32cfaa;
+          color: var(--el-color-success);
         }
       }
     }
@@ -147,12 +146,9 @@ function handleClick (item) {
         margin-right: 10px;
         text-decoration: none;
         font-weight: 550;
-        // color: #606266;
-        // color: #e95d29;
-        color: #ff4d4d;
+        color: var(--el-color-danger);
         padding: 0 10px;
         .feature-item-icon {
-          // background-image: url('http://img.itchenliang.club/img/202303261456294.svg');
           width: 40px;
           height: 30px;
           background-size: 100%;

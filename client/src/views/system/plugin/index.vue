@@ -212,7 +212,7 @@ function dragSort (fromIndex: number, toIndex: number) {
   .el-row {
     &.plugin-list {
       flex: 1;
-      background: #fff;
+      background: var(--el-bg-color-white);
     }
     .el-col {
       padding: 10px;

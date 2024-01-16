@@ -111,7 +111,7 @@ const submit = () => {
 <style lang="scss">
 .user-security-title {
   margin-bottom: 30px;
-  color: rgba(0,0,0,.85);
+  color: var(--el-text-color-primary);
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;

@@ -140,7 +140,7 @@ watch(() => route, (val) => {
         align-items: center;
         .el-form-item__label {
           font-weight: bold;
-          color: #409eff;
+          color: var(--el-color-primary);
         }
       }
     }
@@ -156,8 +156,8 @@ watch(() => route, (val) => {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: #fff;
-  border-top: 1px solid rgba(0,0,0,.06);
-  box-shadow: 0 -6px 16px -8px rgb(0 0 0 / 8%), 0 -9px 28px 0 rgb(0 0 0 / 5%), 0 -12px 48px 16px rgb(0 0 0 / 3%);
+  background: var(--el-bg-color-white);
+  border-top: 1px solid var(--el-border-color);
+  box-shadow: var(--el-box-shadow-lighter);
 }
 </style>

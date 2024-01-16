@@ -253,7 +253,7 @@ function changeMajor (item) {
 <style lang="scss">
 .user-base-title {
   margin-bottom: 12px;
-  color: rgba(0,0,0,.85);
+  color: var(--el-text-color-primary);
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
@@ -262,7 +262,6 @@ function changeMajor (item) {
   padding-top: 20px;
   display: flex;
   flex-direction: row;
-  // justify-content: center;
   .el-form {
     width: 100%;
     width: 650px;
@@ -275,7 +274,7 @@ function changeMajor (item) {
       border-radius: 50%;
       overflow: hidden;
       position: relative;
-      background: #c0c4cc;
+      background: var(--el-fill-color-darker);
       .avatar-image {
         width: 100%;
         height: 100%;
@@ -284,7 +283,7 @@ function changeMajor (item) {
       .avatar-btn {
         width: 100%;
         height: 32px;
-        background: rgba(0,0,0,.60);
+        background: var(--el-color-info-dark-2);
         position: absolute;
         bottom: 0;
         left: 0;
@@ -292,7 +291,7 @@ function changeMajor (item) {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #fff;
+        color: var(--el-color-white);
         font-size: 16px;
       }
     }

@@ -212,11 +212,11 @@ const logout = () => {
   .user-info-avatar {
     height: 100%;
     border-radius: 50%;
-    background: #c0c4cc;
+    background: var(--el-fill-color-light);
   }
   .user-info-name {
     margin-left: 8px;
-    color: #606266;
+    color: var(--el-text-color-regular);
     font-size: 15px;
   }
   .user-info-role {
@@ -229,22 +229,22 @@ const logout = () => {
     font-size: 12px;
     margin-left: 10px;
     word-break: keep-all;
-    border: 1px solid rgb(16, 111, 255);
-    color: rgb(16, 111, 255);
+    border: 1px solid var(--el-color-primary);
+    color: var(--el-color-primary);
   }
   .user-info-caret {
     margin-left: 5px;
     padding-top: 5px;
     .el-icon {
-      color: #707070;
+      color: var(--el-text-color-secondary);
     }
   }
 }
 .user-info-popover {
   transform: translate(-20px, 59px) !important;
   padding: 0 !important;
-  background: #FFFFFF;
-  box-shadow: 0px 0px 48px 2px rgba(0,0,0,0.2);
+  background: var(--el-bg-color-white);
+  box-shadow: var(--el-box-shadow-light);
   padding: 0px !important;
   .el-popper__arrow {
     display: none;
@@ -254,7 +254,7 @@ const logout = () => {
       width: 100%;
       height: 80px;
       background-image: url('./images/user-info-popover-bg.png');
-      border-bottom: 1px dashed #ddd;
+      border-bottom: 1px dashed var(--el-border-color);
       padding: 23px 20px 21px 23px;
       flex-shrink: 0;
       background-size: 100% 100%;
@@ -276,11 +276,11 @@ const logout = () => {
           justify-content: center;
           .user-name {
             font-size: 14px;
-            color: #333841;
+            color: var(--el-text-color-primary);
           }
           .user-role {
             font-size: 12px;
-            color: #808392;
+            color: var(--el-text-color-secondary);
           }
         }
       }
@@ -299,7 +299,7 @@ const logout = () => {
           justify-items: center;
           align-items: center;
           cursor: pointer;
-          color: #666666;
+          color: var(--el-text-color-regular);
           .el-icon {
             font-size: 30px;
           }
@@ -308,7 +308,7 @@ const logout = () => {
             font-weight: 400;
           }
           &:hover {
-            color: #409eff;
+            color: var(--el-color-primary);
           }
         }
       }
@@ -319,23 +319,23 @@ const logout = () => {
         .entry-item {
           width: 50%;
           height: 36px;
-          background: #F8FAFC;
+          background: var(--el-fill-color-light);
           border-radius: 2px;
           display: flex;
           justify-content: center;
           align-items: center;
           margin-bottom: 2px;
-          color: #1c1f21;
+          color: var(--el-text-color-primary);
           cursor: pointer;
           &:nth-child(odd) {
-            border-right: 2px solid #fff;
+            border-right: 2px solid var(--el-bg-color-white);
           }
           .el-icon {
             font-size: 16px;
             margin-right: 8px;
           }
           &:hover {
-            background: #efefef;
+            background: var(--el-fill-color);
           }
         }
       }

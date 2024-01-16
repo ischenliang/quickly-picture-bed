@@ -84,7 +84,7 @@ function handleRenderError () {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  background: rgba($color: #000000, $alpha: 0.85);
+  background: var(--el-overlay-color);
   // background: #009688;
   border-radius: 8px;
 
@@ -119,7 +119,7 @@ function handleRenderError () {
     left: 0;
     padding: 0%;
     padding: 24px;
-    color: #fff;
+    color: var(--el-color-white);
     display: flex;
     flex-direction: column;
 
@@ -137,7 +137,7 @@ function handleRenderError () {
 
     .album-item-divider {
       height: 2px;
-      background: #fff;
+      background: var(--el-bg-color-white);
       margin: 5px 0;
       transition: all 0.35s;
       // transform: translate3d(-100%, 0, 0);

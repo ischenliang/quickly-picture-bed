@@ -71,7 +71,7 @@ const formatStyle = (count) => {
 .card-item {
   width: 100%;
   height: 110px;
-  background: #fff;
+  background: var(--el-bg-color-white);
   border-radius: 4px;
   padding: 15px;
   display: flex;
@@ -90,6 +90,7 @@ const formatStyle = (count) => {
   }
   .card-item-left {
     flex: 1;
+    color: var(--el-text-color-primary);
     .card-item-count {
       margin-bottom: 10px;
       display: flex;
@@ -99,7 +100,7 @@ const formatStyle = (count) => {
       }
       .today-count {
         font-size: 14px;
-        color: rgb(102, 144, 249);
+        color: var(--el-color-primary);
         margin-left: 5px;
       }
     }

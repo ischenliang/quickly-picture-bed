@@ -100,9 +100,8 @@ watch(() => route, (val) => {
     flex-shrink: 0;
     width: 100%;
     height: 60px;
-    background: #fff;
-    // box-shadow: 0 0 17px 0 rgb(130 122 122 / 10%);
-    border-bottom: 1px solid #dcdee2;
+    background: var(--el-bg-color-white);
+    border-bottom: 1px solid var(--el-border-color);
   }
   .app-container {
     flex: 1;
@@ -112,8 +111,8 @@ watch(() => route, (val) => {
       flex-shrink: 0;
       width: 240px;
       height: 100%;
-      background: #fff;
-      border-right: 1px solid #dcdee2;
+      background: var(--el-bg-color-white);
+      border-right: 1px solid var(--el-border-color);
     }
     .content-container {
       flex: 1;
@@ -139,15 +138,15 @@ watch(() => route, (val) => {
     bottom: 100px;
     padding: 15px 8px;
     font-size: 14px;
-    border: 1px solid #00aae7;
+    border: 1px solid var(--el-color-primary);
     border-radius: 9px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 8%);
+    box-shadow: var(--el-box-shadow-lighter);
     font-weight: 600;
-    color: #00aae7;
+    color: var(--el-text-color-primary);
     cursor: pointer;
     > span {
       writing-mode: vertical-lr;
@@ -159,8 +158,8 @@ watch(() => route, (val) => {
       right: 0;
       padding: 2px 6px;
       transform: translate(50%, -50%);
-      background: #f56c6c;
-      color: #fff;
+      background: var(--el-color-danger);
+      color: var(--el-color-white);
       writing-mode: horizontal-tb;
       border-radius: 7px;
       font-size: 12px;
