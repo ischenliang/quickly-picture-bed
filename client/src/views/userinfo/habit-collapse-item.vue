@@ -36,14 +36,14 @@ const style: any = computed(() => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: props.border ? '1px solid #ebebeb' : ''
+      borderBottom: props.border ? '1px solid var(--el-border-color)' : ''
     }
   }
   return {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    borderBottom: props.border ? '1px solid #ddd' : ''
+    borderBottom: props.border ? '1px solid var(--el-border-color)' : ''
   }
 })
 </script>

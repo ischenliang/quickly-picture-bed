@@ -276,11 +276,11 @@ const logout = () => {
           justify-content: center;
           .user-name {
             font-size: 14px;
-            color: var(--el-text-color-primary);
+            color: #333841;
           }
           .user-role {
             font-size: 12px;
-            color: var(--el-text-color-secondary);
+            color: #808392;
           }
         }
       }

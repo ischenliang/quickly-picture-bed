@@ -4,7 +4,7 @@
     <div class="plugin-item-header">
       <div class="plugin-item-category">
         <el-icon :size="18"><UploadFilled /></el-icon>
-        <span>{{ detail.category }}插件</span>
+        <span>{{ plugin_types[detail.category] }}</span>
       </div>
       <div class="plugin-item-env">
         <template v-if="editable">
@@ -75,7 +75,7 @@
           {{ item }}
         </span>
       </div>
-      <div class="plugin-item-action" v-if="editable">
+      <div class="plugin-item-action" v-if="editable" @click.stop="">
         <el-dropdown trigger="hover" placement="bottom-end" @command="(func) => func()">
           <icon-more :size="18"></icon-more>
           <template #dropdown>
@@ -114,6 +114,13 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const configStore = useConfigStore()
 const emit = defineEmits(['action'])
+const plugin_types = computed(() => {
+  const obj: any = {}
+  configStore.dicts.find(el => el.code === 'plugin_type').values.forEach(el => {
+    obj[el.value + ''] = el.label
+  })
+  return obj
+})
 
 /**
  * 变量
@@ -246,13 +253,14 @@ function handleCommond (type: string) {
           img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
             border-radius: 10px;
           }
           .plugin-item-platform {
             position: absolute;
             bottom: 0;
             width: 100%;
-            background: var(--el-fill-color-darker);
+            background: var(--el-bg-color-plugin-tag);
             font-size: 12px;
             border-radius: 0 0 6px 6px;
             height: 18px;
@@ -339,12 +347,15 @@ function handleCommond (type: string) {
       border-radius: 6px;
       border: 1px solid var(--el-border-color-lighter);
       color: var(--el-text-color-regular);
-      background: var(--el-bg-color-plugin);
+      background: var(--el-bg-color-plugin-tag);
+      flex-shrink: 0;
     }
     .plugin-item-tags {
       flex: 1;
       overflow: hidden;
       height: 24px;
+      display: flex;
+      flex-wrap: nowrap;
     }
     .plugin-item-action {
       width: 24px;

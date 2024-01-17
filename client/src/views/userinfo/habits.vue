@@ -74,6 +74,26 @@
       </el-form-item>
       <el-form-item prop="name">
         <habit-collapse-item
+          :title="'主题选择'"
+          :desc="'此处的主题来源于插件市场的【主题插件】，安装后可以在此处选择'"
+          :direction="'column'">
+          <div class="fit-list">
+            <div
+              v-for="(item, index) in themes"
+              :key="'theme-' + index"
+              :class="{
+                'fit-item': true,
+                active: detail.data.current_theme.id === item.id && detail.data.current_theme.plugin_id === item.plugin_id
+              }"
+              @click="handleFitClick({ id: item.id, plugin_id: item.plugin_id }, 'current_theme')">
+              <img :src="item.logo" alt="" :class="{ 'fit-item-name': true, 'img-cover': true }">
+              <p class="fit-item-name">{{ item.plugin_name }}</p>
+            </div>
+          </div>
+        </habit-collapse-item>
+      </el-form-item>
+      <el-form-item prop="name">
+        <habit-collapse-item
           :title="'图片显示方式'"
           :desc="'配置图库中的图片和相册中的图片显示方式，即对应object-fit样式'"
           :direction="'column'">
@@ -144,11 +164,13 @@
 import { useCtxInstance } from '@/hooks/global';
 import useUserStore from '@/store/user';
 import Habits from '@/types/Habits';
-import { HabitsInter } from '@/typings/interface';
+import { HabitsInter, UserPluginInter } from '@/typings/interface';
 import { reactive, ref } from 'vue';
 import HabitsDialog from './habits-dialog.vue'
 import habitCollapseItem from './habit-collapse-item.vue';
 import { linkTypes, fits } from '@/global.config';
+import Plugin from '@/types/Plugin';
+import { PageResponse } from '@/typings/req-res';
 
 /**
  * 实例
@@ -156,6 +178,7 @@ import { linkTypes, fits } from '@/global.config';
 const habits = new Habits()
 const ctx = useCtxInstance()
 const userStore = useUserStore()
+const plugin = new Plugin()
 
 /**
  * 变量
@@ -211,6 +234,7 @@ const visible = ref(false)
 const item = reactive({
   data: {}
 })
+const themes = ref([])
 
 /**
  * 数据获取
@@ -218,11 +242,30 @@ const item = reactive({
 const getDetail = () => {
   habits.detail().then((res: HabitsInter) => {
     if (res.id) {
+      if (!res.current_theme) {
+        res.current_theme = { id: 0, plugin_id: 0 }
+      }
       detail.data = res
     }
   })
 }
 getDetail()
+function getInstallPlugins () {
+  plugin.installed({ status: true, type: 'themer' }).then((res: PageResponse<UserPluginInter>) => {
+    themes.value = [
+      { id: 0, plugin_id: 0, plugin_name: '默认主题', logo: 'https://files.mdnice.com/user/31298/b231e247-9bed-421e-bcc3-8594c9052996.png' },
+      ...res.items.map(el => {
+        return {
+          id: el.id,
+          plugin_id: el.plugin.id,
+          plugin_name: el.plugin.title,
+          logo: el.plugin.logo
+        }
+      })
+    ]
+  })
+}
+getInstallPlugins()
 
 
 /**
@@ -250,7 +293,7 @@ const submit = () => {
   })
 }
 // 点击切换fit
-function handleFitClick (payload: any, key: 'gallery_img_fit' | 'album_cover_fit') {
+function handleFitClick (payload: any, key: 'gallery_img_fit' | 'album_cover_fit' | 'current_theme') {
   detail.data[key] = payload
 }
 // 点击切换模式
@@ -298,7 +341,7 @@ function handleGalleryName (payload: string) {
         border-radius: 6px 6px 0 0;
       }
       &.active {
-        box-shadow: 0 0 14px 3px var(--el-color-primary);
+        box-shadow: 0 0 3px 1px var(--el-color-primary);
         .fit-item-name {
           color: var(--el-color-primary);
           border-top-color: var(--el-color-primary);

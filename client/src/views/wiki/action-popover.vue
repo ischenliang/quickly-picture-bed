@@ -68,14 +68,17 @@ loadComponent()
       cursor: pointer;
       margin-bottom: 2px;
       &:hover {
-        background: #f2f2f2;
+        background: var(--el-fill-color-dark);
         border-radius: 4px;
       }
       .wiki-icon {
         margin-right: 8px;
+        svg {
+          fill: var(--el-text-color-primary);
+        }
       }
       > span.menu-item-text {
-        color: #333;
+        color: var(--el-text-color-primary);
       }
     }
   }

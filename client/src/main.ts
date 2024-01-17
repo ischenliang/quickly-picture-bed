@@ -15,7 +15,6 @@ import '@/views/global.scss'
 import * as echarts from 'echarts'
 import westeros from '@/assets/westeros.json'
 echarts.registerTheme('westeros', westeros)
-import '@/styles/theme-default.scss'
 
 // 不能放在这里初始化，因为在leancloud存储桶时还会调用AV.init导致重载
 // 注意：这里的serverURL必须是非国际版的才支持使用，所以在创建应用时选择非国际版

@@ -137,7 +137,7 @@ function handleRenderError () {
 
     .album-item-divider {
       height: 2px;
-      background: var(--el-bg-color-white);
+      background: var(--el-color-white);
       margin: 5px 0;
       transition: all 0.35s;
       // transform: translate3d(-100%, 0, 0);

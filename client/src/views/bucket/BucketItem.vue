@@ -149,6 +149,7 @@ $text-color-active: var(--el-color-primary);
       margin-top: 10px;
       .el-tag {
         margin: 2px 4px 2px 0;
+        background: var(--el-bg-color-bucket-tag) !important;
       }
     }
     .bucket-content-time {

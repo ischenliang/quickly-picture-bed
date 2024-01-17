@@ -69,7 +69,7 @@ watch(() => ctx.$route, (val, old) => {
   }
 
   if (['About', 'Uplog'].includes(val.name)) {
-    style.value.backgroundColor = '#fff'
+    // style.value.backgroundColor = '#fff'
   } else {
     style.value.backgroundColor = 'transparent'
   }

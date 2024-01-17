@@ -44,32 +44,5 @@ const props = withDefaults(defineProps<Props>(), {
       color: var(--el-text-color-primary);
     }
   }
-  .reward {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 20px;
-    .reward-item {
-      max-width: 200px;
-      min-width: 100px;
-      border: 1px dashed var(--el-border-color);
-      margin-right: 20px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      &-img {
-        img {
-          width: 100%;
-        }
-      }
-      &-label {
-        line-height: 24px;
-        text-align: center;
-        margin-top: -8px;
-        padding-bottom: 5px;
-        font-weight: bold;
-      }
-    }
-  }
 }
 </style>

@@ -468,6 +468,11 @@ export interface HabitsInter {
   current_bucket?: number
   // 当前使用相册id
   current_album?: number
+  // 当前使用主题
+  current_theme?: {
+    id: number
+    plugin_id: number
+  }
   // 链接格式，默认是 ![]($url)
   // 占位符$url表示图片url位置
   // 占位符$fileName表示文件名

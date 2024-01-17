@@ -42,16 +42,20 @@ const rewards: Ref<RewardInter[]> = computed(() => {
     border-radius: 6px;
     display: flex;
     flex-direction: column;
+    color: var(--el-text-color-primary);
     &-img {
+      width: 100%;
+      height: auto;
       img {
         width: 100%;
       }
     }
     &-label {
-      line-height: 24px;
-      text-align: center;
-      margin-top: -8px;
-      padding-bottom: 5px;
+      flex-shrink: 0;
+      height: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-weight: bold;
     }
   }

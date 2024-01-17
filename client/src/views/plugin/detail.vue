@@ -238,6 +238,9 @@ function uninstallPlugin (id: number, text: string = '该操作将删除关联�
       ctx.$message({ message: '更新成功', type: 'success', duration: 1000 })
       getDetail()
       loading.uninstall = false
+      if (pluginDetail.value.category === 'themer') {
+        window.location.reload()
+      }
     })
   })
 }

@@ -127,6 +127,7 @@ const website = computed(() => {
   height: 100%;
   position: relative;
   overflow: hidden;
+  background: #f5f7f9 !important;
   .login-layout__left {
     width: 500px;
     flex-shrink: 0;
@@ -267,6 +268,57 @@ const website = computed(() => {
           margin-bottom: 10px;
         }
       }
+    }
+  }
+  .el-tabs {
+    background: #fff !important;
+    .el-tabs__item {
+      color: #303133 !important;
+      &.is-active {
+        color: #409eff !important;
+      }
+    }
+    .el-tabs__nav-wrap:after {
+      background: #e4e7ed !important;
+    }
+  }
+  .el-input {
+    .el-input__wrapper {
+      background: #fff !important;
+      box-shadow: 0 0 0 1px #dcdfe6 inset !important;
+      .el-input__inner {
+        color: #606266 !important;
+      }
+      &.is-focus {
+        box-shadow: 0 0 0 1px #409eff inset !important;
+      }
+    }
+    .el-input-group__append, .el-input-group__prepend {
+      background-color: #f5f7fa !important;
+      color: #909399 !important;
+    }
+  }
+  .el-select {
+    .el-input__wrapper {
+      box-shadow: 0 1px 0 0 #dcdfe6 inset,0 -1px 0 0 #dcdfe6 inset,-1px 0 0 0 #dcdfe6 inset !important;
+      background: transparent !important;
+      .el-input__inner {
+        color: #606266 !important;
+      }
+    }
+  }
+  .el-checkbox {
+    color: #606266;
+    .el-checkbox__inner {
+      background: #ffffff;
+      border: 1px solid #dcdfe6;
+    }
+    .el-checkbox__input.is-checked+.el-checkbox__label {
+      color: #409eff;
+    }
+    .el-checkbox__input.is-checked .el-checkbox__inner {
+      background-color: #409eff;
+      border-color: #409eff;
     }
   }
 }

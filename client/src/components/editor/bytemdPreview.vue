@@ -72,4 +72,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+#bytemd-viewer {
+  .markdown-body {
+    color: var(--el-text-color-primary) !important;
+  }
+}
 </style>
