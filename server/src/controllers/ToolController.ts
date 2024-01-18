@@ -14,7 +14,6 @@ import { Context } from 'koa'
 import path from 'path'
 import fse from 'fs-extra'
 import { PassThrough, Readable } from 'stream'
-import proxy from "https-proxy-agent";
 
 function EventStream() { 
   Readable.call(this,arguments);

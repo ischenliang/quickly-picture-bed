@@ -26,6 +26,7 @@
     "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
     "koa-ts-controllers": "^3.2.2",
+    "koa-views": "^8.1.0",
     "koa2-cors": "^2.0.6",
     "md5": "^2.3.0",
     "moment": "^2.29.1",

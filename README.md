@@ -107,7 +107,7 @@
 - typescript版本 >= 4.8.4
 
 
-## 安装
+## 安装部署
 ### 安装步骤
 **1. 安装node**<br/>
 前往[node官网](http://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
@@ -134,7 +134,7 @@ npm install ts-node -g
 ```
 
 **6. 修改数据库连接**<br>
-打开`server/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
+打开`server/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等
 ```yml
 # mysql数据库配置
 # 数据库ip，不要使用localhost和127.0.0.1
@@ -177,7 +177,8 @@ npm run start
 ```
 在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
 ```ts
-window.uploader_ip = 'localhost:3002'
+// 注意末尾不要加斜杠
+window.uploader_ip = 'http://localhost:3002'
 ```
 然后执行下面命令运行前端代码
 ```shell
@@ -205,23 +206,103 @@ npm run dev
       ![2023030709221710.png](./doc/images/2023030709221710.png)
 
 
-**9. 项目打包部署**<br/>
+### 打包部署
+**服务端部署**<br/>
 koa项目可以不用打包部署，直接将`server`目录下的内容所有内容拷贝到服务器上然后执行上述的安装步骤。
+
+**前端部署**<br/>
+部署前需要修改`client/public/global.config.js`文件中的配置
+```js
+// 需带上http|https协议，默认不加 "/"
+window.uploader_ip = 'http://127.0.0.1:3002'
+```
+然后执行打包命令
 ```shell
 # 前端项目打包部署
 cd client
 npm run build
 ```
-将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
+将打包后生成的`dist`目录下的所有内容拷贝到web服务器上就可以访问了。
+
 
 ### docker打包部署
-在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
+在linux环境，可以使用`Docker`进行部署
+1. 修改`server/.env`中的数据库配置
+```yaml
+# mysql数据库配置
+# 数据库ip，不要使用localhost和127.0.0.1
+DB_HOST=xxx.xxx.xxx.xxx
+# 数据库端口，默认3306
+DB_PORT=3306
+# 数据库
+DB_DATABASE=picture-bed-backup
+# mysql用户名，默认是root
+DB_USERNAME=root
+# mysql密码
+DB_PASSWORD=xxxx
+
+# 后台配置: 程序占用端口
+APP_PORT=3002
+```
+2. 配置接口地址
+- 方式一: 修改`client/public/global.config.js`文件
+```js
+// 需带上http|https协议，默认不加 "/"
+window.uploader_ip = 'http://127.0.0.1:3002'
+```
+- 方式二: 通过修改`client/nginx.conf`中的`localtion`来配置代理，使用此方式的话需要将`global.config.js`中的`window.uploader_ip`配置为空字符串`''`，因为默认`global.config.js`的优先级高于`nginx.conf`。
+```
+server {
+    listen 80;
+    server_name localhost;
+    index index.html;
+
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html;
+    }
+    location /api {
+        proxy_pass http://127.0.0.1:3002;
+    }
+}
+
+```
+将上面的`http://127.0.0.1:3002`替换成你想要部署的服务器ip地址和端口，然后再到控制台执行镜像构建命令
 ```shell
 docker-compose up
 ```
-上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:3002`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
+上面的命令，会自动制作`pic-client`和`pic-server`两个`docker`镜像，并且自动启动镜像。
+> 等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:3002`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
 
-### Docker运行程序
+当然也可以通过修改`docker-compose.yml`中的`ports`端口:
+```yaml
+version: '3'
+services:
+  web:
+    container_name: pic-client
+    build:
+      context: ./client
+    ports:
+      - "8088:80"
+    networks:
+      - app_network
+  api:
+    container_name: pic-server
+    build:
+      context: ./server
+    ports:
+      - "4000:3002"
+    networks:
+      - app_network
+networks:
+  app_network:
+    driver: bridge
+```
+
+### ~~Docker运行程序~~(不推荐)
+> 该方式不推荐，其原因在于在执行`docker run`命令时传入环境变量文件，只针对koa有效，针对vue项目无效，是因为我们的vue项目在打包后就直接将`.env`中的环境变量的值直接输出到结果文件中了，相当于一个常量了，所以尽管后续传入`.env`文件依旧是不会生效的。
+> 当然也是由于本人对docker熟悉度不高，目前还未找到一个合理的解决办法，也尝试了通过在传入的默认nginx配置文件中指定`location`接口代理，但是依旧需要提前知道ip和端口，和直接写死没啥区别，当然如果有经验或知道的小伙伴也可以在issue中提出解决方案。
+
 直接拉取[Docker Hub](http://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
 1. 运行server服务端
   ```shell
@@ -249,13 +330,7 @@ docker-compose up
   ```shell
   docker run -p 80:80 --env-file .env itchenliang/quickly-picture-bed-client:1.1
   ```
-  上面的`.env`文件是用于指定请求的后端接口地址
-  ```yml
-  # 需带上http|http协议，默认不加 "/"
-  # 注意vite中的环境变量需要以VITE开头
-  VITE_APP_BASE_URL=http://127.0.0.1:3002
-  ```
-  当该命令执行成功时，我们可以在浏览器中访问`http://localhost:80`来预览我们的客户端应用程序。
+  由于vue项目在构建后就会默认将`.env`文件中的内容打包进结果文件中，因此实际上即使传入了`.env`文件并不会生效，因此针对前端项目该方式行不通。
 
 
 

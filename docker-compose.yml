@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    container_name: pic-bed-client
+    container_name: pic-client
     build:
       context: ./client
     ports:
@@ -9,7 +9,7 @@ services:
     networks:
       - app_network
   api:
-    container_name: pic-bed-server
+    container_name: pic-server
     build:
       context: ./server
     ports:
