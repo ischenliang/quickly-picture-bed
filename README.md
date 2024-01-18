@@ -238,8 +238,8 @@ cd client
 npm run dev
 ```
 控制台出现如下如所示即代表启动成功
-![202401181708175946.png](http://img.itchenliang.club/img/202401181708175946.png)<br/>
-![202401181708309363.png](http://img.itchenliang.club/img/202401181708309363.png)
+![202401181708175946.png](https://img.itchenliang.club/img/202401181708175946.png)<br/>
+![202401181708309363.png](https://img.itchenliang.club/img/202401181708309363.png)
 
 8. 打包部署
 - **服务端打包部署**
@@ -311,7 +311,7 @@ docker-compose up
 
 ## 预览
 接口文档：接口文档是采用swagger自动生成的，目前是通过后端访问`http://ip:端口/swagger`访问，其效果如下: 
-![202401181708537770.png](http://img.itchenliang.club/img/202401181708537770.png)
+![202401181708537770.png](https://img.itchenliang.club/img/202401181708537770.png)
 
 
 ### 登录、注册、忘记密码
@@ -324,87 +324,87 @@ docker-compose up
 
 
 ### 上传区
-![202401181709271669.png](http://img.itchenliang.club/img/202401181709271669.png)
+![202401181709271669.png](https://img.itchenliang.club/img/202401181709271669.png)
 
 ### 图片管理
 - 图片列表
-![202401181709402274.png](http://img.itchenliang.club/img/202401181709402274.png)
+![202401181709402274.png](https://img.itchenliang.club/img/202401181709402274.png)
 - 拖拽排序
-![202401181709483901.png](http://img.itchenliang.club/img/202401181709483901.png)
+![202401181709483901.png](https://img.itchenliang.club/img/202401181709483901.png)
 - 图片详情
-![202401181709571411.png](http://img.itchenliang.club/img/202401181709571411.png)
+![202401181709571411.png](https://img.itchenliang.club/img/202401181709571411.png)
 
 ### 存储桶管理
 - 存储桶列表
-![202401181710055738.png](http://img.itchenliang.club/img/202401181710055738.png)
+![202401181710055738.png](https://img.itchenliang.club/img/202401181710055738.png)
 - 新增存储桶
-![202401181710145189.png](http://img.itchenliang.club/img/202401181710145189.png)
+![202401181710145189.png](https://img.itchenliang.club/img/202401181710145189.png)
 - 存储桶数据迁移
-![202401181710433634.png](http://img.itchenliang.club/img/202401181710433634.png)
+![202401181710433634.png](https://img.itchenliang.club/img/202401181710433634.png)
 
 ### 相册管理
 - 相册列表
-![202401181710519238.png](http://img.itchenliang.club/img/202401181710519238.png)
+![202401181710519238.png](https://img.itchenliang.club/img/202401181710519238.png)
 - 新增相册
-![202401181711026454.png](http://img.itchenliang.club/img/202401181711026454.png)
+![202401181711026454.png](https://img.itchenliang.club/img/202401181711026454.png)
 - 相册图片
-![202401181711118179.png](http://img.itchenliang.club/img/202401181711118179.png)
+![202401181711118179.png](https://img.itchenliang.club/img/202401181711118179.png)
 
 ### 插件市场
 - 插件列表
-![202401181711209937.png](http://img.itchenliang.club/img/202401181711209937.png)
+![202401181711209937.png](https://img.itchenliang.club/img/202401181711209937.png)
 - 插件详情
-![202401181711275608.png](http://img.itchenliang.club/img/202401181711275608.png)
+![202401181711275608.png](https://img.itchenliang.club/img/202401181711275608.png)
 
 ### 知识库管理
 - 知识库列表
-![202401181711429709.png](http://img.itchenliang.club/img/202401181711429709.png)
+![202401181711429709.png](https://img.itchenliang.club/img/202401181711429709.png)
 - 新建知识库
-![202401181711498923.png](http://img.itchenliang.club/img/202401181711498923.png)
+![202401181711498923.png](https://img.itchenliang.club/img/202401181711498923.png)
 - 知识库文章
-![202401181711584463.png](http://img.itchenliang.club/img/202401181711584463.png)
+![202401181711584463.png](https://img.itchenliang.club/img/202401181711584463.png)
 
 ### 数据统计
-![202401181712067624.png](http://img.itchenliang.club/img/202401181712067624.png)
-![202401181712148601.png](http://img.itchenliang.club/img/202401181712148601.png)
+![202401181712067624.png](https://img.itchenliang.club/img/202401181712067624.png)
+![202401181712148601.png](https://img.itchenliang.club/img/202401181712148601.png)
 
 ### 操作日志
-![202401181712231885.png](http://img.itchenliang.club/img/202401181712231885.png)
+![202401181712231885.png](https://img.itchenliang.club/img/202401181712231885.png)
 
 ### 用户管理
 - 用户列表
-![202401181712302276.png](http://img.itchenliang.club/img/202401181712302276.png)
+![202401181712302276.png](https://img.itchenliang.club/img/202401181712302276.png)
 - 新增用户
-![202401181712372436.png](http://img.itchenliang.club/img/202401181712372436.png)
+![202401181712372436.png](https://img.itchenliang.club/img/202401181712372436.png)
 - 用户详情
-![202401181712444098.png](http://img.itchenliang.club/img/202401181712444098.png)
+![202401181712444098.png](https://img.itchenliang.club/img/202401181712444098.png)
 
 ### 插件管理
 - 插件列表
-![202401181712522717.png](http://img.itchenliang.club/img/202401181712522717.png)
+![202401181712522717.png](https://img.itchenliang.club/img/202401181712522717.png)
 - 新增插件
-![202401181713003180.png](http://img.itchenliang.club/img/202401181713003180.png)
+![202401181713003180.png](https://img.itchenliang.club/img/202401181713003180.png)
 - 插件详情
-![202401181713106236.png](http://img.itchenliang.club/img/202401181713106236.png)
+![202401181713106236.png](https://img.itchenliang.club/img/202401181713106236.png)
 
 
 ### 字典管理
-![202401181713217045.png](http://img.itchenliang.club/img/202401181713217045.png)
+![202401181713217045.png](https://img.itchenliang.club/img/202401181713217045.png)
 
 ### 系统设置
-![202401181713284518.png](http://img.itchenliang.club/img/202401181713284518.png)
+![202401181713284518.png](https://img.itchenliang.club/img/202401181713284518.png)
 
 ### 偏好设置
-![202401181713568298.png](http://img.itchenliang.club/img/202401181713568298.png)
+![202401181713568298.png](https://img.itchenliang.club/img/202401181713568298.png)
 
 ### 个人中心
-![202401181714046931.png](http://img.itchenliang.club/img/202401181714046931.png)
+![202401181714046931.png](https://img.itchenliang.club/img/202401181714046931.png)
 
 ### 更新日志
-![202401181713399802.png](http://img.itchenliang.club/img/202401181713399802.png)
+![202401181713399802.png](https://img.itchenliang.club/img/202401181713399802.png)
 
 ### 关于系统
-![202401181713477302.png](http://img.itchenliang.club/img/202401181713477302.png)
+![202401181713477302.png](https://img.itchenliang.club/img/202401181713477302.png)
 
 
 ## 待办功能 TODO
