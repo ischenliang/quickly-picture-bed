@@ -174,24 +174,29 @@
 ## 安装
 ### 从零开始安装
 1. **安装node**
+
 前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
 > 请确保安装的node版本为: 18.16.0
 
 2. **安装git**
+
 前往[Git官网](https://git-scm.com/)下载`git`并安装，此步可忽略。
 
-3. 克隆代码
+3. **克隆代码**
+
 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压。
 
-4. 执行sql文件
-系统提供默认初始化数据库sql文件，拿到服务端代码并打开复制`sql/picture-bed-backup.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
+4. **执行sql文件**
+
+系统提供默认初始化数据库sql文件，首先拿到服务端代码，然后打开复制`sql/init.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
 ```js
 管理员账号: admin@163.com
 管理员密码: 000000
 ```
 
-5. 修改数据库连接
-打开服务端代码`/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
+5. **修改数据库连接**
+
+首先获取到服务端代码，然后打开`/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
 ```yml
 # mysql用户名，默认是root
 DB_USERNAME=xxx
@@ -213,7 +218,7 @@ APP_PORT=4000
 NPM_REGISTRY=https://registry.npmmirror.com
 ```
 
-6. 依赖安装
+6. **依赖安装**
 ```shell
 # 前端依赖安装
 cd client
@@ -224,7 +229,8 @@ cd server
 npm install
 ```
 
-7. 项目启动
+7. **项目启动**
+
 首先拿到服务端代码然后打开命令行将后端服务启动
 ```shell
 # 服务端项目启动: 需要获取到后端代码
@@ -245,7 +251,7 @@ npm run dev
 ![202401181708175946.png](https://imgs.itchenliang.club/img/202401181708175946.png)<br/>
 ![202401181708309363.png](https://imgs.itchenliang.club/img/202401181708309363.png)
 
-8. 打包部署
+8. **打包部署**
 - **服务端打包部署**
   - 在命令行执行如下命令即可
 ```shell
@@ -261,6 +267,7 @@ cd client
 npm run build
 ```
 将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
+
 
 ### docker打包部署
 在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
