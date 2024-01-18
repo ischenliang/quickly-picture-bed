@@ -1,19 +1,11 @@
 version: '3'
 services:
   web:
-    container_name: pic-bed-client
+    container_name: picbed-client-v2
     build:
       context: ./client
     ports:
       - "80:80"
-    networks:
-      - app_network
-  api:
-    container_name: pic-bed-server
-    build:
-      context: ./server
-    ports:
-      - "3002:3002"
     networks:
       - app_network
 networks:

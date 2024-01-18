@@ -66,11 +66,6 @@ export const mimeTypes = {
 }
 
 
-// 124.222.54.192
-// @ts-ignore
-const ip = window.uploader_ip || import.meta.env.VITE_APP_BASE_URL
-window.uploader_ip = ip
-export const baseURL = `${ip}/v1`
 
 // https://registry.npmmirror.com/${plugin.name}/${plugin.version}/files/dist/index.umd.js
 export const PluginLoadUrl = 'https://registry.npmmirror.com/'
@@ -83,3 +78,10 @@ export const authorConfig = {
 
 // object-fit所有可能的值
 export const fits = ref(['fill', 'contain', 'cover', 'scale-down', 'none'])
+
+
+// 124.222.54.192
+// @ts-ignore
+const ip = window.uploader_ip
+window.uploader_ip = ip
+export const baseURL = ip ? `${ip}/v1` : '/v1'

@@ -184,29 +184,33 @@
 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压。
 
 4. 执行sql文件
-系统提供默认初始化数据库sql文件，打开并复制sql/picture-bed-backup.sql，在navicat或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
+系统提供默认初始化数据库sql文件，拿到服务端代码并打开复制`sql/picture-bed-backup.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
 ```js
 管理员账号: admin@163.com
 管理员密码: 000000
 ```
 
 5. 修改数据库连接
-打开`server/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
+打开服务端代码`/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
 ```yml
-# mysql数据库配置
+# mysql用户名，默认是root
+DB_USERNAME=xxx
+# mysql密码
+DB_PASSWORD=xxx
 # 数据库ip，不要使用localhost和127.0.0.1
 DB_HOST=xxx.xxx.xxx.xxx
 # 数据库端口，默认3306
 DB_PORT=3306
 # 数据库
-DB_DATABASE=picture-bed-backup
-# mysql用户名，默认是root
-DB_USERNAME=root
-# mysql密码
-DB_PASSWORD=xxxx
+DB_DATABASE=xxx
 
-# 后台配置: 程序占用端口
-APP_PORT=3002
+# 程序占用端口
+APP_PORT=4000
+
+# npm镜像源仓库，末尾不要加斜杆/，常见的是npm官方镜像源，淘宝镜像源
+# unpkg: https://unpkg.com/@itchenliang/picture-rollup-mdnice-plugin@1.0.2/dist/index.umd.js
+# 淘宝: https://registry.npmmirror.com/@itchenliang/picture-rollup-oss-plugin/1.0.12/files/dist/index.js
+NPM_REGISTRY=https://registry.npmmirror.com
 ```
 
 6. 依赖安装
@@ -215,19 +219,19 @@ APP_PORT=3002
 cd client
 npm install
 
-# 服务端依赖安装
+# 服务端依赖安装: 需要获取到后端代码
 cd server
 npm install
 ```
 
 7. 项目启动
-首先将后端服务启动
+首先拿到服务端代码然后打开命令行将后端服务启动
 ```shell
-# 服务端启动
+# 服务端项目启动: 需要获取到后端代码
 cd server
-npm run start
+npm run start:dev
 ```
-在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
+在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`http://locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
 ```ts
 window.uploader_ip = 'http://localhost:3002'
 ```
@@ -245,14 +249,14 @@ npm run dev
 - **服务端打包部署**
   - 在命令行执行如下命令即可
 ```shell
-# 进入到服务端目录
+# 服务端构建: 需要获取到后端代码
 cd server
 npm run build
 ```
 - **前端打包部署**
   - 在命令行执行如下命令即可
 ```shell
-# 进入到前端目录
+# 前端构建
 cd client
 npm run build
 ```
@@ -261,52 +265,21 @@ npm run build
 ### docker打包部署
 在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
 ```shell
-docker-compose up
+# 前端docker镜像构建并部署
+cd client
+docker build -t pic-bed-client .
+docker run -d -p 80:80 pic-bed-client
+
+# 服务端docker构建并部署: 需要获取到后端代码
+cd server
+docker build -t pic-bed-server .
+docker run -d -p 4000:4000 pic-bed-server
 ```
-上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:3002`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
+上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:4000`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
 
-### Docker运行程序
-直接拉取[Docker Hub](https://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
-1. 运行server服务端
-  ```shell
-  docker run -p 3002:3002--env-file .env itchenliang/quickly-picture-bed-server:1.0
-  ```
-  上面的`--env-file`是指定环境变量文件，为了方便配置数据库连接，在运行时传入`.env`文件，配置内容如下
-  ```yml
-  # mysql数据库配置
-  # 数据库ip，不要使用localhost和127.0.0.1
-  DB_HOST=xxx.xxx.xxx.xxx
-  # 数据库端口，默认3306
-  DB_PORT=3306
-  # 数据库
-  DB_DATABASE=picture-bed-backup
-  # mysql用户名，默认是root
-  DB_USERNAME=root
-  # mysql密码
-  DB_PASSWORD=xxxx
-
-  # 后台配置: 程序占用端口
-  APP_PORT=3002
-  ```
-  当该命令执行成功时，我们可以在浏览器中访问`http://localhost:3002`来预览我们的服务端应用程序。
-2. 运行client客户端
-  ```shell
-  docker run -p 80:80 --env-file .env itchenliang/quickly-picture-bed-client:1.1
-  ```
-  上面的`.env`文件是用于指定请求的后端接口地址
-  ```yml
-  # 需带上http|https协议，默认不加 "/"
-  # 注意vite中的环境变量需要以VITE开头
-  VITE_APP_BASE_URL=http://127.0.0.1:3002
-  ```
-  当该命令执行成功时，我们可以在浏览器中访问`http://localhost:80`来预览我们的客户端应用程序。
 
 ### 安装包安装
 下载版本后解压。
-
-### Docker安装
-- Docker构建镜像
-
 
 
 ## 预览
