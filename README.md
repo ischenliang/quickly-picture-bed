@@ -34,6 +34,7 @@
 仓库地址: 
 - Gitee: https://gitee.com/itchenliang/quickly-picture-bed
 - Github: https://github.com/ischenliang/quickly-picture-bed
+文档: https://ejq9qy8emd.feishu.cn/docx/Eo1HdFD7noXoSlxfRfWcYyzJnpf
 ```
 
 **在线演示(老版本)**
@@ -44,6 +45,7 @@
 仓库地址: 
 - Gitee: https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller
 - Github: https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller
+文档: https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller/doc
 ```
 
 ## 内置插件
@@ -170,7 +172,7 @@
 
 
 ## 安装
-### 4.1 从零开始安装
+### 从零开始安装
 1. **安装node**
 前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
 > 请确保安装的node版本为: 18.16.0
@@ -236,8 +238,8 @@ cd client
 npm run dev
 ```
 控制台出现如下如所示即代表启动成功
-![202401181638446313.png](https://files.mdnice.com/user/31298/7c494978-73b9-452c-9176-b61341df9329.png)<br/>
-![202401181638591671.png](https://files.mdnice.com/user/31298/55f2d5a3-19e6-48da-a159-cae14693d4c6.png)
+![202401181708175946.png](http://img.itchenliang.club/img/202401181708175946.png)<br/>
+![202401181708309363.png](http://img.itchenliang.club/img/202401181708309363.png)
 
 8. 打包部署
 - **服务端打包部署**
@@ -309,7 +311,7 @@ docker-compose up
 
 ## 预览
 接口文档：接口文档是采用swagger自动生成的，目前是通过后端访问`http://ip:端口/swagger`访问，其效果如下: 
-![202401181642291644.png](https://files.mdnice.com/user/31298/2dab22b1-5832-47df-917b-baf7718c1c12.png)
+![202401181708537770.png](http://img.itchenliang.club/img/202401181708537770.png)
 
 
 ### 登录、注册、忘记密码
@@ -322,87 +324,87 @@ docker-compose up
 
 
 ### 上传区
-![202401181643125889.png](https://files.mdnice.com/user/31298/321d83d2-75c8-481e-91b6-a5684191a36b.png)
+![202401181709271669.png](http://img.itchenliang.club/img/202401181709271669.png)
 
 ### 图片管理
 - 图片列表
-![202401181643498477.png](https://files.mdnice.com/user/31298/2519be14-71b7-4b46-8dc6-5a8898d453ce.png)
+![202401181709402274.png](http://img.itchenliang.club/img/202401181709402274.png)
 - 拖拽排序
-![202401181644238172.png](https://files.mdnice.com/user/31298/b2e0ab7c-9d09-4003-bbb8-9bc8b426e01c.png)
+![202401181709483901.png](http://img.itchenliang.club/img/202401181709483901.png)
 - 图片详情
-![202401181644409510.png](https://files.mdnice.com/user/31298/3bf36412-c7c1-4966-9b3c-ed325e61cbce.png)
+![202401181709571411.png](http://img.itchenliang.club/img/202401181709571411.png)
 
 ### 存储桶管理
 - 存储桶列表
-![202401181645141390.png](https://files.mdnice.com/user/31298/d99d2331-afd3-480c-99af-59f8f95d665b.png)
+![202401181710055738.png](http://img.itchenliang.club/img/202401181710055738.png)
 - 新增存储桶
-![202401181645496834.png](https://files.mdnice.com/user/31298/df984e46-2338-4e1d-8ef9-f81957ee62d6.png)
+![202401181710145189.png](http://img.itchenliang.club/img/202401181710145189.png)
 - 存储桶数据迁移
-![202401181646085458.png](https://files.mdnice.com/user/31298/b4bd2986-8503-4b44-b672-ce552777210c.png)
+![202401181710433634.png](http://img.itchenliang.club/img/202401181710433634.png)
 
 ### 相册管理
 - 相册列表
-![202401181646353555.png](https://files.mdnice.com/user/31298/ea987218-2256-450e-89d4-80dc3632fe0c.png)
+![202401181710519238.png](http://img.itchenliang.club/img/202401181710519238.png)
 - 新增相册
-![202401181647131913.png](https://files.mdnice.com/user/31298/157edccf-3dcf-41c2-a0d8-41866b7f3a52.png)
+![202401181711026454.png](http://img.itchenliang.club/img/202401181711026454.png)
 - 相册图片
-![202401181647314733.png](https://files.mdnice.com/user/31298/f57688ac-a40c-47b4-b51c-fd2bba972812.png)
+![202401181711118179.png](http://img.itchenliang.club/img/202401181711118179.png)
 
 ### 插件市场
 - 插件列表
-![202401181648058878.png](https://files.mdnice.com/user/31298/2254ac71-0c17-4ca4-974f-18eea66e992c.png)
+![202401181711209937.png](http://img.itchenliang.club/img/202401181711209937.png)
 - 插件详情
-![202401181648389420.png](https://files.mdnice.com/user/31298/ef0563f7-461d-405d-bd3f-9dcef563a6dc.png)
+![202401181711275608.png](http://img.itchenliang.club/img/202401181711275608.png)
 
 ### 知识库管理
 - 知识库列表
-![202401181649071397.png](https://files.mdnice.com/user/31298/2c729def-4bcc-4b69-b139-da713820b2e5.png)
+![202401181711429709.png](http://img.itchenliang.club/img/202401181711429709.png)
 - 新建知识库
-![202401181649256358.png](https://files.mdnice.com/user/31298/6fcdffae-f5af-433b-823f-bd654ee3ab1e.png)
+![202401181711498923.png](http://img.itchenliang.club/img/202401181711498923.png)
 - 知识库文章
-![202401181649443723.png](https://files.mdnice.com/user/31298/27dff118-2e0d-42ad-aa4a-4bf3c0d86e1d.png)
+![202401181711584463.png](http://img.itchenliang.club/img/202401181711584463.png)
 
 ### 数据统计
-![202401181650138761.png](https://files.mdnice.com/user/31298/b5a31d68-c7bf-4c3f-b056-88aced602015.png)
-![202401181650481825.png](https://files.mdnice.com/user/31298/b430990a-00b6-44cb-ba09-d4a0a7244450.png)
+![202401181712067624.png](http://img.itchenliang.club/img/202401181712067624.png)
+![202401181712148601.png](http://img.itchenliang.club/img/202401181712148601.png)
 
 ### 操作日志
-![202401181650347423.png](https://files.mdnice.com/user/31298/590ac407-977c-4710-8d15-e36bf4d8552b.png)
+![202401181712231885.png](http://img.itchenliang.club/img/202401181712231885.png)
 
 ### 用户管理
 - 用户列表
-![202401181651022304.png](https://files.mdnice.com/user/31298/ae8234b2-3026-4626-ad75-b9e4d14e4303.png)
+![202401181712302276.png](http://img.itchenliang.club/img/202401181712302276.png)
 - 新增用户
-![202401181651466087.png](https://files.mdnice.com/user/31298/e487c59d-c898-471c-a550-cbb30244e4b6.png)
+![202401181712372436.png](http://img.itchenliang.club/img/202401181712372436.png)
 - 用户详情
-![202401181651351999.png](https://files.mdnice.com/user/31298/52ec80db-3abd-4c6e-9c14-746bd3165a8c.png)
+![202401181712444098.png](http://img.itchenliang.club/img/202401181712444098.png)
 
 ### 插件管理
 - 插件列表
-![202401181652235216.png](https://files.mdnice.com/user/31298/c445ca59-36a7-4c8d-a8ac-63fe1642ec8f.png)
+![202401181712522717.png](http://img.itchenliang.club/img/202401181712522717.png)
 - 新增插件
-![202401181652517355.png](https://files.mdnice.com/user/31298/af5a4fec-1ae7-46e9-bc83-21d4dbcfb533.png)
+![202401181713003180.png](http://img.itchenliang.club/img/202401181713003180.png)
 - 插件详情
-![202401181653141146.png](https://files.mdnice.com/user/31298/cf4f7ff8-f6d6-431b-ad3a-f6eb2d0aa617.png)
+![202401181713106236.png](http://img.itchenliang.club/img/202401181713106236.png)
 
 
 ### 字典管理
-![202401181653371040.png](https://files.mdnice.com/user/31298/0e7ddea1-566c-420c-96b6-ce69349c55ab.png)
+![202401181713217045.png](http://img.itchenliang.club/img/202401181713217045.png)
 
 ### 系统设置
-![202401181653546592.png](https://files.mdnice.com/user/31298/e17a293b-9219-4760-973f-bba614f955fa.png)
-
-### 更新日志
-![202401181654102023.png](https://files.mdnice.com/user/31298/a87158cc-fd3e-4c25-8242-60f414a71e16.png)
-
-### 关于系统
-![202401181654259656.png](https://files.mdnice.com/user/31298/9c9fedad-c347-4980-8ef3-6f3152a38c3c.png)
+![202401181713284518.png](http://img.itchenliang.club/img/202401181713284518.png)
 
 ### 偏好设置
-![202401181654558486.png](https://files.mdnice.com/user/31298/f631d1bd-2975-487f-afbb-a2893de86477.png)
+![202401181713568298.png](http://img.itchenliang.club/img/202401181713568298.png)
 
 ### 个人中心
-![202401181655133572.png](https://files.mdnice.com/user/31298/30be3551-4fa0-46c7-a21b-fe33fadd8115.png)
+![202401181714046931.png](http://img.itchenliang.club/img/202401181714046931.png)
+
+### 更新日志
+![202401181713399802.png](http://img.itchenliang.club/img/202401181713399802.png)
+
+### 关于系统
+![202401181713477302.png](http://img.itchenliang.club/img/202401181713477302.png)
 
 
 ## 待办功能 TODO
