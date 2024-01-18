@@ -64,5 +64,4 @@ export const mimeTypes = {
 
 // @ts-ignore
 const ip = window.uploader_ip
-window.uploader_ip = ip
 export const baseURL = ip ? `${ip}/api/v1` : `/api/v1`

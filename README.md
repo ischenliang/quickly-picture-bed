@@ -261,11 +261,15 @@ server {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html;
     }
+    # 配置相接口代理
     location /api {
         proxy_pass http://127.0.0.1:3002;
     }
+    # 配置相册封面图代理
+    location ~ /album {
+        proxy_pass http://127.0.0.1:3002;
+    }
 }
-
 ```
 将上面的`http://127.0.0.1:3002`替换成你想要部署的服务器ip地址和端口，然后再到控制台执行镜像构建命令
 ```shell
@@ -306,7 +310,7 @@ networks:
 直接拉取[Docker Hub](http://hub.docker.com/)上的`itchenliang/quickly-picture-bed-server`和`itchenliang/quickly-picture-bed-client`远程镜像运行部署。
 1. 运行server服务端
   ```shell
-  docker run -p 3002:3002--env-file .env itchenliang/quickly-picture-bed-server:1.0
+  docker run -p 3002:3002 --env-file .env itchenliang/quickly-picture-bed-server:1.0
   ```
   上面的`--env-file`是指定环境变量文件，为了方便配置数据库连接，在运行时传入`.env`文件，配置内容如下
   ```yml
