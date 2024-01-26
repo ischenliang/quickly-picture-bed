@@ -1,5 +1,0 @@
-packages:
-  # 前端
-  - 'client/'
-  # 服务端
-  - 'server/'

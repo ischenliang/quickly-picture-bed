@@ -1,5 +1,13 @@
 version: '3'
 services:
+  server:
+    container_name: picbed-server-v2
+    build:
+      context: ./server
+    ports:
+      - "4000:4000"
+    networks:
+      - pic-net
   web:
     container_name: picbed-client-v2
     build:
@@ -7,7 +15,7 @@ services:
     ports:
       - "80:80"
     networks:
-      - app_network
+      - pic-net
 networks:
-  app_network:
-    driver: bridge
+  pic-net:
+    name: pic
