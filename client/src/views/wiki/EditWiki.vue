@@ -44,7 +44,7 @@
           <el-form-item label="仓库类型" prop="config.type">
             <el-select style="width: 100%;" size="large" v-model="form.config.type" :disabled="detail && detail.id ? true : false">
               <el-option label="Gitee" value="gitee"></el-option>
-              <el-option label="Github" value="github"></el-option>
+              <!-- <el-option label="Github" value="github"></el-option> -->
             </el-select>
           </el-form-item>
           <el-form-item label="Git用户名" prop="config.owner">
