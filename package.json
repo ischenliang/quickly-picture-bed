@@ -1,11 +1,11 @@
 {
   "name": "quickly-picture-bed",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "轻快图片管理系统2.0版本",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "cd client && npm run dev"
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev"
   },
   "repository": {
     "type": "git",

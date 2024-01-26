@@ -153,7 +153,7 @@ watch(() => props.detail, (val) => {
 .album-tags-dialog {
   .album-dialog-tags {
     margin-top: 15px;
-    + & {
+    + .album-dialog-tags {
       margin-top: 25px;
     }
     &.template-tags {

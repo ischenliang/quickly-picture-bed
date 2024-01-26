@@ -1,4 +1,2 @@
-# 快捷图床
-使用vue3.x + vite + typescript + pinia + vue-router + element-plus + sass + axios构建的在线图床系统<br/>
-并且支持使用qiniu、gitee、github等存储桶在线构建图床<br/>
-同时支持bytemd和monaco-editor编辑器的使用。
+# 轻快图片管理系统前端端
+该项目前端是采用vue3 + ts开发，主要涉及的技术有vue3、vue-router、pinia、vite、axios、element-plus、sass、bytemd等。

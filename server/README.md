@@ -1,7 +1,2 @@
-# 服务端代码
-该项目服务端是采用nestjs开发，主要涉及的技术有Nestjs + Express、Typescript、sequelize、axios、nodemailer、svg-captcha等。
-
-如有需要请联系管理员：
-- 邮箱: itchenliang@163.com
-- QQ: 1825956830
-- 微信: CL13281289371
+# 轻快图片管理系统服务端
+该项目服务端是采用nestjs开发，主要涉及的技术有Nestjs + Express、Typescript、sequelize + mysql、axios、nodemailer、svg-captcha等。
