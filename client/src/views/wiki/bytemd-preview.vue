@@ -13,8 +13,9 @@
           v-for="(item, index) in catalogs"
           :class="['level-' + item.level, index === anchor ? 'active' : '']"
           :data-level="index"
+          :title="item.text"
           @click="gotoHash(`#head-${index}`)">
-          {{ item.text }}
+          <span>{{ item.text }}</span>
         </li>
       </ul>
     </div>
@@ -178,9 +179,10 @@ $padding: 16px;
   }
   &-main {
     flex: 1;
-    overflow: auto;
+    overflow: hidden auto;
     .nav-list {
       padding: 1rem 0;
+      overflow: hidden;
       li {
         line-height: 32px;
         font-size: 14px;
@@ -193,6 +195,12 @@ $padding: 16px;
         display: flex;
         flex-direction: column;
         cursor: pointer;
+        span {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         &.active {
           font-weight: 700;
           color: #42b883;
