@@ -1,10 +1,5 @@
-import { useCurrentUser } from '@/hooks/global';
 import { ImageInter } from '@/typings/interface';
-import { useFetch, usePromise } from '@/hooks/fetch'
-import AV, { Query, User, File, Role } from 'leancloud-storage'
-import Basic from '../typings/Basic'
 import { PageReq } from '@/typings/req-res';
-import { initAv } from './av';
 import http from '@/api'
 
 // 筛选条件

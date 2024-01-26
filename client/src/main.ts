@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-// import AV from 'leancloud-storage'
 import router from '@/router/index'
 import '@/router/permission'
 import cComponent from './plugins/register-component'

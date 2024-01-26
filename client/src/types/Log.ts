@@ -1,4 +1,3 @@
-import { useCurrentUser } from '@/hooks/global';
 import { PageReq } from '@/typings/req-res';
 import { LogInter } from '@/typings/interface';
 import http from '@/api'

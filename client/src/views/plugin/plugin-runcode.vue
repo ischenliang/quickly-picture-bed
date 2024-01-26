@@ -23,11 +23,14 @@ function resolvePlugin () {
     // @ts-ignore
     const myPlugin: any = window.MyPlugin
     const { name, component } = myPlugin
-    // @ts-ignore
-    customElements.define('custom-' + name, window.Vue.defineCustomElement({
-      ...component,
-      styles: [await (await fetch(url.value + '/dist/style.css')).text()]
-    }))
+    const tagName = 'custom-' + name
+    if (!customElements.get(tagName)) {
+      // @ts-ignore
+      customElements.define('custom-' + name, window.Vue.defineCustomElement({
+        ...component,
+        styles: [await (await fetch(url.value + '/dist/style.css')).text()]
+      }))
+    }
     const el = document.createElement('custom-' + name)
     el.setAttribute('id', name)
     document.querySelector('.plugin-runcode').appendChild(el)

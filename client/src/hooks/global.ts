@@ -1,6 +1,5 @@
 import { ListInter } from './../typings/interface';
 import { getCurrentInstance, nextTick, Ref } from "vue";
-import AV from 'leancloud-storage'
 import { ElMessageBox } from 'element-plus';
 import { useClipboard } from '@vueuse/core';
 import { useFileName } from './date-time';
@@ -41,14 +40,6 @@ export function useCtxInstance () {
   // @ts-ignore
   const ctx: Ctx = instance.proxy
   return ctx
-}
-
-/**
- * 封装leancloud的current user
- * @returns user
- */
-export function useCurrentUser () {
-  return AV.User.current()
 }
 
 /**

@@ -76,17 +76,17 @@
     </div>
     <el-tabs v-model="activeName" class="plugin-detail-tabs">
       <el-tab-pane label="插件介绍" name="intro">
-        <plugin-intro :detail="pluginDetail"></plugin-intro>
+        <plugin-intro v-if="activeName === 'intro'" :detail="pluginDetail"></plugin-intro>
       </el-tab-pane>
       <el-tab-pane label="支持" name="support">
-        <plugin-support :detail="pluginDetail"></plugin-support>
+        <plugin-support v-if="activeName === 'support'" :detail="pluginDetail"></plugin-support>
       </el-tab-pane>
       <el-tab-pane label="更新日志" name="uplog">
-        <plugin-uplog :detail="pluginDetail"></plugin-uplog>
+        <plugin-uplog v-if="activeName === 'uplog'" :detail="pluginDetail"></plugin-uplog>
       </el-tab-pane>
       <!-- 只有安装并是启用状态，同时还必须是工具插件才有该栏 -->
       <el-tab-pane label="在线使用" name="onlineuse" v-if="pluginDetail.user_plugin.status && pluginDetail.category === 'tooler'">
-        <plugin-runcode :detail="pluginDetail"></plugin-runcode>
+        <plugin-runcode v-if="activeName === 'onlineuse'" :detail="pluginDetail"></plugin-runcode>
       </el-tab-pane>
       <!-- <el-tab-pane label="插件评价" name="comment">Task</el-tab-pane> -->
     </el-tabs>

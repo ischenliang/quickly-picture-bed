@@ -8,11 +8,8 @@
         <div class="info-time">{{ time }}</div>
         <div class="info-text">
           <div class="progress-4" v-if="loading"></div>
-          <div v-else class="markdown-body" v-html="renderText"></div>
+          <!-- <div v-else class="markdown-body" v-html="renderText"></div> -->
           <div class="info-actions">
-            <!-- <span class="info-action-item" title="重新回答">
-              <i class="iconfont icon-refresh"></i>
-            </span> -->
             <el-popover
               :placement="reverse ? 'left' : 'right'"
               :width="100"
@@ -42,12 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import MarkdownIt from 'markdown-it'
-import MarkdownLinkAttributes from 'markdown-it-link-attributes'
-// import mdKatex from '@traptitech/markdown-it-katex'
-import hljs from 'highlight.js'
 import { computed } from 'vue';
-import { watch } from 'vue';
 interface Props {
   reverse?: boolean
   text: string
@@ -74,49 +66,11 @@ const emits = defineEmits(['command'])
 const userAvatar = computed(() => {
   return props.reverse ? props.avatar : new URL(`./ai_dark.webp`, import.meta.url).href
 })
-// 初始化markdown-it
-const mdi = new MarkdownIt({
-  linkify: true,
-  highlight(code: string, language: string) {
-    const validLang = !!(language && hljs.getLanguage(language))
-    if (validLang) {
-      const lang = language ?? ''
-      return highlightBlock(hljs.highlight(lang, code, true).value, lang)
-    }
-    return highlightBlock(hljs.highlightAuto(code).value, '')
-  },
-})
-mdi.use(MarkdownLinkAttributes, {
-  pattern: /^https?:/,
-  attrs: {
-    target: '_blank',
-    rel: 'noopener'
-  }
-})
-// 使用插件
-// mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
-// 生成后的内容
-const renderText = computed(() => {
-  if (props.reverse) {
-    return props.text
-  } else {
-    return mdi.render(props.text)
-  }
-})
-
-watch(() => props.text, (val) => {
-  // console.log(val)
-})
 
 
 /**
  * 逻辑
  */
-// 高亮代码
-function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-  // return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-}
 // 命令回调
 function handleCommand (type) {
   emits('command', type)

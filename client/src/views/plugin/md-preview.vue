@@ -1,15 +1,36 @@
 <template>
-  <div class="markdown-body" v-html="renderText"></div>
+  <bytemd-viewer
+    class="bytemd-viewer markdown-body"
+    :value="value"
+    :plugins="plugins"
+    ref="viewerRef" />
 </template>
 <script lang="ts" setup>
-import MarkdownIt from 'markdown-it'
-import MarkdownLinkAttributes from 'markdown-it-link-attributes'
-import hljs from 'highlight.js'
-import { useCopyText, useCtxInstance } from '@/hooks/global'
-import { computed, onMounted, onUpdated } from 'vue'
+import 'bytemd/dist/index.css'
+import gfm from '@bytemd/plugin-gfm'
+import breaks from '@bytemd/plugin-breaks'
+import formatter from '@bytemd/plugin-frontmatter'
+import gemoji from '@bytemd/plugin-gemoji'
+import highlight from '@bytemd/plugin-highlight'
+import math from '@bytemd/plugin-math'
+import zoom from '@bytemd/plugin-medium-zoom'
+import mermaid from '@bytemd/plugin-mermaid'
+import { Viewer as bytemdViewer } from '@bytemd/vue-next'
+
 interface Props {
   value: string
 }
+
+const plugins = [
+  gfm(),
+  breaks(),
+  formatter(),
+  gemoji(),
+  highlight(),
+  zoom(),
+  mermaid(),
+  math()
+]
 
 /**
  * 实例
@@ -17,58 +38,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   value: ''
 })
-
-// 初始化markdown-it
-const mdi = new MarkdownIt({
-  linkify: true,
-  highlight(code: string, language: string) {
-    const validLang = !!(language && hljs.getLanguage(language))
-    if (validLang) {
-      const lang = language ?? ''
-      return highlightBlock(hljs.highlight(lang, code, true).value, lang)
-    }
-    return highlightBlock(hljs.highlightAuto(code).value, '')
-  },
-})
-mdi.use(MarkdownLinkAttributes, {
-  pattern: /^https?:/,
-  attrs: {
-    target: '_blank',
-    rel: 'noopener'
-  }
-})
-// 使用插件
-// mdi.use(mdKatex, { blockClass: 'katexmath-block rounded-md p-[10px]', errorColor: ' #cc0000' })
-// 生成后的内容
-const renderText = computed(() => {
-  return mdi.render(props.value)
-})
-
-// 高亮代码
-function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-  // return `<pre class="code-block-wrapper"><code class="hljs code-block-body ${lang}">${str}</code></pre>`
-}
-
-function useCopyCode(ctx) {
-  function copyCodeBlock() {
-    const codeBlockWrapper = document.querySelectorAll('.code-block-wrapper')
-    codeBlockWrapper.forEach((wrapper) => {
-      const copyBtns = wrapper.querySelectorAll('.code-block-header__copy')
-      const codeBlocks = wrapper.querySelectorAll('.code-block-body')
-      copyBtns.forEach((copyBtn: HTMLElement, index) => {
-        if (copyBtn && codeBlocks[index]) {
-          copyBtn.onclick = () => {
-            useCopyText(ctx, codeBlocks[index].textContent ?? '')
-          }
-        }
-      })
-    })
-  }
-  onMounted(() => copyCodeBlock())
-  onUpdated(() => copyCodeBlock())
-}
-useCopyCode(useCtxInstance())
 </script>
 <style lang="scss">
 .markdown-body {

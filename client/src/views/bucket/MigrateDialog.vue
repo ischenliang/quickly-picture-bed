@@ -72,10 +72,7 @@ import { utils, writeFile, read } from 'xlsx'
 import { mimeTypes } from '@/global.config';
 import { useCtxInstance, useGetSuffix } from '@/hooks/global';
 import axios from 'axios';
-import SparkMD5 from 'spark-md5';
-import hmacsha1 from 'hmacsha1'
 import md5 from 'md5'
-import crypto from 'crypto-js'
 import useConfigStore from '@/store/config';
 import { useJudgeImageNormal } from './useImageHook'
 import { blob } from 'stream/consumers';

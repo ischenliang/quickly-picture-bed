@@ -27,7 +27,7 @@ const value = ref(configStore.systemConfig.uplog)
   text-align: center;
   color: #1665B4;
   font-weight: bold;
-  background-image: url('./images/left.png'), url('./images/right.png');
+  background-image: url('/images/left.png'), url('/images/right.png');
   background-repeat: no-repeat, no-repeat;
   background-position: left center, right center;
   padding: 0 150px;
