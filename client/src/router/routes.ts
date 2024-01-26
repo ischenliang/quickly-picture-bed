@@ -112,7 +112,7 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '我的知识库', icon: 'Collection', role: [1, 2, 10] }
       },
       {
-        path: '/wiki/article',
+        path: '/wiki/article/:wid',
         name: 'WikiArticle',
         component: () => import('@/views/wiki/wiki-articles.vue'),
         meta: { title: '知识库文档管理', icon: 'Collection', role: [1, 2, 10], hidden: true, active: '/wiki' }

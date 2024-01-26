@@ -123,6 +123,7 @@ const coverName = computed(() => {
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: all 0.3s;
   &__header {
     display: flex;
     gap: 15px;
@@ -208,6 +209,9 @@ const coverName = computed(() => {
         fill: var(--el-text-color-regular);
       }
     }
+  }
+  &:hover {
+    transform: translateY(-10px);
   }
 }
 </style>

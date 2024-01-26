@@ -1,5 +1,5 @@
 <template>
-  <el-popover :placement="placement" trigger="click" popper-class="action-popover">
+  <el-popover :placement="placement" :trigger="trigger" popper-class="action-popover">
     <template #reference>
       <slot name="reference"></slot>
       <div class="action"><el-icon><Plus /></el-icon></div>
@@ -8,7 +8,8 @@
       <div
         v-for="(item, index) in actions"
         :key="'action-item-' + index"
-        class="popover-action-menu-item">
+        class="popover-action-menu-item"
+        @click="handleClick(item)">
         <component :is="components[item.icon]" :size="item.size" :color="item.color"></component>
         <span class="menu-item-text">{{ item.text }}</span>
       </div>
@@ -17,13 +18,14 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ActionItemInter } from '@/typings/interface'
+import { ActionItemInter, ArticleInter } from '@/typings/interface'
 
 
 interface Props {
   placement?: 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end' | 'right' | 'right-start' | 'right-end'
   trigger?: 'hover' | 'click'
   actions: Array<ActionItemInter>
+  parent?: ArticleInter
 }
 
 /**
@@ -32,8 +34,12 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   placement: 'bottom-end',
   trigger: 'click',
-  actions: () => ([])
+  actions: () => ([]),
+  parent: () => ({
+    id: 0
+  })
 })
+const emit = defineEmits(['action'])
 
 /**
  * 变量
@@ -53,6 +59,12 @@ async function loadComponent () {
   })
 }
 loadComponent()
+function handleClick (item) {
+  emit('action', {
+    ...item,
+    ...props.parent
+  })
+}
 </script>
 <style lang="scss">
 .action-popover {
@@ -68,14 +80,11 @@ loadComponent()
       cursor: pointer;
       margin-bottom: 2px;
       &:hover {
-        background: var(--el-fill-color-dark);
+        background: var(--el-fill-color);
         border-radius: 4px;
       }
       .wiki-icon {
         margin-right: 8px;
-        svg {
-          fill: var(--el-text-color-primary);
-        }
       }
       > span.menu-item-text {
         color: var(--el-text-color-primary);

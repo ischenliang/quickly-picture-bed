@@ -1,0 +1,227 @@
+@charset "UTF-8";
+#bytemd-container .markdown-body {
+  word-break: break-word;
+  font-weight: 400;
+  line-height: 2;
+  font-size: 17px;
+  overflow-x: hidden;
+  color: black;
+}
+#bytemd-container .markdown-body strong {
+  padding: 1px;
+  color: #ee3f4d;
+}
+#bytemd-container .markdown-body em {
+  padding: 0 2px;
+  color: #f33b1f;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2,
+#bytemd-container .markdown-body h3,
+#bytemd-container .markdown-body h4,
+#bytemd-container .markdown-body h5,
+#bytemd-container .markdown-body h6 {
+  position: relative;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  font-weight: bold;
+}
+#bytemd-container .markdown-body h1 {
+  text-align: center;
+  padding-bottom: 5px;
+  font-size: 32px;
+  color: #ac1f18;
+}
+#bytemd-container .markdown-body h1::after {
+  content: "";
+  display: block;
+  margin: 4px auto 0;
+  width: 100px;
+  height: 2px;
+  border-bottom: 2px solid #f33b1f;
+}
+#bytemd-container .markdown-body h2 {
+  font-size: 28px;
+  border-bottom: 1px solid #f33b1f;
+}
+#bytemd-container .markdown-body h2::before {
+  content: "# " !important;
+  color: #f33b1f;
+}
+#bytemd-container .markdown-body h3 {
+  font-size: 24px;
+  padding-left: 9px;
+  border-left: 6px solid #f33b1f;
+}
+#bytemd-container .markdown-body h4 {
+  font-size: 20px;
+}
+#bytemd-container .markdown-body img {
+  max-width: 100%;
+}
+#bytemd-container .markdown-body hr {
+  border-top: 1px solid #bbbbbb;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  margin: 16px 0;
+}
+#bytemd-container .markdown-body code {
+  font-family: -apple-system, -apple-system-body, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, PingFang SC, "思源黑体 CN", "思源黑体", "JetBrains Mono", "Fira Code", Menlo, "Ubuntu Mono", Consolas, sans-serif;
+  word-break: break-word;
+  overflow-x: auto;
+  background-color: #f9f1db;
+  color: #ee2746;
+  border-radius: 2px;
+  font-size: 16px;
+  padding: 1px 2px;
+}
+#bytemd-container .markdown-body pre {
+  font-family: -apple-system, -apple-system-body, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, PingFang SC, "思源黑体 CN", "思源黑体", "JetBrains Mono", "Fira Code", Menlo, "Ubuntu Mono", Consolas, sans-serif;
+  overflow: auto;
+  position: relative;
+  line-height: 1.75;
+}
+#bytemd-container .markdown-body pre > code {
+  margin: 12px 0 !important;
+  border-radius: 3px;
+  font-size: 15px;
+  padding: 16px 12px;
+  word-break: normal;
+  display: block;
+  overflow-x: auto;
+  color: #333;
+  background: #f7f7f7;
+}
+#bytemd-container .markdown-body a {
+  text-decoration: none;
+  color: #1781b5;
+  padding: 0 2px;
+  border-bottom: 1px solid #1781b5;
+}
+#bytemd-container .markdown-body a:hover, #bytemd-container .markdown-body a:active {
+  border-bottom: 2px solid #f33b1f;
+  color: #ac1f18;
+}
+#bytemd-container .markdown-body blockquote {
+  color: #3d3d3d;
+  background-color: #fff9f9;
+  padding: 6px 16px;
+  margin: 16px 0;
+  border-left: 3px solid #f07c82;
+}
+#bytemd-container .markdown-body blockquote::after {
+  display: block;
+  content: "";
+}
+#bytemd-container .markdown-body blockquote > p {
+  margin: 6px 0;
+}
+#bytemd-container .markdown-body ol,
+#bytemd-container .markdown-body ul {
+  padding-left: 30px;
+}
+#bytemd-container .markdown-body ol li,
+#bytemd-container .markdown-body ul li {
+  margin-bottom: 6px;
+}
+#bytemd-container .markdown-body ol li .task-list-item,
+#bytemd-container .markdown-body ul li .task-list-item {
+  list-style: none;
+}
+#bytemd-container .markdown-body ol li .task-list-item ul,
+#bytemd-container .markdown-body ol li .task-list-item ol,
+#bytemd-container .markdown-body ul li .task-list-item ul,
+#bytemd-container .markdown-body ul li .task-list-item ol {
+  margin-top: 6px;
+}
+#bytemd-container .markdown-body ol ul,
+#bytemd-container .markdown-body ol ol,
+#bytemd-container .markdown-body ul ul,
+#bytemd-container .markdown-body ul ol {
+  margin-top: 6px;
+}
+#bytemd-container .markdown-body ol li {
+  padding-left: 6px;
+}
+#bytemd-container .markdown-body ::marker {
+  color: #f33b1f;
+}
+#bytemd-container .markdown-body .contains-task-list {
+  padding-left: 0;
+}
+#bytemd-container .markdown-body .task-list-item {
+  list-style: none;
+}
+#bytemd-container .markdown-body .task-list-item input[type=checkbox] {
+  position: relative;
+}
+#bytemd-container .markdown-body .task-list-item input[type=checkbox]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border: 1px solid #f07c82;
+  border-radius: 3px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+#bytemd-container .markdown-body .task-list-item input[type=checkbox]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  color: #f33b1f;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 2;
+}
+#bytemd-container .markdown-body table {
+  display: inline-block !important;
+  font-size: 14px;
+  width: auto;
+  max-width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+#bytemd-container .markdown-body table thead {
+  background: #fff9f9;
+  color: black;
+  text-align: left;
+  font-size: 15px;
+}
+#bytemd-container .markdown-body table tr:nth-child(2n) {
+  background-color: #fcfcfc;
+}
+#bytemd-container .markdown-body table tr:hover {
+  background-color: #fff9f9;
+}
+#bytemd-container .markdown-body table th,
+#bytemd-container .markdown-body table td {
+  padding: 12px 7px;
+  line-height: 24px;
+  border: 1px solid #f9f1db;
+}
+#bytemd-container .markdown-body table td {
+  min-width: 120px;
+}
+@media (max-width: 720px) {
+  #bytemd-container .markdown-body h1 {
+    font-size: 24px;
+  }
+  #bytemd-container .markdown-body h2 {
+    font-size: 20px;
+  }
+  #bytemd-container .markdown-body h3 {
+    font-size: 18px;
+  }
+}

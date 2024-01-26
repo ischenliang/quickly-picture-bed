@@ -573,6 +573,7 @@ export interface ActionItemInter {
   size: string | number
   color?: any
   text: string
+  func?: string
 }
 
 export interface RewardInter {

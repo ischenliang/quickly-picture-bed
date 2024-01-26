@@ -42,7 +42,6 @@
 </template>
 
 <script lang="ts" setup>
-import 'juejin-markdown-themes/dist/devui-blue.css'
 import MarkdownIt from 'markdown-it'
 import MarkdownLinkAttributes from 'markdown-it-link-attributes'
 // import mdKatex from '@traptitech/markdown-it-katex'

@@ -1,0 +1,225 @@
+#bytemd-container .markdown-body {
+  color: #383838;
+  font-size: 15px;
+  line-height: 30px;
+  letter-spacing: 2px;
+  word-break: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  scroll-behavior: smooth;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(201, 195, 195, 0.329) 25%, rgba(209, 201, 201, 0.05) 26%, transparent 27%, transparent 74%, rgba(209, 204, 204, 0.185) 75%, rgba(180, 176, 176, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(204, 196, 196, 0.226) 25%, rgba(172, 165, 165, 0.05) 26%, transparent 27%, transparent 74%, rgba(209, 204, 204, 0.185) 75%, rgba(180, 176, 176, 0.05) 76%, transparent 77%, transparent);
+  background-color: #ffffff;
+  background-size: 50px 50px;
+  padding-bottom: 60px;
+}
+#bytemd-container .markdown-body ::selection {
+  color: #fff;
+  background-color: #a862ea;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2,
+#bytemd-container .markdown-body h3,
+#bytemd-container .markdown-body h4,
+#bytemd-container .markdown-body h5,
+#bytemd-container .markdown-body h6 {
+  margin: 24px 0 12px 0;
+  color: #a862ea;
+}
+#bytemd-container .markdown-body h1 {
+  line-height: 2;
+  font-size: 1.4em;
+}
+#bytemd-container .markdown-body h1 ~ p:first-of-type::first-letter {
+  color: #a862ea;
+  float: left;
+  font-size: 2em;
+  margin-right: 0.4em;
+  font-weight: bolder;
+}
+#bytemd-container .markdown-body h2 {
+  font-size: 1.2em;
+}
+#bytemd-container .markdown-body h3 {
+  font-size: 1.1em;
+}
+#bytemd-container .markdown-body ol,
+#bytemd-container .markdown-body ul {
+  padding-left: 2em;
+}
+#bytemd-container .markdown-body ol li,
+#bytemd-container .markdown-body ul li {
+  margin-bottom: 0;
+  padding-left: 0.2em;
+}
+#bytemd-container .markdown-body ol li::marker,
+#bytemd-container .markdown-body ul li::marker {
+  color: #a862ea;
+}
+#bytemd-container .markdown-body ol li.task-list-item,
+#bytemd-container .markdown-body ul li.task-list-item {
+  list-style: none;
+}
+#bytemd-container .markdown-body ol li.task-list-item ul,
+#bytemd-container .markdown-body ol li.task-list-item ol,
+#bytemd-container .markdown-body ul li.task-list-item ul,
+#bytemd-container .markdown-body ul li.task-list-item ol {
+  margin-top: 0;
+}
+#bytemd-container .markdown-body ol ul,
+#bytemd-container .markdown-body ol ol,
+#bytemd-container .markdown-body ul ul,
+#bytemd-container .markdown-body ul ol {
+  margin-top: 10px;
+}
+#bytemd-container .markdown-body p,
+#bytemd-container .markdown-body li,
+#bytemd-container .markdown-body code,
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2,
+#bytemd-container .markdown-body h3,
+#bytemd-container .markdown-body h4,
+#bytemd-container .markdown-body h5,
+#bytemd-container .markdown-body h6,
+#bytemd-container .markdown-body a {
+  opacity: 0.85;
+  vertical-align: baseline;
+  transition: all 0.1s ease;
+}
+#bytemd-container .markdown-body p:hover,
+#bytemd-container .markdown-body li:hover,
+#bytemd-container .markdown-body code:hover,
+#bytemd-container .markdown-body h1:hover,
+#bytemd-container .markdown-body h2:hover,
+#bytemd-container .markdown-body h3:hover,
+#bytemd-container .markdown-body h4:hover,
+#bytemd-container .markdown-body h5:hover,
+#bytemd-container .markdown-body h6:hover,
+#bytemd-container .markdown-body a:hover {
+  opacity: 1;
+}
+#bytemd-container .markdown-body a {
+  position: relative;
+  display: inline-block;
+  color: #a862ea;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+}
+#bytemd-container .markdown-body a::after {
+  content: "";
+  position: absolute;
+  width: 98%;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  transform: scaleX(0);
+  background-color: #a862ea;
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-in-out;
+}
+#bytemd-container .markdown-body a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+#bytemd-container .markdown-body a:active, #bytemd-container .markdown-body a:link {
+  color: #a862ea;
+}
+#bytemd-container .markdown-body img {
+  max-width: 100%;
+  user-select: none;
+  margin: 1em 0;
+  transition: transform 0.2s ease 0s;
+  background-color: #f8f5ff;
+  box-shadow: 0 0 10px #e7daff;
+}
+#bytemd-container .markdown-body img:hover {
+  opacity: 1;
+  box-shadow: 0 0 20px #e7daff;
+  transform: translateY(-1px);
+}
+#bytemd-container .markdown-body blockquote {
+  padding: 0.5em 1em;
+  margin: 12px 0;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-left: 3px solid #a862ea;
+  background-color: #f8f5ff;
+}
+#bytemd-container .markdown-body blockquote > p {
+  margin: 0;
+}
+#bytemd-container .markdown-body .math {
+  font-style: italic;
+  margin: 12px 0;
+  padding: 0.5em 1em;
+  background-color: #f8f5ff;
+}
+#bytemd-container .markdown-body .math > p {
+  margin: 0;
+}
+#bytemd-container .markdown-body code {
+  padding: 2px 0.4em;
+  overflow-x: auto;
+  color: #a862ea;
+  font-weight: bold;
+  word-break: break-word;
+  font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
+  background-color: #f8f5ff;
+}
+#bytemd-container .markdown-body pre {
+  margin: 2em 0;
+}
+#bytemd-container .markdown-body pre > code {
+  display: block;
+  padding: 1.5em;
+  word-break: normal;
+  font-size: 0.9em;
+  font-style: normal;
+  font-weight: normal;
+  font-family: Operator Mono, Consolas, Monaco, Menlo, monospace;
+  line-height: 18px;
+  color: #383838;
+  border-radius: 2px;
+  scroll-behavior: smooth;
+  box-shadow: 0 0 10px #e7daff;
+}
+#bytemd-container .markdown-body pre > code:hover {
+  box-shadow: 0 0 20px #e7daff;
+}
+#bytemd-container .markdown-body pre > code::-webkit-scrollbar {
+  height: 6px;
+  background-color: #f8f5ff;
+}
+#bytemd-container .markdown-body pre > code::-webkit-scrollbar-thumb {
+  background-color: #e7daff;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+#bytemd-container .markdown-body hr {
+  margin: 2em 0;
+  border-top: 1px solid #a862ea;
+}
+#bytemd-container .markdown-body table {
+  width: 100%;
+  font-size: 12px;
+  max-width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+}
+#bytemd-container .markdown-body thead {
+  color: #a862ea;
+  background: #f8f5ff;
+}
+#bytemd-container .markdown-body td,
+#bytemd-container .markdown-body th {
+  padding: 0.5em;
+  border: solid 1px #e7daff;
+}
+#bytemd-container .markdown-body tr {
+  background-color: #f8f5ff;
+}
+
+@media (max-width: 720px) {
+  #bytemd-container .markdown-body {
+    font-size: 12px;
+  }
+}

@@ -42,7 +42,6 @@
 
 <script lang="ts" setup>
 import bytemdViewer from '@/components/editor/bytemdPreview.vue'
-import 'juejin-markdown-themes/dist/simplicity-green.css'
 import { computed, ref } from 'vue';
 import useConfigStore from '@/store/config'
 import cReward from '@/components/cReward.vue';

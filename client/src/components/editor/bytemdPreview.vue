@@ -14,8 +14,6 @@ import gfm from '@bytemd/plugin-gfm';
 import mediumZoom from '@bytemd/plugin-medium-zoom';
 import gemoji from '@bytemd/plugin-gemoji';
 import './markdown.css'
-// arknights awesome-green channing-cyan condensed-night-purple cyanosis devui-blue juejin
-import 'juejin-markdown-themes/dist/devui-blue.css'
 import { getCurrentInstance, onMounted, Ref, ref, nextTick, toRaw } from 'vue';
 
 interface Props {

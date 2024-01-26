@@ -168,7 +168,7 @@ function handleDelete (row: WikiInter) {
 }
 // 复制
 function handleCopy (row: WikiInter) {
-  ElMessageBox.prompt('请输入新知识库名', '提示', {
+  ElMessageBox.prompt('请输入新知识库名', '复制知识库', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     inputPattern: /(.)+/,
@@ -185,7 +185,7 @@ function handleCopy (row: WikiInter) {
 function handleClick (wiki: WikiInter) {
   router.push({
     name: 'WikiArticle',
-    query: {
+    params: {
       wid: wiki.id
     }
   })

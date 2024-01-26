@@ -1,295 +1,177 @@
 <template>
   <div class="wiki-article">
-    <div class="wiki-article-sidebar">
-      <div class="wiki-article-sidebar__header">
-        <!-- 返回到知识库列表 -->
-        <div class="wiki-go-back" @click="handleGoBack"><el-icon><DArrowLeft /></el-icon>返回</div>
-        <!-- 点击后使用弹窗搜索 -->
-        <div class="wiki-search-entry">
-          <el-icon class="wiki-search-entry-icon" :size="16"><Search /></el-icon>
-          <span class="wiki-search-entry-content">搜索内容</span>
-          <span class="wiki-search-entry-hotkey">Ctrl+Shift+F</span>
-        </div>
-      </div>
-      <div class="wiki-article-sidebar__content">
-        <div class="wiki-page-title">
-          <span>文档目录</span>
-          <!-- 新建文档、表格、画板、流程图、思维导图、分组、模板创建、批量导入 -->
-          <action-popover :actions="actions">
-            <template #reference>
-              <div class="action"><el-icon><Plus /></el-icon></div>
-            </template>
-          </action-popover>
-        </div>
-        <el-tree
-          class="wiki-page-tree"
-          :data="treeData"
-          :props="{
-            children: 'children',
-            label: 'title',
-          }"
-          :expand-on-click-node="false"
-          @node-click="handleNodeClick">
-          <template #default="{ node, data }">
-            <div class="node-item">
-              <component
-                class="node-item-icon"
-                :is="getIconComponent(data.type)"
-                :size="18"
-                :color="getIconColor(data.type)">
-              </component>
-              <span class="node-item-label">{{ node.label }}</span>
-              <div class="node-item-actions">
-                <!-- 新建文档、表格、画布、流程图、思维导图、分组、模板创建、批量导入 -->
-                <div class="node-item-action"><el-icon size="12"><Plus /></el-icon></div>
-                <!-- 复制、删除、导出(markdown、pdf、word、html)、移动 -->
-                <div class="node-item-action"><el-icon size="12"><More /></el-icon></div>
-              </div>
-            </div>
-          </template>
-        </el-tree>
-      </div>
-      <div class="wiki-article-sidebar__footer">
-        数据统计、设置、回收站、草稿箱
-      </div>
-    </div>
-    <div class="wiki-article-preview">
-      <div class="wiki-article-preview__header">
-        <div class="left-content">
-          <div class="wiki-article-title">{{ article.title }}</div>
-          <div class="wiki-article-time">更新于 {{ useFromNow(article.updatedAt) }}</div>
-        </div>
-        <div class="right-content">
-          <!-- 编辑、分享、演示、更多(页面信息、导出为、打印、移动、删除) -->
-          <div class="wiki-article-action">
-            <div class="wiki-article-action-item">
-              <icon-edit :size="16"></icon-edit>
-              <span>编辑</span>
-            </div>
-            <div class="wiki-article-action-item">
-              <icon-share :size="16"></icon-share>
-              <span>分享</span>
-            </div>
-            <div class="wiki-article-action-item">
-              <icon-play :size="16"></icon-play>
-              <span>演示</span>
-            </div>
-            <el-popover placement="bottom" trigger="click" popper-class="wiki-action-menu" width="230">
-              <template #reference>
-                <div class="wiki-article-action-item">
-                  <icon-list :size="16"></icon-list>
-                  <span>更多</span>
-                </div>
-              </template>
-              <div class="action-menu">
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-play :size="18"></icon-play>演示模式
-                  </div>
-                  <div class="action-menu-item__right">
-                    <span class="entry-key">Ctrl + Shift + P</span>
-                  </div>
-                </div>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-info :size="18"></icon-info>页面信息
-                  </div>
-                  <div class="action-menu-item__right">
-                    <span class="entry-key">Ctrl + Shift + Q</span>
-                  </div>
-                </div>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-print :size="18"></icon-print>打印页面
-                  </div>
-                </div>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-lock :size="18"></icon-lock>锁定页面
-                  </div>
-                  <div class="action-menu-item__right">
-                    <el-switch v-model="value1" />
-                  </div>
-                </div>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-computer :size="18"></icon-computer>宽屏模式
-                  </div>
-                  <div class="action-menu-item__right">
-                    <el-switch v-model="value1" />
-                  </div>
-                </div>
-                <el-popover placement="left" trigger="hover" popper-class="wiki-action-menu wiki-action-menu-items" width="200">
-                  <template #reference>
-                    <div class="action-menu-item">
-                      <div class="action-menu-item__left">
-                        <icon-save :size="18"></icon-save>另存为
-                      </div>
-                      <div class="action-menu-item__right">&gt;</div>
-                    </div>
-                  </template>
-                  <div class="action-menu">
-                    <div class="action-menu-item">
-                      <div class="action-menu-item__left">
-                        <el-icon :size="18"><Notification /></el-icon>PDF
-                      </div>
-                    </div>
-                    <div class="action-menu-item">
-                      <div class="action-menu-item__left">
-                        <el-icon :size="18"><Notification /></el-icon>Word
-                      </div>
-                    </div>
-                    <div class="action-menu-item">
-                      <div class="action-menu-item__left">
-                        <el-icon :size="18"><Notification /></el-icon>Markdown
-                      </div>
-                    </div>
-                    <div class="action-menu-item">
-                      <div class="action-menu-item__left">
-                        <el-icon :size="18"><Notification /></el-icon>HTML
-                      </div>
-                    </div>
-                  </div>
-                </el-popover>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-move :size="18"></icon-move>移动
-                  </div>
-                </div>
-                <div class="action-menu-item">
-                  <div class="action-menu-item__left">
-                    <icon-delete :size="18"></icon-delete>删除
-                  </div>
-                </div>
-              </div>
-            </el-popover>
-          </div>
-        </div>
-      </div>
-      <div class="wiki-article-preview__content">
-        <div class="wiki-article-preview-main">
-          <!-- <div style="height: 300px;border: 1px solid #efefef;margin-bottom: 10px;" v-for="item in 10" :key="item"></div> -->
-          <md-preview :value="article.markdown"></md-preview>
-        </div>
-        <div class="wiki-article-preview-navigator">导航目录</div>
-      </div>
-    </div>
+    <!-- 侧边栏 -->
+    <article-sidebar
+      :tree-data="treeData"
+      :article="article"
+      :expandedKeys="expandedKeys"
+      @update="getArticle"
+      @action="handleAction">
+    </article-sidebar>
+    <!-- 预览区域 -->
+    <article-preview
+      :article="article"
+      v-model:edit="edit"
+      :loadig="loading"
+      @update="updateArticle"
+      @theme-change="handleThemeChange">
+    </article-preview>
   </div>
 </template>
 <script lang="ts" setup>
 import Wiki from '@/types/Wiki'
-import { ActionItemInter, WikiInter, ArticleInter } from '@/typings/interface'
-import { Ref, ref, markRaw } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import IconFolder from './icons/icon-folder.vue'
-import IconFile from './icons/icon-file.vue'
-import IconEdit from './icons/icon-edit.vue'
-import IconShare from './icons/icon-share.vue'
-import IconPlay from './icons/icon-play.vue'
-import IconList from './icons/icon-list.vue'
-import IconInfo from './icons/icon-info.vue'
-import IconPrint from './icons/icon-print.vue'
-import IconLock from './icons/icon-lock.vue'
-import IconComputer from './icons/icon-computer.vue'
-import IconSave from './icons/icon-save.vue'
-import IconMove from './icons/icon-move.vue'
-import IconDelete from './icons/icon-delete.vue'
-import actionPopover from './action-popover.vue'
-import mdPreview from '../plugin/md-preview.vue'
-import { useFromNow } from '@/hooks/date-time'
-// import { Splitpanes, Pane } from 'splitpanes'
-// import 'splitpanes/dist/splitpanes.css'
+import { ArticleInter } from '@/typings/interface'
+import { Ref, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import articlePreview from './article-preview.vue'
+import articleSidebar from './article-sidebar.vue'
+import { useCtxInstance, useDeleteConfirm } from '@/hooks/global'
+import { ElMessageBox } from 'element-plus'
 
 /**
  * 实例
  */
 const route = useRoute()
-const router = useRouter()
 const wiki = new Wiki()
+const ctx = useCtxInstance()
 
 /**
  * 变量
  */
-const treeData: Ref<WikiInter[]> = ref([])
-const value1 = ref(false)
-const actions: Ref<ActionItemInter[]> = ref([
-  { icon: 'file', size: 18, text: '新建文档' },
-  { icon: 'excel', size: 18, text: '新建表格' },
-  { icon: 'folder', size: 18, text: '新建分组', color: 'rgb(246, 198, 89)' },
-  { icon: 'canvas', size: 18, text: '新建画板' },
-  { icon: 'diagram', size: 18, text: '新建流程图' },
-  { icon: 'mindmap', size: 18, text: '新建思维导图' },
-  { icon: 'magic', size: 18, text: '从模板新建' },
-  { icon: 'markdown', size: 18, text: '导入文档' }
-])
+const { wid } = route.params
+const treeData: Ref<ArticleInter[]> = ref([])
 const article: Ref<ArticleInter> = ref({
   id: 0,
-  title: ''
+  title: '',
+  theme: {
+    code: 'github',
+    markdown: 'github'
+  }
 })
+const edit = ref(false)
+const loading = ref(false)
+const expandedKeys = ref([])
 
 /**
  * 逻辑
  */
-// 根据类别获取图标组件
-function getIconComponent (type: string) {
-  let component = null
-  switch (type) {
-    case 'folder':
-      component = markRaw(IconFolder)
-      break
-    case 'file':
-      component = markRaw(IconFile)
-      break
-    default:
-      component = markRaw(IconFile)
-      break
-  }
-  return component
-}
-// 根据类别获取图标颜色
-function getIconColor (type: string) {
-  let color = null
-  switch (type) {
-    case 'folder':
-      color = 'rgb(246, 198, 89)'
-      break
-    case 'file':
-      color = 'rgb(156, 156, 251)'
-      break
-    case 'excel':
-      color = '#01a408'
-      break
-    case 'mindmap':
-      color = 'rgb(156, 156, 251)'
-      break
-    case 'diagram':
-      color = 'rgb(156, 156, 251)'
-      break
-    default: 
-      color = 'rgb(156, 156, 251)'
-      break
-  }
-  return color
-}
-// 返回
-function handleGoBack () {
-  router.push({
-    name: 'Wiki'
-  })
-}
-// 节点点击
-function handleNodeClick (data: WikiInter) {
-  wiki.getArticleDetail(data.id).then((res: ArticleInter) => {
-    article.value = res
-  })
-}
 // 获取页面目录树
 function getPageTree () {
-  wiki.getArticles(+route.query.wid).then((res: WikiInter[]) => {
+  wiki.getArticlePageTree(+wid).then((res: ArticleInter[]) => {
     treeData.value = res
+    if (res.length && !article.value.id) {
+      article.value = {
+        ...res[0],
+        theme: {
+          code: 'github',
+          markdown: 'github'
+        }
+      }
+      getArticle(res[0])
+    }
   })
 }
 getPageTree()
+// 更新节点内容
+function getArticle(data: ArticleInter) {
+  loading.value = true
+  wiki.getArticleDetail(data.id).then((res: ArticleInter) => {
+    if (res.markdown === ' ') {
+      res.markdown = ''
+    }
+    article.value = res
+    loading.value = false
+    expandedKeys.value.push(res.id)
+  })
+}
+// 更新文章
+function updateArticle () {
+  wiki.updateArticle({
+    id: article.value.id,
+    title: article.value.title,
+    markdown: article.value.markdown
+  }).then((res: ArticleInter) => {
+    ctx.$message({ message: '文档更新成功', type: 'success', duration: 1000 })
+    getPageTree()
+  })
+}
+// 新建文章
+function createArticle (type: 'file' | 'folder', title: string = '未命名文档', pid: number = 0) {
+  wiki.createArticle({
+    title,
+    type,
+    pid,
+    markdown: ''
+  }, +wid).then(res => {
+    ctx.$message({ message: '文档新建成功', type: 'success', duration: 1000 })
+    getPageTree()
+  })
+}
+// 删除文章
+function deleteArticle (id: number) {
+  wiki.deleteArticle(id).then(res => {
+    getPageTree()
+    ctx.$message({ message: '文档删除成功', type: 'success', duration: 1000 })
+    if (id === article.value.id && treeData.value.length) {
+      getArticle(treeData.value[0])
+    }
+  })
+}
+// 复制文章
+function copyArticle (id: number) {
+  wiki.copyArticle(id).then(res => {
+    getPageTree()
+    ctx.$message({ message: '文档复制成功', type: 'success', duration: 1000 })
+  })
+}
+// 事件触发
+function handleAction (action: any) {
+  switch (action.func) {
+    case 'createFile':
+      ElMessageBox.prompt('请输出文档名称', '新建文档', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^\S+$/,
+        inputErrorMessage: '请输出文档名称'
+      }).then(({ value }) => {
+        createArticle('file', value, action.id)
+        if (action.id) {
+          expandedKeys.value.push(action.id)
+        }
+      }).catch(() => {})
+      break
+    case 'createFolder':
+      ElMessageBox.prompt('请输出分组名称', '新建分组', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^\S+$/,
+        inputErrorMessage: '请输出分组名称'
+      }).then(({ value }) => {
+        createArticle('folder', value, action.id)
+      }).catch(() => {})
+      break
+    case 'deleteFile':
+      useDeleteConfirm('确定删除吗?该操作会将其子节点一并删除').then(() => {
+        deleteArticle(action.id)
+      })
+      break
+    case 'copyFile':
+      useDeleteConfirm('该操作只会复制当前节点，其子节点不会复制，确定复制吗？').then(() => {
+        copyArticle(action.id)
+      })
+      break
+  }
+}
+// 主题切换
+function handleThemeChange (e) {
+  if (e !== article.value.theme.markdown) {
+    article.value.theme.code = e
+    article.value.theme.markdown = e
+    wiki.changTheme(article.value.id, e).then(res => {
+      ctx.$message({ message: '主题切换成功', type: 'success', duration: 1000 })
+    })
+  }
+}
 </script>
 <style lang="scss">
 .wiki-article {
@@ -301,245 +183,6 @@ getPageTree()
   left: 0;
   overflow: hidden;
   display: flex;
-  &-sidebar {
-    flex-shrink: 0;
-    width: 300px;
-    border-right: 1px solid var(--el-border-color);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    &__header {
-      min-height: 48px;
-      border-bottom: 1px solid var(--el-border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      .wiki-search-entry {
-        flex: 1;
-        height: 32px;
-        background: var(--el-fill-color);
-        padding: 0 6px 0 12px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        color: var(--el-text-color-disabled);
-        cursor: pointer;
-        &-content {
-          margin: 0 8px;
-          flex: 1;
-        }
-        &-hotkey {
-          flex-shrink: 0;
-          padding: 0 4px;
-          height: 16px;
-          opacity: .4;
-          border-radius: 3px;
-          background: var(--el-color-info-light-3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          line-height: 16px;
-          color: var(--el-color-white);
-        }
-        &:hover {
-          background: var(--el-fill-color-darker);
-        }
-      }
-      .wiki-go-back {
-        margin-right: 5px;
-        height: 32px;
-        width: 60px;
-        background: var(--el-fill-color);
-        font-size: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 6px;
-        color: var(--el-text-color-disabled);
-        cursor: pointer;
-        .el-icon {
-          margin-right: 5px;
-        }
-        &:hover {
-          background: var(--el-fill-color-darker);
-        }
-      }
-    }
-    &__content {
-      flex: 1;
-    }
-    &__footer {
-      height: 48px;
-      border-top: 1px solid var(--el-border-color);
-    }
-  }
-  &-preview {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    &__header {
-      height: 68px;
-      flex-shrink: 0;
-      border-bottom: 1px solid var(--el-border-color);
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      flex-shrink: 0;
-      .left-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        .wiki-article-title {
-          font-size: 18px;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-          color: var(--el-text-color-primary);
-        }
-        .wiki-article-time {
-          font-size: 12px;
-          color: var(--el-text-color-secondary);
-        }
-      }
-      .right-content {
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-        .wiki-article-action {
-          display: flex;
-          &-item {
-            padding: 5px 7px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            color: var(--el-text-color-regular);
-            cursor: pointer;
-            .wiki-icon, .el-icon {
-              margin-right: 5px;
-              svg {
-                fill: var(--el-text-color-regular);
-              }
-            }
-            &:not(:first-child) {
-              margin-left: 5px;
-            }
-            &:hover {
-              background: rgba(102,152,255,.1);
-              color: var(--el-color-primary);
-              .wiki-icon, .el-icon {
-                svg {
-                  fill: var(--el-color-primary);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    &__content {
-      flex: 1;
-      overflow: auto;
-      padding: 15px;
-      position: relative;
-    }
-    &-main {
-      margin-right: calc(220px + 17px);
-    }
-    &-navigator {
-      width: 220px;
-      border-left: 1px solid var(--el-border-color);
-      position: fixed;
-      height: calc(100% - 60px - 68px);
-      right: 17px;
-      top: calc(60px + 68px);
-      z-index: 999;
-      background: var(--el-bg-color-white);
-      padding: 10px;
-    }
-  }
-}
-.wiki-page {
-  &-tree {
-    .el-tree-node__content {
-      height: 40px;
-      padding: 0 10px;
-      .el-icon {
-        flex-shrink: 0;
-      }
-      .node-item {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        &-icon {
-          margin-right: 5px;
-          flex-shrink: 0;
-          font-size: 18px;
-          &.node-item-icon {
-            &__file {
-              color: var(--el-text-color-regular);
-            }
-            &__folder {
-              color: var(--el-color-warning);
-            }
-          }
-        }
-        &-label {
-          flex: 1;
-        }
-        &-actions {
-          display: flex;
-        }
-        &-action {
-          flex-shrink: 0;
-          padding: 3px 4px;
-          background: var(--el-fill-color);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 4px;
-          margin-left: 6px;
-          display: none;
-        }
-      }
-      &:hover {
-        .node-item-action {
-          display: flex;
-        }
-      }
-    }
-  }
-  &-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid var(--el-border-color);
-    .action {
-      width: 24px;
-      height: 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: var(--el-fill-color-dark);
-      color: var(--el-text-color-primary);
-      font-size: 12px;
-      border-radius: 4px;
-      border: 1px solid var(--el-border-color);
-      cursor: pointer;
-    }
-    span {
-      font-weight: bold;
-      color: var(--el-text-color-regular);
-    }
-  }
 }
 
 .wiki-action-menu {
