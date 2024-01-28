@@ -17,7 +17,7 @@ async function bootstrap() {
   })
   // 配置静态目录
   app.useStaticAssets(join(__dirname, 'public'), {
-    prefix: '/' // 访问前缀，如果不配置则默认是 /
+    prefix: '/public' // 访问前缀，如果不配置则默认是 /
   })
   app.enableVersioning({
     type: VersioningType.URI
