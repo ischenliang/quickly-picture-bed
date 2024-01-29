@@ -88,4 +88,7 @@ const props = withDefaults(defineProps<Props>(), {
     display: block;
   }
 }
+.medium-zoom-image {
+  z-index: 2;
+}
 </style>
