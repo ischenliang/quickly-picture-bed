@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'node:path'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
 export default defineConfig({
   server: {
@@ -9,11 +8,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    chunkSizeWarningLimit: 1500,
+    cssCodeSplit: true,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         chunkFileNames: 'static/js/[name]-[hash].js',
         entryFileNames: 'static/js/[name]-[hash].js',
         assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+        manualChunks (id) {
+          if (id.includes("node_modules")) {
+            return 'vendor'
+          }
+        }
       }
     }
   },
@@ -26,8 +33,7 @@ export default defineConfig({
           isCustomElement: (tag) => tag.includes('custom-')
         }
       }
-    }),
-    monacoEditorPlugin({})
+    })
   ],
   publicDir: 'public',
   resolve: {

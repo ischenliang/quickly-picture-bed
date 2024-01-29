@@ -4,7 +4,10 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import * as monaco from 'monaco-editor'
+import ace from 'ace-builds'
+import 'ace-builds/css/ace.css'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/theme-one_dark'
 
 /**
  * 实例
@@ -40,53 +43,41 @@ const editorValue = computed({
 let editor = null
 const init = ref(false)
 onMounted(() => {
-  // editor.value = 
-  editor = monaco.editor.create(document.getElementById('monaco') as HTMLElement, {
-    value: '', // 编辑器初始显示文字
-    language: props.language, // 语言支持自行查阅demo
-    automaticLayout: true, // 自适应布局  
-    theme: 'vs-dark', // 官方自带三种主题vs, hc-black, or vs-dark
-    foldingStrategy: 'indentation',
-    renderLineHighlight: 'all', // 行亮
-    selectOnLineNumbers: true, // 显示行号
-    minimap:{
-      enabled: true,
-    },
-    wordWrap: 'on',
-    readOnly: false, // 只读
+  editor = ace.edit(document.querySelector('#monaco'), {
+    mode: 'ace/mode/json', // 语言
+    theme: 'ace/theme/one_dark', // 主题
+    highlightActiveLine: false, // 高亮当前行
+    highlightSelectedWord: true, // 高亮选中文本
+    readOnly: false, // 是否只读
+    cursorStyle: 'ace', // 光标样式，可选值ace|slim|smooth|wide
+    value: props.modelValue, // 编辑器内容
     fontSize: 16, // 字体大小
-    scrollBeyondLastLine: false, // 取消代码后面一大段空白 
-    overviewRulerBorder: false, // 不要滚动条的边框
-    tabSize: 2
+    tabSize: 2, // tabsize大小
+    placeholder: '输入你的code...', // 占位提示
+    highlightGutterLine: false, // 高亮边线
+    showPrintMargin: true, // 显示打印边距
+    printMarginColumn: 80, // 设置页边距
+    showGutter: true, // 显示行号区域
+    useWorker: false, // 使用辅助对象
+    wrap: false, // 换行
+    showFoldWidgets: false, // 是否显示折叠
   })
-  editor.setValue(props.modelValue)
-  // 监听值的变化
-  editor.onDidChangeModelContent((event) => {
+  // 监听内容变化
+  editor.on('change', (delta: any) => {
     editorValue.value = editor.getValue()
-  });
+  })
 })
 
 watch(() => props.modelValue, (val, old) => {
   nextTick(() => {
     if (val && val !== old && !init.value) {
-      editor && editor.setValue(val)
+      editor && editor.setValue(val, -1)
       init.value = true
     }
   })
 }, {
   immediate: true
 })
-
-
-// watch(() => props.language, (val) => {
-//   setTimeout(() => {
-//     editor.updateOptions({
-//       language: 'json'
-//     });
-//   }, 2000)
-// }, {
-//   immediate: true
-// })
 </script>
 
 <style lang="scss">
