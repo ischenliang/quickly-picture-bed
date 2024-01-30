@@ -1,1 +1,0 @@
-import{h as t}from"./index-LJ8e8yHT.js";class u{async upload(e,a){return t("/image/upload",e,a)}delete(e){return t("/image/delete",{id:e})}update(e){return t("/image/update",e)}async find(e){return t("/image/list",e)}detail(e){return t("/image/detail",{id:e})}sort(e,a){return t("/image/sort",{from:e,to:a})}}export{u as I};

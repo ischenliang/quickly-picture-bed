@@ -1,1 +1,0 @@
-import{h as t}from"./index-LJ8e8yHT.js";class a{create(e){return t("/bucket/create",e)}delete(e){return t("/bucket/delete",{id:e})}update(e){return t("/bucket/update",e)}toggle(e){return t("/bucket/toggle",{id:e})}async find(e){return t("/bucket/list",e)}detail(e){return t("/bucket/detail",{id:e})}sort(e,r){return t("/bucket/sort",{from:e,to:r})}}export{a as B};
