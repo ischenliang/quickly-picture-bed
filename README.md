@@ -1,7 +1,7 @@
 <div align="center">
     <img src="http://imgs.itchenliang.club/img/202211101734215.png"/>
     <div align="center">
-      基于Nestjs + Express + Vue3.x + Vite3.x + typescript + Rollup + Monorepo开发的轻量级快捷图片管理系统、图床系统
+      基于Nestjs + Express + Mysql + Vue3.x + Vite3.x + ElementPlus + typescript + Rollup + Monorepo开发的轻量级快捷图片管理系统、图床系统
     </div>
     <span align="center">
         <img src="https://img.shields.io/badge/vuejs-3.2.40-brightgreen" />
@@ -10,12 +10,15 @@
         <img src="https://img.shields.io/badge/element--plus-2.2.17-brightgreen" />
         <img src="https://img.shields.io/badge/pinia-2.0.22-brightgreen" />
         <img src="https://img.shields.io/badge/typescript-4.8.4-brightgreen" />
-        <img src="https://img.shields.io/badge/koa-2.x-brightgreen" />
-        <img src="https://img.shields.io/badge/koa--ts--controllers-3.x-brightgreen" />
+        <img src="https://img.shields.io/badge/nestjs-brightgreen" />
+        <img src="https://img.shields.io/badge/express-brightgreen" />
         <img src="https://img.shields.io/badge/sequelize-6.x-brightgreen" />
         <img src="https://img.shields.io/badge/mysql-brightgreen" />
         <img src="https://img.shields.io/badge/jsonwebtoken-brightgreen" />
         <img src="https://img.shields.io/badge/rollup-brightgreen" />
+        <img src="https://img.shields.io/badge/webpack-brightgreen" />
+        <img src="https://img.shields.io/badge/docker-brightgreen" />
+        <img src="https://img.shields.io/badge/docker-compose-brightgreen" />
     </span>
 </div>
 
