@@ -104,7 +104,9 @@ function generateId () {
   })
   children.forEach((el: HTMLElement, index) => {
     el.setAttribute('id', `head-${index}`)
-    catalogs.value[index].offsetTop = el.offsetTop
+    if (catalogs.value[index]) {
+      catalogs.value[index].offsetTop = el.offsetTop
+    }
   })
 }
 // 跳转到hash值地方: 实现锚点功能

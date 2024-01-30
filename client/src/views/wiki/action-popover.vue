@@ -1,5 +1,5 @@
 <template>
-  <el-popover :placement="placement" :trigger="trigger" popper-class="action-popover">
+  <!-- <el-popover :placement="placement" :trigger="trigger" popper-class="action-popover">
     <template #reference>
       <slot name="reference"></slot>
       <div class="action"><el-icon><Plus /></el-icon></div>
@@ -14,7 +14,21 @@
         <span class="menu-item-text">{{ item.text }}</span>
       </div>
     </div>
-  </el-popover>
+  </el-popover> -->
+  <el-dropdown popper-class="action-popover" :placement="placement" :trigger="trigger">
+    <slot name="reference"></slot>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item
+          v-for="(item, index) in actions"
+          :key="'action-item-' + index"
+          @click="handleClick(item)">
+          <component :is="components[item.icon]" :size="item.size" :color="item.color"></component>
+          <span class="menu-item-text">{{ item.text }}</span>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
@@ -69,6 +83,7 @@ function handleClick (item) {
 <style lang="scss">
 .action-popover {
   padding: 12px 5px !important;
+  animation: all .3s;
   .popover-action-menu {
     display: flex;
     flex-direction: column;

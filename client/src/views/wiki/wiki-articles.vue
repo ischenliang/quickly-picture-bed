@@ -4,6 +4,7 @@
     <article-sidebar
       :tree-data="treeData"
       :article="article"
+      :loading="treeLoading"
       :expandedKeys="expandedKeys"
       @update="getArticle"
       @action="handleAction">
@@ -12,7 +13,7 @@
     <article-preview
       :article="article"
       v-model:edit="edit"
-      :loadig="loading"
+      :loading="loading"
       @update="updateArticle"
       @theme-change="handleThemeChange">
     </article-preview>
@@ -50,6 +51,7 @@ const article: Ref<ArticleInter> = ref({
 })
 const edit = ref(false)
 const loading = ref(false)
+const treeLoading = ref(false)
 const expandedKeys = ref([])
 
 /**
@@ -57,16 +59,12 @@ const expandedKeys = ref([])
  */
 // 获取页面目录树
 function getPageTree () {
+  treeLoading.value = true
   wiki.getArticlePageTree(+wid).then((res: ArticleInter[]) => {
     treeData.value = res
-    if (res.length && !article.value.id) {
-      article.value = {
-        ...res[0],
-        theme: {
-          code: 'github',
-          markdown: 'github'
-        }
-      }
+    treeLoading.value = false
+    if (res.length) {
+      article.value.id = res[0].id
       getArticle(res[0])
     }
   })
@@ -75,6 +73,7 @@ getPageTree()
 // 更新节点内容
 function getArticle(data: ArticleInter) {
   loading.value = true
+  article.value.id = data.id
   wiki.getArticleDetail(data.id).then((res: ArticleInter) => {
     if (res.markdown === ' ') {
       res.markdown = ''
@@ -110,11 +109,8 @@ function createArticle (type: 'file' | 'folder', title: string = '未命名文�
 // 删除文章
 function deleteArticle (id: number) {
   wiki.deleteArticle(id).then(res => {
-    getPageTree()
     ctx.$message({ message: '文档删除成功', type: 'success', duration: 1000 })
-    if (id === article.value.id && treeData.value.length) {
-      getArticle(treeData.value[0])
-    }
+    getPageTree()
   })
 }
 // 复制文章

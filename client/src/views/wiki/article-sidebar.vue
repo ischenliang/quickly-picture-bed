@@ -23,6 +23,8 @@
       </div>
       <el-tree
         class="wiki-page-tree"
+        ref="treeRef"
+        v-loading="loading"
         :data="treeData"
         :props="{
           children: 'children',
@@ -46,7 +48,7 @@
               :color="getIconColor(data.type)">
             </component>
             <span class="node-item-label">{{ node.label }}</span>
-            <div class="node-item-actions">
+            <div class="node-item-actions" v-if="data.id === article.id">
               <!-- 新建文档、表格、画布、流程图、思维导图、分组、模板创建、批量导入 -->
               <action-popover :actions="addActions" :trigger="'click'" :parent="data" @action="$emit('action', $event)">
                 <template #reference>
@@ -76,7 +78,7 @@
 </template>
 <script lang="ts" setup>
 import { ActionItemInter, ArticleInter } from '@/typings/interface';
-import { Ref, markRaw, ref } from 'vue';
+import { Ref, markRaw, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import IconFolder from './icons/icon-folder.vue'
 import IconFile from './icons/icon-file.vue'
@@ -92,12 +94,14 @@ const props = withDefaults(defineProps<{
   treeData: ArticleInter[]
   article: ArticleInter
   expandedKeys: number[]
+  loading: boolean
 }>(), {
   article: () => ({
     id: 0
   } as ArticleInter)
 })
 const emit = defineEmits(['update', 'action'])
+const treeRef = ref(null)
 
 /**
  * 变量
@@ -166,6 +170,17 @@ function getIconColor (type: string) {
   }
   return color
 }
+
+
+
+watch(() => props.article, (val) => {
+  if (val) {
+    treeRef.value.setCurrentKey(val.id)
+  }
+}, {
+  deep: true,
+  immediate: true
+})
 </script>
 <style lang="scss">
 .wiki-article-sidebar {
@@ -288,14 +303,14 @@ function getIconColor (type: string) {
             justify-content: center;
             border-radius: 4px;
             margin-left: 6px;
-            display: none;
-          }
-        }
-        &:hover {
-          .node-item-action {
             display: flex;
           }
         }
+        // &:hover {
+        //   .node-item-action {
+        //     display: flex;
+        //   }
+        // }
       }
       .el-tree-node {
         &.is-current {
