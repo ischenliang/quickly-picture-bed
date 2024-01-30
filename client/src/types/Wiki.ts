@@ -85,4 +85,8 @@ export default class Wiki {
       }
     })
   }
+  // 拖拽排序
+  sortArticle (params: { from: number; to: number; type: string }) {
+    return http('/article/sort', params)
+  }
 }

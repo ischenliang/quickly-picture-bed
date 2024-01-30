@@ -117,12 +117,17 @@ export class ArticleController {
         to: {
           type: 'number',
           description: '存放文章id'
+        },
+        type: {
+          type: 'string',
+          description: '拖拽排序方式',
+          enum: ['inner', 'before', 'after']
         }
       }
     }
   })
-  sort (@Body('from') from: number, @Body('to') to: number, @User() user: UserType) {
-    return this.articleService.sort(from, to, user.id);
+  sort (@Body('from') from: number, @Body('to') to: number, @Body('type') type: string, @User() user: UserType) {
+    return this.articleService.sort(from, to, user.id, type);
   }
 
   @Post('publish')

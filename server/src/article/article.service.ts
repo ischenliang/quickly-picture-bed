@@ -81,7 +81,7 @@ export class ArticleService {
         pid: pid,
         uid
       },
-      attributes: ['id', 'pid', 'public', 'title', 'type', 'wid', 'url'],
+      attributes: ['id', 'pid', 'public', 'title', 'type', 'wid', 'url', 'weight'],
       order: [['weight', 'desc']]
     })
     const treeData: Article[] = []
@@ -285,7 +285,7 @@ export class ArticleService {
    * @param to 
    * @param uid 
    */
-  async sort (from: number, to: number, uid: number) {
+  async sort (from: number, to: number, uid: number, type: string) {
     // 1、开始 Sequelize 事务
     const transaction = await this.sequelize.transaction()
     try {
@@ -310,11 +310,81 @@ export class ArticleService {
       }
       // 3、交换替换元素和被拖拽元素weight值
       const [fromWeight, toWeight] = [fromItem.weight, toItem.weight]
-      fromItem.weight = toWeight
-      toItem.weight = fromWeight
-      // 4、保存更新后的元素
-      await fromItem.save({ transaction })
-      await toItem.save({ transaction })
+      switch(type) {
+        case 'before':
+          // 前移：
+          // 3.1、to以及to以后的元素weight = weight - 1
+          // 3.2、from元素占用to元素的weight
+          // 3.3、将fromItem的pid设置为toItem的pid
+          await this.articleModel.update({
+            weight: Sequelize.literal('weight - 1')
+          }, {
+            where: {
+              wid: toItem.wid,
+              weight: {
+                [Op.lte]: toItem.weight
+              },
+              pid: toItem.pid
+            },
+            transaction
+          })
+          await this.articleModel.update({
+            weight: toWeight,
+            pid: toItem.pid
+          }, {
+            where: {
+              id: fromItem.id
+            },
+            transaction
+          })
+          break
+        case 'inner':
+          // 插入
+          // 3.1、获取toItem的子节点的最大maxWeight值
+          // 3.2、将fromItem的weight = maxWeight + 1
+          // 3.3、将fromItem的pid设置为toItem的id
+          const { maxWeight } = await this.getMaxWeight(toItem.wid, toItem.id)
+          await this.articleModel.update({
+            weight: maxWeight ? maxWeight + 1 : 1,
+            pid: toItem.id
+          }, {
+            where: {
+              id: fromItem.id
+            },
+            transaction
+          })
+          break
+        case 'after':
+          // 后移
+          // 3.1、from和to之间的元素(包含to不包含from)的weight = weight - 1
+          // 3.2、from元素占用to元素的weight
+          // 3.3、将fromIten的pid设置为toItem的pid
+          await this.articleModel.update({
+            weight: Sequelize.literal('weight + 1'),
+            pid: toItem.pid
+          }, {
+            where: {
+              wid: toItem.wid,
+              weight: {
+                [Op.and]: {
+                  [Op.gt]: fromWeight,
+                  [Op.lte]: toWeight
+                }
+              }
+            },
+            transaction
+          })
+          await this.articleModel.update({
+            weight: toWeight,
+            pid: toItem.pid
+          }, {
+            where: {
+              id: fromItem.id
+            },
+            transaction
+          })
+          break
+      }
       // 5、提交事务
       await transaction.commit()
       return [fromItem, toItem]

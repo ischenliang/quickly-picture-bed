@@ -7,7 +7,8 @@
       :loading="treeLoading"
       :expandedKeys="expandedKeys"
       @update="getArticle"
-      @action="handleAction">
+      @action="handleAction"
+      @drag-sort="handleDragSort">
     </article-sidebar>
     <!-- 预览区域 -->
     <article-preview
@@ -167,6 +168,12 @@ function handleThemeChange (e) {
       ctx.$message({ message: '主题切换成功', type: 'success', duration: 1000 })
     })
   }
+}
+// 拖拽排序
+function handleDragSort (e) {
+  wiki.sortArticle(e).then(res => {
+    getPageTree()
+  })
 }
 </script>
 <style lang="scss">

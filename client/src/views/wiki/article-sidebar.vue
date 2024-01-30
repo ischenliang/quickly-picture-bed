@@ -35,7 +35,14 @@
         node-key="id"
         :current-node-key="article.id"
         :expand-on-click-node="false"
-        @node-click="handleNodeClick">
+        draggable
+        @node-click="handleNodeClick"
+        @node-drag-start="handleDragStart"
+        @node-drag-enter="handleDragEnter"
+        @node-drag-leave="handleDragLeave"
+        @node-drag-over="handleDragOver"
+        @node-drag-end="handleDragEnd"
+        @node-drop="handleDrop">
         <template #default="{ node, data }">
           <div :class="{
             'node-item': true,
@@ -83,6 +90,9 @@ import { useRouter } from 'vue-router';
 import IconFolder from './icons/icon-folder.vue'
 import IconFile from './icons/icon-file.vue'
 import actionPopover from './action-popover.vue'
+import type Node from 'element-plus/es/components/tree/src/model/node'
+import type { DragEvents } from 'element-plus/es/components/tree/src/model/useDragNode'
+import type { AllowDropType, NodeDropType } from 'element-plus/es/components/tree/src/tree.type'
 
 
 
@@ -100,7 +110,7 @@ const props = withDefaults(defineProps<{
     id: 0
   } as ArticleInter)
 })
-const emit = defineEmits(['update', 'action'])
+const emit = defineEmits(['update', 'action', 'drag-sort'])
 const treeRef = ref(null)
 
 /**
@@ -169,6 +179,30 @@ function getIconColor (type: string) {
       break
   }
   return color
+}
+// 拖拽
+function handleDragStart (node: Node, ev: DragEvents) {
+  // console.log('drag start', node)
+}
+function handleDragEnter (draggingNode: Node, dropNode: Node, ev: DragEvents) {
+  // console.log('tree drag enter:', dropNode.label)
+}
+function handleDragLeave (draggingNode: Node, dropNode: Node, ev: DragEvents) {
+  // console.log('tree drag leave:', dropNode.label)
+}
+function handleDragOver (draggingNode: Node, dropNode: Node, ev: DragEvents) {
+  // console.log('tree drag over:', dropNode.label)
+}
+function handleDragEnd (draggingNode: Node, dropNode: Node, dropType: NodeDropType, ev: DragEvents) {
+  // console.log('tree drag end:', dropNode && dropNode.label, dropType)
+}
+function handleDrop (draggingNode: Node, dropNode: Node, dropType: NodeDropType, ev: DragEvents) {
+  console.log('from:', draggingNode.data.title, 'to:', dropNode.data.title, '类型:', dropType)
+  emit('drag-sort', {
+    from: draggingNode.data.id,
+    to: dropNode.data.id,
+    type: dropType
+  })
 }
 
 
