@@ -1,0 +1,288 @@
+#bytemd-container .markdown-body {
+  word-break: break-word;
+  line-height: 1.75;
+  font-weight: 400;
+  font-size: 15px;
+  overflow-x: hidden;
+  color: #333;
+  position: relative;
+  background-image: linear-gradient(90deg, rgba(217, 234, 251, 0.25) 3%, transparent 0), linear-gradient(360deg, rgba(217, 234, 251, 0.25) 3%, transparent 0);
+  background-size: 20px 20px;
+  background-position: 50%;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2,
+#bytemd-container .markdown-body h3,
+#bytemd-container .markdown-body h4,
+#bytemd-container .markdown-body h5,
+#bytemd-container .markdown-body h6 {
+  line-height: 1.5;
+  padding-left: 8px;
+  padding-bottom: 0;
+  margin-top: 35px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  font-family: serif;
+  letter-spacing: 1px;
+  color: #000;
+}
+#bytemd-container .markdown-body h1:hover,
+#bytemd-container .markdown-body h2:hover,
+#bytemd-container .markdown-body h3:hover,
+#bytemd-container .markdown-body h4:hover,
+#bytemd-container .markdown-body h5:hover,
+#bytemd-container .markdown-body h6:hover {
+  background-color: #fff;
+}
+#bytemd-container .markdown-body h1 {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+#bytemd-container .markdown-body h2 {
+  font-size: 24px;
+  position: relative;
+}
+#bytemd-container .markdown-body h2::after {
+  content: "";
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  position: absolute;
+}
+#bytemd-container .markdown-body h3 {
+  font-size: 18px;
+  padding-bottom: 0;
+}
+#bytemd-container .markdown-body h4 {
+  font-size: 16px;
+}
+#bytemd-container .markdown-body h5 {
+  font-size: 15px;
+}
+#bytemd-container .markdown-body h6 {
+  margin-top: 5px;
+}
+#bytemd-container .markdown-body p {
+  line-height: inherit;
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+#bytemd-container .markdown-body img {
+  max-width: 100%;
+}
+#bytemd-container .markdown-body hr {
+  height: 1px;
+  border: none;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  background-size: 4px 1px;
+  background-image: linear-gradient(to left, #37b2ff 0%, #37b2ff 25%, transparent 50%);
+}
+#bytemd-container .markdown-body code {
+  margin: 0 4px;
+  font-family: -apple-system, system-ui, Menlo, Monaco, Consolas, "Courier New";
+  word-break: break-word;
+  overflow-x: auto;
+  background-color: #fff7f7;
+  color: #f06;
+  position: relative;
+  font-size: 0.87em;
+  padding: 0.065em 0.4em;
+}
+#bytemd-container .markdown-body pre {
+  margin: 15px 8px;
+  border: 1px solid rgb(245, 245, 247);
+  font-family: -apple-system, system-ui, Menlo, Monaco, Consolas, "Courier New";
+  position: relative;
+  line-height: 1.75;
+}
+#bytemd-container .markdown-body pre::before {
+  top: -4px;
+  left: -4px;
+  width: 20px;
+  height: 20px;
+  content: "";
+  border-top: 8px solid #feea1e;
+  border-left: 8px solid #feea1e;
+  z-index: 10;
+  position: absolute;
+}
+#bytemd-container .markdown-body pre::after {
+  right: -4px;
+  bottom: -4px;
+  width: 20px;
+  height: 20px;
+  content: "";
+  z-index: 10;
+  border-right: 8px solid #37b2ff;
+  border-bottom: 8px solid #37b2ff;
+  position: absolute;
+}
+#bytemd-container .markdown-body pre > code {
+  font-size: 12px;
+  padding: 15px 12px;
+  overflow-x: auto;
+  margin: 0;
+  word-break: normal;
+  display: block;
+  color: #333;
+  background-color: #fff;
+  background-image: linear-gradient(135deg, rgba(224, 224, 224, 0.1) 0, rgba(224, 224, 224, 0.1) 25%, transparent 25%, transparent 50%, rgba(224, 224, 224, 0.1) 50%, rgba(224, 224, 224, 0.1) 75%, transparent 75%, transparent) !important;
+  background-size: 10px 10px !important;
+  position: unset !important;
+}
+#bytemd-container .markdown-body a {
+  margin: 0 4px;
+  text-decoration: none;
+  color: #37b2ff;
+  transition: 300ms;
+  border-bottom: 1px dashed #37b2ff;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+}
+#bytemd-container .markdown-body a::before {
+  bottom: 90%;
+  width: 120px;
+  max-width: 0px;
+  content: "READ MORE +";
+  color: #fff;
+  background-color: #1fb3ff;
+  position: absolute;
+  white-space: nowrap;
+  transition: 300ms;
+  box-sizing: border-box;
+  pointer-events: none;
+  overflow: hidden;
+}
+#bytemd-container .markdown-body a:hover::before, #bytemd-container .markdown-body a:active::before {
+  max-width: 120px;
+  padding-left: 14px;
+}
+#bytemd-container .markdown-body table {
+  width: 100%;
+  max-width: 100%;
+  font-size: 12px;
+  background-color: #fff;
+  overflow: auto;
+  border-collapse: collapse;
+}
+#bytemd-container .markdown-body table tr:hover th,
+#bytemd-container .markdown-body table tr:hover td {
+  border-bottom: 1px solid #feea1e;
+}
+#bytemd-container .markdown-body thead {
+  text-align: left;
+}
+#bytemd-container .markdown-body th {
+  font-size: 1.2em;
+  border-bottom: 1px dashed #eee;
+}
+#bytemd-container .markdown-body tr:nth-child(2n) {
+  background-color: rgba(224, 224, 224, 0.1);
+  border-bottom: 1px solid #fff;
+}
+#bytemd-container .markdown-body th,
+#bytemd-container .markdown-body td {
+  padding: 12px 7px;
+  line-height: 24px;
+}
+#bytemd-container .markdown-body td {
+  min-width: 120px;
+  border-bottom: 1px dashed #fff;
+}
+#bytemd-container .markdown-body blockquote {
+  color: #666;
+  padding: 12px 23px 2px;
+  border: 1px solid #37b2ff;
+  background-color: #fff;
+  margin: 22px 0;
+  position: relative;
+}
+#bytemd-container .markdown-body blockquote > p {
+  margin: 10px 0;
+}
+#bytemd-container .markdown-body blockquote::after {
+  content: "FROM";
+  top: 0;
+  left: 0;
+  width: 40px;
+  line-height: 1;
+  padding: 2px 0;
+  font-size: 12px;
+  color: #fff;
+  font-weight: lighter;
+  position: absolute;
+  background-color: #37b2ff;
+  text-align: center;
+  pointer-events: none;
+}
+#bytemd-container .markdown-body blockquote::before {
+  content: "CITATION";
+  top: 0;
+  left: 44px;
+  line-height: 1;
+  padding: 2px 0;
+  font-size: 12px;
+  color: #37b2ff;
+  font-weight: lighter;
+  position: absolute;
+  pointer-events: none;
+}
+#bytemd-container .markdown-body ol,
+#bytemd-container .markdown-body ul {
+  padding-left: 28px;
+}
+#bytemd-container .markdown-body ol li,
+#bytemd-container .markdown-body ul li {
+  line-height: 2em;
+  margin-bottom: 0;
+  list-style: inherit;
+}
+#bytemd-container .markdown-body ol li .task-list-item,
+#bytemd-container .markdown-body ul li .task-list-item {
+  list-style: none;
+}
+#bytemd-container .markdown-body ol li .task-list-item ul,
+#bytemd-container .markdown-body ol li .task-list-item ol,
+#bytemd-container .markdown-body ul li .task-list-item ul,
+#bytemd-container .markdown-body ul li .task-list-item ol {
+  margin-top: 0;
+}
+#bytemd-container .markdown-body ol ul,
+#bytemd-container .markdown-body ol ol,
+#bytemd-container .markdown-body ul ul,
+#bytemd-container .markdown-body ul ol {
+  margin-top: 3px;
+}
+#bytemd-container .markdown-body ol ul li,
+#bytemd-container .markdown-body ol ol li,
+#bytemd-container .markdown-body ul ul li,
+#bytemd-container .markdown-body ul ol li {
+  border-bottom: none;
+}
+#bytemd-container .markdown-body ol li {
+  padding-left: 6px;
+  list-style: decimal-leading-zero;
+}
+#bytemd-container .markdown-body .contains-task-list {
+  padding-left: 0;
+}
+#bytemd-container .markdown-body .task-list-item {
+  list-style: none;
+}
+#bytemd-container .markdown-body input[type=checkbox i]:disabled {
+  background-color: #6cf;
+}
+@media (max-width: 720px) {
+  #bytemd-container .markdown-body h1 {
+    font-size: 24px;
+  }
+  #bytemd-container .markdown-body h2 {
+    font-size: 20px;
+  }
+  #bytemd-container .markdown-body h3 {
+    font-size: 18px;
+  }
+}

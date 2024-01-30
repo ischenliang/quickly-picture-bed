@@ -1,7 +1,7 @@
 version: '3'
 services:
   server:
-    container_name: picbed-server-v2
+    container_name: picServerV2
     build:
       context: ./server
     ports:
@@ -9,7 +9,7 @@ services:
     networks:
       - pic-net
   web:
-    container_name: picbed-client-v2
+    container_name: picClientV2
     build:
       context: ./client
     ports:

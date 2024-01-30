@@ -1,0 +1,290 @@
+@charset "UTF-8";
+#bytemd-container .markdown-body {
+  font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial;
+  color: #00325e;
+}
+#bytemd-container .markdown-body *::selection {
+  background-color: #00325e;
+  color: white;
+}
+#bytemd-container .markdown-body blockquote {
+  padding: 10px 20px;
+  background-color: floralwhite;
+  box-shadow: 0px 3px 10px 0px rgba(255, 172, 194, 0.24);
+  border: 1px solid rgb(243, 202, 142);
+  transition: all 0.2s;
+  margin: 1em 0;
+  border-radius: 5px;
+}
+#bytemd-container .markdown-body blockquote p {
+  font-size: 14px;
+  line-height: 25px;
+  color: #795548;
+}
+#bytemd-container .markdown-body blockquote p:nth-last-child(1) {
+  margin: 0;
+}
+#bytemd-container .markdown-body blockquote:hover {
+  border-color: #ff9800;
+  background-color: #fff8e0;
+  box-shadow: 0px 6px 10px -5px rgba(225, 173, 98, 0.3803921569);
+}
+#bytemd-container .markdown-body blockquote code {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body pre {
+  border: 1px solid #8cc0f3;
+  box-shadow: 0px 3px 10px 0px rgba(255, 198, 198, 0.28);
+  border-radius: 5px;
+  transition: all 0.2s;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+#bytemd-container .markdown-body pre:hover {
+  border-color: rgb(109, 157, 206);
+}
+#bytemd-container .markdown-body pre > code {
+  padding: 10px 20px;
+  color: #00325e;
+  background: aliceblue;
+  font-size: 12px;
+  line-height: 1.6;
+  display: block;
+}
+#bytemd-container .markdown-body code {
+  background: #f6fbff;
+  color: #0b5393;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+#bytemd-container .markdown-body p {
+  font-size: 14px;
+  line-height: 28px;
+  text-align: justify;
+  margin-bottom: 17px;
+  color: #595959;
+}
+#bytemd-container .markdown-body a {
+  color: #00325e;
+  text-decoration: none;
+}
+#bytemd-container .markdown-body a::after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAQdJREFUKFNt0DtLA0EUBeBzZle0Eks7rcUfEfBRCha7NorYa6NmVJzgyi4smUgKtdZGCJktLMVH4Y8QeztLWyE7VyLEuNFbXj4Oh0P8c8mZm+uJrEN4BJFTeP/MUVe3bnocfALwkOlo1zS7iZAzf6Cx7oXgbaqjxiDEWCcVaGyxQ8pSWo9XhqhoQ/xUFbaKjhe5V+CmR7mnSplEEF6GSmJ+F/d0KHvbCIIJCLc85U6BC5mONgbJNM3uFag++sX7z8O8MzsWBucifMx0dDGE1kmm458KDVukAlnNdDz/exEeW3dNkbfsYC0xtmgDWP6ELLZ0/F6BJu/UoFQN5AkoeUjeJPvx6+i+X5Sjah4tA6gYAAAAAElFTkSuQmCC);
+  margin-left: 2px;
+}
+#bytemd-container .markdown-body a:hover {
+  box-shadow: 0 1px;
+}
+#bytemd-container .markdown-body table {
+  max-width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  box-shadow: 0px 3px 10px 0px rgba(255, 238, 172, 0.24);
+  transition: all 0.2s;
+}
+#bytemd-container .markdown-body table:hover {
+  box-shadow: 0px 3px 10px 0px rgba(185, 169, 103, 0.24);
+}
+#bytemd-container .markdown-body table tr th {
+  border: 1px solid #8cc0f3;
+  background-color: #f0f8ff;
+  padding: 12px 15px;
+}
+#bytemd-container .markdown-body table tr td {
+  border: 1px solid rgba(243, 202, 142, 0.4);
+  padding: 12px 15px;
+}
+#bytemd-container .markdown-body table tbody tr {
+  transition: all 0.2s;
+}
+#bytemd-container .markdown-body table tbody tr:hover td {
+  border-color: rgb(243, 202, 142);
+  background-color: #fff8e0;
+  z-index: 1;
+}
+#bytemd-container .markdown-body img {
+  max-width: 100%;
+}
+#bytemd-container .markdown-body h1 {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-left: 30px;
+  position: relative;
+}
+#bytemd-container .markdown-body h1 > code {
+  font-size: 20px;
+}
+#bytemd-container .markdown-body h1::before {
+  content: "🍺";
+  display: block;
+  font-size: calc(20px - 2px);
+  width: calc(20px - 2px);
+  height: calc(20px - 2px);
+  left: 0px;
+  position: absolute;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body h2 {
+  font-size: 18px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-left: 28px;
+  position: relative;
+}
+#bytemd-container .markdown-body h2 > code {
+  font-size: 18px;
+}
+#bytemd-container .markdown-body h2::before {
+  content: "🍻";
+  display: block;
+  font-size: calc(18px - 2px);
+  width: calc(18px - 2px);
+  height: calc(18px - 2px);
+  left: 0px;
+  position: absolute;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body h3 {
+  font-size: 16px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-left: 26px;
+  position: relative;
+}
+#bytemd-container .markdown-body h3 > code {
+  font-size: 16px;
+}
+#bytemd-container .markdown-body h3::before {
+  content: "🥂";
+  display: block;
+  font-size: calc(16px - 2px);
+  width: calc(16px - 2px);
+  height: calc(16px - 2px);
+  left: 0px;
+  position: absolute;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body h4 {
+  font-size: 14px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
+}
+#bytemd-container .markdown-body h4 > code {
+  font-size: 14px;
+}
+#bytemd-container .markdown-body h4::before {
+  content: "🥃";
+  display: block;
+  font-size: calc(14px - 2px);
+  width: calc(14px - 2px);
+  height: calc(14px - 2px);
+  left: 0px;
+  position: absolute;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body h5 {
+  font-size: 12px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+#bytemd-container .markdown-body h5 > code {
+  font-size: 12px;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body h6 {
+  font-size: 10px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+#bytemd-container .markdown-body h6 > code {
+  font-size: 10px;
+}
+#bytemd-container .markdown-body h1,
+#bytemd-container .markdown-body h2 {
+  color: #ff502c;
+}
+#bytemd-container .markdown-body hr {
+  height: 4px;
+  border: none;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  background-size: 4px 1px;
+  background-image: linear-gradient(270deg, #6d9dce 0, #8cc0f3 25%, transparent 50%);
+}
+#bytemd-container .markdown-body hr:nth-child(2n) {
+  background-image: linear-gradient(270deg, #ff9800 0, #fff8e0 25%, transparent 50%);
+}
+#bytemd-container .markdown-body ul {
+  padding-inline-start: 20px;
+}
+#bytemd-container .markdown-body ul li {
+  list-style-type: "🔸";
+}
+#bytemd-container .markdown-body ul li li {
+  list-style-type: "◻️";
+}
+#bytemd-container .markdown-body ul li li li {
+  list-style-type: "▫️";
+}
+#bytemd-container .markdown-body ol {
+  padding-inline-start: 20px;
+}
+#bytemd-container .markdown-body ol ::marker {
+  color: #ff9800;
+}
+#bytemd-container .markdown-body ol,
+#bytemd-container .markdown-body ul {
+  line-height: 2em;
+}
+#bytemd-container .markdown-body li {
+  padding-inline-start: 1ch;
+}
+#bytemd-container .markdown-body li.task-list-item {
+  list-style: none;
+  padding-inline-start: 0;
+}
+#bytemd-container .markdown-body li input {
+  padding-right: 2px;
+}
+#bytemd-container .markdown-body li input[type=checkbox i] {
+  appearance: none;
+}
+#bytemd-container .markdown-body li input::before {
+  content: "🟩";
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+#bytemd-container .markdown-body li input:checked::before {
+  content: "✅";
+}
+@media (max-width: 720px) {
+  #bytemd-container .markdown-body h1 {
+    font-size: 24px;
+  }
+  #bytemd-container .markdown-body h2 {
+    font-size: 20px;
+  }
+  #bytemd-container .markdown-body h3 {
+    font-size: 18px;
+  }
+}

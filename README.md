@@ -171,32 +171,134 @@
 - Gitee: https://gitee.com/itchenliang/quickly-picture-bed
 
 
-## 安装
-### 从零开始安装
-1. **安装node**
+## 安装部署
+### docker-compose方式
+为了便于部署，这里提供了docker-compose一键部署前端和服务端的方式。
+- 初始化数据库
+> 系统提供默认初始化数据库sql文件，进入到`server/sql`目录下找到`init.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
+```js
+管理员账号: admin@163.com
+管理员密码: 000000
+```
+- 数据库连接配置
+> 修改`server/.env`文件中的数据库配置
+- docker-compose一键部署
+> 先将完整项目拷贝到服务器上，然后再命令行终端执行如下命令
+```shell
+docker compose up -d
+```
+部署完成后会出现如下结果: 
+![202401301005263319.png](https://imgs.itchenliang.club/img/202401301005263319.png)
+然后就可以通过`http://youip:port`直接访问到系统了。
+> 这里需要注意的是: 本地存储桶里的图片位于`server`部署目录下的`public`目录下，若需要重新部署时还请提前将其文件拷贝备份。
+> 并且这里的后端接口是采用的nginx的代理方式来配置，同时也使用了自定义网络的方式来实现直接通过容器名访问到部署的server应用。
 
-前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
+
+### docker打包部署
+除了使用上面的`docker-compose`一键部署方式，也可以一步一步的部署。
+> 请确保严格按照下列的步骤执行，否则会出现问题，其原因在于`client`和`server`应用都依赖了`pic-net`自定义网络，并且`client`应用中的`nginx.conf`配置文件中也配置了接口代理，其代理方式是采用容器名来访问。
+
+- **创建自定义网络**
+  > 为了能够便于快捷访问到接口地址，需要使用自定义网络的方式来访问server应用
+  ```sh
+  docker network create pic-net
+  ```
+- **部署server**
+  > 构建server镜像并创建picServerV2容器
+  ```shell
+  # 进入到server目录
+  cd server
+  # 构建镜像
+  docker build -t pic-server .
+  # 启动并创建容器
+  docker run -d --name picServerV2 -p 4000:4000 --network pic-net pic-server
+  ```
+  启动成功后可以通过`http://youip:4000`访问，如果出现如下输出结果表示server部署成功
+  ![202401301014437945.png](https://imgs.itchenliang.club/img/202401301014437945.png)
+- **部署client**
+  > 构建client镜像并创建picClientV2容器
+  - 1、确保`client/public/global.config.js`中的`window.uploader_ip = ''`为空
+  - 2、打包`client`单页面应用
+    ```shell
+    cd client
+    npm install
+    npm run build
+    ```
+  - 3、执行构建并不输出
+    ```shell
+    # 进入到client目录
+    cd client
+    # 构建镜像
+    docker build -t pic-client .
+    # 启动并创建容器
+    docker run -d --name picClientV2 -p 80:80 --network pic-net pic-client
+    ```
+    启动成功后可以通过`http://youip:80`访问，如果出现如下输出结果表示client部署成功
+    ![202401301018387037.png](https://imgs.itchenliang.club/img/202401301018387037.png)
+
+### docker拉取远程镜像部署
+为了便于部署，本系统将构建的`itchenliang/pic-server-v2`和`itchenliang/pic-client-v2`镜像推送到了[DockerHub](https://hub.docker.com/)，可以直接拉取远程镜像来部署。
+- **创建自定义网络**
+  > 为了能够便于快捷访问到接口地址，需要使用自定义网络的方式来访问server应用
+  ```sh
+  docker network create pic-net
+  ```
+- **部署server**
+  - 1、在服务器上新建`.env`文件来配置数据库
+    ```yaml
+    # mysql用户名，默认是root
+    DB_USERNAME=xxx
+    # mysql密码
+    DB_PASSWORD=xxx
+    # 数据库ip，不要使用localhost和127.0.0.1
+    DB_HOST=xxx.xxx.xxx.xxx
+    # 数据库端口，默认3306
+    DB_PORT=3306
+    # 数据库
+    DB_DATABASE=xxx
+
+    # 程序占用端口
+    APP_PORT=4000
+
+    # npm镜像源仓库，末尾不要加斜杆/，常见的是npm官方镜像源，淘宝镜像源
+    # unpkg: https://unpkg.com/@itchenliang/picture-rollup-mdnice-plugin@1.0.2/dist/index.umd.js
+    # 淘宝: https://registry.npmmirror.com/@itchenliang/picture-rollup-oss-plugin/1.0.12/files/dist/index.js
+    NPM_REGISTRY=https://registry.npmmirror.com
+    ```
+  - 2、执行构建命令
+    ```shell
+    docker run -d --name picServerV2 -p 4000:4000 --env-file .env --network pic-net itchenliang/pic-server-v2
+    ```
+    上面的`--env-file`是指定环境变量文件，而且`.env`文件实则是在当目录下的`.env`文件，等同于`./.env`。
+    > 确保上面命令中的`picServerV2`名称，因为client会通过该名称来访问后台接口。
+- **部署client**
+> 执行如下构建命令
+```shell
+docker run -d --name picClientV2 -p 80:80 --network pic-net itchenliang/pic-client-v2
+```
+
+
+### 从零开始
+1. **安装node**
+> 前往[node官网](https://nodejs.org/zh-cn/)下载`node.exe`并安装或者使用`nrm`进行安装。
 > 请确保安装的node版本为: 18.16.0
 
 2. **安装git**
-
-前往[Git官网](https://git-scm.com/)下载`git`并安装，此步可忽略。
+> 前往[Git官网](https://git-scm.com/)下载`git`并安装，此步可忽略。
 
 3. **克隆代码**
-
-使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压。
+> 使用`git clone`命令将代码克隆到本地，或者直接下载压缩包到本地并解压。
 
 4. **执行sql文件**
-
-系统提供默认初始化数据库sql文件，首先拿到服务端代码，然后打开复制`sql/init.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
+> 系统提供默认初始化数据库sql文件，进入到`server/sql`目录下找到`init.sql`，在`navicat`或者其他工具中执行该sql文件。该sql文件中默认提供了一个管理员账号，方便用户初次使用时登录。
 ```js
 管理员账号: admin@163.com
 管理员密码: 000000
 ```
 
 5. **修改数据库连接**
-
-首先获取到服务端代码，然后打开`/src/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
+> 修改`server/.env`文件，将数据库连接服务修改成自己的数据库ip、用户名、密码等。
+> 如果是本地调试则只需要修改`.env.dev`文件。
 ```yml
 # mysql用户名，默认是root
 DB_USERNAME=xxx
@@ -224,69 +326,51 @@ NPM_REGISTRY=https://registry.npmmirror.com
 cd client
 npm install
 
-# 服务端依赖安装: 需要获取到后端代码
+# 服务端依赖安装
 cd server
 npm install
 ```
 
 7. **项目启动**
-
-首先拿到服务端代码然后打开命令行将后端服务启动
-```shell
-# 服务端项目启动: 需要获取到后端代码
-cd server
-npm run start:dev
-```
-在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`http://locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
-```ts
-window.uploader_ip = 'http://localhost:3002'
-```
-然后执行下面命令运行前端代码
-```shell
-# 前端项目启动
-cd client
-npm run dev
-```
-控制台出现如下如所示即代表启动成功
-![202401181708175946.png](https://imgs.itchenliang.club/img/202401181708175946.png)<br/>
-![202401181708309363.png](https://imgs.itchenliang.club/img/202401181708309363.png)
+  - 服务端启动
+    ```shell
+    cd server
+    npm run dev
+    ```
+  - 前端启动
+    > 在运行前端代码前还需要做一步操作，打开`client/public/global.config.js`文件，修改`window.uploader_ip`，将下面的`http://locahost:3002`改成你本地启动的`server`的ip和端口(如果是部署上线时需进行此步，本地调试可跳过)。
+    ```ts
+    window.uploader_ip = 'http://localhost:3002'
+    ```
+    然后执行下面命令运行前端代码
+    ```shell
+    # 前端项目启动
+    cd client
+    npm run dev
+    ```
+  - 启动成功标识
+    > 控制台出现如下如所示即代表启动成功
+    ![202401181708175946.png](https://imgs.itchenliang.club/img/202401181708175946.png)<br/>
+    ![202401181708309363.png](https://imgs.itchenliang.club/img/202401181708309363.png)
 
 8. **打包部署**
-- **服务端打包部署**
-  - 在命令行执行如下命令即可
-```shell
-# 服务端构建: 需要获取到后端代码
-cd server
-npm run build
-```
-- **前端打包部署**
-  - 在命令行执行如下命令即可
-```shell
-# 前端构建
-cd client
-npm run build
-```
-将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
-
-
-### docker打包部署
-在linux环境，可以使用`Docker`进行部署，本系统内提供了`docker`部署方式，尽管使用`docker`部署，上面的修改数据库配置，修改接口地址等操作依然需要操作，在控制台执行
-```shell
-# 前端docker镜像构建并部署
-cd client
-docker build -t pic-bed-client .
-docker run -d -p 80:80 pic-bed-client
-
-# 服务端docker构建并部署: 需要获取到后端代码
-cd server
-docker build -t pic-bed-server .
-docker run -d -p 4000:4000 pic-bed-server
-```
-上面的命令，会自动制作`pic-bed-client`和`pic-bed-server`两个`docker`镜像，并且自动启动镜像，等待执行完毕就可以在浏览器输入`http://localhost:80/`和`http://localhost:4000`进行验证是否部署成功，如果出现登录页面，即代表部署成功。
-
-
-### 安装包安装
-下载版本后解压。
+  - **服务端打包部署**
+    > 我们服务端采用的是nestjs + typescript开发的，需要打包成js文件
+    ```shell
+    # 服务端构建
+    cd server
+    npm run build
+    # 将server/dist目录下的所有文件拷贝服务器上，然后执行启动命令
+    node main.js
+    ```
+  - **前端打包部署**
+    > 我们前端采用的是vite + vue3 + typescript开发单页面应用，需要打包，并将打包后的dist结果目录下的所有文件拷贝到web服务器上。
+    ```shell
+    # 前端构建
+    cd client
+    npm run build
+    ```
+    将打包后生成的`dist`目录下的所有内容拷贝到web服务器上。
 
 
 ## 预览
