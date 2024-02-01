@@ -148,7 +148,7 @@ export class AppController {
   @ApiResponse({ status: 200, description: '操作成功' })
   async register (@Body() param: RegisterParam) {
     const setting = await this.settingService.findOne()
-    if (setting.system.enable_register) {
+    if (!setting.system.enable_register) {
       return {
         statusCode: 500,
         data: '注册功能已关闭，请联系管理员开启'
