@@ -1,5 +1,5 @@
 <template>
-  <el-popover placement="bottom-end" trigger="click" :width="300" popper-class="user-info-popover">
+  <el-popover placement="bottom-end" trigger="click" :width="360" popper-class="user-info-popover">
     <template #reference>
       <div class="user-info">
         <img class="user-info-avatar" :src="userAvatar" alt="">
@@ -250,6 +250,7 @@ const logout = () => {
     display: none;
   }
   .user-info__content {
+    overflow: hidden;
     .popover__header {
       width: 100%;
       height: 80px;
@@ -261,9 +262,12 @@ const logout = () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      overflow: hidden;
       .header-left {
         display: flex;
         align-items: center;
+        flex: 1;
+        overflow: hidden;
         .user-avatar {
           width: 40px;
           height: 40px;
@@ -274,15 +278,24 @@ const logout = () => {
           flex-direction: column;
           margin-left: 10px;
           justify-content: center;
+          overflow: hidden;
           .user-name {
             font-size: 14px;
             color: #333841;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
           }
           .user-role {
             font-size: 12px;
             color: #808392;
           }
         }
+      }
+      .header-right {
+        flex-shrink: 0;
+        margin-left: 5px;
       }
     }
     .popover__content {
