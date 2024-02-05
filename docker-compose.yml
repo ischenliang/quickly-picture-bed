@@ -1,0 +1,21 @@
+version: '3'
+services:
+  web:
+    container_name: pic-client
+    build:
+      context: ./client
+    ports:
+      - "80:80"
+    networks:
+      - app_network
+  api:
+    container_name: pic-server
+    build:
+      context: ./server
+    ports:
+      - "3002:3002"
+    networks:
+      - app_network
+networks:
+  app_network:
+    driver: bridge

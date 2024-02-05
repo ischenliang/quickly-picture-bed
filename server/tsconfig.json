@@ -1,0 +1,31 @@
+{
+  // 编译选项
+  "compilerOptions": {
+    "baseUrl": ".",
+    // target用于指定编译之后的版本目标'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'
+    "target": "ES2017",
+    // 编译目标使用的模块化标准
+    "module": "NodeNext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "./dist",
+    // 指定ts环境
+    "lib": ["es2016"],
+    // 是否启用严格模式
+    "strict": false, 
+    // 通过为导入内容创建命名空间，实现CommonJS和ES模块之间的互操作性
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // 允许any类型
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["node"],
+    "skipLibCheck": false,
+    "declaration": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js", "src/**/*"],
+  "exclude": ["node_modules", "dist"],
+}
