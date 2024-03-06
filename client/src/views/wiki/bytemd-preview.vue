@@ -150,7 +150,7 @@ onMounted(() => {
   })
 })
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 $padding: 16px;
 .bytemd-viewer {
   width: calc(100% - 250px);
