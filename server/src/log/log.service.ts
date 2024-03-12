@@ -41,8 +41,7 @@ export class LogService {
       case 'baidu':
         result.type = 'baidu'
         const baidu = await iptoaddress.baidu(ip, map_key)
-        console.log(baidu)
-        if (baidu.status && baidu.status === 0) {
+        if (baidu.status === 0) {
           const { adcode, city, province } = baidu.content.address_detail
           result.adcode = adcode
           result.province = province
@@ -203,13 +202,20 @@ export class LogService {
    * @returns 
    */
   async reLocate (id: number, ip: string) {
-    const ipInfo: ClientInfo = await this.ipToAddress(ip)
+    const log = await this.logModel.findOne({
+      where: {
+        id
+      },
+      raw: true
+    })
+    const ipInfo: ClientInfo = await this.ipToAddress(log.client_info.ip || ip)
     return this.logModel.update({
       client_info: ipInfo
     }, {
       where: {
         id
-      }
+      },
+      silent: true
     })
   }
 }
