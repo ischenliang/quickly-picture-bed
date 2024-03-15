@@ -321,6 +321,19 @@ const website = computed(() => {
       border-color: #409eff;
     }
   }
+  .el-select__suffix {
+    .el-input__validateIcon {
+      display: none !important;
+    }
+  }
+  .el-input-group__append {
+    .el-select {
+      width: 130px !important;
+      .el-select__wrapper {
+        padding: 8px 10px !important;
+      }
+    }
+  }
 }
 .swiper-pagination {
   bottom: 20px !important;
