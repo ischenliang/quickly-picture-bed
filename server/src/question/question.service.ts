@@ -244,7 +244,11 @@ export class QuestionService {
         }
       } catch (error) {
         // 不是红包问题：继续定时任务
-        console.log(error)
+        if (error && error.response && error.response.data) {
+          console.log(error.response.data)
+        } else {
+          console.log(error)
+        }
       }
     })
     this.scheduleRegistry.addCronJob(question_id + '-' + id, job)

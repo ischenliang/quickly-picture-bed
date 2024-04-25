@@ -13,6 +13,7 @@ import { HttpService } from '@nestjs/axios';
 import * as iconv from 'iconv-lite'
 import axios from 'axios';
 import * as cheerio from 'cheerio'
+import { cookie_config_Url } from 'global.config';
 
 
 @Injectable()
@@ -268,6 +269,11 @@ export class ToolService {
       url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`
     })
     const $ = cheerio.load(res.data)
+    const unHuman = $('p.Unhuman-tip')
+    if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
+      console.log('==============知乎判定为人机====================')
+      throw new Error('知乎判定为人机')
+    }
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
     const initialData = JSON.parse(initialDataJson)
@@ -286,6 +292,11 @@ export class ToolService {
       url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`
     })
     const $ = cheerio.load(res.data)
+    const unHuman = $('p.Unhuman-tip')
+    if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
+      console.log('==============知乎判定为人机====================')
+      throw new Error('知乎判定为人机')
+    }
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
     const initialData = JSON.parse(initialDataJson)
@@ -307,6 +318,11 @@ export class ToolService {
       url: `https://www.zhihu.com/question/${question_id}`
     })
     const $ = cheerio.load(res.data)
+    const unHuman = $('p.Unhuman-tip')
+    if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
+      console.log('==============知乎判定为人机====================')
+      throw new Error('知乎判定为人机')
+    }
     // 获取问题详情
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
@@ -337,8 +353,27 @@ export class ToolService {
    * @returns 
    */
   async getZhihuQuestionRedPacket (question_id: string) {
+    const { data: { cookie } } = await axios(cookie_config_Url)
     const res = await axios({
-      url: `https://www.zhihu.com/api/v4/brand/questions/${question_id}/activity/red-packet`
+      url: `https://www.zhihu.com/api/v4/brand/questions/${question_id}/activity/red-packet`,
+      method: 'get',
+      headers: {
+        Cookie: cookie,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        'Cache-Control': 'max-age=0',
+        'Priority': 'u=0, i',
+        'Sec-Ch-Ua': '"Chromium";v="124", "Microsoft Edge";v="124", "Not-A.Brand";v="99"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+      }
     })
     return res.data
   }
