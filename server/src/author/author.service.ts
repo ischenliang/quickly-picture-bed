@@ -451,9 +451,63 @@ export class AuthorService {
    * @param time 
    * @param question_id 
    */
-  startNotify (time: string, author: CreateAuthorDto, uid: number) {
+  startNotify (time: number, author: CreateAuthorDto, uid: number) {
     const { author_id, id } = author
-    const job = new CronJob(time, async () => {
+    // const job = new CronJob(time, async () => {
+    //   this.logger.warn(`job ${author_id} execute one time!`)
+    //   // 第一步：获取最新的作者信息
+    //   const lastAuthor = await this.findOne(id, uid)
+    //   try {
+    //     // 第二步：获取该作者的动态
+    //     const { questions: questionObj } = await this.toolService.getZhihuUserQuestionsAndAnswers(lastAuthor.author_id, lastAuthor.is_org)
+    //     // 第三步：获取问题详情(题主发布的问题) ==> 为了获取第二步无法获取创建时间和修改时间以及筛选出只是自己的问题
+    //     // 这里会导致发送多个请求：容易被判定为人机
+    //     // const questions_info = (await Promise.all(Object.keys(questionObj).map(id => this.toolService.getZhihuQuestionInfo(id)))).filter(question => question.author.id === lastAuthor.author_id)
+    //     const questions_info = Object.keys(questionObj).map(id => questionObj[id]).filter(question => question.author.urlToken === lastAuthor.author_id)
+    //     // 第四步：判断这些问题是否存在于作者问题列表中
+    //     //    存在：则跳过
+    //     //    不存在：如果是疑似红包问题则邮件通知，否则直接新增即可
+    //     for (let i = 0; i < questions_info.length; i++) {
+    //       const question = questions_info[i]
+    //       const author_question = await this.findOneQuestion(question.id, lastAuthor.id, uid, 'publish')
+    //       const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
+    //       if (!author_question) {
+    //         // 新增问题
+    //         await this.createQuestion({
+    //           question_id: question.id,
+    //           question_title: question.title,
+    //           question_desc: question.detail,
+    //           question_type: question.questionType,
+    //           type: 'publish',
+    //           question_created: question.created || '',
+    //           question_updated: question.updated || ''
+    //         }, lastAuthor.id, uid)
+    //         // 判断是否为疑似红包：是 - 邮箱通知
+    //         if (question.questionType === 'commercial') {
+    //           await Promise.all(notify_emails.map(async (email) => {
+    //             const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+    //             // 邮件通知完还需要更新通知记录
+    //             await this.notifyHistoryModel.create({
+    //               obj_id: lastAuthor.author_id,
+    //               notify_type: 'publisher',
+    //               notify_content: notify_content,
+    //               uid
+    //             })
+    //             return this.toolService.sendZhihuMail(notify_content, email.email)
+    //           }))
+    //         }
+    //       }
+    //     }
+    //   } catch (error) {
+    //     // 没有新增问题：继续定时任务
+    //     console.log(error)
+    //   }
+    // })
+    // this.scheduleRegistry.addCronJob(author_id + '-publisher-' + id, job)
+    // job.start()
+    // this.logger.warn(`job ${author_id + '-publisher-' + id} added!`)
+
+    const interval = setInterval(async () => {
       this.logger.warn(`job ${author_id} execute one time!`)
       // 第一步：获取最新的作者信息
       const lastAuthor = await this.findOne(id, uid)
@@ -502,9 +556,8 @@ export class AuthorService {
         // 没有新增问题：继续定时任务
         console.log(error)
       }
-    })
-    this.scheduleRegistry.addCronJob(author_id + '-publisher-' + id, job)
-    job.start()
+    }, time);
+    this.scheduleRegistry.addInterval(author_id + '-publisher-' + id, interval)
     this.logger.warn(`job ${author_id + '-publisher-' + id} added!`)
   }
 
@@ -513,9 +566,96 @@ export class AuthorService {
    * @param time 
    * @param question_id 
    */
-  startAnswerNotify (time: string, author: CreateAuthorDto, uid: number) {
+  startAnswerNotify (time: number, author: CreateAuthorDto, uid: number) {
     const { author_id, id } = author
-    const job = new CronJob(time, async () => {
+    // const job = new CronJob(time, async () => {
+    //   this.logger.warn(`job ${author_id} execute one time!`)
+    //   // 第一步：获取最新的作者消息
+    //   const lastAuthor = await this.findOne(id, uid)
+    //   try {
+    //     // 第二步：获取该作者的动态中的问题
+    //     const { questions: questionObj, answers: answersObj } = await this.toolService.getZhihuUserQuestionsAndAnswers(lastAuthor.author_id, lastAuthor.is_org)
+    //     // 第三步：获取问题详情(答主关注的问题) ==> 为了获取第二步无法获取创建时间和修改时间以及筛选出非自己的问题(即关注的问题)
+    //     // const questions_info = (await Promise.all(Object.keys(questionObj).map(id => this.toolService.getZhihuQuestionInfo(id)))).filter(question => question.author.id !== lastAuthor.author_id)
+    //     const questions_info = Object.keys(questionObj).map(id => questionObj[id]).filter(question => question.author.urlToken !== lastAuthor.author_id)
+    //     const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
+    //     // 第四步：判断这些问题是否存在于作者问题关注列表中
+    //     for (let i = 0; i < questions_info.length; i++) {
+    //       const question = questions_info[i]
+    //       const author_question = await this.findOneQuestion(question.id, lastAuthor.id, uid, 'follow')
+    //       if (!author_question) {
+    //         // 新增问题
+    //         await this.createQuestion({
+    //           question_id: question.id,
+    //           question_title: question.title,
+    //           question_desc: question.detail,
+    //           question_type: question.questionType,
+    //           type: 'follow',
+    //           question_created: question.created || '',
+    //           question_updated: question.updated || ''
+    //         }, lastAuthor.id, uid)
+    //         // 判断是否为疑似红包：是 - 邮箱通知
+    //         if (question.questionType === 'commercial') {
+    //           await Promise.all(notify_emails.map(async (email) => {
+    //             const notify_content = `【${lastAuthor.author_name}】新关注了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+    //             // 邮件通知完还需要更新通知记录
+    //             await this.notifyHistoryModel.create({
+    //               obj_id: lastAuthor.author_id,
+    //               notify_type: 'answer',
+    //               notify_content: notify_content,
+    //               uid
+    //             })
+    //             return this.toolService.sendZhihuMail(notify_content, email.email)
+    //           }))
+    //         }
+    //       }
+    //     }
+    //     // 第五步：获取问题详情(答主回答的问题) ==> 为了获取第二步无法获取创建时间和修改时间以及筛选出自己回答的问题
+    //     // 查询只属该作者的回答
+    //     const author_answer = Object.keys(answersObj).filter(id => answersObj[id].author.urlToken === lastAuthor.author_id)
+    //     // const answers_info = (await Promise.all(author_answer.map(id => this.toolService.getZhihuQuestionInfo(answersObj[id].question.id))))
+    //     const answers_info = author_answer.map(id => answersObj[id].question)
+    //     // 第六步：判断这些问题是否存在于作者问题列表中
+    //     for (let i = 0; i < answers_info.length; i++) {
+    //       const question = answers_info[i]
+    //       const author_question = await this.findOneQuestion(question.id, lastAuthor.id, uid, 'answer')
+    //       if (!author_question) {
+    //         // 新增问题
+    //         await this.createQuestion({
+    //           question_id: question.id,
+    //           question_title: question.title,
+    //           question_desc: question.detail,
+    //           question_type: question.questionType,
+    //           type: 'answer',
+    //           question_created: question.created || '',
+    //           question_updated: question.updated || ''
+    //         }, lastAuthor.id, uid)
+    //         // 判断是否为疑似红包：是 - 邮箱通知
+    //         if (question.questionType === 'commercial') {
+    //           await Promise.all(notify_emails.map(async (email) => {
+    //             const notify_content = `【${lastAuthor.author_name}】新回答了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+    //             // 邮件通知完还需要更新通知记录
+    //             await this.notifyHistoryModel.create({
+    //               obj_id: lastAuthor.author_id,
+    //               notify_type: 'answer',
+    //               notify_content: notify_content,
+    //               uid
+    //             })
+    //             return this.toolService.sendZhihuMail(notify_content, email.email)
+    //           }))
+    //           // 邮件通知完还需要更新通知记录
+    //         }
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // })
+    // this.scheduleRegistry.addCronJob(author_id + '-answer-' + id, job)
+    // job.start()
+    // this.logger.warn(`job ${author_id + '-answer-' + id} added!`)
+
+    const interval = setInterval(async () => {
       this.logger.warn(`job ${author_id} execute one time!`)
       // 第一步：获取最新的作者消息
       const lastAuthor = await this.findOne(id, uid)
@@ -597,10 +737,8 @@ export class AuthorService {
       } catch (error) {
         console.log(error)
       }
-    })
-
-    this.scheduleRegistry.addCronJob(author_id + '-answer-' + id, job)
-    job.start()
+    }, time)
+    this.scheduleRegistry.addInterval(author_id + '-answer-' + id, interval)
     this.logger.warn(`job ${author_id + '-answer-' + id} added!`)
   }
 
@@ -609,10 +747,16 @@ export class AuthorService {
    * @param task_id 
    */
   stopNotify (task_id: string) {
-    const jobs = this.scheduleRegistry.getCronJobs()
-    if (jobs.has(task_id)) {
-      const job = this.scheduleRegistry.getCronJob(task_id)
-      job && job.stop()
+    // const jobs = this.scheduleRegistry.getCronJobs()
+    // if (jobs.has(task_id)) {
+    //   const job = this.scheduleRegistry.getCronJob(task_id)
+    //   job && job.stop()
+    //   this.logger.warn(`job ${task_id} stopped!`)
+    // }
+
+    const intervals = this.scheduleRegistry.getIntervals();
+    if (intervals.some(el => el === task_id)) {
+      this.scheduleRegistry.deleteInterval(task_id)
       this.logger.warn(`job ${task_id} stopped!`)
     }
   }
@@ -622,10 +766,16 @@ export class AuthorService {
    * @param task_id 
    */
   deleteNotify (task_id: string) {
-    const jobs = this.scheduleRegistry.getCronJobs()
-    if (jobs.has(task_id)) {
-      const job = this.scheduleRegistry.getCronJob(task_id)
-      job && this.scheduleRegistry.deleteCronJob(task_id)
+    // const jobs = this.scheduleRegistry.getCronJobs()
+    // if (jobs.has(task_id)) {
+    //   const job = this.scheduleRegistry.getCronJob(task_id)
+    //   job && this.scheduleRegistry.deleteCronJob(task_id)
+    //   this.logger.warn(`job ${task_id} deleted!`)
+    // }
+
+    const intervals = this.scheduleRegistry.getIntervals();
+    if (intervals.some(el => el === task_id)) {
+      this.scheduleRegistry.deleteInterval(task_id)
       this.logger.warn(`job ${task_id} deleted!`)
     }
   }
@@ -644,10 +794,15 @@ export class AuthorService {
       this.stopNotify(author.author_id + `-${author.author_type}-` + author.id)
       this.deleteNotify(author.author_id + `-${author.author_type}-` + author.id)
     } else {
+      // if (author.author_type === 'answer') {
+      //   this.startAnswerNotify(schedule_answer_cron.replace(/second/g, new Date().getSeconds().toString()), author, uid)
+      // } else {
+      //   this.startNotify(schedule_publisher_cron.replace(/second/g, new Date().getSeconds().toString()), author, uid)
+      // }
       if (author.author_type === 'answer') {
-        this.startAnswerNotify(schedule_answer_cron.replace(/second/g, new Date().getSeconds().toString()), author, uid)
+        this.startAnswerNotify(schedule_answer_cron, author, uid)
       } else {
-        this.startNotify(schedule_publisher_cron.replace(/second/g, new Date().getSeconds().toString()), author, uid)
+        this.startNotify(schedule_publisher_cron, author, uid)
       }
     }
     return this.authorModel.update({
