@@ -539,7 +539,7 @@ export class AuthorService {
             // 判断是否为疑似红包：是 - 邮箱通知
             if (question.questionType === 'commercial') {
               await Promise.all(notify_emails.map(async (email) => {
-                const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+                const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>，<a href="zhihu://question/${question.id}" target="_blank">手机端打开</a>`
                 // 邮件通知完还需要更新通知记录
                 await this.notifyHistoryModel.create({
                   obj_id: lastAuthor.author_id,
@@ -684,7 +684,7 @@ export class AuthorService {
             // 判断是否为疑似红包：是 - 邮箱通知
             if (question.questionType === 'commercial') {
               await Promise.all(notify_emails.map(async (email) => {
-                const notify_content = `【${lastAuthor.author_name}】新关注了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+                const notify_content = `【${lastAuthor.author_name}】新关注了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>，<a href="zhihu://question/${question.id}" target="_blank">手机端打开</a>`
                 // 邮件通知完还需要更新通知记录
                 await this.notifyHistoryModel.create({
                   obj_id: lastAuthor.author_id,
@@ -720,7 +720,7 @@ export class AuthorService {
             // 判断是否为疑似红包：是 - 邮箱通知
             if (question.questionType === 'commercial') {
               await Promise.all(notify_emails.map(async (email) => {
-                const notify_content = `【${lastAuthor.author_name}】新回答了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>`
+                const notify_content = `【${lastAuthor.author_name}】新回答了一个问题：${question.title}，<a href="https://www.zhihu.com/question/${question.id}" target="_blank">赶快前往去回答吧</a>，<a href="zhihu://question/${question.id}" target="_blank">手机端打开</a>`
                 // 邮件通知完还需要更新通知记录
                 await this.notifyHistoryModel.create({
                   obj_id: lastAuthor.author_id,
