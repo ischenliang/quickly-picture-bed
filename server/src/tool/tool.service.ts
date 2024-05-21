@@ -14,6 +14,7 @@ import * as iconv from 'iconv-lite'
 import axios from 'axios';
 import * as cheerio from 'cheerio'
 import { cookie_config_Url } from 'global.config';
+import * as puppeteer from 'puppeteer'
 
 
 @Injectable()
@@ -314,19 +315,22 @@ export class ToolService {
    * @returns 
    */
   async getZhihuQuestionInfo(question_id: string) {
+    const { cookie } = await this.useGetCookie()
     const res = await axios({
-      url: `https://www.zhihu.com/question/${question_id}`
+      url: `https://www.zhihu.com/question/${question_id}`,
+      method: 'get',
+      headers: {
+        Cookie: cookie
+      }
     })
     const $ = cheerio.load(res.data)
-    const unHuman = $('p.Unhuman-tip')
-    if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
-      console.log('==============知乎判定为人机====================')
-      throw new Error('知乎判定为人机')
-    }
+    // const unHuman = $('p.Unhuman-tip')
+    // if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
+    //   console.log('==============知乎判定为人机====================')
+    //   throw new Error('知乎判定为人机')
+    // }
     // 获取问题详情
-    const initialDataEl = $('script#js-initialData')
-    const initialDataJson = initialDataEl.text()
-    const initialData = JSON.parse(initialDataJson)
+    const initialData = JSON.parse($('script#js-initialData').text())
     const question = initialData.initialState.entities.questions[question_id]
     // 获取问题创建和更新时间
     const created = $('meta[itemProp="dateCreated"]').get(0).attribs.content
@@ -353,7 +357,7 @@ export class ToolService {
    * @returns 
    */
   async getZhihuQuestionRedPacket (question_id: string) {
-    const { data: { cookie } } = await axios(cookie_config_Url)
+    const { cookie } = await this.useGetCookie()
     const res = await axios({
       url: `https://www.zhihu.com/api/v4/brand/questions/${question_id}/activity/red-packet`,
       method: 'get',
@@ -376,5 +380,129 @@ export class ToolService {
       }
     })
     return res.data
+  }
+
+  /**
+   * 获取登录失效cookie
+   * @returns 
+   */
+  useGetCookie (): Promise<any> {
+    return new Promise((resolve, reject) => {
+      axios({
+        url: cookie_config_Url,
+        method: 'get'
+      }).then(res => {
+        const { cookie, chrome_endpoint_url } = res.data
+        resolve({
+          cookie,
+          endpoint: chrome_endpoint_url
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+    })
+  }
+
+  /**
+   * 使用Puppeteer
+   * @returns 
+   */
+  usePuppeteer (): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const { cookie, endpoint } =  await this.useGetCookie()
+      // 1、连接本机浏览器
+      const browser = await puppeteer.connect({
+        browserWSEndpoint: endpoint,
+        args: ['--start-maximized'],
+        defaultViewport: {
+          width: 1920,
+          height: 1080
+        }
+      })
+      // 2、创建一个浏览器的新网页并设置视图窗口大小
+      let page = await browser.newPage()
+      await page.setViewport({ width: 1920, height: 1080 })
+      // 3、返回页面
+      resolve({
+        page,
+        cookie
+      })
+    })
+  }
+
+  /**
+ * 获取指定类型的问题
+ * @param {*} page puppeteer的page实例
+ * @param {*} type answer-回答 | follow-关注 | publish-发布
+ * @returns 
+ */
+  async getNewQuestions (page, type) {
+    const extraInfo = {
+      answer: '回答了问题',
+      follow: '关注了问题',
+      publish: '添加了问题'
+    }
+    const list = await page.$$('div.List-item')
+    const questions = []
+    for (const item of list) {
+      const tips = await page.evaluate(el => el.querySelector('.ActivityItem-metaTitle').textContent, item)
+      if (tips === extraInfo[type]) {
+        const contentInfo = await page.evaluate(el => {
+          const contentEl = el.querySelector('div.ContentItem')
+          return JSON.parse(contentEl.getAttribute('data-za-extra-module'))
+        }, item)
+        let title = ''
+        let question_id = ''
+        switch (type) {
+          case 'answer':
+            title = await page.evaluate(el => {
+              const contentEl = el.querySelector('div.ContentItem')
+              return JSON.parse(contentEl.getAttribute('data-zop')).title
+            }, item)
+            question_id = contentInfo.card.content.parent_token
+            break
+          case 'follow':
+          case 'publish':
+            title = await page.evaluate(el => el.querySelector('a[data-za-detail-view-name="Title"]').textContent, item)
+            question_id = contentInfo.card.content.token
+            break
+        }
+        questions.push({
+          id: question_id,
+          title,
+          type
+        })
+      }
+    }
+    return questions
+  }
+
+  /**
+   * 获取作者的最新问题(题主-新添加问题，答主-新回答/关注问题)
+   * @param {*} type answer | publisher
+   * @returns 
+   */
+  async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
+    const { cookie, page } = await this.usePuppeteer()
+    // 1、打开指定页面
+    await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
+    // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
+    await page.waitForSelector('#Profile-activities')
+    // 3、获取问题列表
+    let questions = []
+    switch (type) {
+      // 针对答主：只需要关注回答或者关注问题即可
+      case 'answer':
+        questions = [...questions, ...await this.getNewQuestions(page, 'answer')]
+        questions = [...questions, ...await this.getNewQuestions(page, 'follow')]
+        break
+      // 针对题主：只需要关注添加问题即可
+      case 'publisher':
+        questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
+        break
+    }
+    // 最后：关闭页面(减少内存占用)
+    await page.close()
+    return questions
   }
 }
