@@ -1,5 +1,6 @@
 import { BelongsTo, Column, ForeignKey, Table, Model, HasMany, DataType } from "sequelize-typescript";
 import { User } from "src/user/entities/user.entity";
+import { DataTypes } from "sequelize";
 
 @Table({ tableName: 'notify_history' })
 export class NotifyHistory extends Model<NotifyHistory> {
@@ -23,7 +24,8 @@ export class NotifyHistory extends Model<NotifyHistory> {
   
   @Column({
     allowNull: false,
-    comment: '通知内容'
+    comment: '通知内容',
+    type: DataTypes.TEXT
   })
   notify_content: string
 

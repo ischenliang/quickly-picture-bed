@@ -36,49 +36,53 @@ export class LogService {
         x: '', y: ''
       }
     }
-    const { map_key, map_type } = setting.system
-    switch(map_type) {
-      case 'baidu':
-        result.type = 'baidu'
-        const baidu = await iptoaddress.baidu(ip, map_key)
-        if (baidu.status === 0) {
-          const { adcode, city, province } = baidu.content.address_detail
-          result.adcode = adcode
-          result.province = province
-          result.city = city
-          result.rectangle = baidu.content.point
-        }
-        break
-      case 'gaode':
-        result.type = 'gaode'
-        const gaode = await iptoaddress.amap(ip, map_key)
-        if (gaode.status && gaode.status === '1') {
-          const { adcode, province, city, rectangle } = gaode
-          result.adcode = adcode
-          result.province = province
-          result.city = city
-          const [x, y] = rectangle.split(';').split(';').shift().split(',')
-          result.rectangle.x = x
-          result.rectangle.y = y
-        }
-        break
-      case 'tencent':
-        result.type = 'tencent'
-        const tencent = await iptoaddress.qq(ip, map_key)
-        if (tencent.status && tencent.status === 0) {
-          const { adcode, province, city, district } = tencent.result.ad_info
-          result.adcode = adcode
-          result.province = province
-          result.city = city
-          result.district = district
-          const { lat: x, lng: y } = tencent.result.location
-          result.rectangle.x = x
-          result.rectangle.y = y
-        }
-        break
-      default:
-        result.type = 'unkown'
-        break
+    try {
+      const { map_key, map_type } = setting.system
+      switch(map_type) {
+        case 'baidu':
+          result.type = 'baidu'
+          const baidu = await iptoaddress.baidu(ip, map_key)
+          if (baidu.status === 0) {
+            const { adcode, city, province } = baidu.content.address_detail
+            result.adcode = adcode
+            result.province = province
+            result.city = city
+            result.rectangle = baidu.content.point
+          }
+          break
+        case 'gaode':
+          result.type = 'gaode'
+          const gaode = await iptoaddress.amap(ip, map_key)
+          if (gaode.status && gaode.status === '1') {
+            const { adcode, province, city, rectangle } = gaode
+            result.adcode = adcode
+            result.province = province
+            result.city = city
+            const [x, y] = rectangle.split(';').split(';').shift().split(',')
+            result.rectangle.x = x
+            result.rectangle.y = y
+          }
+          break
+        case 'tencent':
+          result.type = 'tencent'
+          const tencent = await iptoaddress.qq(ip, map_key)
+          if (tencent.status && tencent.status === 0) {
+            const { adcode, province, city, district } = tencent.result.ad_info
+            result.adcode = adcode
+            result.province = province
+            result.city = city
+            result.district = district
+            const { lat: x, lng: y } = tencent.result.location
+            result.rectangle.x = x
+            result.rectangle.y = y
+          }
+          break
+        default:
+          result.type = 'unkown'
+          break
+      }
+    } catch (error) {
+      
     }
     return result
   }
