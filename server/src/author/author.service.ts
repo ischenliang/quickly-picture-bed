@@ -54,6 +54,7 @@ export class AuthorService {
       })
       return data
     } catch (error) {
+      console.log(error)
       return {
         statusCode: 500,
         data: error

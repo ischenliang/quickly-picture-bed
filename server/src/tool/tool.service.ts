@@ -266,8 +266,13 @@ export class ToolService {
    * @returns 
    */
   async getZhihuUserInfo (author_id: string, is_org: boolean) {
+    const { cookie } = await this.useGetCookie()
     const res = await axios({
-      url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`
+      url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
+      method: 'get',
+      headers: {
+        Cookie: cookie
+      }
     })
     const $ = cheerio.load(res.data)
     const unHuman = $('p.Unhuman-tip')
@@ -277,8 +282,10 @@ export class ToolService {
     }
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
+    console.log(initialDataJson)
     const initialData = JSON.parse(initialDataJson)
     const user = initialData.initialState.entities.users[author_id]
+    console.log(user)
     return user
   }
 
@@ -507,8 +514,6 @@ export class ToolService {
       return questions
     } catch (error) {
     } finally {
-      // 最后：关闭页面(减少内存占用)
-      await page.close({ timeout: 0 })
     }
   }
 }
