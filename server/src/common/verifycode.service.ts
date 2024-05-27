@@ -53,7 +53,7 @@ export class VerifyCodeService {
         }).then(() => {
           resolve(true)
         }).catch(error => {
-          reject(error)
+          console.log(error)
         })
       } else {
         reject(new Error('未配置邮件服务'))
@@ -90,7 +90,7 @@ export class VerifyCodeService {
         }).then(() => {
           resolve(true)
         }).catch(error => {
-          reject(error)
+          console.log('报错啦', error.message || error.msg)
         })
       } else {
         reject(new Error('未配置邮件服务'))

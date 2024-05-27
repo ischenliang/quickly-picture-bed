@@ -266,15 +266,20 @@ export class ToolService {
    * @returns 
    */
   async getZhihuUserInfo (author_id: string, is_org: boolean) {
+    const { cookie } = await this.useGetCookie()
     const res = await axios({
-      url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`
+      url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
+      method: 'get',
+      headers: {
+        Cookie: cookie
+      }
     })
     const $ = cheerio.load(res.data)
-    const unHuman = $('p.Unhuman-tip')
-    if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
-      console.log('==============知乎判定为人机====================')
-      throw new Error('知乎判定为人机')
-    }
+    // const unHuman = $('p.Unhuman-tip')
+    // if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
+    //   console.log('==============知乎判定为人机====================')
+    //   throw new Error('知乎判定为人机')
+    // }
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
     const initialData = JSON.parse(initialDataJson)
@@ -408,7 +413,7 @@ export class ToolService {
    * @returns 
    */
   usePuppeteer (): Promise<any> {
-    console.log('准备打卡浏览器------->')
+    console.log('准备打开浏览器------->')
     return new Promise(async (resolve, reject) => {
       const { cookie, endpoint } =  await this.useGetCookie()
       // 1、连接本机浏览器
@@ -485,27 +490,39 @@ export class ToolService {
    */
   async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
     console.log('获取作者的最新问题消息------>')
-    const { cookie, page } = await this.usePuppeteer()
-    // 1、打开指定页面
-    await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
-    console.log('页面已打开------>')
-    // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
-    await page.waitForSelector('#Profile-activities')
-    // 3、获取问题列表
-    let questions = []
-    switch (type) {
-      // 针对答主：只需要关注回答或者关注问题即可
-      case 'answer':
-        questions = [...questions, ...await this.getNewQuestions(page, 'answer')]
-        questions = [...questions, ...await this.getNewQuestions(page, 'follow')]
-        break
-      // 针对题主：只需要关注添加问题即可
-      case 'publisher':
-        questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
-        break
+    const { page } = await this.usePuppeteer()
+    try {
+      // 1、打开指定页面
+      await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
+      // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
+      await page.waitForSelector('div#Profile-activities div[role="list"]')
+      // 3、获取问题列表
+      const list = await page.$$('div.List-item')
+      let questions = []
+      if (list && list.length) {
+        switch (type) {
+          // 针对答主：只需要关注回答或者关注问题即可
+          case 'answer':
+            questions = [...questions, ...await this.getNewQuestions(page, 'answer')]
+            questions = [...questions, ...await this.getNewQuestions(page, 'follow')]
+            break
+          // 针对题主：只需要关注添加问题即可
+          case 'publisher':
+            questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
+            break
+        }
+        // 最后：关闭页面(减少内存占用)
+        await page.close({ timeout: 0 })
+        console.log('页面已关闭------>')
+      } else {
+        console.log('没有数据------>')
+        // 最后：关闭页面(减少内存占用)
+        await page.close({ timeout: 0 })
+        console.log('页面已关闭------>')
+      }
+      return questions
+    } catch (error) {
+    } finally {
     }
-    // 最后：关闭页面(减少内存占用)
-    await page.close()
-    return questions
   }
 }
