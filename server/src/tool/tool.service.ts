@@ -408,6 +408,7 @@ export class ToolService {
    * @returns 
    */
   usePuppeteer (): Promise<any> {
+    console.log('准备打卡浏览器------->')
     return new Promise(async (resolve, reject) => {
       const { cookie, endpoint } =  await this.useGetCookie()
       // 1、连接本机浏览器
@@ -483,9 +484,11 @@ export class ToolService {
    * @returns 
    */
   async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
+    console.log('获取作者的最新问题消息------>')
     const { cookie, page } = await this.usePuppeteer()
     // 1、打开指定页面
     await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
+    console.log('页面已打开------>')
     // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
     await page.waitForSelector('#Profile-activities')
     // 3、获取问题列表
