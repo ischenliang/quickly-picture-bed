@@ -16,6 +16,17 @@ import * as cheerio from 'cheerio'
 import { cookie_config_Url } from 'global.config';
 import * as puppeteer from 'puppeteer'
 
+interface ZhihuPage {
+  url: string // 网页地址
+  time: string // 打开时间
+  page: any // 打开的网页实例
+  id: number // 打开标签页的id
+}
+/**
+ * 存储当前打开的所有标签页
+ */
+const pages: ZhihuPage[] = []
+
 
 @Injectable()
 export class ToolService {
@@ -492,34 +503,49 @@ export class ToolService {
     console.log('获取作者的最新问题消息------>')
     const { page } = await this.usePuppeteer()
     try {
+      // =====================关闭遗留的页面start====================
+      for (let i = 0; i < pages.length; i++) {
+        const cur = pages[i]
+        const diffTime = moment().diff(cur.time, 's')
+        // 关闭大于15s的标签页
+        if (diffTime >= 15) {
+          // 关闭页面
+          await cur.page.close()
+          // 删除对应的数据
+          pages.splice(i, 1)
+        }
+      }
+      // =====================关闭遗留的页面end====================
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
+      const page_id = Date.now() + Math.ceil(Math.random() * 10)
+      pages.push({
+        url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
+        time: moment().format('YYYY-MM-DD HH:mm:ss'),
+        page: page,
+        id: page_id
+      })
       // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
       await page.waitForSelector('div#Profile-activities div[role="list"]')
       // 3、获取问题列表
-      const list = await page.$$('div.List-item')
       let questions = []
-      if (list && list.length) {
-        switch (type) {
-          // 针对答主：只需要关注回答或者关注问题即可
-          case 'answer':
-            questions = [...questions, ...await this.getNewQuestions(page, 'answer')]
-            questions = [...questions, ...await this.getNewQuestions(page, 'follow')]
-            break
-          // 针对题主：只需要关注添加问题即可
-          case 'publisher':
-            questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
-            break
-        }
-        // 最后：关闭页面(减少内存占用)
-        await page.close({ timeout: 0 })
-        console.log('页面已关闭------>')
-      } else {
-        console.log('没有数据------>')
-        // 最后：关闭页面(减少内存占用)
-        await page.close({ timeout: 0 })
-        console.log('页面已关闭------>')
+      switch (type) {
+        // 针对答主：只需要关注回答或者关注问题即可
+        case 'answer':
+          questions = [...questions, ...await this.getNewQuestions(page, 'answer')]
+          questions = [...questions, ...await this.getNewQuestions(page, 'follow')]
+          break
+        // 针对题主：只需要关注添加问题即可
+        case 'publisher':
+          questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
+          break
       }
+      // 4、最后：关闭页面(减少内存占用)
+      await page.close({ timeout: 0 })
+      // 页面关闭成功的话需要将当前这个标签页删除
+      const curIndex = pages.findIndex(el => el.id === page_id)
+      pages.splice(curIndex, 1)
+      console.log('页面已关闭------>')
       return questions
     } catch (error) {
     } finally {

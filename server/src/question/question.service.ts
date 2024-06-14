@@ -98,7 +98,7 @@ export class QuestionService {
    * @returns 
    */
   async findAll(param: QuestionFilter, uid: number) {
-    const { page, size, search, status } = param
+    const { page, size, search, status, notify_status } = param
     const data: any = {}
     const tmp: any = {
       order: [
@@ -127,6 +127,9 @@ export class QuestionService {
     }
     if (Object.keys(param).includes('status')) {
       tmp.where.status = status
+    }
+    if (Object.keys(param).includes('notify_status')) {
+      tmp.where.notify_status = notify_status
     }
     if (page) {
       tmp.limit = size || 10

@@ -10,4 +10,7 @@ export class CreateQuestionDto {
 export class QuestionFilter extends PageSearch {
   @ApiProperty({ description: '状态' })
   status: boolean
+
+  @ApiProperty({ description: '红包状态' })
+  notify_status: boolean
 }

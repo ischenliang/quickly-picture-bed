@@ -18,6 +18,9 @@ export class CreateAuthorDto {
 export class AuthorFilter extends PageSearch {
   @ApiProperty({ description: '账号类型' })
   author_type: 'answer' | 'publisher'
+
+  @ApiProperty({ description: '是否机构账号' })
+  is_org: boolean
 }
 
 export class AuthorQuestionFilter extends PageSearch {

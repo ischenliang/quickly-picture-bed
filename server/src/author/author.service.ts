@@ -87,7 +87,7 @@ export class AuthorService {
    * @returns 
    */
   async findAll(param: AuthorFilter, uid: number) {
-    const { page, size, search, author_type } = param
+    const { page, size, search, author_type, is_org } = param
     const data: any = {}
     const tmp: any = {
       order: [
@@ -110,6 +110,9 @@ export class AuthorService {
     }
     if (author_type) {
       tmp.where.author_type = author_type
+    }
+    if (Object.keys(param).includes('is_org')) {
+      tmp.where['is_org'] = is_org
     }
     if (page) {
       tmp.limit = size || 10
