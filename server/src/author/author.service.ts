@@ -465,38 +465,40 @@ export class AuthorService {
       try {
         // 第二步：获取该作者新添加的问题列表
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'publisher')
-        // 第四步：判断这些问题是否存在于作者问题列表中
-        //    存在：则跳过
-        //    不存在：如果是疑似红包问题则邮件通知，否则直接新增即可
-        const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
-        for (let i = 0; i < questions.length; i++) {
-          const question = questions[i]
-          const question_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
-          if (!question_record) {
-            // 新增问题
-            const result = await this.toolService.getZhihuQuestionInfo(question.id)
-            await this.createQuestion({
-              question_id: result.id,
-              question_title: result.title,
-              question_desc: result.detail,
-              question_type: result.questionType,
-              type: question.type,
-              question_created: result.created || '',
-              question_updated: result.updated || ''
-            }, lastAuthor.id, uid)
-            // 判断是否为疑似红包：是 - 邮箱通知
-            if (result.questionType === 'commercial') {
-              await Promise.all(notify_emails.map(async (email) => {
-                const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
-                // 邮件通知完还需要更新通知记录
-                await this.notifyHistoryModel.create({
-                  obj_id: lastAuthor.author_id,
-                  notify_type: 'publisher',
-                  notify_content: notify_content,
-                  uid
-                })
-                this.toolService.sendZhihuMail(notify_content, email.email)
-              }))
+        if (questions && questions.length) {
+          // 第四步：判断这些问题是否存在于作者问题列表中
+          //    存在：则跳过
+          //    不存在：如果是疑似红包问题则邮件通知，否则直接新增即可
+          const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
+          for (let i = 0; i < questions.length; i++) {
+            const question = questions[i]
+            const question_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
+            if (!question_record) {
+              // 新增问题
+              const result = await this.toolService.getZhihuQuestionInfo(question.id)
+              await this.createQuestion({
+                question_id: result.id,
+                question_title: result.title,
+                question_desc: result.detail,
+                question_type: result.questionType,
+                type: question.type,
+                question_created: result.created || '',
+                question_updated: result.updated || ''
+              }, lastAuthor.id, uid)
+              // 判断是否为疑似红包：是 - 邮箱通知
+              if (result.questionType === 'commercial') {
+                await Promise.all(notify_emails.map(async (email) => {
+                  const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
+                  // 邮件通知完还需要更新通知记录
+                  await this.notifyHistoryModel.create({
+                    obj_id: lastAuthor.author_id,
+                    notify_type: 'publisher',
+                    notify_content: notify_content,
+                    uid
+                  })
+                  this.toolService.sendZhihuMail(notify_content, email.email)
+                }))
+              }
             }
           }
         }
@@ -523,36 +525,38 @@ export class AuthorService {
       try {
         // 第二步：获取该作者的动态中的问题
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'answer')
-        const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
-        // 第四步：判断这些问题是否存在于作者问题关注列表中
-        for (let i = 0; i < questions.length; i++) {
-          const question = questions[i]
-          const quesion_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
-          if (!quesion_record) {
-            const result = await this.toolService.getZhihuQuestionInfo(question.id)
-            // 新增问题
-            await this.createQuestion({
-              question_id: result.id,
-              question_title: result.title,
-              question_desc: result.detail,
-              question_type: result.questionType,
-              type: question.type,
-              question_created: result.created || '',
-              question_updated: result.updated || ''
-            }, lastAuthor.id, uid)
-            // 判断是否为疑似红包：是 - 邮箱通知
-            if (result.questionType === 'commercial') {
-              await Promise.all(notify_emails.map(async (email) => {
-                const notify_content = `【${lastAuthor.author_name}】${question.type === 'follow' ? '新关注' : '新回答'}了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
-                // 邮件通知完还需要更新通知记录
-                await this.notifyHistoryModel.create({
-                  obj_id: lastAuthor.author_id,
-                  notify_type: 'answer',
-                  notify_content: notify_content,
-                  uid
-                })
-                this.toolService.sendZhihuMail(notify_content, email.email)
-              }))
+        if (questions && questions.length) {
+          const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
+          // 第四步：判断这些问题是否存在于作者问题关注列表中
+          for (let i = 0; i < questions.length; i++) {
+            const question = questions[i]
+            const quesion_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
+            if (!quesion_record) {
+              const result = await this.toolService.getZhihuQuestionInfo(question.id)
+              // 新增问题
+              await this.createQuestion({
+                question_id: result.id,
+                question_title: result.title,
+                question_desc: result.detail,
+                question_type: result.questionType,
+                type: question.type,
+                question_created: result.created || '',
+                question_updated: result.updated || ''
+              }, lastAuthor.id, uid)
+              // 判断是否为疑似红包：是 - 邮箱通知
+              if (result.questionType === 'commercial') {
+                await Promise.all(notify_emails.map(async (email) => {
+                  const notify_content = `【${lastAuthor.author_name}】${question.type === 'follow' ? '新关注' : '新回答'}了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
+                  // 邮件通知完还需要更新通知记录
+                  await this.notifyHistoryModel.create({
+                    obj_id: lastAuthor.author_id,
+                    notify_type: 'answer',
+                    notify_content: notify_content,
+                    uid
+                  })
+                  this.toolService.sendZhihuMail(notify_content, email.email)
+                }))
+              }
             }
           }
         }

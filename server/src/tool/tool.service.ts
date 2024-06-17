@@ -442,7 +442,8 @@ export class ToolService {
       // 3、返回页面
       resolve({
         page,
-        cookie
+        cookie,
+        browser
       })
     })
   }
@@ -501,20 +502,52 @@ export class ToolService {
    */
   async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
     console.log('获取作者的最新问题消息------>')
-    const { page } = await this.usePuppeteer()
+    const { page, browser } = await this.usePuppeteer()
     try {
       // =====================关闭遗留的页面start====================
+      // 关闭方式一
       for (let i = 0; i < pages.length; i++) {
         const cur = pages[i]
         const diffTime = moment().diff(cur.time, 's')
         // 关闭大于15s的标签页
         if (diffTime >= 15) {
           // 关闭页面
-          await cur.page.close()
+          await cur.page.close({ timeout: 0 })
           // 删除对应的数据
           pages.splice(i, 1)
+          console.log('关闭页面: ', cur.url)
         }
       }
+      // 关闭方式二：为了解决方式一遗留的页面
+      // 1、获取当前浏览器打开的所有标签页
+      // const browser_pages = await browser.pages()
+      // for (let browser_page of browser_pages) {
+      //   // 获取标签页对应的网址
+      //   const url = browser_page.url()
+      //   // 查询该网址是否存在于打开的pages中
+      //   const curPages = pages.filter(el => el.url === url)
+      //   // 如果pages中没有查到该网页
+      //   if (curPages.length === 0) {
+      //     // 并且是www.zhihu.com域名的网页直接关闭即可
+      //     if (url.indexOf('www.zhihu.com') !== -1) {
+      //       await browser_page.close({ timeout: 0 })
+      //       console.log('关闭页面: ', url)
+      //     }
+      //   }
+      //   // 否则直接遍历页列表：并判断打开时间是否超过15s，超过直接关闭即可并删除pages中的数据
+      //   else {
+      //     for (let curPage of curPages) {
+      //       const diffTime = moment().diff(curPage.time, 's')
+      //       // 关闭大于15s的标签页
+      //       if (diffTime >= 15) {
+      //         await browser_page.close({ timeout: 0 })
+      //         const index = pages.findIndex(el => el.url === url && el.id === curPage.id)
+      //         // 删除对应的数据
+      //         pages.splice(index, 1)
+      //       }
+      //     }
+      //   }
+      // }
       // =====================关闭遗留的页面end====================
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
@@ -545,7 +578,7 @@ export class ToolService {
       // 页面关闭成功的话需要将当前这个标签页删除
       const curIndex = pages.findIndex(el => el.id === page_id)
       pages.splice(curIndex, 1)
-      console.log('页面已关闭------>')
+      console.log('关闭页面: ', pages[curIndex].url)
       return questions
     } catch (error) {
     } finally {
