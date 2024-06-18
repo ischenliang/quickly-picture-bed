@@ -505,7 +505,11 @@ export class ToolService {
     const { page, browser } = await this.usePuppeteer()
     try {
       // =====================关闭遗留的页面start====================
-      // 关闭方式一
+      /**
+       * 关闭方式一: 通过将打开的标签页存到pages中
+       * pages中同时存入打开的时间节点和网址：循环判断pages中的标签页是否打开超过15s
+       *  超过：则关闭
+       */
       for (let i = 0; i < pages.length; i++) {
         const cur = pages[i]
         const diffTime = moment().diff(cur.time, 's')
@@ -518,7 +522,10 @@ export class ToolService {
           console.log('关闭页面: ', cur.url)
         }
       }
-      // 关闭方式二：为了解决方式一遗留的页面
+      /**
+       * 关闭方式二：为了解决方式一遗留的页面
+       * 由于方式一的不可控因素会导致有些遗留的标签页卡在浏览器中，久而久之标签页越多就导致内存不存，进而程序崩溃
+       */
       // 1、获取当前浏览器打开的所有标签页
       // const browser_pages = await browser.pages()
       // for (let browser_page of browser_pages) {
@@ -548,6 +555,24 @@ export class ToolService {
       //     }
       //   }
       // }
+
+      /**
+       * 关闭方式三：为了解决方式一遗留的页面
+       * 通过判断当前浏览器打开的标签页是否超过指定数量
+       *  如果超过则直接关闭和知乎以及about:blank相关的页面
+       *  同时删除清空pages中的数据
+       */
+      // 如果超过指定数量，直接关闭和知乎相关的页面
+      const browser_pages = await browser.pages()
+      if (browser_pages && browser_pages.length >= 7) {
+        for (let browser_page of browser_pages) {
+          const url = browser_page.url()
+          if (url.indexOf('www.zhihu.com') !== -1 || url.indexOf('about:blank') !== -1) {
+            await browser_page.close({ timeout: 1 })
+          }
+        }
+        pages.splice(0, pages.length)
+      }
       // =====================关闭遗留的页面end====================
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
