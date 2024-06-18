@@ -460,9 +460,9 @@ export class AuthorService {
     const { author_id, id } = author
     const interval = setInterval(async () => {
       this.logger.warn(`job ${author_id} execute one time!`)
-      // 第一步：获取最新的作者信息
-      const lastAuthor = await this.findOne(id, uid)
       try {
+        // 第一步：获取最新的作者信息
+        const lastAuthor = await this.findOne(id, uid)
         // 第二步：获取该作者新添加的问题列表
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'publisher')
         if (questions && questions.length) {
@@ -520,9 +520,9 @@ export class AuthorService {
     const { author_id, id } = author
     const interval = setInterval(async () => {
       this.logger.warn(`job ${author_id} execute one time!`)
-      // 第一步：获取最新的作者消息
-      const lastAuthor = await this.findOne(id, uid)
       try {
+        // 第一步：获取最新的作者消息
+        const lastAuthor = await this.findOne(id, uid)
         // 第二步：获取该作者的动态中的问题
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'answer')
         if (questions && questions.length) {

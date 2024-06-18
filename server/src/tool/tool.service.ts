@@ -8,7 +8,7 @@ import { Op } from 'sequelize';
 import { TimeService } from 'src/common/time.service';
 import * as moment from 'moment';
 import { SmsCode } from 'src/common/entities/smsCode.entity';
-import { elementAt, map } from 'rxjs'
+import { map } from 'rxjs'
 import { HttpService } from '@nestjs/axios';
 import * as iconv from 'iconv-lite'
 import axios from 'axios';
@@ -420,31 +420,56 @@ export class ToolService {
   }
 
   /**
+   * 获取chrome的版本信息
+   */
+  useGetWebSocketDebuggerUrl (): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('获取浏览器的webSocketDebuggerUrl------->')
+      axios({
+        url: 'http://127.0.0.1:9222/json/version',
+        method: 'get'
+      }).then(res => {
+        const { webSocketDebuggerUrl, Browser } = res.data
+        resolve({
+          webSocketDebuggerUrl
+        })
+      }).catch(error => {
+        console.log(error)
+        reject(error)
+      })
+    })
+  }
+
+  /**
    * 使用Puppeteer
    * @returns 
    */
   usePuppeteer (): Promise<any> {
     console.log('准备打开浏览器------->')
     return new Promise(async (resolve, reject) => {
-      const { cookie, endpoint } =  await this.useGetCookie()
-      // 1、连接本机浏览器
-      const browser = await puppeteer.connect({
-        browserWSEndpoint: endpoint,
-        args: ['--start-maximized'],
-        defaultViewport: {
-          width: 1920,
-          height: 1080
-        }
-      })
-      // 2、创建一个浏览器的新网页并设置视图窗口大小
-      let page = await browser.newPage()
-      await page.setViewport({ width: 1920, height: 1080 })
-      // 3、返回页面
-      resolve({
-        page,
-        cookie,
-        browser
-      })
+      try {
+        const { cookie } =  await this.useGetCookie()
+        const { webSocketDebuggerUrl } = await this.useGetWebSocketDebuggerUrl()
+        // 1、连接本机浏览器
+        const browser = await puppeteer.connect({
+          browserWSEndpoint: webSocketDebuggerUrl,
+          defaultViewport: {
+            width: 1920,
+            height: 1080
+          }
+        })
+        // 2、创建一个浏览器的新网页并设置视图窗口大小
+        let page = await browser.newPage()
+        await page.setViewport({ width: 1920, height: 1080 })
+        // 3、返回页面
+        resolve({
+          page,
+          cookie,
+          browser
+        })
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 
@@ -509,67 +534,14 @@ export class ToolService {
    */
   async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
     console.log('获取作者的最新问题消息------>')
-    const { page, browser } = await this.usePuppeteer()
     try {
+      const { page, browser } = await this.usePuppeteer()
       // =====================关闭遗留的页面start====================
       /**
-       * 关闭方式一: 通过将打开的标签页存到pages中
-       * pages中同时存入打开的时间节点和网址：循环判断pages中的标签页是否打开超过15s
-       *  超过：则关闭
-       */
-      // for (let i = 0; i < pages.length; i++) {
-      //   const cur = pages[i]
-      //   const diffTime = moment().diff(cur.time, 's')
-      //   // 关闭大于15s的标签页
-      //   if (diffTime >= 15) {
-      //     // 关闭页面
-      //     await cur.page.close({ timeout: 0 })
-      //     // 删除对应的数据
-      //     pages.splice(i, 1)
-      //     console.log('关闭遗留页面: ', cur.url)
-      //   }
-      // }
-      /**
-       * 关闭方式二：为了解决方式一遗留的页面
-       * 由于方式一的不可控因素会导致有些遗留的标签页卡在浏览器中，久而久之标签页越多就导致内存不存，进而程序崩溃
-       */
-      // 1、获取当前浏览器打开的所有标签页
-      // const browser_pages = await browser.pages()
-      // for (let browser_page of browser_pages) {
-      //   // 获取标签页对应的网址
-      //   const url = browser_page.url()
-      //   // 查询该网址是否存在于打开的pages中
-      //   const curPages = pages.filter(el => el.url === url)
-      //   // 如果pages中没有查到该网页
-      //   if (curPages.length === 0) {
-      //     // 并且是www.zhihu.com域名的网页直接关闭即可
-      //     if (url.indexOf('www.zhihu.com') !== -1) {
-      //       await browser_page.close({ timeout: 0 })
-      //       console.log('关闭页面: ', url)
-      //     }
-      //   }
-      //   // 否则直接遍历页列表：并判断打开时间是否超过15s，超过直接关闭即可并删除pages中的数据
-      //   else {
-      //     for (let curPage of curPages) {
-      //       const diffTime = moment().diff(curPage.time, 's')
-      //       // 关闭大于15s的标签页
-      //       if (diffTime >= 15) {
-      //         await browser_page.close({ timeout: 0 })
-      //         const index = pages.findIndex(el => el.url === url && el.id === curPage.id)
-      //         // 删除对应的数据
-      //         pages.splice(index, 1)
-      //       }
-      //     }
-      //   }
-      // }
-
-      /**
-       * 关闭方式三：为了解决方式一遗留的页面
+       * 关闭方式三：为了解决puppeteer遗留的页面
        * 通过判断当前浏览器打开的标签页是否超过指定数量
        *  如果超过则直接关闭和知乎以及about:blank相关的页面
-       *  同时删除清空pages中的数据
        */
-      // 如果超过指定数量，直接关闭和知乎相关的页面
       const browser_pages = await browser.pages()
       if (browser_pages && browser_pages.length >= 7) {
         for (let browser_page of browser_pages) {
@@ -579,21 +551,12 @@ export class ToolService {
             console.log('关闭遗留页面', browser_page_url)
           }
         }
-        // pages.splice(0, pages.length)
       }
-      // console.log('当前打开页面数量', pages.length)
       // =====================关闭遗留的页面end====================
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
-      // const page_id = Date.now() + Math.ceil(Math.random() * 10)
-      // pages.push({
-      //   url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
-      //   time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      //   page: page,
-      //   id: page_id
-      // })
       // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
-      await page.waitForSelector('div#Profile-activities div[role="list"]')
+      await page.waitForSelector('div#Profile-activities div[role="list"]', { timeout: 1000 })
       // 3、获取问题列表
       let questions = []
       switch (type) {
@@ -607,15 +570,9 @@ export class ToolService {
           questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
           break
       }
-      questions.forEach(el => {
-        console.log(el.title, el.id)
-      })
+      questions.forEach(el => console.log(el.title, el.id))
       // 4、最后：关闭页面(减少内存占用)
       await page.close({ timeout: 0 })
-      // 页面关闭成功的话需要将当前这个标签页删除
-      // const curIndex = pages.findIndex(el => el.id === page_id)
-      // console.log('关闭页面: ', pages[curIndex].url)
-      // pages.splice(curIndex, 1)
       return questions
     } catch (error) {
       console.log(error)
