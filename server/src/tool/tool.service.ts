@@ -8,7 +8,7 @@ import { Op } from 'sequelize';
 import { TimeService } from 'src/common/time.service';
 import * as moment from 'moment';
 import { SmsCode } from 'src/common/entities/smsCode.entity';
-import { map } from 'rxjs'
+import { elementAt, map } from 'rxjs'
 import { HttpService } from '@nestjs/axios';
 import * as iconv from 'iconv-lite'
 import axios from 'axios';
@@ -455,44 +455,51 @@ export class ToolService {
  * @returns 
  */
   async getNewQuestions (page, type) {
-    const extraInfo = {
-      answer: '回答了问题',
-      follow: '关注了问题',
-      publish: '添加了问题'
-    }
-    const list = await page.$$('div.List-item')
-    const questions = []
-    for (const item of list) {
-      const tips = await page.evaluate(el => el.querySelector('.ActivityItem-metaTitle').textContent, item)
-      if (tips === extraInfo[type]) {
-        const contentInfo = await page.evaluate(el => {
-          const contentEl = el.querySelector('div.ContentItem')
-          return JSON.parse(contentEl.getAttribute('data-za-extra-module'))
-        }, item)
-        let title = ''
-        let question_id = ''
-        switch (type) {
-          case 'answer':
-            title = await page.evaluate(el => {
-              const contentEl = el.querySelector('div.ContentItem')
-              return JSON.parse(contentEl.getAttribute('data-zop')).title
-            }, item)
-            question_id = contentInfo.card.content.parent_token
-            break
-          case 'follow':
-          case 'publish':
-            title = await page.evaluate(el => el.querySelector('a[data-za-detail-view-name="Title"]').textContent, item)
-            question_id = contentInfo.card.content.token
-            break
-        }
-        questions.push({
-          id: question_id,
-          title,
-          type
-        })
+    try {
+      const extraInfo = {
+        answer: '回答了问题',
+        follow: '关注了问题',
+        publish: '添加了问题'
       }
+      const list = await page.$$('div.List-item')
+      const questions = []
+      for (const item of list) {
+        const tips = await page.evaluate(el => {
+          const element = el.querySelector('.List-itemMeta .ActivityItem-metaTitle')
+          return element ? element.textContent : ''
+        }, item)
+        if (tips === extraInfo[type]) {
+          const contentInfo = await page.evaluate(el => {
+            const contentEl = el.querySelector('div.ContentItem')
+            return JSON.parse(contentEl.getAttribute('data-za-extra-module'))
+          }, item)
+          let title = '', question_id = ''
+          switch (type) {
+            case 'answer':
+              title = await page.evaluate(el => {
+                const contentEl = el.querySelector('div.ContentItem')
+                return JSON.parse(contentEl.getAttribute('data-zop')).title
+              }, item)
+              question_id = contentInfo.card.content.parent_token
+              break
+            case 'follow':
+            case 'publish':
+              title = await page.evaluate(el => el.querySelector('div.ContentItem div.QuestionItem-title a').textContent, item)
+              question_id = contentInfo.card.content.token
+              break
+          }
+          questions.push({
+            id: question_id,
+            title,
+            type
+          })
+        }
+      }
+      return questions
+    } catch (error) {
+      console.log(error)
+      return []
     }
-    return questions
   }
 
   /**
@@ -510,18 +517,18 @@ export class ToolService {
        * pages中同时存入打开的时间节点和网址：循环判断pages中的标签页是否打开超过15s
        *  超过：则关闭
        */
-      for (let i = 0; i < pages.length; i++) {
-        const cur = pages[i]
-        const diffTime = moment().diff(cur.time, 's')
-        // 关闭大于15s的标签页
-        if (diffTime >= 15) {
-          // 关闭页面
-          await cur.page.close({ timeout: 0 })
-          // 删除对应的数据
-          pages.splice(i, 1)
-          console.log('关闭页面: ', cur.url)
-        }
-      }
+      // for (let i = 0; i < pages.length; i++) {
+      //   const cur = pages[i]
+      //   const diffTime = moment().diff(cur.time, 's')
+      //   // 关闭大于15s的标签页
+      //   if (diffTime >= 15) {
+      //     // 关闭页面
+      //     await cur.page.close({ timeout: 0 })
+      //     // 删除对应的数据
+      //     pages.splice(i, 1)
+      //     console.log('关闭遗留页面: ', cur.url)
+      //   }
+      // }
       /**
        * 关闭方式二：为了解决方式一遗留的页面
        * 由于方式一的不可控因素会导致有些遗留的标签页卡在浏览器中，久而久之标签页越多就导致内存不存，进而程序崩溃
@@ -566,23 +573,25 @@ export class ToolService {
       const browser_pages = await browser.pages()
       if (browser_pages && browser_pages.length >= 7) {
         for (let browser_page of browser_pages) {
-          const url = browser_page.url()
-          if (url.indexOf('www.zhihu.com') !== -1 || url.indexOf('about:blank') !== -1) {
+          const browser_page_url = browser_page.url()
+          if (browser_page_url.indexOf('www.zhihu.com') !== -1 || browser_page_url.indexOf('about:blank') !== -1) {
             await browser_page.close({ timeout: 1 })
+            console.log('关闭遗留页面', browser_page_url)
           }
         }
-        pages.splice(0, pages.length)
+        // pages.splice(0, pages.length)
       }
+      // console.log('当前打开页面数量', pages.length)
       // =====================关闭遗留的页面end====================
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
-      const page_id = Date.now() + Math.ceil(Math.random() * 10)
-      pages.push({
-        url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
-        time: moment().format('YYYY-MM-DD HH:mm:ss'),
-        page: page,
-        id: page_id
-      })
+      // const page_id = Date.now() + Math.ceil(Math.random() * 10)
+      // pages.push({
+      //   url: `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`,
+      //   time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      //   page: page,
+      //   id: page_id
+      // })
       // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
       await page.waitForSelector('div#Profile-activities div[role="list"]')
       // 3、获取问题列表
@@ -598,15 +607,21 @@ export class ToolService {
           questions = [...questions, ...await this.getNewQuestions(page, 'publish')]
           break
       }
+      questions.forEach(el => {
+        console.log(el.title, el.id)
+      })
       // 4、最后：关闭页面(减少内存占用)
       await page.close({ timeout: 0 })
       // 页面关闭成功的话需要将当前这个标签页删除
-      const curIndex = pages.findIndex(el => el.id === page_id)
-      pages.splice(curIndex, 1)
-      console.log('关闭页面: ', pages[curIndex].url)
+      // const curIndex = pages.findIndex(el => el.id === page_id)
+      // console.log('关闭页面: ', pages[curIndex].url)
+      // pages.splice(curIndex, 1)
       return questions
     } catch (error) {
+      console.log(error)
+      return []
     } finally {
+
     }
   }
 }
