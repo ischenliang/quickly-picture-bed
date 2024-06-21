@@ -435,7 +435,10 @@ export class ToolService {
         })
       }).catch(error => {
         console.log(error)
-        reject(error)
+        // reject(error)
+        resolve({
+          webSocketDebuggerUrl: ''
+        })
       })
     })
   }
@@ -448,11 +451,11 @@ export class ToolService {
     console.log('准备打开浏览器------->')
     return new Promise(async (resolve, reject) => {
       try {
-        const { cookie } =  await this.useGetCookie()
+        const { cookie, endpoint } =  await this.useGetCookie()
         const { webSocketDebuggerUrl } = await this.useGetWebSocketDebuggerUrl()
         // 1、连接本机浏览器
         const browser = await puppeteer.connect({
-          browserWSEndpoint: webSocketDebuggerUrl,
+          browserWSEndpoint: webSocketDebuggerUrl || endpoint,
           defaultViewport: {
             width: 1920,
             height: 1080
