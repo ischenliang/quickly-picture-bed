@@ -218,17 +218,19 @@ export class QuestionService {
         if (count_down_value) {
           const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
           // 第一步：邮箱通知
-          await Promise.all(notify_emails.map(async (email) => {
-            const notify_content = `【${last_question.question_title}】问题变红包了，<a href="https://www.zhihu.com/question/${question_id}" target="_blank">赶快去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${question_id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${question_id}?utm_id=0" target="_blank">手机端打开</a>`
-            await this.notifyHistoryModel.create({
-              obj_id: question_id,
-              notify_type: 'question',
-              notify_content: notify_content,
-              uid
-            })
-            return this.toolService.sendZhihuMail(`${notify_content}${content}`, email.email)
-          }))
-          // 第二步：更新状态
+          const notify_content = `【${last_question.question_title}】问题变红包了，<a href="https://www.zhihu.com/question/${question_id}" target="_blank">赶快去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${question_id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${question_id}?utm_id=0" target="_blank">手机端打开</a>`
+          await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(`${notify_content}${content}`, email.email)))
+          // 第二步：创建通知记录
+          await this.notifyHistoryModel.create({
+            question_id: parseInt(question_id),
+            obj_id: question_id,
+            notify_type: 'question',
+            notify_origin: 'platform',
+            notify_content: notify_content,
+            notify_emails: notify_emails.map(email => email.email),
+            uid
+          })
+          // 第三步：更新状态
           let money = 0
           const match = title.match(/\d+/)
           if (match) {
@@ -240,7 +242,7 @@ export class QuestionService {
               notify_time: new Date().toUTCString(),
               status: false
             }, id, uid)
-            // 第三步：关闭并删除定时任务
+            // 第四步：关闭并删除定时任务
             this.stopNotify(question_id + '-' + id)
             this.deleteNotify(question_id + '-' + id)
           }

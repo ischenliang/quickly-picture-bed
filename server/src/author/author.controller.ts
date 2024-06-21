@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/local-auth.guard';
 import { RoleGuard } from 'src/common/role.guard';
 import { User } from 'src/common/user.decorator';
 import { User as UserType } from 'src/user/entities/user.entity'
-import { CreateReceiverDto, ReceiverFilter } from './dto/create-receiver.dto';
+import { CreateReceiverDto, NotifyFilter, ReceiverFilter } from './dto/create-receiver.dto';
 import { CreateQuestionDto } from './dto/create-question.dto';
 
 @Controller({ path: 'author', version: '1' })
@@ -258,5 +258,33 @@ export class AuthorController {
   })
   deleteReceiver(@Body('id') id: number, @User() user: UserType) {
     return this.authorService.removeReceiver(id, user.id);
+  }
+  
+  @Post('notify/list')
+  @HttpCode(200)
+  @ApiOperation({ summary: '通知列表', description: '查询通知列表' })
+  @ApiResponse({ status: 200, description: '查询成功' })
+  notifies(@Body() param: NotifyFilter, @User() user: UserType) {
+    return this.authorService.findAllNotify(param, user.id);
+  }
+  
+  @Post('notify/delete')
+  @HttpCode(200)
+  @ApiOperation({ summary: '删除通知', description: '删除通知' })
+  @ApiResponse({ status: 200, description: '删除成功' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'number',
+          default: 1,
+          description: '通知记录id'
+        }
+      }
+    }
+  })
+  deleteNotify(@Body('id') id: number, @User() user: UserType) {
+    return this.authorService.removeNotify(id, user.id);
   }
 }

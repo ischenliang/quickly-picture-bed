@@ -19,3 +19,6 @@ export class ReceiverFilter extends PageSearch {
   @ApiProperty({ description: '状态' })
   status: boolean
 }
+
+export class NotifyFilter extends PageSearch {
+}

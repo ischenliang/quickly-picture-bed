@@ -12,7 +12,7 @@ import { Question } from 'src/question/entities/question.entity';
 import sequelize from 'sequelize';
 import { AuthorQuestion } from './entities/authorQuestion.entity';
 import { NotifyReceiver } from './entities/notifyReceiver.entity';
-import { CreateReceiverDto, ReceiverFilter } from './dto/create-receiver.dto';
+import { CreateReceiverDto, NotifyFilter, ReceiverFilter } from './dto/create-receiver.dto';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { Sequelize } from 'sequelize-typescript';
 
@@ -452,6 +452,63 @@ export class AuthorService {
   }
 
   /**
+   * 删除通知记录
+   * @param param 
+   * @param aid 
+   * @param uid 
+   * @returns 
+   */
+  removeNotify (id: number, uid: number) {
+    return this.notifyHistoryModel.destroy({
+      where: {
+        id,
+        uid
+      }
+    })
+  }
+
+  /**
+   * 获取所有通知记录
+   * @param author_id 
+   * @param uid 
+   * @returns 
+   */
+  async findAllNotify (param: NotifyFilter, uid: number) {
+    const { page, size, search } = param
+    const data: any = {}
+    const tmp: any = {
+      order: [
+        ['createdAt', 'desc']
+      ],
+      where: {
+        uid: uid,
+        [Op.or]: {
+          question_id: {
+            [Op.like]: search ? `%${search}%` : '%%'
+          },
+          obj_id: {
+            [Op.like]: search ? `%${search}%` : '%%'
+          },
+          notify_content: {
+            [Op.like]: search ? `%${search}%` : '%%'
+          },
+          notify_emails: {
+            [Op.like]: search ? `%${search}%` : '%%'
+          }
+        }
+      }
+    }
+    if (page) {
+      tmp.limit = size || 10
+      tmp.offset = page ? (page - 1) * size : 0
+    }
+    const { count, rows } = await this.notifyHistoryModel.findAndCountAll(tmp)
+    data.total = count
+    data.items = rows
+    return data;
+  }
+
+  /**
    * 开始通知：创建定时任务(题主)
    * @param time 
    * @param question_id 
@@ -466,15 +523,16 @@ export class AuthorService {
         // 第二步：获取该作者新添加的问题列表
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'publisher')
         if (questions && questions.length) {
-          // 第四步：判断这些问题是否存在于作者问题列表中
+          // 第三步：判断这些问题是否存在于作者问题列表中
           //    存在：则跳过
           //    不存在：如果是疑似红包问题则邮件通知，否则直接新增即可
           const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
           for (let i = 0; i < questions.length; i++) {
             const question = questions[i]
+            // 第三步-1：判断该问题是否存在该作者的问题中
             const question_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
             if (!question_record) {
-              // 新增问题
+              // 第三步-1-1：新增问题
               const result = await this.toolService.getZhihuQuestionInfo(question.id)
               await this.createQuestion({
                 question_id: result.id,
@@ -485,19 +543,32 @@ export class AuthorService {
                 question_created: result.created || '',
                 question_updated: result.updated || ''
               }, lastAuthor.id, uid)
-              // 判断是否为疑似红包：是 - 邮箱通知
+              // 第三步-1-2：判断是否为疑似红包：是 - 邮箱通知
               if (result.questionType === 'commercial') {
-                await Promise.all(notify_emails.map(async (email) => {
+                // 第四步：判断当前问题是否已经通知过：未通知才发送邮件，并且创建通知记录
+                const notify_history = await this.notifyHistoryModel.findOne({
+                  where: {
+                    question_id: result.id,
+                    notify_type: 'publisher',
+                    notify_origin: 'publish',
+                    uid
+                  }
+                })
+                if (!notify_history) {
                   const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
+                  await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
                   // 邮件通知完还需要更新通知记录
                   await this.notifyHistoryModel.create({
+                    question_id: result.id,
                     obj_id: lastAuthor.author_id,
                     notify_type: 'publisher',
+                    notify_origin: 'publish',
                     notify_content: notify_content,
+                    notify_emails: notify_emails.map(email => email.email),
                     uid
                   })
-                  this.toolService.sendZhihuMail(notify_content, email.email)
-                }))
+                  // 如果可以的话: 还可以创建问题记录
+                }
               }
             }
           }
@@ -527,13 +598,14 @@ export class AuthorService {
         const questions = await this.toolService.getAuthorNewQuestions(lastAuthor.author_id, lastAuthor.is_org, 'answer')
         if (questions && questions.length) {
           const notify_emails = await this.notifyReceiverModel.findAll({ where: { uid, status: true } })
-          // 第四步：判断这些问题是否存在于作者问题关注列表中
+          // 第三步：判断这些问题是否存在于该答主的回答/关注列表中
           for (let i = 0; i < questions.length; i++) {
             const question = questions[i]
+            // 第三步-1：判断该问题是否存在该作者的问题中
             const quesion_record = await this.findOneQuestion(question.id, lastAuthor.id, uid, question.type)
             if (!quesion_record) {
+              // 第三步-1-1：在该答主下新增问题记录
               const result = await this.toolService.getZhihuQuestionInfo(question.id)
-              // 新增问题
               await this.createQuestion({
                 question_id: result.id,
                 question_title: result.title,
@@ -543,19 +615,32 @@ export class AuthorService {
                 question_created: result.created || '',
                 question_updated: result.updated || ''
               }, lastAuthor.id, uid)
-              // 判断是否为疑似红包：是 - 邮箱通知
+              // 第三步-1-2：判断是否为疑似红包：是 - 邮箱通知
               if (result.questionType === 'commercial') {
-                await Promise.all(notify_emails.map(async (email) => {
+                // 第四步：判断当前问题是否已经通知过：未通知才发送邮件，并且创建通知记录
+                const notify_history = await this.notifyHistoryModel.findOne({
+                  where: {
+                    question_id: result.id,
+                    notify_type: 'answer',
+                    notify_origin: question.type,
+                    uid
+                  }
+                })
+                if (!notify_history) {
                   const notify_content = `【${lastAuthor.author_name}】${question.type === 'follow' ? '新关注' : '新回答'}了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
+                  await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
                   // 邮件通知完还需要更新通知记录
                   await this.notifyHistoryModel.create({
+                    question_id: result.id,
                     obj_id: lastAuthor.author_id,
                     notify_type: 'answer',
+                    notify_origin: question.type,
                     notify_content: notify_content,
+                    notify_emails: notify_emails.map(email => email.email),
                     uid
                   })
-                  this.toolService.sendZhihuMail(notify_content, email.email)
-                }))
+                  // 如果可以的话: 还可以创建问题记录
+                }
               }
             }
           }
