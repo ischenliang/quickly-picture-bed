@@ -546,7 +546,7 @@ export class ToolService {
        *  如果超过则直接关闭和知乎以及about:blank相关的页面
        */
       const browser_pages = await browser.pages()
-      if (browser_pages && browser_pages.length >= 7) {
+      if (browser_pages && browser_pages.length >= 5) {
         for (let browser_page of browser_pages) {
           const browser_page_url = browser_page.url()
           if (browser_page_url.indexOf('www.zhihu.com') !== -1 || browser_page_url.indexOf('about:blank') !== -1) {
