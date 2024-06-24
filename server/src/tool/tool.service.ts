@@ -576,6 +576,8 @@ export class ToolService {
       questions.forEach(el => console.log(el.title, el.id))
       // 4、最后：关闭页面(减少内存占用)
       await page.close({ timeout: 0 })
+      // 5、断开浏览器连接
+      browser.disconnect()
       return questions
     } catch (error) {
       console.log(error)
