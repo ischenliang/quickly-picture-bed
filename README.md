@@ -30,26 +30,26 @@
 
 ## 在线体验
 **在线演示(新版本)**
+- 地址: [http://v2.picture.itchenliang.club/](http://v2.picture.itchenliang.club/)
 ```yaml
-地址：http://v2.picture.itchenliang.club/
 账号：guest@163.com
 密码：000000
-仓库地址: 
-- Gitee: https://gitee.com/itchenliang/quickly-picture-bed
-- Github: https://github.com/ischenliang/quickly-picture-bed
-文档: https://ejq9qy8emd.feishu.cn/docx/Eo1HdFD7noXoSlxfRfWcYyzJnpf
 ```
+- 仓库地址: 
+  - Gitee: [https://gitee.com/itchenliang/quickly-picture-bed](https://gitee.com/itchenliang/quickly-picture-bed)
+  - Github: [https://github.com/ischenliang/quickly-picture-bed](https://github.com/ischenliang/quickly-picture-bed)
+- 文档: [https://ejq9qy8emd.feishu.cn/docx/Eo1HdFD7noXoSlxfRfWcYyzJnpf](https://ejq9qy8emd.feishu.cn/docx/Eo1HdFD7noXoSlxfRfWcYyzJnpf)
 
 **在线演示(老版本)**
+- 地址：[http://picture.itchenliang.club/](http://picture.itchenliang.club/)
 ```yaml
-地址：http://picture.itchenliang.club/
 账号：guest@163.com
 密码：000000
-仓库地址: 
-- Gitee: https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller
-- Github: https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller
-文档: https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller/doc
 ```
+- 仓库地址: 
+  - Gitee: [https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller](https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller)
+  - Github: [https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller](https://github.com/ischenliang/quickly-picture-bed/tree/koa-controller)
+- 文档: [https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller/doc](https://gitee.com/itchenliang/quickly-picture-bed/tree/koa-controller/doc)
 
 ## 内置插件
 目前插件功能是采用拔插式的方式实现，完全脱离于本系统的，我们在新增插件时不会影响系统的使用，这种方式也方便了后续扩展新的插件。
