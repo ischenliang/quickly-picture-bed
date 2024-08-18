@@ -102,7 +102,8 @@ export class UserService {
     return this.userModel.findOne({
       where: {
         email: email
-      }
+      },
+      raw: true
     });
   }
   

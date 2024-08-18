@@ -22,6 +22,7 @@ import { SmsCode } from './common/entities/smsCode.entity';
 import { User } from './user/entities/user.entity';
 import { QuestionModule } from './question/question.module';
 import { AuthorModule } from './author/author.module';
+import { Crypto } from './user/entities/crypto.entity';
 
 console.log(process.env.NODE_ENV)
 @Module({
@@ -68,7 +69,7 @@ console.log(process.env.NODE_ENV)
     ImageModule,
     LogModule,
     StatsModule,
-    SequelizeModule.forFeature([SmsCode, User]),
+    SequelizeModule.forFeature([SmsCode, User, Crypto]),
     QuestionModule,
     AuthorModule
   ],

@@ -207,6 +207,9 @@ export class ToolService {
       where: {
         account: email
       },
+      order: [
+        ['updatedAt', 'desc']
+      ],
       raw: true
     })
     // 1. 判断验证码是否过期

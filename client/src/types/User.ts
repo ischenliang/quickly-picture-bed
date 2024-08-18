@@ -17,6 +17,7 @@ interface Params extends UserInter {
   verify_id?: string
   type?: string
   sms_code?: string
+  label?: string
 }
 
 /**
@@ -75,6 +76,7 @@ export default class Users {
     account: string
     password: string
     sms_code: string
+    label: string
   }) {
     return http('/register', params)
   }
@@ -93,5 +95,9 @@ export default class Users {
   // 切换用户状态
   toggleStatus (id: string) {
     return http('/user/toggle', { id })
+  }
+  // 获取公钥
+  pke () {
+    return http('/pke', {})
   }
 }
