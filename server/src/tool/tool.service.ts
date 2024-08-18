@@ -265,7 +265,7 @@ export class ToolService {
    * @param subject 
    * @returns 
    */
-  sendZhihuMail (text: string, to: string, subject: string = 'LightFastPicture') {
+  sendZhihuMail (text: string, to: string | string[], subject: string = 'LightFastPicture') {
     console.log('发送邮件')
     return this.verifyCodeService.sendZhihuMail(text, to, subject)
   }
