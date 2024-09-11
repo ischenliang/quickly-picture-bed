@@ -27,7 +27,7 @@ const sse = (stream: any, event : any, data: any) => {
 }
 
 @Controller('/tool')
-class ToolController {
+export default class ToolController {
 
   // 获取七牛yun的上传凭证
   @Post('/qiniuSign')

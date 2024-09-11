@@ -5,7 +5,7 @@ import { Role } from '../types'
 import authorization from '../middlewares/authorization'
 
 @Controller('/role')
-class RoleController {
+export default class RoleController {
   @Get('/list')
   async list() {
     return {

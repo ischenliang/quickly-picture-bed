@@ -15,7 +15,7 @@ interface Filter extends Page {
 }
 
 @Controller('/bucket')
-class BucketController {
+export default class BucketController {
   /**
    * 列表
    * @returns 

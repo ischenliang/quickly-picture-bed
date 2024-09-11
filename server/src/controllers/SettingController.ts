@@ -9,7 +9,7 @@ interface Filter extends Page {
 }
 
 @Controller('/setting')
-class SettingController {
+export default class SettingController {
   /**
    * 列表
    * @returns 
@@ -123,6 +123,7 @@ class SettingController {
    */
   @Post('/default')
   async default(@Body() params: Filter) {
+    console.log('哈哈哈哈哈哈')
     const tmp = await SettingModel.findOne()
     return {
       code: 200,

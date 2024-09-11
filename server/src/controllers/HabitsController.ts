@@ -8,7 +8,7 @@ interface Filter extends Page {
 }
 
 @Controller('/habits')
-class HabitsController {
+export default class HabitsController {
 
 
   /**

@@ -18,7 +18,7 @@ interface Filter extends Page {
 }
 
 @Controller('/image')
-class ImageController {
+export default class ImageController {
   /**
    * 列表
    * @returns 

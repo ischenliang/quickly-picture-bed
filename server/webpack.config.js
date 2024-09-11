@@ -7,7 +7,8 @@ module.exports = {
   mode: 'development',
   entry: './src/app.ts',
   output: {
-    path: path.join(__dirname, './dist'),
+    filename: '[name].js',
+    path: path.join(__dirname, './dist')
   },
   module: {
     rules: [

@@ -10,7 +10,7 @@ interface Filter extends Page {
 
 // 注意：这里将class名改为BucketSourceController则访问时会报404
 @Controller('/bucketSourceHistory')
-class BucketsourceHistoryController {
+export default class BucketsourceHistoryController {
   /**
    * 列表
    * @returns 

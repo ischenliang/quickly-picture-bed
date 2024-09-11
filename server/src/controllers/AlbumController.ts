@@ -16,7 +16,7 @@ interface Filter extends Page {
 }
 
 @Controller('/album')
-class AlbumController {
+export default class AlbumController {
   /**
    * 列表
    * @returns 

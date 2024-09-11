@@ -193,7 +193,7 @@ interface RegisterParams extends User {
 }
 
 @Controller('/')
-class PublicController {
+export default class PublicController {
   // 登录:还需要验证图形验证码是否正确
   @Post('/login')
   async login(@Body({ required: true }) params: LoginParams, @Header() header: any, @Ctx() ctx: Context) {

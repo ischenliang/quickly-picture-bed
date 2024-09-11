@@ -13,7 +13,7 @@ interface Filter extends Page {
 }
 
 @Controller('/log')
-class LogController {
+export default class LogController {
   /**
    * 所有数据列表：需要管理员角色查看
    * @returns 

@@ -9,7 +9,7 @@ interface Filter extends Page {
 }
 
 @Controller('/dict')
-class DictController {
+export default class DictController {
   /**
    * 列表
    * @returns 

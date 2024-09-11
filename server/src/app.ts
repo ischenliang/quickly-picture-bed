@@ -2,20 +2,30 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { mimeTypes } from './global.config';
 import Koa, { Context, Next } from 'koa'
 import KoaRouter from 'koa-router'
 import koaBody from 'koa-body'// 解析请求体
-import { bootstrapControllers as KoaControllers } from 'koa-ts-controllers'
+import { bootstrapControllers } from 'koa-ts-controllers'
 import * as Colors from 'colors.ts'
 import cors from 'koa2-cors'
 import webtoken from 'jsonwebtoken'
 import koaStatic from 'koa-static'
 import path from 'path'
-import { useGetSuffix } from './utils/global'
 import UserModel from './models/User';
 import { User } from './types';
-
+import AlbumController from './controllers/AlbumController'
+import BucketController from './controllers/BucketController'
+import BucketSourceController from './controllers/BucketSourceController'
+import BucketSourceHistoryController from './controllers/BucketSourceHistoryController'
+import DictController from './controllers/DictController'
+import HabitsController from './controllers/HabitsController'
+import ImageController from './controllers/ImageController'
+import LogController from './controllers/LogController'
+import PublicController from './controllers/PublicController'
+import RoleController from './controllers/RoleController'
+import SettingController from './controllers/SettingController'
+import ToolController from './controllers/ToolController'
+import UserController from './controllers/UserController'
 
 // 实例化koa
 const app: Koa = new Koa({
@@ -49,8 +59,6 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   console.log(`${ctx.req.method}: `, `-----${ctx.req.url}`.green);
   ctx.set('Content-Type', 'application/json; charset=utf-8')
   ctx.req_ip = getClientIP(ctx.req)
-  // 本地开发时需要启用该参数
-  // ctx.req_ip = '218.88.53.236'
   // 这里还需要区分是哪些接口需要单独处理：例如登录、注册不需要传入token
   if (ctx.headers['authorization']) {
     try {
@@ -92,28 +100,6 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   } else {
     await next()
   }
-  if (['/', '/favicon.ico'].includes(ctx.req.url)) {
-    ctx.body = {
-      code: 200,
-      message: '欢迎使用!',
-      data: '欢迎使用!'
-    }
-  }
-  if(parseInt(ctx.status) === 404){
-    ctx.body = {
-      code: 404,
-      message: '404 NotFound'
-    }
-  } else {
-    // 处理图片访问乱码问题
-    ctx.status = 200
-    const url = ctx.request.url
-    const suffixs = Object.keys(mimeTypes)
-    const suffix = useGetSuffix(url)
-    if (suffixs.includes(suffix)) {
-      ctx.type = suffix
-    }
-  }
 })
 
 
@@ -121,11 +107,27 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
 ;(async () => {
   // 在controllers中读文件涉及到异步
   // 后续访问就需要 host:port/api/v1/接口地址
-  await KoaControllers(app, {
+  await bootstrapControllers(app, {
     router: router, // 内部还是要使用router来实现路由绑定
     basePath: '/api', // 定义api的规则【所有接口的基础路径】
     versions: [1], // 版本
-    controllers: [__dirname + '/controllers/**/*.ts'], // 存放所有控制器类，是数组
+    // 这样打包会失效
+    // __dirname + '/controllers/**/*.ts'
+    controllers: [
+      AlbumController,
+      BucketController,
+      BucketSourceController,
+      BucketSourceHistoryController,
+      DictController,
+      HabitsController,
+      ImageController,
+      LogController,
+      PublicController,
+      RoleController,
+      SettingController,
+      ToolController,
+      UserController
+    ], // 存放所有控制器类，是数组
     errorHandler (error: any, ctx: Context) {
       console.log(123, error)
       ctx.body = {
@@ -149,6 +151,7 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
 
   // 注册路由
   app.use(router.routes())
+  app.use(router.allowedMethods())
 
   // 监听端口
   const port = process.env.APP_PORT || 3002

@@ -9,7 +9,6 @@ import HabitsModel from '../models/Habits'
 import { useRoleAuthorization } from '../middlewares/authorization'
 import { default_habits } from '../global.config'
 import { useMd5 } from '../utils/global'
-import axios from 'axios'
 
 interface Filter extends Page {
   username?: string
@@ -18,7 +17,7 @@ interface Filter extends Page {
 }
 
 @Controller('/user')
-class UserController {
+export default class UserController {
   /**
    * 列表
    * @returns 
