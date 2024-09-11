@@ -41,6 +41,7 @@ export class PluginLoaderService {
    * @returns 
    */
   async resolvePlugin (plugin: Plugin): Promise<SandboxInter> {
+    console.log(`${process.env.NPM_REGISTRY}/${plugin.name}/${plugin.version}/files/dist/index.umd.js`)
     const { data: scriptContent } = await axios.get(`${process.env.NPM_REGISTRY}/${plugin.name}/${plugin.version}/files/dist/index.umd.js`)
     // const scriptContent = fs.readFileSync(path.join(__dirname, './plugin.js')).toString()
     // 这里需要注意：如果需要Nodejs其他内置模块功能则需要传入方可使用，否则需要在插件中自行安装其他第三方插件代替
