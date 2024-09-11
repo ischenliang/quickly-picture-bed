@@ -550,7 +550,7 @@ export class ToolService {
         for (let browser_page of browser_pages) {
           const browser_page_url = browser_page.url()
           if (browser_page_url.indexOf('www.zhihu.com') !== -1 || browser_page_url.indexOf('about:blank') !== -1) {
-            await browser_page.close({ timeout: 1 })
+            await browser_page.close({ timeout: 2000 })
             console.log('关闭遗留页面', browser_page_url)
           }
         }
@@ -559,7 +559,7 @@ export class ToolService {
       // 1、打开指定页面
       await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
       // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
-      await page.waitForSelector('div#Profile-activities div[role="list"]', { timeout: 1000 })
+      await page.waitForSelector('div#Profile-activities div.List-item[tabindex="0"]', { timeout: 3000 })
       // 3、获取问题列表
       let questions = []
       switch (type) {
@@ -575,7 +575,7 @@ export class ToolService {
       }
       questions.forEach(el => console.log(el.title, el.id))
       // 4、最后：关闭页面(减少内存占用)
-      await page.close({ timeout: 0 })
+      await page.close({ timeout: 2000 })
       // 5、断开浏览器连接
       browser.disconnect()
       return questions
