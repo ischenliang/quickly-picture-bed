@@ -129,7 +129,7 @@ const website = computed(() => {
   overflow: hidden;
   background: #f5f7f9 !important;
   .login-layout__left {
-    width: 500px;
+    max-width: 500px;
     flex-shrink: 0;
     height: 100%;
     background-image: url('./images/login-left.png');
@@ -337,5 +337,13 @@ const website = computed(() => {
 }
 .swiper-pagination {
   bottom: 20px !important;
+}
+
+@media screen and (max-width: 1100px) {
+  .login-layout {
+    &__left {
+      display: none !important;
+    }
+  }
 }
 </style>

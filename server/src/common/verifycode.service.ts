@@ -46,8 +46,8 @@ export class VerifyCodeService {
     return new Promise((resolve, reject) => {
       if (mail_user && mail_pass) {
         transporter.sendMail({
-          from: `<${mail_user}>`,
-          to: `<${to}>`,
+          from: mail_user,
+          to: to,
           subject: subject,
           html: `【LightFastPicture】验证码：<span style="color: #409eff;text-decoration: underline;">${text}</span>，有效期3分钟，如非本人操作，请忽略此消息。`,
         }).then(() => {
@@ -68,7 +68,7 @@ export class VerifyCodeService {
    * @param subject 
    * @returns 
    */
-  async sendZhihuMail (text: string, to: string, subject: string = 'LightFastPicture') {
+  async sendZhihuMail (text: string, to: string | string[], subject: string = 'LightFastPicture') {
     const { host, port, secure } = email_config
     const { system: { mail_pass, mail_user } } = await this.settingModel.findOne()
     let transporter = nodemailer.createTransport({
@@ -83,8 +83,8 @@ export class VerifyCodeService {
     return new Promise((resolve, reject) => {
       if (mail_user && mail_pass) {
         transporter.sendMail({
-          from: `<${mail_user}>`,
-          to: `<${to}>`,
+          from: mail_user,
+          to: typeof to === 'string' ? to : to.join(', '),
           subject: subject,
           html: `${text}`,
         }).then(() => {

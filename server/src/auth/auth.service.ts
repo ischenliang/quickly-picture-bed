@@ -21,6 +21,7 @@ export class AuthService {
    */
   async validateUser (email: string, password: string) {
     const user = await this.userService.findOneByEmail(email)
+    console.log(user.password, password, this.md5Service.cryptoMd5(password))
     if (user && user.password === this.md5Service.cryptoMd5(password)) {
       return user
     }

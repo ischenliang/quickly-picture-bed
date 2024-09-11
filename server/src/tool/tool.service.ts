@@ -207,6 +207,9 @@ export class ToolService {
       where: {
         account: email
       },
+      order: [
+        ['updatedAt', 'desc']
+      ],
       raw: true
     })
     // 1. 判断验证码是否过期
@@ -265,7 +268,7 @@ export class ToolService {
    * @param subject 
    * @returns 
    */
-  sendZhihuMail (text: string, to: string, subject: string = 'LightFastPicture') {
+  sendZhihuMail (text: string, to: string | string[], subject: string = 'LightFastPicture') {
     console.log('发送邮件')
     return this.verifyCodeService.sendZhihuMail(text, to, subject)
   }

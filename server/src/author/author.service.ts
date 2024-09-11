@@ -556,7 +556,9 @@ export class AuthorService {
                 })
                 if (!notify_history) {
                   const notify_content = `【${lastAuthor.author_name}】新添加了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
-                  await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
+                  // 批量发送邮件：节省发送邮件数量
+                  await this.toolService.sendZhihuMail(notify_content, notify_emails.map(item => item.email))
+                  // await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
                   // 邮件通知完还需要更新通知记录
                   await this.notifyHistoryModel.create({
                     question_id: result.id,
@@ -628,7 +630,9 @@ export class AuthorService {
                 })
                 if (!notify_history) {
                   const notify_content = `【${lastAuthor.author_name}】${question.type === 'follow' ? '新关注' : '新回答'}了一个问题：${result.title}，<a href="https://www.zhihu.com/question/${result.id}" target="_blank">赶快前往去回答吧</a>，<a href="https://www.zhihu.com/oia/questions/${result.id}?open=1&utm_id=0&fallback_url=https://oia.zhihu.com/questions/${result.id}?utm_id=0" target="_blank">手机端打开</a>`
-                  await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
+                  // 批量发送邮件：节省发送邮件数量
+                  await this.toolService.sendZhihuMail(notify_content, notify_emails.map(item => item.email))
+                  // await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(notify_content, email.email)))
                   // 邮件通知完还需要更新通知记录
                   await this.notifyHistoryModel.create({
                     question_id: result.id,

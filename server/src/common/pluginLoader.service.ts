@@ -12,6 +12,11 @@ var FormData = require('form-data')
 const axios = require('axios')
 const stream = require('stream')
 
+const axiosInstance = axios.create({
+  baseURL: '',
+  timeout: 12 * 1000
+})
+
 @Injectable()
 export class PluginLoaderService {
   // private plugins: { [name: string]: IPlugin } = {}
@@ -91,7 +96,7 @@ export class PluginLoaderService {
       const promises = maps.map(async (item, index) => {
         const requestConfig: AxiosRequestConfig = await sandbox.IPlugin.handler(config, item.buffer, item.name)
         // console.log('请求配置', requestConfig)
-        return await axios({
+        return await axiosInstance({
           ...requestConfig,
           // 后续做实时进度处理
         })

@@ -51,6 +51,7 @@ import { computed, reactive, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormInstance } from 'element-plus';
 import EmailOptions from './email-options.vue'
+import { useCrypto } from '@/hooks/node-forge';
 
 /**
  * 实例
@@ -139,20 +140,23 @@ const register = () => {
         return ctx.$message({ message: '请同意协议', type: 'warning', duration: 1000 })
       }
       loading.value = true
-      user.register({
-        account: email.value,
-        // password: useMd5(form.password),
-        password: form.password,
-        sms_code: form.sms_code
-      }).then((res: any) => {
-        ctx.$message({ message: '注册成功，去登录吧', type: 'success', duration: 1000 })
-        router.push({ path: '/login' })
-      }).catch(error => {
-        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
-        if (error.message !== '验证码不正确') {
-          getImgCode()
-        }
-        loading.value = false
+      useCrypto(form.password).then(res => {
+        const { data, label } = res
+        user.register({
+          account: email.value,
+          password: data,
+          sms_code: form.sms_code,
+          label: label
+        }).then((res: any) => {
+          ctx.$message({ message: '注册成功，去登录吧', type: 'success', duration: 1000 })
+          router.push({ path: '/login' })
+        }).catch(error => {
+          ctx.$message({ message: error.message, type: 'error', duration: 1000 })
+          if (error.message !== '验证码不正确') {
+            getImgCode()
+          }
+          loading.value = false
+        })
       })
     }
   })

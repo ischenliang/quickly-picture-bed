@@ -20,6 +20,7 @@ instance.interceptors.request.use((config: any) => {
 })
 instance.interceptors.response.use((response: any) => {
   if (response.data.code === 200) {
+    console.log(response)
     return Promise.resolve(response.data.data)
   } else {
     if ([50001].includes(response.data.code)) {

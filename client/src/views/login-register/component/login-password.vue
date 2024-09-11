@@ -40,6 +40,7 @@ import { FormInstance } from 'element-plus';
 import Cookies from 'js-cookie'
 import key from 'keymaster'
 import EmailOptions from './email-options.vue'
+import { useCrypto } from '@/hooks/node-forge';
 
 /**
  * 实例
@@ -94,23 +95,29 @@ const login = () => {
   formRef.value && formRef.value.validate(valid => {
     if (valid) {
       loading.value = true
-      user.login({
-        email: form.username + form.username_suffix,
-        password: form.password,
-        verify_id: form.verify_id,
-        verify_code: form.verify_code
-      }).then((res: any) => {
-        if (form.remember) {
-          Cookies.set('email', form.username + form.username_suffix)
-          Cookies.set('password', form.password)
-        }
-        localStorage.setItem('token', res.token)
-        ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
-        router.push({ path: '/' })
+      useCrypto(form.password).then(res => {
+        const { data, label } = res
+        user.login({
+          email: form.username + form.username_suffix,
+          password: data,
+          verify_id: form.verify_id,
+          verify_code: form.verify_code,
+          label: label
+        }).then((res: any) => {
+          if (form.remember) {
+            Cookies.set('email', form.username + form.username_suffix)
+            Cookies.set('password', form.password)
+          }
+          localStorage.setItem('token', res.token)
+          ctx.$message({ message: '登录成功', type: 'success', duration: 1000 })
+          router.push({ path: '/' })
+        }).catch(error => {
+          ctx.$message({ message: error.message, type: 'error', duration: 1000 })
+          getImgCode()
+          loading.value = false
+        })
       }).catch(error => {
-        ctx.$message({ message: error.message, type: 'error', duration: 1000 })
-        getImgCode()
-        loading.value = false
+
       })
     }
   })
