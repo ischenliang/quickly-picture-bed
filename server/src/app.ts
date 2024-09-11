@@ -46,6 +46,7 @@ function getClientIP(req: any) {
 
 // 处理404不存在的
 app.use(async (ctx: Koa.DefaultContext, next: Next) => {
+  console.log(`${ctx.req.method}: `, `-----${ctx.req.url}`.green);
   ctx.set('Content-Type', 'application/json; charset=utf-8')
   ctx.req_ip = getClientIP(ctx.req)
   // 本地开发时需要启用该参数
@@ -91,7 +92,14 @@ app.use(async (ctx: Koa.DefaultContext, next: Next) => {
   } else {
     await next()
   }
-  if(parseInt(ctx.status) === 404 && ctx.request.url !== '/favicon.ico'){
+  if (['/', '/favicon.ico'].includes(ctx.req.url)) {
+    ctx.body = {
+      code: 200,
+      message: '欢迎使用!',
+      data: '欢迎使用!'
+    }
+  }
+  if(parseInt(ctx.status) === 404){
     ctx.body = {
       code: 404,
       message: '404 NotFound'

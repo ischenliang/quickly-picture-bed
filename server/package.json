@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/app.ts",
-    "dev": "nodemon --watch src/**/* -e ts,tsx --exec ts-node ./src/app.ts"
+    "dev": "nodemon --watch src/**/* -e ts,tsx --exec ts-node ./src/app.ts",
+    "build": "webpack --config ./webpack.config.js"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "koa-ts-controllers": "^3.2.2",
     "koa-views": "^8.1.0",
     "koa2-cors": "^2.0.6",
+    "libphonenumber-js": "^1.10.41",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
@@ -35,7 +37,7 @@
     "qiniu": "^7.7.0",
     "sequelize": "^6.6.5",
     "svg-captcha": "^1.4.0",
-    "ts-loader": "^9.4.1"
+    "ts-loader": "^9.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
@@ -62,7 +64,10 @@
     "rollup-plugin-multi-input": "^1.4.1",
     "rollup-plugin-typescript2": "^0.34.1",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   },
   "engines": {
     "node": ">=18.15.0",
