@@ -1,0 +1,10 @@
+.user-info-popover {
+    top: 1px !important;
+    right: -5px !important;
+}
+.chatgpt-page .chatgpt-container .chatgpt-message {
+    overflow: hidden;
+}
+.user-info-popover {
+    top: 0 !important;
+}
