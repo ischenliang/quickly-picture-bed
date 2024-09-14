@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs'
 import { VerifyCodeService } from 'src/common/verifycode.service';
@@ -13,8 +13,8 @@ import { HttpService } from '@nestjs/axios';
 import * as iconv from 'iconv-lite'
 import axios from 'axios';
 import * as cheerio from 'cheerio'
-import { cookie_config_Url } from 'global.config';
 import * as puppeteer from 'puppeteer'
+import { DictService } from 'src/dict/dict.service';
 
 interface ZhihuPage {
   url: string // 网页地址
@@ -30,11 +30,12 @@ const pages: ZhihuPage[] = []
 
 @Injectable()
 export class ToolService {
-
+  private readonly logger = new Logger(ToolService.name)
   constructor (
     private verifyCodeService: VerifyCodeService,
     private timeService: TimeService,
     private httpService: HttpService,
+    private dictService: DictService,
     @InjectModel(VerifyCode) private verifyCodeModel: typeof VerifyCode,
     @InjectModel(SmsCode) private smsCodeModel: typeof SmsCode
   ) {}
@@ -406,19 +407,14 @@ export class ToolService {
    * @returns 
    */
   useGetCookie (): Promise<any> {
-    return new Promise((resolve, reject) => {
-      axios({
-        url: cookie_config_Url,
-        method: 'get'
-      }).then(res => {
-        const { cookie, chrome_endpoint_url } = res.data
-        resolve({
-          cookie,
-          endpoint: chrome_endpoint_url
-        })
-      }).catch(error => {
-        console.log(error)
-      })
+    return new Promise(async (resolve, reject) => {
+      const res = await this.dictService.findByPro({ property: 'code', value: 'zhihu_config' })
+      this.logger.debug('zhihu_config: ' + JSON.stringify(res))
+      const zhihu_config = res.values.reduce((total, cur) => {
+        total[cur.label] = cur.value
+        return total
+      }, {})
+      resolve(zhihu_config)
     })
   }
 
@@ -477,6 +473,45 @@ export class ToolService {
         reject(error)
       }
     })
+  }
+
+
+  /**
+   * 获取最新的cookie
+   */
+  async getLastCookie () {
+    try {
+      const { bind_url } = await this.useGetCookie()
+      const condition = { property: 'code', value: 'zhihu_config' }
+      const { page, browser } = await this.usePuppeteer()
+      // 1. 打卡页面
+      console.log(bind_url)
+      await page.goto(bind_url)
+      // 2. 获取cookie并处理cookie
+      const cookies = await page.cookies()
+      const filter_cookies = cookies.filter(el => /zhihu.com/g.test(el.domain)).map(el => ({ name: el.name, value: el.value }))
+      const cookies_str = filter_cookies.map(el => (`${el.name}=${el.value}`)).join('; ')
+      // 3. 获取最新的数据
+      const res = await this.dictService.findByPro(condition)
+      res.values.forEach(el => {
+        if (el.label === 'cookie') {
+          el.value = cookies_str
+        }
+      })
+      // 4. 更新到数据库
+      await this.dictService.updateByPro(condition, {
+        name: res.name,
+        code: res.code,
+        values: res.values
+      })
+      // 5. 关闭页面
+      // 4、最后：关闭页面(减少内存占用)
+      await page.close({ timeout: 2000 })
+      // 5、断开浏览器连接
+      await browser.disconnect()
+    } catch (error) {
+      this.logger.debug('ToolService-->getLastCookie: ' + JSON.stringify(error))
+    }
   }
 
   /**
@@ -580,7 +615,7 @@ export class ToolService {
       // 4、最后：关闭页面(减少内存占用)
       await page.close({ timeout: 2000 })
       // 5、断开浏览器连接
-      browser.disconnect()
+      await browser.disconnect()
       return questions
     } catch (error) {
       console.log(error)
