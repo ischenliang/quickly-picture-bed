@@ -95,6 +95,22 @@ export class DictService {
     return this.dictModel.findOne({
       where: {
         [param.property]: param.value
+      },
+      raw: true
+    })
+  }
+
+  /**
+   * 按属性插字典
+   * @param param 
+   * @returns 
+   */
+  updateByPro (param: { property: string, value: string }, data: CreateDictDto) {
+    return this.dictModel.update({
+      ...data
+    }, {
+      where: {
+        [param.property]: param.value
       }
     })
   }

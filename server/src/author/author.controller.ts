@@ -287,4 +287,12 @@ export class AuthorController {
   deleteNotify(@Body('id') id: number, @User() user: UserType) {
     return this.authorService.removeNotify(id, user.id);
   }
+
+  @Post('notify/cookie')
+  @HttpCode(200)
+  @ApiOperation({ summary: '更新cookie', description: '更新cookie' })
+  @ApiResponse({ status: 200, description: '更新成功' })
+  updateCookie() {
+    return this.authorService.updateCookie();
+  }
 }

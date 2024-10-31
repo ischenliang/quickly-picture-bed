@@ -35,7 +35,9 @@ export class QuestionService {
     try {
       // 自动获取问题内容
       const { maxWeight } = await this.getMaxWeight(uid)
+      this.logger.debug(`收录问题：`, createQuestionDto.quesion_id)
       const question = await this.toolService.getZhihuQuestionInfo(createQuestionDto.quesion_id)
+      this.logger.debug(`问题内容：`, question.title)
       return this.questionModel.create({
         quesion_id: question.id,
         question_title: question.title,

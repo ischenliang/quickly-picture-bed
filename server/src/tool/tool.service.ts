@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs'
 import { VerifyCodeService } from 'src/common/verifycode.service';
@@ -13,12 +13,11 @@ import { HttpService } from '@nestjs/axios';
 import * as iconv from 'iconv-lite'
 import axios from 'axios';
 import * as cheerio from 'cheerio'
-import { cookie_config_Url } from 'global.config';
 import * as puppeteer from 'puppeteer'
+import { DictService } from 'src/dict/dict.service';
 
 interface ZhihuPage {
   url: string // 网页地址
-  time: string // 打开时间
   page: any // 打开的网页实例
   id: number // 打开标签页的id
 }
@@ -26,15 +25,16 @@ interface ZhihuPage {
  * 存储当前打开的所有标签页
  */
 const pages: ZhihuPage[] = []
-
+const maxPage = 5 // 最大打开页面数量
 
 @Injectable()
 export class ToolService {
-
+  private readonly logger = new Logger(ToolService.name)
   constructor (
     private verifyCodeService: VerifyCodeService,
     private timeService: TimeService,
     private httpService: HttpService,
+    private dictService: DictService,
     @InjectModel(VerifyCode) private verifyCodeModel: typeof VerifyCode,
     @InjectModel(SmsCode) private smsCodeModel: typeof SmsCode
   ) {}
@@ -269,7 +269,7 @@ export class ToolService {
    * @returns 
    */
   sendZhihuMail (text: string, to: string | string[], subject: string = 'LightFastPicture') {
-    console.log('发送邮件')
+    this.logger.warn('正在发送邮件:' + to)
     return this.verifyCodeService.sendZhihuMail(text, to, subject)
   }
 
@@ -289,11 +289,6 @@ export class ToolService {
       }
     })
     const $ = cheerio.load(res.data)
-    // const unHuman = $('p.Unhuman-tip')
-    // if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
-    //   console.log('==============知乎判定为人机====================')
-    //   throw new Error('知乎判定为人机')
-    // }
     const initialDataEl = $('script#js-initialData')
     const initialDataJson = initialDataEl.text()
     const initialData = JSON.parse(initialDataJson)
@@ -314,7 +309,7 @@ export class ToolService {
     const $ = cheerio.load(res.data)
     const unHuman = $('p.Unhuman-tip')
     if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
-      console.log('==============知乎判定为人机====================')
+      this.logger.error('==============知乎判定为人机====================')
       throw new Error('知乎判定为人机')
     }
     const initialDataEl = $('script#js-initialData')
@@ -343,11 +338,6 @@ export class ToolService {
       }
     })
     const $ = cheerio.load(res.data)
-    // const unHuman = $('p.Unhuman-tip')
-    // if (unHuman && unHuman.text() === '系统监测到您的网络环境存在异常风险，为保证您的正常访问，请输入验证码进行验证。') {
-    //   console.log('==============知乎判定为人机====================')
-    //   throw new Error('知乎判定为人机')
-    // }
     // 获取问题详情
     const initialData = JSON.parse($('script#js-initialData').text())
     const question = initialData.initialState.entities.questions[question_id]
@@ -406,19 +396,18 @@ export class ToolService {
    * @returns 
    */
   useGetCookie (): Promise<any> {
-    return new Promise((resolve, reject) => {
-      axios({
-        url: cookie_config_Url,
-        method: 'get'
-      }).then(res => {
-        const { cookie, chrome_endpoint_url } = res.data
-        resolve({
-          cookie,
-          endpoint: chrome_endpoint_url
-        })
-      }).catch(error => {
-        console.log(error)
-      })
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await this.dictService.findByPro({ property: 'code', value: 'zhihu_config' })
+        this.logger.debug('zhihu_config: ' + JSON.stringify(res))
+        const zhihu_config = res.values.reduce((total, cur) => {
+          total[cur.label] = cur.value
+          return total
+        }, {})
+        resolve(zhihu_config)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 
@@ -427,7 +416,7 @@ export class ToolService {
    */
   useGetWebSocketDebuggerUrl (): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log('获取浏览器的webSocketDebuggerUrl------->')
+      this.logger.log('获取浏览器的webSocketDebuggerUrl------->')
       axios({
         url: 'http://127.0.0.1:9222/json/version',
         method: 'get'
@@ -437,8 +426,7 @@ export class ToolService {
           webSocketDebuggerUrl
         })
       }).catch(error => {
-        console.log(error)
-        // reject(error)
+        this.logger.log('useGetWebSocketDebuggerUrl Error: ' + error.message)
         resolve({
           webSocketDebuggerUrl: ''
         })
@@ -451,7 +439,7 @@ export class ToolService {
    * @returns 
    */
   usePuppeteer (): Promise<any> {
-    console.log('准备打开浏览器------->')
+    this.logger.debug('准备打开浏览器------->')
     return new Promise(async (resolve, reject) => {
       try {
         const { cookie, endpoint } =  await this.useGetCookie()
@@ -477,6 +465,95 @@ export class ToolService {
         reject(error)
       }
     })
+  }
+
+  /**
+   * 处理cookie
+   */
+  async handleCookie (page: any) {
+    // 1、读取所有的cookie
+    const cookies = await page.cookies()
+    // 2、处理cookie
+    const filter_cookies = cookies.filter(el => /zhihu.com/g.test(el.domain)).map(el => ({ name: el.name, value: el.value }))
+    // 3、将cookie处理成字符串
+    const cookies_str = filter_cookies.map(el => (`${el.name}=${el.value}`)).join('; ')
+    // 4、获取cookie的数据
+    const condition = { property: 'code', value: 'zhihu_config' }
+    const res = await this.dictService.findByPro(condition)
+    res.values.forEach(el => {
+      if (el.label === 'cookie') {
+        el.value = cookies_str
+      }
+    })
+    // 5、更新到数据库
+    await this.dictService.updateByPro(condition, {
+      name: res.name,
+      code: res.code,
+      values: res.values
+    })
+  }
+
+  /**
+   * 关闭遗留页面
+   * @param browser Puppeteer.Browser
+   */
+  async closeOverPage (browser: any) {
+    try {
+      // 方式一：自存页面，超出最大限制: 关闭所有页面
+      if (pages.length >= maxPage) {
+        for (let i = 0; i < pages.length; i++) {
+          // 1. 移除当前页面数据
+          // 放在第一步原因：可能当前标签页已经被关闭了的
+          pages.splice(i, 1)
+          // 2. 关闭标签页
+          await pages[i].page.close({ timeout: 1500 })
+        }
+      }
+      // =====================关闭遗留的页面start====================
+      /**
+       * 关闭方式三：为了解决puppeteer遗留的页面
+       * 通过判断当前浏览器打开的标签页是否超过指定数量
+       *  如果超过则直接关闭和知乎以及about:blank相关的页面
+       */
+      const browser_pages = await browser.pages()
+      if (browser_pages && browser_pages.length >= 5) {
+        for (let browser_page of browser_pages) {
+          const browser_page_url = browser_page.url()
+          if (browser_page_url.indexOf('www.zhihu.com') !== -1 || browser_page_url.indexOf('about:blank') !== -1) {
+            await browser_page.close({ timeout: 2000 })
+            this.logger.warn('关闭遗留页面' + browser_page_url)
+          }
+        }
+      }
+      // =====================关闭遗留的页面end====================
+    } catch (error) {
+      this.logger.error('closeOverPage Error: ' + error.message)
+    }
+  }
+
+  /**
+   * 获取最新的cookie
+   */
+  async getLastCookie () {
+    try {
+      const { bind_url } = await this.useGetCookie()
+      const { page, browser } = await this.usePuppeteer()
+      // 1. 打卡页面
+      this.logger.debug('cookie的bind_url: ' + bind_url)
+      await page.goto(bind_url)
+      const page_id = Date.now()
+      pages.push({ url: bind_url, page: page, id: page_id })
+      // 2. 处理并保存cookie
+      await this.handleCookie(page)
+      // 4、最后：关闭页面(减少内存占用)
+      await page.close({ timeout: 2000 })
+      // 5、断开浏览器连接
+      await browser.disconnect()
+      // 6、如果成功关闭了页面：则移除
+      pages.splice(pages.findIndex(el => el.id === page_id), 1)
+    } catch (error) {
+      this.logger.debug('ToolService-->getLastCookie Error: ' + JSON.stringify(error))
+    }
   }
 
   /**
@@ -528,7 +605,7 @@ export class ToolService {
       }
       return questions
     } catch (error) {
-      console.log(error)
+      this.logger.debug('getNewQuestions Error: ' + error.message)
       return []
     }
   }
@@ -539,30 +616,18 @@ export class ToolService {
    * @returns 
    */
   async getAuthorNewQuestions (author_id: string, is_org: boolean, type: 'answer' | 'publisher'): Promise<any> {
-    console.log('获取作者的最新问题消息------>')
+    this.logger.debug('正在获取作者的最新问题: ' + author_id)
     try {
       const { page, browser } = await this.usePuppeteer()
-      // =====================关闭遗留的页面start====================
-      /**
-       * 关闭方式三：为了解决puppeteer遗留的页面
-       * 通过判断当前浏览器打开的标签页是否超过指定数量
-       *  如果超过则直接关闭和知乎以及about:blank相关的页面
-       */
-      const browser_pages = await browser.pages()
-      if (browser_pages && browser_pages.length >= 5) {
-        for (let browser_page of browser_pages) {
-          const browser_page_url = browser_page.url()
-          if (browser_page_url.indexOf('www.zhihu.com') !== -1 || browser_page_url.indexOf('about:blank') !== -1) {
-            await browser_page.close({ timeout: 1 })
-            console.log('关闭遗留页面', browser_page_url)
-          }
-        }
-      }
-      // =====================关闭遗留的页面end====================
+      // 关闭遗留页面
+      await this.closeOverPage(browser)
       // 1、打开指定页面
-      await page.goto(`https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`);
+      const targetUrl = `https://www.zhihu.com/${is_org ? 'org' : 'people'}/${author_id}`
+      await page.goto(targetUrl);
+      const page_id = Date.now() + Math.ceil(Math.random() * 10)
+      pages.push({ url: targetUrl, page: page, id: page_id })
       // 2、等待Profile-activities元素的出现：代表数据已加载并渲染完毕
-      await page.waitForSelector('div#Profile-activities div[role="list"]', { timeout: 1000 })
+      await page.waitForSelector('div#Profile-activities div.List-item[tabindex="0"]', { timeout: 3000 })
       // 3、获取问题列表
       let questions = []
       switch (type) {
@@ -577,16 +642,19 @@ export class ToolService {
           break
       }
       questions.forEach(el => console.log(el.title, el.id))
+      // 4、更新cookie
+      await this.handleCookie(page)
       // 4、最后：关闭页面(减少内存占用)
-      await page.close({ timeout: 0 })
+      await page.close({ timeout: 2000 })
       // 5、断开浏览器连接
-      browser.disconnect()
+      await browser.disconnect()
+      // 6、页面成功关闭：移除当前标签页
+      pages.splice(pages.findIndex(el => el.id === page_id), 1)
+      this.logger.warn('页面已成功关闭: ' + targetUrl)
       return questions
     } catch (error) {
-      console.log(error)
+      this.logger.debug('getAuthorNewQuestions Error:' + error.message)
       return []
-    } finally {
-
-    }
+    } finally {}
   }
 }

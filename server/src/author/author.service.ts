@@ -861,4 +861,14 @@ export class AuthorService {
       receiver
     }
   }
+
+  /**
+   * 更新cookie
+   */
+  async updateCookie () {
+    await this.toolService.getLastCookie()
+    return {
+      data: '更新成功！'
+    }
+  }
 }

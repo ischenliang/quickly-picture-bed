@@ -9,6 +9,7 @@ import { Dict } from './entities/dict.entity';
     SequelizeModule.forFeature([Dict])
   ],
   controllers: [DictController],
-  providers: [DictService]
+  providers: [DictService],
+  exports: [DictService]
 })
 export class DictModule {}
