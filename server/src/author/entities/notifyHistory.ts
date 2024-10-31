@@ -14,7 +14,7 @@ export class NotifyHistory extends Model<NotifyHistory> {
     allowNull: false,
     comment: '问题id'
   })
-  question_id: number
+  question_id: string
 
   @Column({
     allowNull: false,

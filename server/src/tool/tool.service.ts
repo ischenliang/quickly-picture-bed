@@ -399,7 +399,7 @@ export class ToolService {
     return new Promise(async (resolve, reject) => {
       try {
         const res = await this.dictService.findByPro({ property: 'code', value: 'zhihu_config' })
-        this.logger.debug('zhihu_config: ' + JSON.stringify(res))
+        // this.logger.debug('zhihu_config: ' + JSON.stringify(res))
         const zhihu_config = res.values.reduce((total, cur) => {
           total[cur.label] = cur.value
           return total

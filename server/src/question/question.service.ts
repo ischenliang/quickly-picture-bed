@@ -226,7 +226,7 @@ export class QuestionService {
           // await Promise.all(notify_emails.map((email) => this.toolService.sendZhihuMail(`${notify_content}${content}`, email.email)))
           // 第二步：创建通知记录
           await this.notifyHistoryModel.create({
-            question_id: parseInt(question_id),
+            question_id: question_id,
             obj_id: question_id,
             notify_type: 'question',
             notify_origin: 'platform',
