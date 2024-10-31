@@ -1,0 +1,1 @@
+import{_ as o}from"./index-XAEOv_bM.js";import{v as r,i as t,o as n}from"./vendor-KLCTV6ua.js";const c={};function s(_,a){const e=t("router-view");return n(),r(e)}const m=o(c,[["render",s]]);export{m as default};

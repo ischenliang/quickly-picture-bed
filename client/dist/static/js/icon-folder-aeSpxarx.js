@@ -1,0 +1,1 @@
+import{b as o}from"./wiki-articles-DTQGhgH9.js";import"./Wiki-Cyysk-FZ.js";import"./index-XAEOv_bM.js";import"./vendor-KLCTV6ua.js";import"./Image-Ok4Wptoq.js";import"./Bucket-Vqgxqept.js";export{o as default};

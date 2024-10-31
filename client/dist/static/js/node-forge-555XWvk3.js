@@ -1,0 +1,1 @@
+import{U as m}from"./index-XAEOv_bM.js";import{a0 as e}from"./vendor-KLCTV6ua.js";function l(r){const s=new m;return new Promise(c=>{s.pke().then(t=>{const{label:o,public_key:n}=t,a=e.pki.publicKeyFromPem(n),p=e.util.createBuffer(r,"utf8").getBytes(),u=a.encrypt(p,"RSA-OAEP",{md:e.md.sha256.create()}),i=e.util.encode64(u);c({data:i,label:o})}).catch(t=>{})})}export{l as u};

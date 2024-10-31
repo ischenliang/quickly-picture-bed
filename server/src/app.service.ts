@@ -263,6 +263,7 @@ export class AppService {
     if (!crypto) {
       return parseResponse(500, '该加密公钥不存在！')
     }
+    // 
     if (crypto.is_valid || crypto.generate_ip !== ip) {
       return parseResponse(500, '该公钥已失效，请重试！')
     }

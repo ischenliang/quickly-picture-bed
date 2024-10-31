@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCtxInstance, useMd5 } from '@/hooks/global';
+import { useCtxInstance } from '@/hooks/global';
 import Users from '@/types/User';
 import { VerifyCodeInter } from '@/typings/interface'
 import VerifyCode from '@/types/VerifyCode';
