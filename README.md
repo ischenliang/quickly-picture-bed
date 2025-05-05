@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="http://imgs.itchenliang.club/img/202211101734215.png"/>
+    <img src="./doc/images/01.png"/>
     <div align="center">
       基于Nestjs + Express + Mysql + Vue3.x + Vite3.x + ElementPlus + typescript + Rollup + Monorepo开发的轻量级快捷图片管理系统、图床系统
     </div>
@@ -191,7 +191,7 @@
 docker compose up -d
 ```
 部署完成后会出现如下结果: 
-![202401301005263319.png](https://imgs.itchenliang.club/img/202401301005263319.png)
+![202401301005263319.png](./doc/images/02.png.crdownload)
 然后就可以通过`http://youip:port`直接访问到系统了。
 > 这里需要注意的是: 本地存储桶里的图片位于`server`部署目录下的`public`目录下，若需要重新部署时还请提前将其文件拷贝备份。
 > 并且这里的后端接口是采用的nginx的代理方式来配置，同时也使用了自定义网络的方式来实现直接通过容器名访问到部署的server应用。
@@ -217,7 +217,7 @@ docker compose up -d
   docker run -d --name picServerV2 -p 4000:4000 --network pic-net pic-server
   ```
   启动成功后可以通过`http://youip:4000`访问，如果出现如下输出结果表示server部署成功
-  ![202401301014437945.png](https://imgs.itchenliang.club/img/202401301014437945.png)
+  ![202401301014437945.png](./doc/images/03.png)
 - **部署client**
   > 构建client镜像并创建picClientV2容器
   - 1、确保`client/public/global.config.js`中的`window.uploader_ip = ''`为空
@@ -237,7 +237,7 @@ docker compose up -d
     docker run -d --name picClientV2 -p 80:80 --network pic-net pic-client
     ```
     启动成功后可以通过`http://youip:80`访问，如果出现如下输出结果表示client部署成功
-    ![202401301018387037.png](https://imgs.itchenliang.club/img/202401301018387037.png)
+    ![202401301018387037.png](./doc/images/04.png)
 
 ### docker拉取远程镜像部署
 为了便于部署，本系统将构建的`itchenliang/pic-server-v2`和`itchenliang/pic-client-v2`镜像推送到了[DockerHub](https://hub.docker.com/)，可以直接拉取远程镜像来部署。
@@ -353,8 +353,8 @@ npm install
     ```
   - 启动成功标识
     > 控制台出现如下如所示即代表启动成功
-    ![202401181708175946.png](https://imgs.itchenliang.club/img/202401181708175946.png)<br/>
-    ![202401181708309363.png](https://imgs.itchenliang.club/img/202401181708309363.png)
+    ![202401181708175946.png](./doc/images/05.png)<br/>
+    ![202401181708309363.png](./doc/images/06.png)
 
 8. **打包部署**
   - **服务端打包部署**
@@ -378,100 +378,100 @@ npm install
 
 ## 预览
 接口文档：接口文档是采用swagger自动生成的，目前是通过后端访问`http://ip:端口/swagger`访问，其效果如下: 
-![202401181708537770.png](https://imgs.itchenliang.club/img/202401181708537770.png)
+![202401181708537770.png](./doc/images/07.png)
 
 
 ### 登录、注册、忘记密码
 - 登录
-![202211101727165.png](https://imgs.itchenliang.club/img/202211101727165.png)
+![202211101727165.png](./doc/images/08.png)
 - 注册
-![2022111017274810.png](https://imgs.itchenliang.club/img/2022111017274810.png)
+![2022111017274810.png](./doc/images/09.png)
 - 忘记密码
-![202211101728063.png](https://imgs.itchenliang.club/img/202211101728063.png)
+![202211101728063.png](./doc/images/10.png)
 
 
 ### 上传区
-![202401181709271669.png](https://imgs.itchenliang.club/img/202401181709271669.png)
+![202401181709271669.png](./doc/images/11.png)
 
 ### 图片管理
 - 图片列表
-![202401181709402274.png](https://imgs.itchenliang.club/img/202401181709402274.png)
+![202401181709402274.png](./doc/images/12.png)
 - 拖拽排序
-![202401181709483901.png](https://imgs.itchenliang.club/img/202401181709483901.png)
+![202401181709483901.png](./doc/images/13.png)
 - 图片详情
-![202401181709571411.png](https://imgs.itchenliang.club/img/202401181709571411.png)
+![202401181709571411.png](./doc/images/14.png)
 
 ### 存储桶管理
 - 存储桶列表
-![202401181710055738.png](https://imgs.itchenliang.club/img/202401181710055738.png)
+![202401181710055738.png](./doc/images/15.png)
 - 新增存储桶
-![202401181710145189.png](https://imgs.itchenliang.club/img/202401181710145189.png)
+![202401181710145189.png](./doc/images/16.png)
 - 存储桶数据迁移
-![202401181710433634.png](https://imgs.itchenliang.club/img/202401181710433634.png)
+![202401181710433634.png](./doc/images/17.png)
 
 ### 相册管理
 - 相册列表
-![202401181710519238.png](https://imgs.itchenliang.club/img/202401181710519238.png)
+![202401181710519238.png](./doc/images/18.png)
 - 新增相册
-![202401181711026454.png](https://imgs.itchenliang.club/img/202401181711026454.png)
+![202401181711026454.png](./doc/images/19.png)
 - 相册图片
-![202401181711118179.png](https://imgs.itchenliang.club/img/202401181711118179.png)
+![202401181711118179.png](./doc/images/20.png)
 
 ### 插件市场
 - 插件列表
-![202401181711209937.png](https://imgs.itchenliang.club/img/202401181711209937.png)
+![202401181711209937.png](./doc/images/21.png)
 - 插件详情
-![202401181711275608.png](https://imgs.itchenliang.club/img/202401181711275608.png)
+![202401181711275608.png](./doc/images/22.png)
 
 ### 知识库管理
 - 知识库列表
-![202401181711429709.png](https://imgs.itchenliang.club/img/202401181711429709.png)
+![202401181711429709.png](./doc/images/23.png)
 - 新建知识库
-![202401181711498923.png](https://imgs.itchenliang.club/img/202401181711498923.png)
+![202401181711498923.png](./doc/images/24.png)
 - 知识库文章
-![202401181711584463.png](https://imgs.itchenliang.club/img/202401181711584463.png)
+![202401181711584463.png](./doc/images/25.png)
 
 ### 数据统计
-![202401181712067624.png](https://imgs.itchenliang.club/img/202401181712067624.png)
-![202401181712148601.png](https://imgs.itchenliang.club/img/202401181712148601.png)
+![202401181712067624.png](./doc/images/26.png)
+![202401181712148601.png](./doc/images/27.png)
 
 ### 操作日志
-![202401181712231885.png](https://imgs.itchenliang.club/img/202401181712231885.png)
+![202401181712231885.png](./doc/images/28.png)
 
 ### 用户管理
 - 用户列表
-![202401181712302276.png](https://imgs.itchenliang.club/img/202401181712302276.png)
+![202401181712302276.png](./doc/images/29.png)
 - 新增用户
-![202401181712372436.png](https://imgs.itchenliang.club/img/202401181712372436.png)
+![202401181712372436.png](./doc/images/30.png)
 - 用户详情
-![202401181712444098.png](https://imgs.itchenliang.club/img/202401181712444098.png)
+![202401181712444098.png](./doc/images/31.png)
 
 ### 插件管理
 - 插件列表
-![202401181712522717.png](https://imgs.itchenliang.club/img/202401181712522717.png)
+![202401181712522717.png](./doc/images/32.png)
 - 新增插件
-![202401181713003180.png](https://imgs.itchenliang.club/img/202401181713003180.png)
+![202401181713003180.png](./doc/images/33.png)
 - 插件详情
-![202401181713106236.png](https://imgs.itchenliang.club/img/202401181713106236.png)
+![202401181713106236.png](./doc/images/34.png)
 
 
 ### 字典管理
-![202401181713217045.png](https://imgs.itchenliang.club/img/202401181713217045.png)
+![202401181713217045.png](./doc/images/35.png)
 
 ### 系统设置
-![202401181713284518.png](https://imgs.itchenliang.club/img/202401181713284518.png)
+![202401181713284518.png](./doc/images/36.png)
 
 ### 偏好设置
-![202401181713568298.png](https://imgs.itchenliang.club/img/202401181713568298.png)
+![202401181713568298.png](./doc/images/37.png)
 
 ### 个人中心
-![202401181714046931.png](https://imgs.itchenliang.club/img/202401181714046931.png)
+![202401181714046931.png](./doc/images/38.png)
 
 ### 更新日志
-![202401181713399802.png](https://imgs.itchenliang.club/img/202401181713399802.png)
+![202401181713399802.png](./doc/images/39.png)
 
 ### 关于系统
-![202401181713477302.png](https://imgs.itchenliang.club/img/202401181713477302.png)
+![202401181713477302.png](./doc/images/40.png)
 
 
 ## 待办功能 TODO
