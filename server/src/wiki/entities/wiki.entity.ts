@@ -26,7 +26,7 @@ export class Wiki extends Model<Wiki> {
     allowNull: false,
     comment: '文档状态，私有还是公开'
   })
-  status: boolean
+  status: number
 
   @Column({
     allowNull: false,

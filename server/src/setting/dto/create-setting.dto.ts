@@ -1,5 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { SettingContact, SettingSystem, SettingWebsite } from "../entities/setting.entity";
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  SettingContact,
+  SettingSystem,
+  SettingWebsite,
+} from '../entities/setting.entity';
 
 export class CreateSettingDto {
   @ApiProperty({
@@ -21,10 +25,10 @@ export class CreateSettingDto {
       reward_alipay: '',
       reward_weixin: '',
       reward_alipay_preview: '',
-      reward_weixin_preview: ''
-    }
+      reward_weixin_preview: '',
+    },
   })
-  website: SettingWebsite
+  website: SettingWebsite;
 
   @ApiProperty({
     description: '联系我们',
@@ -35,15 +39,15 @@ export class CreateSettingDto {
       gitee: '',
       github: '',
       weixin: '',
-      qq_group: ''
-    }
+      qq_group: '',
+    },
   })
-  contact: SettingContact
+  contact: SettingContact;
 
   @ApiProperty({
     description: '系统配置',
     example: {
-      accept: ["jpeg", "jpg", "webp", "ico", "gif", "png", "svg"],
+      accept: ['jpeg', 'jpg', 'webp', 'ico', 'gif', 'png', 'svg'],
       maxsize: 10, // 单次最多勾选多少文件
       icon_url: '', // 图标网址
       icon_font: '', // 图标字体
@@ -58,28 +62,28 @@ export class CreateSettingDto {
       copyright_time: '', // 网站运行时间
       copyright_company: '', // 版权归属公司名称
       copyright_miiturl: 'https://beian.miit.gov.cn/', // 备案地址
-      copyright_miitbeian: '' // 工信部备案号
-    }
+      copyright_miitbeian: '', // 工信部备案号
+    },
   })
-  system: SettingSystem
+  system: SettingSystem;
 
   @ApiProperty({
     description: '更新日志',
-    example: ''
+    example: '',
   })
-  uplog: string
+  uplog: string;
 
   @ApiProperty({
     description: '',
     example: [
-      { "label": "文档中心", "link": "", "target": "_blank" },
-      { "label": "Github", "link": "", "target": "_blank" },
-      { "label": "Gitee", "link": "", "target": "_blank" }
-    ]
+      { label: '文档中心', link: '', target: '_blank' },
+      { label: 'Github', link: '', target: '_blank' },
+      { label: 'Gitee', link: '', target: '_blank' },
+    ],
   })
   bucket_service: Array<{
-    label: string
-    link: string
-    target: string
-  }>
+    label: string;
+    link: string;
+    target: string;
+  }>;
 }

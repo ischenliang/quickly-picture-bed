@@ -175,7 +175,7 @@ export class PluginController {
       }
     }
   })
-  installed (@Body('status') status: boolean, @Body('type') type: string, @User() user: UserType) {
+  installed (@Body('status') status: number, @Body('type') type: string, @User() user: UserType) {
     return this.pluginService.getUserPlugins(status, type, user.id);
   }
 

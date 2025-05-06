@@ -46,7 +46,7 @@ export class Author extends Model<Author> {
     comment: '任务状态',
     defaultValue: true
   })
-  status: boolean
+  status: number
 
   @Column({
     allowNull: false,

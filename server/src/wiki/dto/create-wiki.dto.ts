@@ -12,7 +12,7 @@ export class CreateWikiDto {
   // weight: number
 
   @ApiProperty({ description: '文档状态', example: false })
-  status: boolean
+  status: number
 
   @ApiProperty({
     description: '空间配置', 
@@ -38,5 +38,5 @@ export class CreateWikiDto {
 
 export class WikiFilter extends PageSearch {
   @ApiProperty({ description: '状态' })
-  status: boolean
+  status: number
 }

@@ -1,12 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  HttpCode,
+} from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto, QuestionFilter } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/local-auth.guard';
 import { RoleGuard } from 'src/common/role.guard';
 import { User } from 'src/common/user.decorator';
-import { User as UserType } from 'src/user/entities/user.entity'
+import { User as UserType } from 'src/user/entities/user.entity';
 
 @Controller({ path: 'question', version: '1' })
 @ApiTags('知乎问题管理')
@@ -42,10 +58,10 @@ export class QuestionController {
         id: {
           type: 'number',
           default: 1,
-          description: '问题id'
-        }
-      }
-    }
+          description: '问题id',
+        },
+      },
+    },
   })
   findOne(@Body('id') id: number, @User() user: UserType) {
     return this.questionService.findOne(id, user.id);
@@ -62,10 +78,10 @@ export class QuestionController {
         id: {
           type: 'number',
           default: 1,
-          description: '问题id'
-        }
-      }
-    }
+          description: '问题id',
+        },
+      },
+    },
   })
   remove(@Body('id') id: number, @User() user: UserType) {
     return this.questionService.remove(id, user.id);
@@ -82,13 +98,13 @@ export class QuestionController {
         id: {
           type: 'number',
           default: 1,
-          description: '问题id'
-        }
-      }
-    }
+          description: '问题id',
+        },
+      },
+    },
   })
   toggleSchedule(@Body('id') id: number, @User() user: UserType) {
-    return this.questionService.toggleSchedule(id, user.id)
+    return this.questionService.toggleSchedule(id, user.id);
   }
 
   @Post('sort')
@@ -102,17 +118,21 @@ export class QuestionController {
         id: {
           type: 'number',
           default: 1,
-          description: '问题id'
+          description: '问题id',
         },
         direction: {
           type: 'string',
           default: 'up',
-          description: '移动方向 up-上移 down-下移'
-        }
-      }
-    }
+          description: '移动方向 up-上移 down-下移',
+        },
+      },
+    },
   })
-  sort(@Body('id') id: number, @Body('direction') direction: 'up' | 'down', @User() user: UserType) {
+  sort(
+    @Body('id') id: number,
+    @Body('direction') direction: 'up' | 'down',
+    @User() user: UserType,
+  ) {
     return this.questionService.sort(id, direction, user.id);
   }
 }

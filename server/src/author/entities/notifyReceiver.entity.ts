@@ -26,7 +26,7 @@ export class NotifyReceiver extends Model<NotifyReceiver> {
     comment: '账号状态',
     defaultValue: true
   })
-  status: boolean
+  status: number
 
   @ForeignKey(() => User)
   @Column({

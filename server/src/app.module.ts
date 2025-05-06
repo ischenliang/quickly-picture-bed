@@ -40,7 +40,7 @@ console.log(process.env.NODE_ENV)
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         return {
-          dialect: 'mysql',
+          dialect: 'postgres',
           host: configService.get<string>('DB_HOST'),
           port: configService.get<number>('DB_PORT'),
           username: configService.get<string>('DB_USERNAME'),

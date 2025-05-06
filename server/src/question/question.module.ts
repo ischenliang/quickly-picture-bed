@@ -12,10 +12,10 @@ import { NotifyReceiver } from 'src/author/entities/notifyReceiver.entity';
   imports: [
     SequelizeModule.forFeature([Question, NotifyHistory, NotifyReceiver]),
     ScheduleModule.forRoot(),
-    ToolModule
+    ToolModule,
   ],
   controllers: [QuestionController],
   providers: [QuestionService],
-  exports: [QuestionService]
+  exports: [QuestionService],
 })
 export class QuestionModule {}

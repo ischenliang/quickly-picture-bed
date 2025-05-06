@@ -24,7 +24,7 @@ export interface IPluginConfig {
 // 插件
 export interface IPlugin {
   config: Array<IPluginConfig> // 界面呈现config
-  handler: (config: any, file: any, filename: string) => AxiosRequestConfig // 上传处理
+  handler: (config: any, file: any, filename: string) => AxiosRequestConfig; // 上传处理
   response: (result: any, filename: string, config: any) => any // 结果处理
   [propName: string]: any
 }
@@ -37,6 +37,9 @@ export interface SandboxInter {
   axios: any // 插件内部需要使用的Axios对象
   path: any // 插件内部需要使用的path对象
   stream: any // 插件内部需要使用的stream对象
+  util: any
+  process:any
+  os: any
   fs: any // 插件内部需要使用fs对象
   port: string | number // 程序占用端口
   console: any // 自定义console.log函数，将输出内容传递给回调函数进行处理

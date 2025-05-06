@@ -12,10 +12,10 @@ export class CreateReceiverDto {
   remark?: string
 
   @ApiProperty({ description: '状态' })
-  status?: boolean
+  status?: number
 }
 
 export class ReceiverFilter extends PageSearch {
   @ApiProperty({ description: '状态' })
-  status: boolean
+  status: number
 }

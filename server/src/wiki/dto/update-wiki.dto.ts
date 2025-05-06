@@ -11,5 +11,5 @@ export class UpdateWikiDto {
   description: string
 
   @ApiProperty({ description: '文档状态', example: false })
-  status: boolean
+  status: number
 }

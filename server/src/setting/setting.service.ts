@@ -6,27 +6,27 @@ import { Setting } from './entities/setting.entity';
 
 @Injectable()
 export class SettingService {
-  constructor (@InjectModel(Setting) private settingModel: typeof Setting) {}
+  constructor(@InjectModel(Setting) private settingModel: typeof Setting) {}
 
   /**
    * 创建设置：首先判断数据库中是否有记录，没有才创建
-   * @param createSettingDto 
-   * @returns 
+   * @param createSettingDto
+   * @returns
    */
   async create(createSettingDto: CreateSettingDto) {
-    const list = await this.findAll()
+    const list = await this.findAll();
     if (list.length) {
       return {
         statusCode: 500,
-        data: '已有默认系统配置'
-      }
+        data: '已有默认系统配置',
+      };
     }
     return this.settingModel.create(createSettingDto);
   }
 
   /**
    * 查询列表
-   * @returns 
+   * @returns
    */
   findAll() {
     return this.settingModel.findAll();
@@ -34,8 +34,8 @@ export class SettingService {
 
   /**
    * 设置详情
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   findOne() {
     return this.settingModel.findOne();
@@ -43,13 +43,13 @@ export class SettingService {
 
   /**
    * 更新配置
-   * @param updateSettingDto 
-   * @returns 
+   * @param updateSettingDto
+   * @returns
    */
   update(updateSettingDto: UpdateSettingDto) {
-    delete updateSettingDto.id
+    delete updateSettingDto.id;
     return this.settingModel.update(updateSettingDto, {
-      where: {}
-    })
+      where: {},
+    });
   }
 }
